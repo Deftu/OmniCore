@@ -88,7 +88,7 @@ class MultiTextureManager(
 }
 
 /**
- * Adapted from Essential under LGPL-3.0
+ * Adapted from EssentialGG UniversalCraft under LGPL-3.0
  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
  */
 class ReleasedDynamicTexture(
@@ -158,6 +158,16 @@ class ReleasedDynamicTexture(
             resources.glId = allocGlId()
             Resources.drainCleanupQueue()
         }
+    }
+
+    override fun getGlId(): Int {
+        upload()
+        return super.getGlId()
+    }
+
+    override fun clearGlId() {
+        super.clearGlId()
+        resources.glId = -1
     }
 
     private class Resources(
