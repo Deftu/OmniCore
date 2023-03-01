@@ -1,47 +1,36 @@
-//#if MC!=11404
-// 1.14.4 is just a bridge method as it doesn't support most vital features for this to work.
 package xyz.deftu.multi
 
-// I'm fully aware that these preprocessor directives are ugly, but I got lazy.
+//#if MC>=11500
+import net.minecraft.util.math.MathHelper
+import net.minecraft.client.util.math.MatrixStack
+//#endif
 
 //#if MC>=11700
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
+//#if MC>=11500
+import com.mojang.blaze3d.platform.GlStateManager
+//#else
+//$$ import net.minecraft.client.renderer.GlStateManager
+//#endif
+
 //#if MC>=11903
-import net.minecraft.client.util.math.MatrixStack
-import org.joml.Matrix4f
+import org.joml.Quaternionf
 import org.joml.Matrix3f
-//#elseif MC>=11600
-//$$ import net.minecraft.client.util.math.MatrixStack
+import org.joml.Matrix4f
+//#elseif MC>=11400
+//$$ import net.minecraft.util.math.Quaternion
 //$$ import net.minecraft.util.math.Matrix4f
 //$$ import net.minecraft.util.math.Matrix3f
-//#elseif MC<=11202
+//#else
 //$$ import org.lwjgl.util.vector.Matrix4f
 //$$ import org.lwjgl.util.vector.Matrix3f
 //$$ import org.lwjgl.util.vector.Vector3f
-//#else
-//$$ import xyz.deftu.multi.compat.Matrix3f
-//$$ import net.minecraft.client.util.math.Matrix4f
-//#endif
-
-//#if MC>=11400
-import net.minecraft.util.math.MathHelper
-//#if MC<11903
-//$$ import net.minecraft.util.math.Quaternion
-//#else
-import org.joml.Quaternionf
-//#endif
-//#endif
-
-//#if MC<=11400
-//$$ import net.minecraft.client.renderer.GlStateManager
-//#elseif MC<=11605
-//$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
 //#if MC>=10809 && MC<11700
-//#if MC<11600
+//#if MC<11500
 //$$ import net.minecraft.client.renderer.GLAllocation
 //#else
 //$$ import net.minecraft.client.util.GlAllocationUtils
@@ -62,7 +51,7 @@ class MultiMatrixStack private constructor(
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$
         //$$ private fun createFloatBuffer(capacity: Int): FloatBuffer {
-            //#if MC>=11600
+            //#if MC>=11500
             //$$ return GlAllocationUtils.allocateFloatBuffer(capacity)
             //#else
             //$$ return GLAllocation.createDirectFloatBuffer(capacity)
@@ -258,7 +247,11 @@ class MultiMatrixStack private constructor(
         RenderSystem.applyModelViewMatrix()
         //#else
         //#if MC<11600
+        //#if MC>=11500
+        //$$ stack.last.matrix.writeToBuffer(MATRIX_BUFFER)
+        //#else
         //$$ stack.last.matrix.store(MATRIX_BUFFER)
+        //#endif
         //#else
         //$$ stack.last.matrix.writeRowFirst(MATRIX_BUFFER)
         //#endif
@@ -331,7 +324,7 @@ class MultiMatrixStack private constructor(
         fun deepCopy(): StackEntry {
             //#if MC>=11903
             return StackEntry(Matrix4f(matrix), Matrix3f(normal))
-            //#elseif MC>=11600
+            //#elseif MC>=11500
             //$$ return StackEntry(matrix.copy(), normal.copy())
             //#else
             //$$ return StackEntry(Matrix4f.load(matrix, null), Matrix3f.load(normal, null))
@@ -339,4 +332,3 @@ class MultiMatrixStack private constructor(
         }
     }
 }
-//#endif

@@ -4,7 +4,7 @@ package xyz.deftu.multi
 import net.minecraft.client.util.GlfwUtil
 //#endif
 
-typealias MinecraftClient = net.minecraft.client.MinecraftClient
+import net.minecraft.client.MinecraftClient
 
 object MultiClient {
     @JvmStatic
@@ -20,6 +20,10 @@ object MultiClient {
     @JvmStatic
     fun getPlayer() = getInstance().player
     @JvmStatic
+    fun getHud() = getInstance().inGameHud
+    @JvmStatic
+    fun getChat() = getHud().chatHud
+    @JvmStatic
     fun getNetworkHandler() = getInstance().networkHandler
     @JvmStatic
     fun getSoundManager() = getInstance().soundManager
@@ -27,13 +31,19 @@ object MultiClient {
     fun getFontRenderer() = getInstance().textRenderer
     @JvmStatic
     fun getOptions() = getInstance().options
+    @JvmStatic
+    fun getTextureManager() = MultiTextureManager.INSTANCE
 
     @JvmStatic
     fun getTime(): Long {
         //#if MC>=11400
         return (GlfwUtil.getTime() * 1000).toLong()
         //#else
+        //#if MC>=11400
         //$$ return MinecraftClient.getSystemTime()
+        //#else
+        //$$ return Minecraft.getSystemTime()
+        //#endif
         //#endif
     }
 }

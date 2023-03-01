@@ -1,11 +1,11 @@
-//#if MC!=11404
 package xyz.deftu.multi
 
 //#if MC>=11500
 import com.mojang.blaze3d.systems.RenderSystem
+//#endif
+
+//#if MC>=11500
 import com.mojang.blaze3d.platform.GlStateManager
-//#elseif MC>=11400
-//$$ import com.mojang.blaze3d.platform.GlStateManager
 //#else
 //$$ import net.minecraft.client.renderer.GlStateManager
 //#endif
@@ -24,6 +24,8 @@ object MultiGlStateManager {
         RenderSystem.setShaderColor(red, green, blue, alpha)
         //#elseif MC>11502
         //$$ RenderSystem.color4f(red, green, blue, alpha)
+        //#elseif MC>=11500
+        //$$ GlStateManager.color4f(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.color(red, green, blue, alpha)
         //#endif
@@ -37,7 +39,7 @@ object MultiGlStateManager {
         //#if MC>=11700
         color4f(red, green, blue, 1f)
         //#else
-        //#if MC>11502
+        //#if MC>=11500
         //$$ RenderSystem.color3f(red, green, blue)
         //#else
         //$$ GlStateManager.color(red, green, blue)
@@ -135,6 +137,14 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun defaultBlendFunc() {
+        //#if MC>=11700
+        RenderSystem.defaultBlendFunc()
+        //#else
+        //$$ blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
+        //#endif
+    }
+
     @JvmStatic fun enableDepth() {
         //#if MC>=11700
         RenderSystem.enableDepthTest()
@@ -196,6 +206,14 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun deleteTexture(id: Int) {
+        //#if MC>=11700
+        GlStateManager._deleteTexture(id)
+        //#else
+        //$$ GlStateManager.deleteTexture(id)
+        //#endif
+    }
+
     @JvmStatic fun configureTexture(id: Int, block: Runnable) {
         val prevActiveTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
         bindTexture(id)
@@ -210,4 +228,3 @@ object MultiGlStateManager {
         setActiveTexture(prevActiveTexture)
     }
 }
-//#endif

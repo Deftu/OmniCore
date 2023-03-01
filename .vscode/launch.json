@@ -381,6 +381,53 @@
       "args": "\"nogui\"",
       "env": {},
       "projectName": "1.8.9-forge"
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Client (:1.15.2-fabric)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/versions\\1.15.2-fabric/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "\"-Dfabric.dli.config\u003dD:\\Projects\\Personal\\MultiCraft\\versions\\1.15.2-fabric\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dclient\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient\"",
+      "args": "",
+      "env": {},
+      "projectName": "1.15.2-fabric"
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Server (:1.15.2-fabric)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/versions\\1.15.2-fabric/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "\"-Dfabric.dli.config\u003dD:\\Projects\\Personal\\MultiCraft\\versions\\1.15.2-fabric\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dserver\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer\"",
+      "args": "\"nogui\"",
+      "env": {},
+      "projectName": "1.15.2-fabric"
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Server (:1.15.2-forge)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/versions\\1.15.2-forge/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "\"-Dfabric.dli.config\u003dD:\\Projects\\Personal\\MultiCraft\\versions\\1.15.2-forge\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dserver\" \"-Dfabric.dli.main\u003dnet.minecraftforge.userdev.LaunchTesting\"",
+      "args": "\"nogui\"",
+      "env": {
+        "MOD_CLASSES": "main%%D:\\Projects\\Personal\\MultiCraft\\versions\\1.15.2-forge\\build\\resources\\main;main%%D:\\Projects\\Personal\\MultiCraft\\versions\\1.15.2-forge\\build\\classes\\java\\main;main%%D:\\Projects\\Personal\\MultiCraft\\versions\\1.15.2-forge\\build\\classes\\kotlin\\main",
+        "MCP_MAPPINGS": "loom.stub",
+        "MCP_VERSION": "20200515.085601",
+        "FORGE_VERSION": "31.2.57",
+        "FORGE_GROUP": "net.minecraftforge",
+        "target": "fmluserdevserver",
+        "MC_VERSION": "1.15.2"
+      },
+      "projectName": "1.15.2-forge"
     }
   ]
 }

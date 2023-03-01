@@ -1,4 +1,3 @@
-//#if MC!=11404
 package xyz.deftu.multi
 
 //#if MC>=11700
@@ -9,14 +8,9 @@ import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.client.render.RenderLayer
 //#endif
 
-//#if MC<=11202
-//$$ import org.lwjgl.util.vector.Matrix4f
-//$$ import org.lwjgl.util.vector.Matrix3f
-//$$ import org.lwjgl.util.vector.Vector4f
-//#endif
-
 //#if MC>=11400
 import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
@@ -34,8 +28,19 @@ import net.minecraft.client.render.VertexFormats
 //$$ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 //#endif
 
+//#if MC>=11400 && MC<=11902
+//$$ import net.minecraft.util.math.Matrix4f
+//$$ import net.minecraft.util.math.Matrix3f
+//#if MC<=11502
+//$$ import net.minecraft.client.util.math.Vector4f
+//#endif
+//#else
+//$$ import org.lwjgl.util.vector.Matrix4f
+//$$ import org.lwjgl.util.vector.Matrix3f
+//$$ import org.lwjgl.util.vector.Vector4f
+//#endif
+
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
 import java.awt.Color
 import java.util.function.Supplier
 import kotlin.reflect.KFunction
@@ -130,7 +135,7 @@ class MultiTessellator(
     }
 
     private fun handleDraw() {
-        if (currentVertexFormat == null) getTessellator().draw()
+        if (currentVertexFormat == null) drawBuffer()
 
         //#if MC<11700
         //$$ val wantEnabledStates = getDesiredTextureUnitState(currentVertexFormat!!)
@@ -150,7 +155,7 @@ class MultiTessellator(
         //$$ }
         //#endif
 
-        getTessellator().draw()
+        drawBuffer()
 
         //#if MC<11700
         //$$ for (i in wasEnabledStates.indices) {
@@ -167,7 +172,23 @@ class MultiTessellator(
         //#endif
     }
 
-    fun pos(
+    private fun drawBuffer() {
+        //#if MC>=11600
+        if (buffer == getTessellator().buffer) {
+            getTessellator().draw()
+        } else {
+            //#if MC>=11900
+            BufferRenderer.drawWithGlobalProgram(buffer.end())
+            //#else
+            //$$ BufferRenderer.draw(buffer)
+            //#endif
+        }
+        //#else
+        //$$ getTessellator().draw()
+        //#endif
+    }
+
+    fun vertex(
         stack: MultiMatrixStack,
         x: Float,
         y: Float,
@@ -183,7 +204,7 @@ class MultiTessellator(
         //$$ Matrix4f.transform(stack.peek().matrix, vec, vec)
         //#endif
         //#if MC>=11400
-        //$$ buffer.vertex(vec.x, vec.y, vec.z)
+        //$$ buffer.vertex(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
         //#else
         //$$ buffer.pos(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
         //#endif
@@ -196,7 +217,7 @@ class MultiTessellator(
         y: Float,
         z: Float
     ) = apply {
-        //#if MC>=11600
+        //#if MC>=11500
         buffer.normal(stack.peek().normal, x, y, z)
         //#else
         //$$ val vec = org.lwjgl.util.vector.Vector3f(x, y, z)
@@ -248,7 +269,7 @@ class MultiTessellator(
         color.alpha / 255.0f
     )
 
-    fun tex(
+    fun texture(
         u: Float,
         v: Float
     ) = apply {
@@ -323,13 +344,11 @@ class MultiTessellator(
         POSITION_COLOR(VanillaVertexFormats.POSITION_COLOR),
         //#if MC>=11400
         POSITION_TEXTURE(VanillaVertexFormats.POSITION_TEXTURE),
-        POSITION_COLOR_TEXTURE(VanillaVertexFormats.POSITION_COLOR_TEXTURE),
+        POSITION_TEXTURE_COLOR(VanillaVertexFormats.POSITION_TEXTURE_COLOR),
         //#else
         //$$ POSITION_TEXTURE(VanillaVertexFormats.POSITION_TEX),
-        //$$ POSITION_COLOR_TEXTURE(VanillaVertexFormats.POSITION_TEX_COLOR),
+        //$$ POSITION_TEXTURE_COLOR(VanillaVertexFormats.POSITION_TEX_COLOR),
         //#endif
-
-        // There are more, but I'll need to add them later as I don't have the time to check for them right now
     }
 
     enum class DrawModes(
@@ -415,4 +434,3 @@ class MultiTessellator(
         }
     }
 }
-//#endif
