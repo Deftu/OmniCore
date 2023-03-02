@@ -1,18 +1,29 @@
 package xyz.deftu.multi.shader
 
-interface BaseShader {
+interface MultiShader {
     companion object {
         @JvmStatic fun fromLegacyShader(
             vert: String,
             frag: String,
             blend: BlendState
-        ): BaseShader {
+        ): MultiShader {
             //#if MC>=11700
             return VanillaShader.fromLegacy(vert, frag, blend)
             //#else
             //$$ return GlShader(vert, frag, blend)
             //#endif
         }
+
+        @JvmStatic fun readFromResource(
+            vert: String,
+            frag: String,
+            blend: BlendState
+        ) = fromLegacyShader(readShader(vert, "vsh"), readShader(frag, "fsh"), blend)
+
+        private fun readShader(
+            name: String,
+            extension: String
+        ) = MultiShader::class.java.getResource("/shaders/$name.$extension")?.readText() ?: throw IllegalArgumentException("Shader $name not found")
     }
 
     val usable: Boolean

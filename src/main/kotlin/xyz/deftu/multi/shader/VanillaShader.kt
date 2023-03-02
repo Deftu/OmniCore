@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableMap
 internal class VanillaShader(
     private val vanilla: ShaderProgram,
     private val blend: BlendState
-) : BaseShader {
+) : MultiShader {
     companion object {
         private val DEBUG: Boolean
             get() = System.getProperty("multicraft.shader.debug")?.toBoolean() ?: false

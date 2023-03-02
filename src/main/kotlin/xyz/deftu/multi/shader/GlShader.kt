@@ -21,7 +21,7 @@ package xyz.deftu.multi.shader
 //$$     val vert: String,
 //$$     val frag: String,
 //$$     val blend: BlendState
-//$$ ) : BaseShader {
+//$$ ) : MultiShader {
 //$$     private var program = MultiGlStateManager.createProgram()
 //$$     private var vertShader = MultiGlStateManager.createShader(GL20.GL_VERTEX_SHADER)
 //$$     private var fragShader = MultiGlStateManager.createShader(GL20.GL_FRAGMENT_SHADER)
