@@ -1,14 +1,6 @@
 //#if MC!=11404
 package xyz.deftu.multi
 
-//#if MC>=11700
-import com.mojang.blaze3d.platform.TextureUtil
-//#elseif MC>=11400
-//$$ import net.minecraft.client.texture.TextureUtil
-//#else
-//$$ import net.minecraft.client.renderer.texture.TextureUtil
-//#endif
-
 //#if MC>=11500
 import net.minecraft.resource.ResourceManager
 //#if FORGE==1
@@ -21,6 +13,7 @@ import net.minecraft.client.texture.*
 //$$ import net.minecraft.client.renderer.texture.*
 //#endif
 
+import com.mojang.blaze3d.platform.TextureUtil
 import net.minecraft.util.Identifier
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream

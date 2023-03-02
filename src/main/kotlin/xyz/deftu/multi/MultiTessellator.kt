@@ -9,56 +9,30 @@ import net.minecraft.client.render.RenderLayer
 //#endif
 
 //#if MC>=11400
-import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormatElement
-import net.minecraft.client.render.VertexFormats
-//#else
-//#if MC<=10809
-//$$ import net.minecraft.client.renderer.WorldRenderer
-//#else
-//$$ import net.minecraft.client.renderer.BufferBuilder
-//#endif
-//$$ import net.minecraft.client.renderer.Tessellator
-//$$ import net.minecraft.client.renderer.vertex.VertexFormat
-//$$ import net.minecraft.client.renderer.vertex.VertexFormatElement
-//$$ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 //#endif
 
-//#if MC>=11400 && MC<=11902
+//#if MC<=11902
 //$$ import net.minecraft.util.math.Matrix4f
 //$$ import net.minecraft.util.math.Matrix3f
+//#endif
+
 //#if MC<=11502
 //$$ import net.minecraft.client.util.math.Vector4f
-//#endif
-//#else
-//$$ import org.lwjgl.util.vector.Matrix4f
-//$$ import org.lwjgl.util.vector.Matrix3f
-//$$ import org.lwjgl.util.vector.Vector4f
 //#endif
 
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.util.function.Supplier
 import kotlin.reflect.KFunction
-
-//#if MC>=11400
-private typealias Buffer = BufferBuilder
-private typealias VanillaVertexFormats = VertexFormats
-//#else
-//#if MC<=10809
-//$$ private typealias Buffer = WorldRenderer
-//#else
-//$$ private typealias Buffer = BufferBuilder
-//#endif
-//$$ private typealias VanillaVertexFormats = DefaultVertexFormats
-//#endif
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.Tessellator
+import net.minecraft.client.render.VertexFormat
+import net.minecraft.client.render.VertexFormatElement
 
 class MultiTessellator(
-    private val buffer: Buffer
+    private val buffer: BufferBuilder
 ) {
     companion object {
         @JvmStatic fun getTessellator() = Tessellator.getInstance()
@@ -71,17 +45,17 @@ class MultiTessellator(
 
         //#if MC>=11700
         @JvmStatic val defaultShaders = mapOf<VertexFormat, Supplier<ShaderProgram?>>(
-            VanillaVertexFormats.LINES to referenceToSupplier(GameRenderer::getRenderTypeLinesProgram),
-            VanillaVertexFormats.POSITION_TEXTURE_COLOR_LIGHT to referenceToSupplier(GameRenderer::getParticleProgram),
-            VanillaVertexFormats.POSITION to referenceToSupplier(GameRenderer::getPositionProgram),
-            VanillaVertexFormats.POSITION_COLOR to referenceToSupplier(GameRenderer::getPositionColorProgram),
-            VanillaVertexFormats.POSITION_COLOR_LIGHT to referenceToSupplier(GameRenderer::getPositionColorLightmapProgram),
-            VanillaVertexFormats.POSITION_TEXTURE to referenceToSupplier(GameRenderer::getPositionTexProgram),
-            VanillaVertexFormats.POSITION_COLOR_TEXTURE to referenceToSupplier(GameRenderer::getPositionColorTexProgram),
-            VanillaVertexFormats.POSITION_TEXTURE_COLOR to referenceToSupplier(GameRenderer::getPositionTexColorProgram),
-            VanillaVertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
-            VanillaVertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
-            VanillaVertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram)
+            net.minecraft.client.render.VertexFormats.LINES to referenceToSupplier(GameRenderer::getRenderTypeLinesProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT to referenceToSupplier(GameRenderer::getParticleProgram),
+            net.minecraft.client.render.VertexFormats.POSITION to referenceToSupplier(GameRenderer::getPositionProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_COLOR to referenceToSupplier(GameRenderer::getPositionColorProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT to referenceToSupplier(GameRenderer::getPositionColorLightmapProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE to referenceToSupplier(GameRenderer::getPositionTexProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE to referenceToSupplier(GameRenderer::getPositionColorTexProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR to referenceToSupplier(GameRenderer::getPositionTexColorProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
+            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram)
         )
 
         private fun <T> referenceToSupplier(reference: KFunction<T>): Supplier<T> {
@@ -340,15 +314,10 @@ class MultiTessellator(
     enum class VertexFormats(
         val vanilla: VertexFormat
     ) {
-        POSITION(VanillaVertexFormats.POSITION),
-        POSITION_COLOR(VanillaVertexFormats.POSITION_COLOR),
-        //#if MC>=11400
-        POSITION_TEXTURE(VanillaVertexFormats.POSITION_TEXTURE),
-        POSITION_TEXTURE_COLOR(VanillaVertexFormats.POSITION_TEXTURE_COLOR),
-        //#else
-        //$$ POSITION_TEXTURE(VanillaVertexFormats.POSITION_TEX),
-        //$$ POSITION_TEXTURE_COLOR(VanillaVertexFormats.POSITION_TEX_COLOR),
-        //#endif
+        POSITION(net.minecraft.client.render.VertexFormats.POSITION),
+        POSITION_COLOR(net.minecraft.client.render.VertexFormats.POSITION_COLOR),
+        POSITION_TEXTURE(net.minecraft.client.render.VertexFormats.POSITION_TEXTURE),
+        POSITION_TEXTURE_COLOR(net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR)
     }
 
     enum class DrawModes(

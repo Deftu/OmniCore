@@ -4,14 +4,9 @@ package xyz.deftu.multi
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
-//#if MC>=11500
-import com.mojang.blaze3d.platform.GlStateManager
-//#else
-//$$ import net.minecraft.client.renderer.GlStateManager
-//#endif
-
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
+import com.mojang.blaze3d.platform.GlStateManager
 
 object MultiGlStateManager {
     @JvmStatic fun color4f(
@@ -67,6 +62,10 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun toggleTexture2D(enable: Boolean) {
+        if (enable) enableTexture2D() else disableTexture2D()
+    }
+
     @JvmStatic fun enableBasicTexture2D() {
         //#if MC>=11700
         GlStateManager._enableTexture()
@@ -87,6 +86,10 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun toggleBasicTexture2D(enable: Boolean) {
+        if (enable) enableBasicTexture2D() else disableBasicTexture2D()
+    }
+
     @JvmStatic fun enableCull() {
         //#if MC>=11700
         RenderSystem.enableCull()
@@ -101,6 +104,10 @@ object MultiGlStateManager {
         //#else
         //$$ GlStateManager.disableCull()
         //#endif
+    }
+
+    @JvmStatic fun toggleCull(enable: Boolean) {
+        if (enable) enableCull() else disableCull()
     }
 
     @JvmStatic fun enableBlend() {
@@ -119,12 +126,20 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun toggleBlend(enable: Boolean) {
+        if (enable) enableBlend() else disableBlend()
+    }
+
     @JvmStatic fun blendFunc(srcFactor: Int, dstFactor: Int) {
         //#if MC>=11700
         RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
         //$$ GlStateManager.blendFunc(srcFactor, dstFactor)
         //#endif
+    }
+
+    @JvmStatic fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
+        blendFunc(srcFactor.value, dstFactorAlpha.value)
     }
 
     @JvmStatic fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
@@ -137,11 +152,15 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
+        blendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
+    }
+
     @JvmStatic fun defaultBlendFunc() {
         //#if MC>=11700
         RenderSystem.defaultBlendFunc()
         //#else
-        //$$ blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
+        //$$ blendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
         //#endif
     }
 
@@ -165,12 +184,20 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun toggleDepth(enable: Boolean) {
+        if (enable) enableDepth() else disableDepth()
+    }
+
     @JvmStatic fun depthFunc(func: Int) {
         //#if MC>=11700
         RenderSystem.depthFunc(func)
         //#else
         //$$ GlStateManager.depthFunc(func)
         //#endif
+    }
+
+    @JvmStatic fun depthFunc(state: DepthState) {
+        depthFunc(state.value)
     }
 
     @JvmStatic fun enableLighting() {
@@ -182,6 +209,12 @@ object MultiGlStateManager {
     @JvmStatic fun disableLighting() {
         //#if MC<11700
         //$$ GlStateManager.disableLighting()
+        //#endif
+    }
+
+    @JvmStatic fun toggleLighting(enable: Boolean) {
+        //#if MC<11700
+        //$$ if (enable) enableLighting() else disableLighting()
         //#endif
     }
 
@@ -226,5 +259,57 @@ object MultiGlStateManager {
         setActiveTexture(GL13.GL_TEXTURE0 + index)
         block.run()
         setActiveTexture(prevActiveTexture)
+    }
+
+    enum class SrcFactor(
+        val value: Int
+    ) {
+        CONSTANT_ALPHA(GL11.GL_SRC_ALPHA),
+        CONSTANT_COLOR(GL11.GL_SRC_COLOR),
+        DST_ALPHA(GL11.GL_DST_ALPHA),
+        DST_COLOR(GL11.GL_DST_COLOR),
+        ONE(GL11.GL_ONE),
+        ONE_MINUS_CONSTANT_ALPHA(GL11.GL_ONE_MINUS_SRC_ALPHA),
+        ONE_MINUS_CONSTANT_COLOR(GL11.GL_ONE_MINUS_SRC_COLOR),
+        ONE_MINUS_DST_ALPHA(GL11.GL_ONE_MINUS_DST_ALPHA),
+        ONE_MINUS_DST_COLOR(GL11.GL_ONE_MINUS_DST_COLOR),
+        ONE_MINUS_SRC_ALPHA(GL11.GL_ONE_MINUS_SRC_ALPHA),
+        ONE_MINUS_SRC_COLOR(GL11.GL_ONE_MINUS_SRC_COLOR),
+        SRC_ALPHA(GL11.GL_SRC_ALPHA),
+        SRC_ALPHA_SATURATE(GL11.GL_SRC_ALPHA_SATURATE),
+        SRC_COLOR(GL11.GL_SRC_COLOR),
+        ZERO(GL11.GL_ZERO)
+    }
+
+    enum class DstFactor(
+        val value: Int
+    ) {
+        CONSTANT_ALPHA(GL11.GL_SRC_ALPHA),
+        CONSTANT_COLOR(GL11.GL_SRC_COLOR),
+        DST_ALPHA(GL11.GL_DST_ALPHA),
+        DST_COLOR(GL11.GL_DST_COLOR),
+        ONE(GL11.GL_ONE),
+        ONE_MINUS_CONSTANT_ALPHA(GL11.GL_ONE_MINUS_SRC_ALPHA),
+        ONE_MINUS_CONSTANT_COLOR(GL11.GL_ONE_MINUS_SRC_COLOR),
+        ONE_MINUS_DST_ALPHA(GL11.GL_ONE_MINUS_DST_ALPHA),
+        ONE_MINUS_DST_COLOR(GL11.GL_ONE_MINUS_DST_COLOR),
+        ONE_MINUS_SRC_ALPHA(GL11.GL_ONE_MINUS_SRC_ALPHA),
+        ONE_MINUS_SRC_COLOR(GL11.GL_ONE_MINUS_SRC_COLOR),
+        SRC_ALPHA(GL11.GL_SRC_ALPHA),
+        SRC_COLOR(GL11.GL_SRC_COLOR),
+        ZERO(GL11.GL_ZERO)
+    }
+
+    enum class DepthState(
+        val value: Int
+    ) {
+        ALWAYS(GL11.GL_ALWAYS),
+        EQUAL(GL11.GL_EQUAL),
+        GEQUAL(GL11.GL_GEQUAL),
+        GREATER(GL11.GL_GREATER),
+        LEQUAL(GL11.GL_LEQUAL),
+        LESS(GL11.GL_LESS),
+        NEVER(GL11.GL_NEVER),
+        NOTEQUAL(GL11.GL_NOTEQUAL)
     }
 }

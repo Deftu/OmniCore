@@ -1,0 +1,5 @@
+com.mojang.blaze3d.platform.GlStateManager net.minecraft.client.renderer.GlStateManager
+net.minecraft.client.renderer.Matrix4f org.lwjgl.util.vector.Matrix4f
+net.minecraft.client.renderer.Matrix3f org.lwjgl.util.vector.Matrix3f
+net.minecraft.client.renderer.Vector4f org.lwjgl.util.vector.Vector4f
+net.minecraft.client.texture.TextureUtil net.minecraft.client.renderer.texture.TextureUtil

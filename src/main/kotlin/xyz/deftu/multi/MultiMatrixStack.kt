@@ -9,23 +9,11 @@ import net.minecraft.client.util.math.MatrixStack
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
-//#if MC>=11500
-import com.mojang.blaze3d.platform.GlStateManager
-//#else
-//$$ import net.minecraft.client.renderer.GlStateManager
-//#endif
-
 //#if MC>=11903
 import org.joml.Quaternionf
-import org.joml.Matrix3f
-import org.joml.Matrix4f
 //#elseif MC>=11400
 //$$ import net.minecraft.util.math.Quaternion
-//$$ import net.minecraft.util.math.Matrix4f
-//$$ import net.minecraft.util.math.Matrix3f
 //#else
-//$$ import org.lwjgl.util.vector.Matrix4f
-//$$ import org.lwjgl.util.vector.Matrix3f
 //$$ import org.lwjgl.util.vector.Vector3f
 //#endif
 
@@ -42,6 +30,9 @@ import org.joml.Matrix4f
 import java.util.*
 import kotlin.math.*
 import org.lwjgl.opengl.GL11
+import com.mojang.blaze3d.platform.GlStateManager
+import org.joml.Matrix4f
+import org.joml.Matrix3f
 
 class MultiMatrixStack private constructor(
     private val stack: Deque<StackEntry>
