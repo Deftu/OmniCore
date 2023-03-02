@@ -15,6 +15,10 @@ object MultiRenderSystem {
         RenderSystem.setShader(supplier)
     }
 
+    fun removeShader() {
+        setShader { null }
+    }
+
     fun setShaderTexture(index: Int, texture: Identifier) {
         RenderSystem.setShaderTexture(index, texture)
     }
