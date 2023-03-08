@@ -64,7 +64,11 @@ class MultiTextureManager(
     fun registerImageTexture(path: Identifier, texture: BufferedImage) = apply {
         val stream = ByteArrayOutputStream()
         ImageIO.write(texture, "png", stream)
-        registerTexture(path, getReleasedDynamicTexture(stream.toByteArray().inputStream()))
+        if (!MultiClient.isRunningOnMainThread) {
+            MultiClient.execute {
+                registerTexture(path, getReleasedDynamicTexture(stream.toByteArray().inputStream()))
+            }
+        }
     }
 
     fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture) = apply {

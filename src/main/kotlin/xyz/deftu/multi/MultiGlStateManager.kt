@@ -12,8 +12,13 @@ import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL14
 import com.mojang.blaze3d.platform.GlStateManager
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL30
 
 object MultiGlStateManager {
+
+    // State Management
+
     @JvmStatic fun color4f(
         red: Float,
         green: Float,
@@ -274,12 +279,16 @@ object MultiGlStateManager {
         setActiveTexture(prevActiveTexture)
     }
 
+    // Environment Utilities
+
     @JvmStatic fun isGL21Available() =
         //#if MC>=11502
         true
         //#else
         //$$ OpenGlHelper.openGL21
         //#endif
+
+    // Shader Utilities
 
     @JvmStatic fun createProgram(): Int {
         //#if MC>=11700

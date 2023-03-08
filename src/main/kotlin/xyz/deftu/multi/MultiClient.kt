@@ -10,6 +10,13 @@ object MultiClient {
     @JvmStatic
     val isRunningOnMac: Boolean
         get() = MinecraftClient.IS_SYSTEM_MAC
+    @JvmStatic
+    val isRunningOnMainThread: Boolean
+        //#if MC>=11500
+        get() = getInstance().isOnThread
+        //#else
+        //$$ get() = getInstance().isCallingFromMinecraftThread()
+        //#endif
 
     @JvmStatic
     fun getInstance() = MinecraftClient.getInstance()
@@ -33,6 +40,16 @@ object MultiClient {
     fun getOptions() = getInstance().options
     @JvmStatic
     fun getTextureManager() = MultiTextureManager.INSTANCE
+
+    @JvmStatic fun execute(runnable: () -> Unit) {
+        //#if MC>=11502
+        getInstance().execute(runnable)
+        //#else
+        //$$ getInstance().addScheduledTask(runnable::invoke)
+        //#endif
+    }
+
+    @JvmStatic fun execute(runnable: Runnable) = execute(runnable::run)
 
     @JvmStatic
     fun getTime(): Long {
