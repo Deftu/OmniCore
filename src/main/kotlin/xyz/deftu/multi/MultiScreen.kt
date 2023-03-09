@@ -69,15 +69,15 @@ abstract class MultiScreen(
     open fun handleKeyPress(
         code: Int,
         char: Char,
-        modifiers: Int
+        modifiers: MultiKeyboard.KeyboardModifiers
     ) {
         //#if MC>=11500
         if (code != 0) {
-            super.keyPressed(code, 0, modifiers)
+            super.keyPressed(code, 0, modifiers.toInt())
         }
 
         if (char != 0.toChar()) {
-            super.charTyped(char, modifiers)
+            super.charTyped(char, modifiers.toInt())
         }
         //#else
         //$$ try {
@@ -211,12 +211,12 @@ abstract class MultiScreen(
     //#endif
 
     final override fun keyPressed(code: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyPress(code, 0.toChar(), modifiers)
+        handleKeyPress(code, 0.toChar(), modifiers.toKeyboardModifiers())
         return false
     }
 
     final override fun charTyped(char: Char, modifiers: Int): Boolean {
-        handleKeyPress(0, char, modifiers)
+        handleKeyPress(0, char, modifiers.toKeyboardModifiers())
         return false
     }
 
