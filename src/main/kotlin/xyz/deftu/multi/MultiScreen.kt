@@ -282,7 +282,7 @@ abstract class MultiScreen(
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
-    //$$     handleKeyPress(keyCode, typedChar, 0)
+    //$$     handleKeyPress(keyCode, typedChar, MultiKeyboard.getModifiers())
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, mouseBtn: Int) {
