@@ -2,11 +2,11 @@ package xyz.deftu.multi
 
 //#if MC>=11600
 import net.minecraft.client.texture.NativeImage
-import java.awt.Color
-
 //#else
 //$$ import java.awt.image.BufferedImage
 //#endif
+
+import java.awt.Color
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
