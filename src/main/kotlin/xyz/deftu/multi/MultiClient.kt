@@ -39,6 +39,8 @@ object MultiClient {
     @JvmStatic
     fun getOptions() = getInstance().options
     @JvmStatic
+    fun getCurrentScreen() = getInstance().currentScreen
+    @JvmStatic
     fun getTextureManager() = MultiTextureManager.INSTANCE
 
     @JvmStatic fun execute(runnable: () -> Unit) {

@@ -136,7 +136,7 @@ class MultiFramebuffer(
         if (depth) GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, depthAttachment, 0)
         checkStatus()
         clear()
-        push()
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
     }
 
     private fun setupColorAttachment() {
@@ -227,7 +227,7 @@ class MultiFramebuffer(
     }
 
     fun disableDepth() {
-        framebufferRenderbuffer(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_RENDERBUFFER, 0)
+        GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL11.GL_TEXTURE_2D, 0, 0)
     }
 
     fun toggleDepth(depth: Boolean) {
@@ -245,13 +245,13 @@ class MultiFramebuffer(
 
     fun enableStencil() {
         //#if MC<11500
-        // TODO
+        //$$ // TODO
         //#endif
     }
 
     fun disableStencil() {
         //#if MC<11500
-        // TODO
+        //$$ // TODO
         //#endif
     }
 
@@ -265,7 +265,7 @@ class MultiFramebuffer(
 
     fun toggleStencil() {
         //#if MC<11500
-        // TODO
+        //$$ // TODO
         //#endif
     }
 

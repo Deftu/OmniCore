@@ -19,6 +19,7 @@ loom {
 
 dependencies {
     implementation(kotlin("reflect"))
+    modImplementation("xyz.deftu:TextCraft-${mcData.versionStr}-${mcData.loader.name}:1.0.0")
 }
 
 publishing.repositories {
