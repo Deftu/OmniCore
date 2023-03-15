@@ -82,7 +82,7 @@ class MultiTessellator(
 
     fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat) = apply {
         //#if MC>=11700
-        val supplier = defaultShaders[format] ?: throw IllegalArgumentException("Unsupported vertex format $format - no default shader")
+        val supplier = defaultShaders[format] ?: error("Unsupported vertex format $format - no default shader")
         MultiRenderSystem.setShader(supplier)
         //#endif
         beginWithActiveShader(mode, format)
