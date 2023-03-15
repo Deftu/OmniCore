@@ -42,6 +42,8 @@ class MultiTessellator(
             //#else
             //$$ MultiTessellator(getTessellator().worldRenderer)
             //#endif
+        @JvmStatic fun getWithBuffer(buffer: BufferBuilder) = MultiTessellator(buffer)
+        @JvmStatic fun getFromSize(size: Int) = getWithBuffer(BufferBuilder(size))
 
         //#if MC>=11700
         @JvmStatic val defaultShaders = mapOf<VertexFormat, Supplier<ShaderProgram?>>(
