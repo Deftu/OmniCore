@@ -1,5 +1,11 @@
 package xyz.deftu.multi.shader
 
+//#if MC<=11202
+//$$ import net.minecraft.client.renderer.OpenGlHelper;
+//#endif
+
+import com.mojang.blaze3d.platform.GlStateManager
+
 interface MultiShader {
     companion object {
         @JvmStatic fun fromLegacyShader(
@@ -24,6 +30,108 @@ interface MultiShader {
             name: String,
             extension: String
         ) = MultiShader::class.java.getResource("/shaders/$name.$extension")?.readText() ?: throw IllegalArgumentException("Shader $name not found")
+
+        // Utilities
+
+        @JvmStatic fun createProgram(): Int {
+            //#if MC>=11700
+            return GlStateManager.glCreateProgram()
+            //#elseif MC>=11502
+            //$$ return GlStateManager.createProgram()
+            //#else
+            //$$ return OpenGlHelper.glCreateProgram()
+            //#endif
+        }
+
+        @JvmStatic fun linkProgram(program: Int) {
+            //#if MC>=11700
+            GlStateManager.glLinkProgram(program)
+            //#elseif MC>=11502
+            //$$ GlStateManager.linkProgram(program)
+            //#else
+            //$$ OpenGlHelper.glLinkProgram(program)
+            //#endif
+        }
+
+        @JvmStatic fun getProgram(program: Int, pname: Int): Int {
+            //#if MC>=11700
+            return GlStateManager.glGetProgrami(program, pname)
+            //#elseif MC>=11502
+            //$$ return GlStateManager.getProgram(program, pname)
+            //#else
+            //$$ return OpenGlHelper.glGetProgrami(program, pname)
+            //#endif
+        }
+
+        @JvmStatic fun getProgramInfoLog(program: Int, maxLength: Int): String {
+            //#if MC>=11700
+            return GlStateManager.glGetProgramInfoLog(program, maxLength)
+            //#elseif MC>=11502
+            //$$ return GlStateManager.getProgramInfoLog(program, maxLength)
+            //#else
+            //$$ return OpenGlHelper.glGetProgramInfoLog(program, maxLength)
+            //#endif
+        }
+
+        @JvmStatic fun useProgram(program: Int) {
+            //#if MC>=11700
+            GlStateManager._glUseProgram(program)
+            //#elseif MC>=11502
+            //$$ GlStateManager.useProgram(program)
+            //#else
+            //$$ OpenGlHelper.glUseProgram(program)
+            //#endif
+        }
+
+        @JvmStatic fun createShader(type: Int): Int {
+            //#if MC>=11700
+            return GlStateManager.glCreateShader(type)
+            //#elseif MC>=11502
+            //$$ return GlStateManager.createShader(type)
+            //#else
+            //$$ return OpenGlHelper.glCreateShader(type)
+            //#endif
+        }
+
+        @JvmStatic fun compileShader(shader: Int) {
+            //#if MC>=11700
+            GlStateManager.glCompileShader(shader)
+            //#elseif MC>=11502
+            //$$ GlStateManager.compileShader(shader)
+            //#else
+            //$$ OpenGlHelper.glCompileShader(shader)
+            //#endif
+        }
+
+        @JvmStatic fun getShader(shader: Int, pname: Int): Int {
+            //#if MC>=11700
+            return GlStateManager.glGetShaderi(shader, pname)
+            //#elseif MC>=11502
+            //$$ return GlStateManager.getShader(shader, pname)
+            //#else
+            //$$ return OpenGlHelper.glGetShaderi(shader, pname)
+            //#endif
+        }
+
+        @JvmStatic fun getShaderInfoLog(shader: Int, maxLength: Int): String {
+            //#if MC>=11700
+            return GlStateManager.glGetShaderInfoLog(shader, maxLength)
+            //#elseif MC>=11502
+            //$$ return GlStateManager.getShaderInfoLog(shader, maxLength)
+            //#else
+            //$$ return OpenGlHelper.glGetShaderInfoLog(shader, maxLength)
+            //#endif
+        }
+
+        @JvmStatic fun attachShader(program: Int, shader: Int) {
+            //#if MC>=11700
+            GlStateManager.glAttachShader(program, shader)
+            //#elseif MC>=11502
+            //$$ GlStateManager.attachShader(program, shader)
+            //#else
+            //$$ OpenGlHelper.glAttachShader(program, shader)
+            //#endif
+        }
     }
 
     val usable: Boolean

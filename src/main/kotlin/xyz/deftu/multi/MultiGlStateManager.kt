@@ -4,21 +4,11 @@ package xyz.deftu.multi
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
-//#if MC<=11202
-//$$ import net.minecraft.client.renderer.OpenGlHelper;
-//#endif
-
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL14
 import com.mojang.blaze3d.platform.GlStateManager
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
 
 object MultiGlStateManager {
-
-    // State Management
-
     @JvmStatic fun color4f(
         red: Float,
         green: Float,
@@ -53,8 +43,10 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableTexture2D() {
-        //#if MC>=11700
-        RenderSystem.enableTexture()
+        //#if MC>=11904
+        // no-op
+        //#elseif MC>=11700
+        //$$ RenderSystem.enableTexture()
         //#elseif MC>=11400
         //$$ GlStateManager.enableTexture()
         //#else
@@ -63,8 +55,10 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableTexture2D() {
-        //#if MC>=11700
-        RenderSystem.disableTexture()
+        //#if MC>=11904
+        // no-op
+        //#elseif MC>=11700
+        //$$ RenderSystem.disableTexture()
         //#elseif MC>=11400
         //$$ GlStateManager.disableTexture()
         //#else
@@ -77,8 +71,10 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableBasicTexture2D() {
-        //#if MC>=11700
-        GlStateManager._enableTexture()
+        //#if MC>=11904
+        // no-op
+        //#elseif MC>=11700
+        //$$ GlStateManager._enableTexture()
         //#elseif MC>=11400
         //$$ GlStateManager.enableTexture()
         //#else
@@ -87,8 +83,10 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableBasicTexture2D() {
-        //#if MC>=11700
-        GlStateManager._disableTexture()
+        //#if MC>=11904
+        // no-op
+        //#elseif MC>=11700
+        //$$ GlStateManager._disableTexture()
         //#elseif MC>=11400
         //$$ GlStateManager.disableTexture()
         //#else
@@ -233,160 +231,6 @@ object MultiGlStateManager {
     @JvmStatic fun toggleLighting(enable: Boolean) {
         //#if MC<11700
         //$$ if (enable) enableLighting() else disableLighting()
-        //#endif
-    }
-
-    @JvmStatic fun getActiveTexture() =
-        GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
-
-    @JvmStatic fun setActiveTexture(id: Int) {
-        //#if MC>=11700
-        GlStateManager._activeTexture(id)
-        //#elseif MC>=11400
-        //$$ GlStateManager.activeTexture(id)
-        //#else
-        //$$ GlStateManager.setActiveTexture(id)
-        //#endif
-    }
-
-    @JvmStatic fun bindTexture(id: Int) {
-        //#if MC>=11700
-        GlStateManager._bindTexture(id)
-        //#else
-        //$$ GlStateManager.bindTexture(id)
-        //#endif
-    }
-
-    @JvmStatic fun deleteTexture(id: Int) {
-        //#if MC>=11700
-        GlStateManager._deleteTexture(id)
-        //#else
-        //$$ GlStateManager.deleteTexture(id)
-        //#endif
-    }
-
-    @JvmStatic fun configureTexture(id: Int, block: Runnable) {
-        val prevActiveTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
-        bindTexture(id)
-        block.run()
-        bindTexture(prevActiveTexture)
-    }
-
-    @JvmStatic fun configureTextureUnit(index: Int, block: Runnable) {
-        val prevActiveTexture = getActiveTexture()
-        setActiveTexture(GL13.GL_TEXTURE0 + index)
-        block.run()
-        setActiveTexture(prevActiveTexture)
-    }
-
-    // Environment Utilities
-
-    @JvmStatic fun isGL21Available() =
-        //#if MC>=11502
-        true
-        //#else
-        //$$ OpenGlHelper.openGL21
-        //#endif
-
-    // Shader Utilities
-
-    @JvmStatic fun createProgram(): Int {
-        //#if MC>=11700
-        return GlStateManager.glCreateProgram()
-        //#elseif MC>=11502
-        //$$ return GlStateManager.createProgram()
-        //#else
-        //$$ return OpenGlHelper.glCreateProgram()
-        //#endif
-    }
-
-    @JvmStatic fun linkProgram(program: Int) {
-        //#if MC>=11700
-        GlStateManager.glLinkProgram(program)
-        //#elseif MC>=11502
-        //$$ GlStateManager.linkProgram(program)
-        //#else
-        //$$ OpenGlHelper.glLinkProgram(program)
-        //#endif
-    }
-
-    @JvmStatic fun getProgram(program: Int, pname: Int): Int {
-        //#if MC>=11700
-        return GlStateManager.glGetProgrami(program, pname)
-        //#elseif MC>=11502
-        //$$ return GlStateManager.getProgram(program, pname)
-        //#else
-        //$$ return OpenGlHelper.glGetProgrami(program, pname)
-        //#endif
-    }
-
-    @JvmStatic fun getProgramInfoLog(program: Int, maxLength: Int): String {
-        //#if MC>=11700
-        return GlStateManager.glGetProgramInfoLog(program, maxLength)
-        //#elseif MC>=11502
-        //$$ return GlStateManager.getProgramInfoLog(program, maxLength)
-        //#else
-        //$$ return OpenGlHelper.glGetProgramInfoLog(program, maxLength)
-        //#endif
-    }
-
-    @JvmStatic fun useProgram(program: Int) {
-        //#if MC>=11700
-        GlStateManager._glUseProgram(program)
-        //#elseif MC>=11502
-        //$$ GlStateManager.useProgram(program)
-        //#else
-        //$$ OpenGlHelper.glUseProgram(program)
-        //#endif
-    }
-
-    @JvmStatic fun createShader(type: Int): Int {
-        //#if MC>=11700
-        return GlStateManager.glCreateShader(type)
-        //#elseif MC>=11502
-        //$$ return GlStateManager.createShader(type)
-        //#else
-        //$$ return OpenGlHelper.glCreateShader(type)
-        //#endif
-    }
-
-    @JvmStatic fun compileShader(shader: Int) {
-        //#if MC>=11700
-        GlStateManager.glCompileShader(shader)
-        //#elseif MC>=11502
-        //$$ GlStateManager.compileShader(shader)
-        //#else
-        //$$ OpenGlHelper.glCompileShader(shader)
-        //#endif
-    }
-
-    @JvmStatic fun getShader(shader: Int, pname: Int): Int {
-        //#if MC>=11700
-        return GlStateManager.glGetShaderi(shader, pname)
-        //#elseif MC>=11502
-        //$$ return GlStateManager.getShader(shader, pname)
-        //#else
-        //$$ return OpenGlHelper.glGetShaderi(shader, pname)
-        //#endif
-    }
-
-    @JvmStatic fun getShaderInfoLog(shader: Int, maxLength: Int): String {
-        //#if MC>=11700
-        return GlStateManager.glGetShaderInfoLog(shader, maxLength)
-        //#elseif MC>=11502
-        //$$ return GlStateManager.getShaderInfoLog(shader, maxLength)
-        //#else
-        //$$ return OpenGlHelper.glGetShaderInfoLog(shader, maxLength)
-        //#endif
-    }
-
-    @JvmStatic fun attachShader(program: Int, shader: Int) {
-        //#if MC>=11700
-        GlStateManager.glAttachShader(program, shader)
-        //#elseif MC>=11502
-        //$$ GlStateManager.attachShader(program, shader)
-        //#else
-        //$$ OpenGlHelper.glAttachShader(program, shader)
         //#endif
     }
 

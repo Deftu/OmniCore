@@ -11,7 +11,8 @@ package xyz.deftu.multi.shader
 //$$ import org.lwjgl.opengl.GL11
 //$$ import org.lwjgl.opengl.GL13
 //$$ import org.lwjgl.opengl.GL20
-//$$ import xyz.deftu.multi.MultiGlStateManager
+//$$ import xyz.deftu.multi.MultiRenderEnvironment
+//$$ import xyz.deftu.multi.MultiTextureManager
 //$$
 //$$ /**
 //$$  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
@@ -22,9 +23,9 @@ package xyz.deftu.multi.shader
 //$$     val frag: String,
 //$$     val blend: BlendState
 //$$ ) : MultiShader {
-//$$     private var program = MultiGlStateManager.createProgram()
-//$$     private var vertShader = MultiGlStateManager.createShader(GL20.GL_VERTEX_SHADER)
-//$$     private var fragShader = MultiGlStateManager.createShader(GL20.GL_FRAGMENT_SHADER)
+//$$     private var program = MultiShader.createProgram()
+//$$     private var vertShader = MultiShader.createShader(GL20.GL_VERTEX_SHADER)
+//$$     private var fragShader = MultiShader.createShader(GL20.GL_FRAGMENT_SHADER)
 //$$     private var samplers = mutableMapOf<String, DirectSamplerUniform>()
 //$$
 //$$     override var usable = false
@@ -43,30 +44,30 @@ package xyz.deftu.multi.shader
 //$$         for (sampler in samplers.values) doBindTexture(sampler.textureUnit, sampler.textureId)
 //$$         prevBlend = BlendState.active()
 //$$         blend.activate()
-//$$         MultiGlStateManager.useProgram(program)
+//$$         MultiShader.useProgram(program)
 //$$         bound = true
 //$$     }
 //$$
 //$$     internal fun doBindTexture(textureUnit: Int, textureId: Int) {
-//$$         MultiGlStateManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
+//$$         MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
 //$$         prevTextureBindings.computeIfAbsent(textureUnit) { GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) }
-//$$         MultiGlStateManager.bindTexture(textureId)
+//$$         MultiTextureManager.bindTexture(textureId)
 //$$     }
 //$$
 //$$     override fun unbind() {
 //$$         for ((textureUnit, textureId) in prevTextureBindings) {
-//$$             MultiGlStateManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
-//$$             MultiGlStateManager.bindTexture(textureId)
+//$$             MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
+//$$             MultiTextureManager.bindTexture(textureId)
 //$$         }
 //$$         prevTextureBindings.clear()
-//$$         MultiGlStateManager.setActiveTexture(prevActiveTexture)
+//$$         MultiTextureManager.setActiveTexture(prevActiveTexture)
 //$$         prevBlend?.activate()
-//$$         MultiGlStateManager.useProgram(0)
+//$$         MultiShader.useProgram(0)
 //$$         bound = false
 //$$     }
 //$$
 //$$     private fun getUniformLocation(name: String): Int? {
-//$$         val location = if (MultiGlStateManager.isGL21Available()) {
+//$$         val location = if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glGetUniformLocation(program, name)
 //$$         } else {
 //$$             ARBShaderObjects.glGetUniformLocationARB(program, name)
@@ -91,21 +92,21 @@ package xyz.deftu.multi.shader
 //$$
 //$$     private fun createShader() {
 //$$         for ((shader, source) in listOf(vertShader to vert, fragShader to frag)) {
-//$$             if (MultiGlStateManager.isGL21Available()) GL20.glShaderSource(shader, source) else ARBShaderObjects.glShaderSourceARB(shader, source)
-//$$             MultiGlStateManager.compileShader(shader)
+//$$             if (MultiRenderEnvironment.isGL21Available()) GL20.glShaderSource(shader, source) else ARBShaderObjects.glShaderSourceARB(shader, source)
+//$$             MultiShader.compileShader(shader)
 //$$
-//$$             if (MultiGlStateManager.getShader(shader, GL20.GL_COMPILE_STATUS) != 1) {
-//$$                 val log = MultiGlStateManager.getShaderInfoLog(shader, 32768)
+//$$             if (MultiShader.getShader(shader, GL20.GL_COMPILE_STATUS) != 1) {
+//$$                 val log = MultiShader.getShaderInfoLog(shader, 32768)
 //$$                 println("Shader compilation failed: $log")
 //$$                 return
 //$$             }
 //$$
-//$$             MultiGlStateManager.attachShader(program, shader)
+//$$             MultiShader.attachShader(program, shader)
 //$$         }
 //$$
-//$$         MultiGlStateManager.linkProgram(program)
+//$$         MultiShader.linkProgram(program)
 //$$
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glDetachShader(program, vertShader)
 //$$             GL20.glDetachShader(program, fragShader)
 //$$             GL20.glDeleteShader(vertShader)
@@ -117,13 +118,13 @@ package xyz.deftu.multi.shader
 //$$             ARBShaderObjects.glDeleteObjectARB(fragShader)
 //$$         }
 //$$
-//$$         if (MultiGlStateManager.getProgram(program, GL20.GL_LINK_STATUS) != 1) {
-//$$             val log = MultiGlStateManager.getProgramInfoLog(program, 32768)
+//$$         if (MultiShader.getProgram(program, GL20.GL_LINK_STATUS) != 1) {
+//$$             val log = MultiShader.getProgramInfoLog(program, 32768)
 //$$             println("Shader linking failed: $log")
 //$$             return
 //$$         }
 //$$
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glValidateProgram(program)
 //$$             if (GL20.glGetProgrami(program, GL20.GL_VALIDATE_STATUS) != 1) {
 //$$                 val log = GL20.glGetProgramInfoLog(program, 32768)
@@ -149,7 +150,7 @@ package xyz.deftu.multi.shader
 //$$     location: Int
 //$$ ) : DirectShaderUniform(location), IntUniform {
 //$$     override fun setValue(value: Int) {
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glUniform1i(location, value)
 //$$         } else {
 //$$             ARBShaderObjects.glUniform1iARB(location, value)
@@ -161,7 +162,7 @@ package xyz.deftu.multi.shader
 //$$     location: Int
 //$$ ) : DirectShaderUniform(location), VecUniform {
 //$$     override fun setValue(a: Float) {
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glUniform1f(location, a)
 //$$         } else {
 //$$             ARBShaderObjects.glUniform1fARB(location, a)
@@ -173,7 +174,7 @@ package xyz.deftu.multi.shader
 //$$     location: Int
 //$$ ) : DirectShaderUniform(location), Vec2Uniform {
 //$$     override fun setValue(a: Float, b: Float) {
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glUniform2f(location, a, b)
 //$$         } else {
 //$$             ARBShaderObjects.glUniform2fARB(location, a, b)
@@ -185,7 +186,7 @@ package xyz.deftu.multi.shader
 //$$     location: Int
 //$$ ) : DirectShaderUniform(location), Vec3Uniform {
 //$$     override fun setValue(a: Float, b: Float, c: Float) {
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glUniform3f(location, a, b, c)
 //$$         } else {
 //$$             ARBShaderObjects.glUniform3fARB(location, a, b, c)
@@ -197,7 +198,7 @@ package xyz.deftu.multi.shader
 //$$     location: Int
 //$$ ) : DirectShaderUniform(location), Vec4Uniform {
 //$$     override fun setValue(a: Float, b: Float, c: Float, d: Float) {
-//$$         if (MultiGlStateManager.isGL21Available()) {
+//$$         if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glUniform4f(location, a, b, c, d)
 //$$         } else {
 //$$             ARBShaderObjects.glUniform4fARB(location, a, b, c, d)
@@ -216,33 +217,33 @@ package xyz.deftu.multi.shader
         //#endif
 //$$         when (matrix.size) {
             //#if MC>=11400
-            //$$ 4 -> if (MultiGlStateManager.isGL21Available()) {
+            //$$ 4 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix2fv(location, false, matrix)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix2fvARB(location, false, matrix)
             //$$ }
-            //$$ 9 -> if (MultiGlStateManager.isGL21Available()) {
+            //$$ 9 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix3fv(location, false, matrix)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix3fvARB(location, false, matrix)
             //$$ }
-            //$$ 16 -> if (MultiGlStateManager.isGL21Available()) {
+            //$$ 16 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix4fv(location, false, matrix)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix4fvARB(location, false, matrix)
             //$$ }
             //#else
-            //$$ 4 -> if (MultiGlStateManager.isGL21Available()) {
+            //$$ 4 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix2(location, false, buffer)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix2ARB(location, false, buffer)
             //$$ }
-            //$$ 9 -> if (MultiGlStateManager.isGL21Available()) {
+            //$$ 9 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix3(location, false, buffer)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix3ARB(location, false, buffer)
             //$$ }
-            //$$ 16 -> if (MultiGlStateManager.isGL21Available()) {
+            //$$ 16 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix4(location, false, buffer)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix4ARB(location, false, buffer)

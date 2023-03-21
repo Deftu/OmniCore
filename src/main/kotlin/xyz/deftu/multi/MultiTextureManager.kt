@@ -14,7 +14,10 @@ import net.minecraft.client.texture.*
 //#endif
 
 import com.mojang.blaze3d.platform.TextureUtil
+import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.util.Identifier
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.Closeable
@@ -34,6 +37,49 @@ class MultiTextureManager(
         }
 
         @JvmStatic fun get() = MultiClient.getInstance().textureManager
+
+        @JvmStatic fun getActiveTexture() =
+            GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
+
+        @JvmStatic fun setActiveTexture(id: Int) {
+            //#if MC>=11700
+            GlStateManager._activeTexture(id)
+            //#elseif MC>=11400
+            //$$ GlStateManager.activeTexture(id)
+            //#else
+            //$$ GlStateManager.setActiveTexture(id)
+            //#endif
+        }
+
+        @JvmStatic fun bindTexture(id: Int) {
+            //#if MC>=11700
+            GlStateManager._bindTexture(id)
+            //#else
+            //$$ GlStateManager.bindTexture(id)
+            //#endif
+        }
+
+        @JvmStatic fun deleteTexture(id: Int) {
+            //#if MC>=11700
+            GlStateManager._deleteTexture(id)
+            //#else
+            //$$ GlStateManager.deleteTexture(id)
+            //#endif
+        }
+
+        @JvmStatic fun configureTexture(id: Int, block: Runnable) {
+            val prevActiveTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
+            bindTexture(id)
+            block.run()
+            bindTexture(prevActiveTexture)
+        }
+
+        @JvmStatic fun configureTextureUnit(index: Int, block: Runnable) {
+            val prevActiveTexture = getActiveTexture()
+            setActiveTexture(GL13.GL_TEXTURE0 + index)
+            block.run()
+            setActiveTexture(prevActiveTexture)
+        }
     }
 
     fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
@@ -78,7 +124,7 @@ class MultiTextureManager(
     }
 
     fun deleteTexture(id: Int) = apply {
-        MultiGlStateManager.deleteTexture(id)
+        MultiTextureManager.deleteTexture(id)
     }
 }
 
@@ -140,7 +186,7 @@ class ReleasedDynamicTexture(
             //#endif
 
             //#if MC>=11400
-            MultiGlStateManager.configureTexture(allocGlId()) {
+            MultiTextureManager.configureTexture(allocGlId()) {
                 data?.upload(0, 0, 0, false)
             }
             data = null

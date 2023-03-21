@@ -117,7 +117,7 @@ class MultiTessellator(
         //$$ val wantEnabledStates = getDesiredTextureUnitState(currentVertexFormat!!)
         //$$ val wasEnabledStates = BooleanArray(wantEnabledStates.size)
         //$$ for (i in wasEnabledStates.indices) {
-        //$$     MultiGlStateManager.configureTextureUnit(i) {
+        //$$     MultiTextureManager.configureTextureUnit(i) {
         //$$         val isEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D).also { wasEnabledStates[i] = it }
         //$$         val wantEnabled = wantEnabledStates[i]
         //$$         if (isEnabled != wantEnabled) {
@@ -140,9 +140,9 @@ class MultiTessellator(
         //$$     }
         //$$
         //$$     if (wasEnabledStates[i]) {
-        //$$         MultiGlStateManager.configureTextureUnit(i, MultiGlStateManager::enableBasicTexture2D)
+        //$$         MultiTextureManager.configureTextureUnit(i, MultiGlStateManager::enableBasicTexture2D)
         //$$     } else {
-        //$$         MultiGlStateManager.configureTextureUnit(i, MultiGlStateManager::disableBasicTexture2D)
+        //$$         MultiTextureManager.configureTextureUnit(i, MultiGlStateManager::disableBasicTexture2D)
         //$$     }
         //$$ }
         //#endif

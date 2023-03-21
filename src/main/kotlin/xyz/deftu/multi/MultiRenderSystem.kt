@@ -28,7 +28,7 @@ object MultiRenderSystem {
         //#if MC>=11700
         setShaderTexture(index, texture)
         //#else
-        //$$ MultiGlStateManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
+        //$$ MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
         //$$ MultiClient.getTextureManager().bindTexture(texture)
         //#endif
     }

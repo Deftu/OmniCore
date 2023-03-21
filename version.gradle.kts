@@ -9,19 +9,7 @@ plugins {
     id("xyz.deftu.gradle.tools.minecraft.releases")
 }
 
-loom {
-    runConfigs {
-        "client" {
-            isIdeConfigGenerated = true
-        }
-    }
-}
-
 dependencies {
     implementation(kotlin("reflect"))
-    modImplementation("xyz.deftu:TextCraft-${mcData.versionStr}-${mcData.loader.name}:1.0.0")
-}
-
-publishing.repositories {
-    mavenLocal()
+    modImplementation("xyz.deftu:TextCraft-${mcData.versionStr}-${mcData.loader.name}:1.0.1")
 }

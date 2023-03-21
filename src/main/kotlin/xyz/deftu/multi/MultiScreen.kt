@@ -175,15 +175,14 @@ abstract class MultiScreen(
     }
 
     open fun handleBackgroundRender(
-        stack: MultiMatrixStack,
-        tint: Int
+        stack: MultiMatrixStack
     ) {
         //#if MC>=11600
-        super.renderBackground(stack.toVanillaStack(), tint)
+        super.renderBackground(stack.toVanillaStack())
         //#elseif MC>=11500
-        //$$ super.renderBackground(tint)
+        //$$ super.renderBackground()
         //#else
-        //$$ super.drawWorldBackground(tint)
+        //$$ super.drawDefaultBackground()
         //#endif
     }
 
@@ -262,12 +261,12 @@ abstract class MultiScreen(
     }
 
     //#if MC>=11600
-    final override fun renderBackground(stack: MatrixStack, tint: Int) {
-        handleBackgroundRender(MultiMatrixStack(stack), tint)
+    final override fun renderBackground(stack: MatrixStack) {
+        handleBackgroundRender(MultiMatrixStack(stack))
     }
     //#else
-    //$$ final override fun renderBackground(tint: Int) {
-    //$$     handleBackgroundRender(MultiMatrixStack(), tint)
+    //$$ final override fun renderBackground() {
+    //$$     handleBackgroundRender(MultiMatrixStack())
     //$$ }
     //#endif
 
@@ -318,7 +317,7 @@ abstract class MultiScreen(
     //$$ }
     //$$
     //$$ final override fun drawWorldBackground(tint: Int) {
-    //$$     handleBackgroundRender(MultiMatrixStack(), tint)
+    //$$     handleBackgroundRender(MultiMatrixStack())
     //$$ }
     //$$
     //$$ final override fun doesGuiPauseGame() = doesPauseGame()

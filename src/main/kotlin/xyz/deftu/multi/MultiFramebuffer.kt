@@ -242,31 +242,12 @@ class MultiFramebuffer(
         toggleDepth(GL30.glGetFramebufferAttachmentParameteri(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE) != 0)
     }
 
-
-    fun enableStencil() {
-        //#if MC<11500
-        //$$ // TODO
-        //#endif
+    fun bindTexture() {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorAttachment)
     }
 
-    fun disableStencil() {
-        //#if MC<11500
-        //$$ // TODO
-        //#endif
-    }
-
-    fun toggleStencil(stencil: Boolean) {
-        if (stencil) {
-            enableStencil()
-        } else {
-            disableStencil()
-        }
-    }
-
-    fun toggleStencil() {
-        //#if MC<11500
-        //$$ // TODO
-        //#endif
+    fun unbindTexture() {
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0)
     }
 
     fun setTexFilter(filter: Int) {
