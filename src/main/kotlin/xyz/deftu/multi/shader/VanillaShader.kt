@@ -1,6 +1,6 @@
-//#if MC>=11700
 package xyz.deftu.multi.shader
 
+//#if MC>=11700
 //#if MC>=11903
 import xyz.deftu.multi.DummyResourcePack
 //#endif
@@ -20,6 +20,10 @@ import net.minecraft.util.Identifier
 import org.apache.commons.codec.digest.DigestUtils
 import xyz.deftu.multi.MultiRenderSystem
 import com.google.common.collect.ImmutableMap
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import xyz.deftu.multi.MultiCraft
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
@@ -31,50 +35,110 @@ internal class VanillaShader(
 ) : MultiShader {
     companion object {
         private val DEBUG: Boolean
-            get() = System.getProperty("multicraft.shader.debug")?.toBoolean() ?: false
+            get() = MultiCraft.debug || (System.getProperty("multicraft.shader.debug")?.toBoolean() ?: false)
+        private val gson by lazy { // Lazy because we don't want to load it if not necessary
+            GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+        }
 
         fun fromLegacy(
+            name: String,
             vert: String,
             frag: String,
             blend: BlendState
         ): VanillaShader {
             val transformer = ShaderTransformer()
 
-            val transformedVert = transformer.transform(vert)
-            val transformedFrag = transformer.transform(frag)
+            // If it's just a pre-existing shader, we don't need to transform it
+            val isExistingVert = vert.startsWith("#version")
+            val isExistingFrag = frag.startsWith("#version")
+            val transformedVert = if (!isExistingVert) transformer.transform(vert) else vert
+            val transformedFrag = if (!isExistingFrag) transformer.transform(frag) else frag
 
-            val json = """
-                {
-                    "blend": {
-                        "func": "${blend.equation.mcStr}",
-                        "srcrgb": "${blend.srcRgb.mcStr}",
-                        "dstrgb": "${blend.dstRgb.mcStr}",
-                        "srcalpha": "${blend.srcAlpha.mcStr}",
-                        "dstalpha": "${blend.dstAlpha.mcStr}"
-                    },
-                    "vertex": "${DigestUtils.sha1Hex(transformedVert).lowercase()}",
-                    "fragment": "${DigestUtils.sha1Hex(transformedFrag).lowercase()}",
-                    "attributes": [ ${transformer.attributes.joinToString { "\"$it\"" }} ],
-                    "samplers": [
-                        ${transformer.samplers.joinToString(",\n") { "{ \"name\": \"$it\" }" }}
-                    ],
-                    "uniforms": [
-                        ${transformer.uniforms.map { (name, type) -> """
-                            { "name": "$name", "type": "${type.typeName}", "count": ${type.default.size}, "values": [ ${type.default.joinToString()} ] }
-                        """.trimIndent() }.joinToString(",\n")}
-                    ]
+            val json = JsonObject()
+
+            val blendJson = JsonObject()
+            blendJson.addProperty("func", blend.equation.mcStr)
+            blendJson.addProperty("srcrgb", blend.srcRgb.mcStr)
+            blendJson.addProperty("dstrgb", blend.dstRgb.mcStr)
+            if (blend.separateSrc)
+                blendJson.addProperty("srcalpha", blend.srcAlpha.mcStr)
+            if (blend.separateDst)
+                blendJson.addProperty("dstalpha", blend.dstAlpha.mcStr)
+            json.add("blend", blendJson)
+
+            json.addProperty("vertex", if (isExistingVert) vert else DigestUtils.sha1Hex(transformedVert).lowercase())
+            json.addProperty("fragment", if (isExistingFrag) frag else DigestUtils.sha1Hex(transformedFrag).lowercase())
+
+            val attributesJson = JsonArray()
+            transformer.attributes.forEach { attributesJson.add(it) }
+            json.add("attributes", attributesJson)
+
+            val samplersJson = JsonArray()
+            for (sampler in transformer.samplers) {
+                val samplerJson = JsonObject()
+                samplerJson.addProperty("name", sampler)
+                samplersJson.add(samplerJson)
+            }
+            json.add("samplers", samplersJson)
+
+            val uniformsJson = JsonArray()
+            for ((name, type) in transformer.uniforms) {
+                val uniformJson = JsonObject()
+                uniformJson.addProperty("name", name)
+                uniformJson.addProperty("type", type.typeName)
+                uniformJson.addProperty("count", type.default.size)
+                val valuesJson = JsonArray()
+                for (value in type.default) {
+                    valuesJson.add(value)
                 }
-            """.trimIndent()
+                uniformJson.add("values", valuesJson)
+                uniformsJson.add(uniformJson)
+            }
+            json.add("uniforms", uniformsJson)
+
+            // Ignore this
+            // val json = """
+            //     {
+            //         "blend": {
+            //             "func": "${blend.equation.mcStr}",
+            //             "srcrgb": "${blend.srcRgb.mcStr}",
+            //             "dstrgb": "${blend.dstRgb.mcStr}",
+            //             "srcalpha": "${blend.srcAlpha.mcStr}",
+            //             "dstalpha": "${blend.dstAlpha.mcStr}"
+            //         },
+            //         "vertex": "${DigestUtils.sha1Hex(transformedVert).lowercase()}",
+            //         "fragment": "${DigestUtils.sha1Hex(transformedFrag).lowercase()}",
+            //         "attributes": [ ${transformer.attributes.joinToString { "\"$it\"" }} ],
+            //         "samplers": [
+            //             ${transformer.samplers.joinToString(",\n") { "{ \"name\": \"$it\" }" }}
+            //         ],
+            //         "uniforms": [
+            //             ${transformer.uniforms.map { (name, type) -> """
+            //                 { "name": "$name", "type": "${type.typeName}", "count": ${type.default.size}, "values": [ ${type.default.joinToString()} ] }
+            //             """.trimIndent() }.joinToString(",\n")}
+            //         ]
+            //     }
+            // """.trimIndent()
 
             if (DEBUG) {
-                println(transformedVert)
-                println(transformedFrag)
-                println(json)
+                println("""
+                    JSON:
+                    ${gson.toJson(json)}
+                    
+                    Vertex:
+                    $transformedVert
+                    
+                    Fragment:
+                    $transformedFrag
+                """.trimIndent())
             }
 
+            val stringified = json.toString()
             val factory = { id: Identifier ->
                 val content = when (id.path.substringAfter(".")) {
-                    "json" -> json
+                    "json" -> stringified
                     "vsh" -> transformedVert
                     "fsh" -> transformedFrag
                     else -> throw IllegalArgumentException("Unknown shader resource type: ${id.path}")
@@ -90,8 +154,8 @@ internal class VanillaShader(
 
             val vertexFormat = VertexFormat(ImmutableMap.copyOf(transformer.attributes.associateWith { VertexFormats.POSITION_ELEMENT }))
 
-            val name = DigestUtils.sha1Hex(json).lowercase()
-            return VanillaShader(ShaderProgram(factory, name, vertexFormat), blend)
+            val shaderName = name.ifEmpty { DigestUtils.sha1Hex(stringified).lowercase() }
+            return VanillaShader(ShaderProgram(factory, shaderName, vertexFormat), blend)
         }
     }
 
