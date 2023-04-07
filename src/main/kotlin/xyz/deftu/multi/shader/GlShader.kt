@@ -19,6 +19,7 @@ package xyz.deftu.multi.shader
 //$$  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
 //$$  */
 //$$ class GlShader(
+//$$     val name: String,
 //$$     val vert: String,
 //$$     val frag: String,
 //$$     val blend: BlendState
@@ -66,6 +67,20 @@ package xyz.deftu.multi.shader
 //$$         bound = false
 //$$     }
 //$$
+//$$     internal inline fun withProgramBound(block: () -> Unit) {
+//$$         if (bound) {
+//$$             block()
+//$$         } else {
+//$$             val previousProgram = MultiShader.getCurrentProgram()
+//$$             try {
+//$$                 MultiShader.useProgram(program)
+//$$                 block()
+//$$             } finally {
+//$$                 MultiShader.useProgram(previousProgram)
+//$$             }
+//$$         }
+//$$     }
+//$$
 //$$     private fun getUniformLocation(name: String): Int? {
 //$$         val location = if (MultiRenderEnvironment.isGL21Available()) {
 //$$             GL20.glGetUniformLocation(program, name)
@@ -97,7 +112,7 @@ package xyz.deftu.multi.shader
 //$$
 //$$             if (MultiShader.getShader(shader, GL20.GL_COMPILE_STATUS) != 1) {
 //$$                 val log = MultiShader.getShaderInfoLog(shader, 32768)
-//$$                 println("Shader compilation failed: $log")
+//$$                 println("Shader compilation failed ($name): $log")
 //$$                 return
 //$$             }
 //$$
@@ -260,6 +275,12 @@ package xyz.deftu.multi.shader
 //$$     private val shader: GlShader,
 //$$ ) : DirectShaderUniform(location), SamplerUniform {
 //$$     var textureId: Int = 0
+//$$
+//$$     init {
+//$$         shader.withProgramBound {
+//$$             DirectIntUniform(location).setValue(textureUnit)
+//$$         }
+//$$     }
 //$$
 //$$     override fun setValue(textureId: Int) {
 //$$         this.textureId = textureId
