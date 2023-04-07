@@ -45,6 +45,8 @@ data class BlendState(
     }
 
     val separate = srcRgb != srcAlpha || dstRgb != dstAlpha
+    val separateSrc = srcRgb != srcAlpha
+    val separateDst = dstRgb != dstAlpha
 
     //#if MC>=11700
     private inner class VanillaBlendState : GlBlendState {
