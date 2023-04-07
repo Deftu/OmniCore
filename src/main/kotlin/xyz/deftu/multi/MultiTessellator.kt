@@ -30,6 +30,7 @@ import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormatElement
+import java.util.IdentityHashMap
 
 class MultiTessellator(
     private val buffer: BufferBuilder
@@ -46,19 +47,26 @@ class MultiTessellator(
         @JvmStatic fun getFromSize(size: Int) = getWithBuffer(BufferBuilder(size))
 
         //#if MC>=11700
-        @JvmStatic val defaultShaders = mapOf<VertexFormat, Supplier<ShaderProgram?>>(
-            net.minecraft.client.render.VertexFormats.LINES to referenceToSupplier(GameRenderer::getRenderTypeLinesProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT to referenceToSupplier(GameRenderer::getParticleProgram),
-            net.minecraft.client.render.VertexFormats.POSITION to referenceToSupplier(GameRenderer::getPositionProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_COLOR to referenceToSupplier(GameRenderer::getPositionColorProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT to referenceToSupplier(GameRenderer::getPositionColorLightmapProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE to referenceToSupplier(GameRenderer::getPositionTexProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE to referenceToSupplier(GameRenderer::getPositionColorTexProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR to referenceToSupplier(GameRenderer::getPositionTexColorProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
-            net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram)
-        )
+        @JvmStatic val defaultShaders = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
+
+        init {
+            mapOf(
+                net.minecraft.client.render.VertexFormats.LINES to referenceToSupplier(GameRenderer::getRenderTypeLinesProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT to referenceToSupplier(GameRenderer::getParticleProgram),
+                net.minecraft.client.render.VertexFormats.POSITION to referenceToSupplier(GameRenderer::getPositionProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_COLOR to referenceToSupplier(GameRenderer::getPositionColorProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT to referenceToSupplier(GameRenderer::getPositionColorLightmapProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE to referenceToSupplier(GameRenderer::getPositionTexProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE to referenceToSupplier(GameRenderer::getPositionColorTexProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR to referenceToSupplier(GameRenderer::getPositionTexColorProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
+                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram),
+                net.minecraft.client.render.VertexFormats.BLIT_SCREEN to Supplier { MultiClient.getInstance().gameRenderer.blitScreenProgram }
+            ).forEach { (format, supplier) ->
+                defaultShaders[format] = supplier
+            }
+        }
 
         private fun <T> referenceToSupplier(reference: KFunction<T>): Supplier<T> {
             return Supplier { reference.call() }
