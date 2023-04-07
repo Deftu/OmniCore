@@ -5,26 +5,30 @@ package xyz.deftu.multi.shader
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL20
 
 interface MultiShader {
     companion object {
         @JvmStatic fun fromLegacyShader(
+            name: String,
             vert: String,
             frag: String,
             blend: BlendState
         ): MultiShader {
             //#if MC>=11700
-            return VanillaShader.fromLegacy(vert, frag, blend)
+            return VanillaShader.fromLegacy(name, vert, frag, blend)
             //#else
-            //$$ return GlShader(vert, frag, blend)
+            //$$ return GlShader(name, vert, frag, blend)
             //#endif
         }
 
         @JvmStatic fun readFromResource(
+            name: String,
             vert: String,
             frag: String,
             blend: BlendState
-        ) = fromLegacyShader(readShader(vert, "vsh"), readShader(frag, "fsh"), blend)
+        ) = fromLegacyShader(name, readShader(vert, "vsh"), readShader(frag, "fsh"), blend)
 
         private fun readShader(
             name: String,
@@ -32,6 +36,16 @@ interface MultiShader {
         ) = MultiShader::class.java.getResource("/shaders/$name.$extension")?.readText() ?: throw IllegalArgumentException("Shader $name not found")
 
         // Utilities
+
+        @JvmStatic fun getCurrentProgram(): Int {
+            //#if MC>=11700
+            return GlStateManager._getInteger(GL20.GL_CURRENT_PROGRAM)
+            //#elseif MC>=11502
+            //$$ return GlStateManager.getInteger(GL20.GL_CURRENT_PROGRAM)
+            //#else
+            //$$ return GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM)
+            //#endif
+        }
 
         @JvmStatic fun createProgram(): Int {
             //#if MC>=11700
