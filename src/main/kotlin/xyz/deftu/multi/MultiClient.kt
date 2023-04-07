@@ -31,6 +31,8 @@ object MultiClient {
     @JvmStatic
     fun getChat() = getHud().chatHud
     @JvmStatic
+    fun getCurrentServerInfo() = getInstance().currentServerEntry
+    @JvmStatic
     fun getNetworkHandler() = getInstance().networkHandler
     @JvmStatic
     fun getSoundManager() = getInstance().soundManager
@@ -64,5 +66,34 @@ object MultiClient {
         //$$ return Minecraft.getSystemTime()
         //#endif
         //#endif
+    }
+
+    object Multiplayer {
+        @JvmStatic fun getServerBrand() = getPlayer()?.serverBrand
+        @JvmStatic fun getCurrentServerAddress() = getCurrentServerInfo()?.address
+
+        @JvmStatic
+        fun isMultiplayerEnabled() =
+            //#if MC>=11902
+            getInstance().isMultiplayerEnabled
+        //#else
+        //$$ true // TODO - Find a way to fetch this value in earlier versions
+        //#endif
+
+        @JvmStatic
+        fun isMultiplayerBanned() =
+            //#if MC>=11902
+            getInstance().isMultiplayerBanned
+        //#else
+        //$$ false // TODO - Find a way to fetch this value in earlier versions
+        //#endif
+
+        @JvmStatic
+        fun isInMultiplayer() = getWorld() != null && getServer() != null && isMultiplayerEnabled() && !isMultiplayerBanned() && run {
+            if (getInstance().isInSingleplayer) return@run false
+
+            val serverInfo = getInstance().currentServerEntry
+            serverInfo?.address != null
+        }
     }
 }
