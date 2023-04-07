@@ -42,6 +42,32 @@ object MultiGlStateManager {
         //#endif
     }
 
+    @JvmStatic fun colorMask(
+        red: Boolean,
+        green: Boolean,
+        blue: Boolean,
+        alpha: Boolean
+    ) {
+        //#if MC>=11500
+        RenderSystem.colorMask(red, green, blue, alpha)
+        //#else
+        //$$ GlStateManager.colorMask(red, green, blue, alpha)
+        //#endif
+    }
+
+    @JvmStatic fun viewport(
+        x: Int,
+        y: Int,
+        width: Int,
+        height: Int
+    ) {
+        //#if MC>=11700
+        GlStateManager._viewport(x, y, width, height)
+        //#else
+        //$$ GlStateManager.viewport(x, y, width, height)
+        //#endif
+    }
+
     @JvmStatic fun enableTexture2D() {
         //#if MC>=11904
         // no-op
@@ -214,6 +240,14 @@ object MultiGlStateManager {
 
     @JvmStatic fun depthFunc(state: DepthState) {
         depthFunc(state.value)
+    }
+
+    @JvmStatic fun depthMask(flag: Boolean) {
+        //#if MC>=11700
+        RenderSystem.depthMask(flag)
+        //#else
+        //$$ GlStateManager.depthMask(flag)
+        //#endif
     }
 
     @JvmStatic fun enableLighting() {
