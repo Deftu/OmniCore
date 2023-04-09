@@ -428,6 +428,32 @@
         "MC_VERSION": "1.15.2"
       },
       "projectName": "1.15.2-forge"
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Client (:1.19.4-fabric)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/versions\\1.19.4-fabric/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "\"-Dfabric.dli.config\u003dD:\\Projects\\Personal\\MultiCraft\\versions\\1.19.4-fabric\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dclient\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotClient\"",
+      "args": "",
+      "env": {},
+      "projectName": "1.19.4-fabric"
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Server (:1.19.4-fabric)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/versions\\1.19.4-fabric/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "\"-Dfabric.dli.config\u003dD:\\Projects\\Personal\\MultiCraft\\versions\\1.19.4-fabric\\.gradle\\loom-cache\\launch.cfg\" \"-Dfabric.dli.env\u003dserver\" \"-Dfabric.dli.main\u003dnet.fabricmc.loader.impl.launch.knot.KnotServer\"",
+      "args": "\"nogui\"",
+      "env": {},
+      "projectName": "1.19.4-fabric"
     }
   ]
 }
