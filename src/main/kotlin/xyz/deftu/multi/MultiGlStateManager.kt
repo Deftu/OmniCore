@@ -15,11 +15,11 @@ object MultiGlStateManager {
         blue: Float,
         alpha: Float
     ) {
-        //#if MC>11700
+        //#if MC > 1.17
         RenderSystem.setShaderColor(red, green, blue, alpha)
-        //#elseif MC>11502
+        //#elseif MC > 1.15.2
         //$$ RenderSystem.color4f(red, green, blue, alpha)
-        //#elseif MC>=11500
+        //#elseif MC >= 1.15
         //$$ GlStateManager.color4f(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.color(red, green, blue, alpha)
@@ -31,10 +31,10 @@ object MultiGlStateManager {
         green: Float,
         blue: Float
     ) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         color4f(red, green, blue, 1f)
         //#else
-        //#if MC>=11500
+        //#if MC >= 1.15
         //$$ RenderSystem.color3f(red, green, blue)
         //#else
         //$$ GlStateManager.color(red, green, blue)
@@ -48,7 +48,7 @@ object MultiGlStateManager {
         blue: Boolean,
         alpha: Boolean
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         RenderSystem.colorMask(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.colorMask(red, green, blue, alpha)
@@ -61,7 +61,7 @@ object MultiGlStateManager {
         width: Int,
         height: Int
     ) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         GlStateManager._viewport(x, y, width, height)
         //#else
         //$$ GlStateManager.viewport(x, y, width, height)
@@ -69,11 +69,11 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableTexture2D() {
-        //#if MC>=11904
+        //#if MC>=1.19.4
         // no-op
-        //#elseif MC>=11700
+        //#elseif MC >= 1.17
         //$$ RenderSystem.enableTexture()
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.enableTexture()
         //#else
         //$$ GlStateManager.enableTexture2D()
@@ -81,11 +81,11 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableTexture2D() {
-        //#if MC>=11904
+        //#if MC >= 1.19.4
         // no-op
-        //#elseif MC>=11700
+        //#elseif MC >= 1.17
         //$$ RenderSystem.disableTexture()
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.disableTexture()
         //#else
         //$$ GlStateManager.disableTexture2D()
@@ -97,11 +97,11 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableBasicTexture2D() {
-        //#if MC>=11904
+        //#if MC >= 1.19.4
         // no-op
-        //#elseif MC>=11700
+        //#elseif MC >= 1.17
         //$$ GlStateManager._enableTexture()
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.enableTexture()
         //#else
         //$$ GlStateManager.enableTexture2D()
@@ -109,11 +109,11 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableBasicTexture2D() {
-        //#if MC>=11904
+        //#if MC >= 1.19.4
         // no-op
-        //#elseif MC>=11700
+        //#elseif MC >= 1.17
         //$$ GlStateManager._disableTexture()
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.disableTexture()
         //#else
         //$$ GlStateManager.disableTexture2D()
@@ -125,7 +125,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableCull() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.enableCull()
         //#else
         //$$ GlStateManager.enableCull()
@@ -133,7 +133,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableCull() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.disableCull()
         //#else
         //$$ GlStateManager.disableCull()
@@ -145,7 +145,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableBlend() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.enableBlend()
         //#else
         //$$ GlStateManager.enableBlend()
@@ -153,7 +153,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableBlend() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.disableBlend()
         //#else
         //$$ GlStateManager.disableBlend()
@@ -165,7 +165,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun blendFunc(srcFactor: Int, dstFactor: Int) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
         //$$ GlStateManager.blendFunc(srcFactor, dstFactor)
@@ -177,9 +177,9 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#else
         //$$ GlStateManager.tryBlendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
@@ -191,7 +191,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun defaultBlendFunc() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.defaultBlendFunc()
         //#else
         //$$ blendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
@@ -199,7 +199,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun blendEquation(equation: Int) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.blendEquation(equation)
         //#else
         //$$ GL14.glBlendEquation(equation)
@@ -207,9 +207,9 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableDepth() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.enableDepthTest()
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.enableDepthTest()
         //#else
         //$$ GlStateManager.enableDepth()
@@ -217,9 +217,9 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun disableDepth() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.disableDepthTest()
-        //#elseif MC>=11400
+        //#elseif MC >= 1.14
         //$$ GlStateManager.disableDepthTest()
         //#else
         //$$ GlStateManager.disableDepth()
@@ -231,7 +231,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun depthFunc(func: Int) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.depthFunc(func)
         //#else
         //$$ GlStateManager.depthFunc(func)
@@ -243,7 +243,7 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun depthMask(flag: Boolean) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.depthMask(flag)
         //#else
         //$$ GlStateManager.depthMask(flag)
@@ -251,19 +251,19 @@ object MultiGlStateManager {
     }
 
     @JvmStatic fun enableLighting() {
-        //#if MC<11700
+        //#if MC < 1.17
         //$$ GlStateManager.enableLighting()
         //#endif
     }
 
     @JvmStatic fun disableLighting() {
-        //#if MC<11700
+        //#if MC < 1.17
         //$$ GlStateManager.disableLighting()
         //#endif
     }
 
     @JvmStatic fun toggleLighting(enable: Boolean) {
-        //#if MC<11700
+        //#if MC < 1.17
         //$$ if (enable) enableLighting() else disableLighting()
         //#endif
     }
