@@ -1,6 +1,6 @@
 package xyz.deftu.multi
 
-//#if MC>=11400
+//#if MC >= 1.14
 import net.minecraft.client.util.GlfwUtil
 //#endif
 
@@ -12,7 +12,7 @@ object MultiClient {
         get() = MinecraftClient.IS_SYSTEM_MAC
     @JvmStatic
     val isRunningOnMainThread: Boolean
-        //#if MC>=11500
+        //#if MC >= 1.15
         get() = getInstance().isOnThread
         //#else
         //$$ get() = getInstance().isCallingFromMinecraftThread()
@@ -46,7 +46,7 @@ object MultiClient {
     fun getTextureManager() = MultiTextureManager.INSTANCE
 
     @JvmStatic fun execute(runnable: () -> Unit) {
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         getInstance().execute(runnable)
         //#else
         //$$ getInstance().addScheduledTask(runnable::invoke)
@@ -57,14 +57,10 @@ object MultiClient {
 
     @JvmStatic
     fun getTime(): Long {
-        //#if MC>=11400
+        //#if MC >= 1.14
         return (GlfwUtil.getTime() * 1000).toLong()
         //#else
-        //#if MC>=11400
-        //$$ return MinecraftClient.getSystemTime()
-        //#else
         //$$ return Minecraft.getSystemTime()
-        //#endif
         //#endif
     }
 
@@ -74,19 +70,19 @@ object MultiClient {
 
         @JvmStatic
         fun isMultiplayerEnabled() =
-            //#if MC>=11902
+            //#if MC >= 1.19.2
             getInstance().isMultiplayerEnabled
-        //#else
-        //$$ true // TODO - Find a way to fetch this value in earlier versions
-        //#endif
+            //#else
+            //$$ true // TODO - Find a way to fetch this value in earlier versions
+            //#endif
 
         @JvmStatic
         fun isMultiplayerBanned() =
-            //#if MC>=11902
+            //#if MC >= 1.19.2
             getInstance().isMultiplayerBanned
-        //#else
-        //$$ false // TODO - Find a way to fetch this value in earlier versions
-        //#endif
+            //#else
+            //$$ false // TODO - Find a way to fetch this value in earlier versions
+            //#endif
 
         @JvmStatic
         fun isInMultiplayer() = getWorld() != null && getServer() != null && isMultiplayerEnabled() && !isMultiplayerBanned() && run {
