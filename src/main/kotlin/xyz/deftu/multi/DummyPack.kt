@@ -1,4 +1,4 @@
-//#if MC>=11903
+//#if MC >= 1.19.3
 package xyz.deftu.multi
 
 import net.minecraft.resource.ResourcePack
