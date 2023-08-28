@@ -1,6 +1,6 @@
 package xyz.deftu.multi
 
-//#if MC>=11500
+//#if MC >= 1.15
 import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
 //#else
@@ -14,7 +14,7 @@ object MultiKeyboard {
         val alt: Boolean
     )
 
-    //#if MC>=11500
+    //#if MC >= 1.15
     @JvmField val KEY_NONE: Int = noInline { InputUtil.UNKNOWN_KEY.code }
     @JvmField val KEY_ESCAPE: Int = noInline { GLFW.GLFW_KEY_ESCAPE }
     @JvmField val KEY_LMETA: Int = noInline { GLFW.GLFW_KEY_LEFT_SUPER }
@@ -230,9 +230,9 @@ object MultiKeyboard {
 
     @JvmStatic
     fun allowRepeatEvents(enabled: Boolean) {
-        //#if MC>=11903
+        //#if MC >= 1.19.3
         // This function was removed in 1.19.3. Repeat events are permanently enabled.
-        //#elseif MC>=11502
+        //#elseif MC >= 1.15.2
         //$$ MultiClient.getInstance().keyboard.setRepeatEvents(enabled)
         //#else
         //$$ Keyboard.enableRepeatEvents(enabled)
@@ -241,7 +241,7 @@ object MultiKeyboard {
 
     @JvmStatic
     fun isKeyboardButton(code: Int): Boolean {
-        //#if MC>=11500
+        //#if MC >= 1.15
         return code > 20
         //#else
         //$$ return code >= 0 && code < Keyboard.KEYBOARD_SIZE
@@ -252,7 +252,7 @@ object MultiKeyboard {
     fun isPressed(code: Int): Boolean {
         if (code == 0) return false // TODO
 
-        //#if MC>=11500
+        //#if MC >= 1.15
         val handle = MultiClient.getInstance().window.handle
         val state = if (!MultiMouse.isMouseButton(code)) GLFW.glfwGetKey(handle, code) else MultiMouse.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
@@ -290,7 +290,7 @@ object MultiKeyboard {
     private inline fun <T> noInline(init: () -> T): T = init()
 }
 
-//#if MC>=11500
+//#if MC >= 1.15
 fun MultiKeyboard.KeyboardModifiers?.toInt() = listOf(
     this?.shift to GLFW.GLFW_MOD_SHIFT,
     this?.ctrl to GLFW.GLFW_MOD_CONTROL,
