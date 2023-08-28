@@ -1,6 +1,6 @@
 package xyz.deftu.multi
 
-//#if MC>=11500
+//#if MC >= 1.15
 import org.lwjgl.glfw.GLFW
 //#elseif MC<=11202
 //$$ import org.lwjgl.input.Mouse
@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW
 import kotlin.math.max
 
 object MultiMouse {
-    //#if MC>=11500
+    //#if MC >= 1.15
     @JvmField val LEFT = noInline { GLFW.GLFW_MOUSE_BUTTON_LEFT }
     @JvmField val RIGHT = noInline { GLFW.GLFW_MOUSE_BUTTON_RIGHT }
     @JvmField val MIDDLE = noInline { GLFW.GLFW_MOUSE_BUTTON_MIDDLE }
@@ -32,7 +32,7 @@ object MultiMouse {
     @JvmStatic
     val rawX: Double
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().mouse.x
             //#else
             //$$ return Mouse.getX().toDouble()
@@ -42,7 +42,7 @@ object MultiMouse {
     @JvmStatic
     val rawY: Double
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().mouse.y
             //#else
             //$$ return Mouse.getY().toDouble()
@@ -60,7 +60,7 @@ object MultiMouse {
     @JvmStatic
     val isCursorGrabbed: Boolean
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().mouse.isCursorLocked
             //#else
             //$$ return Mouse.isGrabbed()
@@ -69,7 +69,7 @@ object MultiMouse {
 
     @JvmStatic
     fun setCursorGrabbed(grabbed: Boolean) {
-        //#if MC>=11400
+        //#if MC >= 1.14
         if (grabbed) MultiClient.getInstance().mouse.lockCursor()
         else MultiClient.getInstance().mouse.unlockCursor()
         //#else
@@ -79,7 +79,7 @@ object MultiMouse {
 
     @JvmStatic
     fun isMouseButton(code: Int): Boolean {
-        //#if MC>=11500
+        //#if MC >= 1.15
         return code < 20
         //#else
         //$$ return code < 0
@@ -88,7 +88,7 @@ object MultiMouse {
 
     @JvmStatic
     fun isPressed(code: Int): Boolean {
-        //#if MC>=11500
+        //#if MC >= 1.15
         val handle = MultiClient.getInstance().window.handle
         val state = if (!MultiKeyboard.isKeyboardButton(code)) GLFW.glfwGetMouseButton(handle, code) else MultiKeyboard.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
