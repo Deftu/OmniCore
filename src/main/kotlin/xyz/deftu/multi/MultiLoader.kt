@@ -39,7 +39,7 @@ object MultiLoader {
     }
 
     @JvmStatic fun getLoaderType() =
-        //#if FABRIC==1
+        //#if FABRIC
         LoaderType.FABRIC
         //#else
         //$$ LoaderType.FORGE
@@ -49,10 +49,10 @@ object MultiLoader {
     @JvmStatic fun isForge() = getLoaderType() == LoaderType.FORGE
 
     @JvmStatic fun isModLoaded(id: String, version: String): Boolean {
-        //#if FABRIC==1
+        //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id) && FabricLoader.getInstance().getModContainer(id).get().metadata.version.friendlyString == version
         //#else
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         //$$ return ModList.get().isLoaded(id) && ModList.get().getModContainerById(id).get().getModInfo().getVersion().toString() == version
         //#else
         //$$ return Loader.isModLoaded(id) && Loader.instance().getIndexedModList()[id]?.version == version
@@ -61,10 +61,10 @@ object MultiLoader {
     }
 
     @JvmStatic fun isModLoaded(id: String): Boolean {
-        //#if FABRIC==1
+        //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id)
         //#else
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         //$$ return ModList.get().isLoaded(id)
         //#else
         //$$ return Loader.isModLoaded(id)
@@ -75,10 +75,10 @@ object MultiLoader {
     @JvmStatic fun getLoadedMods(): Set<ModInfo> {
         val value = mutableSetOf<ModInfo>()
 
-        //#if FABRIC==1
+        //#if FABRIC
         FabricLoader.getInstance().allMods.map(::createModInfo).forEach(value::add)
         //#else
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         //$$ ModList.get().applyForEachModContainer(::createModInfo).collect(Collectors.toSet()).forEach(value::add)
         //#else
         //$$ Loader.instance().modList.map(::createModInfo).forEach(value::add)
@@ -89,10 +89,10 @@ object MultiLoader {
     }
 
     @JvmStatic fun hasActiveMod(): Boolean {
-        //#if FABRIC==1
+        //#if FABRIC
         return false
         //#else
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         //$$ return ModLoadingContext.get().activeContainer.modId != "minecraft"
         //#else
         //$$ return Loader.instance().activeModContainer() != null
@@ -101,10 +101,10 @@ object MultiLoader {
     }
 
     @JvmStatic fun getActiveMod(): ModInfo {
-        //#if FABRIC==1
+        //#if FABRIC
         return ModInfo.DUMMY
         //#else
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         //$$ return createModInfo(ModLoadingContext.get().activeContainer)
         //#else
         //$$ if (hasActiveMod()) {
@@ -117,7 +117,7 @@ object MultiLoader {
     }
 
     private fun createModInfo(container: ModContainer): ModInfo {
-        //#if FABRIC==1
+        //#if FABRIC
         return ModInfo(
             container.metadata.name,
             container.metadata.id,
@@ -125,7 +125,7 @@ object MultiLoader {
             container.rootPaths[0]
         )
         //#else
-        //#if MC>=11502
+        //#if MC >= 1.15.2
         //$$ val modFile = ModList.get().getModFileById(container.modId)
         //$$ return ModInfo(
         //$$     container.modInfo.displayName,
