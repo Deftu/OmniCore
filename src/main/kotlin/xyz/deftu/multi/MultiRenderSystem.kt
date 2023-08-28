@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gl.ShaderProgram
 //#endif
 
+import org.lwjgl.opengl.GL13
 import net.minecraft.util.Identifier
 import java.util.function.Supplier
 

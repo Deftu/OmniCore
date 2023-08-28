@@ -29,7 +29,12 @@ object MultiClient {
     @JvmStatic
     fun getHud() = getInstance().inGameHud
     @JvmStatic
-    fun getChat() = getHud().chatHud
+    fun getChat() =
+        //#if MC > 1.15
+        getHud().chatHud
+        //#else
+        //$$ getHud().chatGUI
+        //#endif
     @JvmStatic
     fun getCurrentServerInfo() = getInstance().currentServerEntry
     @JvmStatic

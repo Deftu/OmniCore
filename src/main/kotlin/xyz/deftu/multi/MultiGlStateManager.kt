@@ -4,6 +4,7 @@ package xyz.deftu.multi
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
+import org.lwjgl.opengl.GL14
 import org.lwjgl.opengl.GL11
 import com.mojang.blaze3d.platform.GlStateManager
 

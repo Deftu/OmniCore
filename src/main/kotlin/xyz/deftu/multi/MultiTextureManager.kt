@@ -4,6 +4,7 @@ package xyz.deftu.multi
 import net.minecraft.resource.ResourceManager
 //#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
+//$$ import com.mojang.blaze3d.platform.NativeImage
 //#else
 import net.minecraft.client.texture.*
 //#endif
@@ -179,15 +180,11 @@ class ReleasedDynamicTexture(
             TextureUtil.prepareImage(allocGlId(), width, height)
             //#elseif MC >= 1.16
             //$$ TextureUtil.allocate(allocGlId(), width, height)
-            //$$
-            //#if MC >= 1.14
+            //#elseif MC >= 1.14
             //$$ TextureUtil.prepareImage(allocGlId(), width, height)
             //#else
             //$$ TextureUtil.allocateTexture(allocGlId(), width, height)
             //#endif
-            //$$
-            //#endif
-
             //#endif
 
             //#if MC >= 1.14
