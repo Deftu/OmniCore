@@ -1,8 +1,8 @@
 package xyz.deftu.multi
 
-//#if MC>=11500
+//#if MC >= 1.15
 import net.minecraft.client.util.math.MatrixStack
-//#if MC<11900
+//#if MC < 1.19
 //$$ import net.minecraft.text.TranslatableText
 //#endif
 //#else
@@ -18,8 +18,9 @@ import xyz.deftu.text.utils.toVanilla
 abstract class MultiScreen(
     val restorePreviousScreen: Boolean = true,
     val titleKey: String? = null
-//#if MC>=11500
 ) : Screen(Text.translatable(titleKey ?: "").toVanilla()) {
+    val title: Text? = null
+//#if MC >= 1.15
 //#else
 //$$ ) : GuiScreen() {
 //#endif
@@ -35,7 +36,7 @@ abstract class MultiScreen(
 
     private val previousScreen = if (restorePreviousScreen) MultiClient.getCurrentScreen() else null
 
-    //#if MC>=11500
+    //#if MC >= 1.15
     private var lastClick = 0L
     private var dragDx = -1.0
     private var dragDy = -1.0
@@ -44,7 +45,7 @@ abstract class MultiScreen(
     //#endif
 
     open fun handleInitialize(width: Int, height: Int) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.init()
         //#else
         //$$ super.initGui()
@@ -57,9 +58,9 @@ abstract class MultiScreen(
         mouseY: Int,
         tickDelta: Float
     ) {
-        //#if MC>=11600
+        //#if MC >= 1.16
         super.render(stack.toVanillaStack(), mouseX, mouseY, tickDelta)
-        //#elseif MC>=11500
+        //#elseif MC >= 1.15
         //$$ super.render(mouseX, mouseY, tickDelta)
         //#else
         //$$ super.drawScreen(mouseX, mouseY, tickDelta)
@@ -71,7 +72,7 @@ abstract class MultiScreen(
         char: Char,
         modifiers: MultiKeyboard.KeyboardModifiers
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         if (code != 0) {
             super.keyPressed(code, 0, modifiers.toInt())
         }
@@ -93,7 +94,7 @@ abstract class MultiScreen(
         char: Char,
         modifiers: Int
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         if (code != 0) {
             super.keyReleased(code, 0, modifiers)
         }
@@ -105,7 +106,7 @@ abstract class MultiScreen(
         y: Double,
         button: Int
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         if (button == 1) lastClick = MultiClient.getTime()
         super.mouseClicked(x, y, button)
         //#else
@@ -122,7 +123,7 @@ abstract class MultiScreen(
         y: Double,
         state: Int
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.mouseReleased(x, y, state)
         //#else
         //$$ super.mouseReleased(x.toInt(), y.toInt(), state)
@@ -135,7 +136,7 @@ abstract class MultiScreen(
         button: Int,
         clickTime: Long
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.mouseDragged(x, y, button, dragDx, dragDy)
         //#else
         //$$ super.mouseClickMove(x.toInt(), y.toInt(), button, clickTime)
@@ -145,13 +146,13 @@ abstract class MultiScreen(
     open fun handleMouseScrolled(
         delta: Double
     ) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.mouseScrolled(scrolledX, scrolledY, delta)
         //#endif
     }
 
     open fun handleTick() {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.tick()
         //#else
         //$$ super.updateScreen()
@@ -159,7 +160,7 @@ abstract class MultiScreen(
     }
 
     open fun handleClose() {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.close()
         //#else
         //$$ super.onGuiClosed()
@@ -167,7 +168,7 @@ abstract class MultiScreen(
     }
 
     open fun handleResize(width: Int, height: Int) {
-        //#if MC>=11500
+        //#if MC >= 1.15
         super.resize(MultiClient.getInstance(), width, height)
         //#else
         //$$ super.setWorldAndResolution(MultiClient.getInstance(), width, height)
@@ -177,9 +178,9 @@ abstract class MultiScreen(
     open fun handleBackgroundRender(
         stack: MultiMatrixStack
     ) {
-        //#if MC>=11600
+        //#if MC >= 1.16
         super.renderBackground(stack.toVanillaStack())
-        //#elseif MC>=11500
+        //#elseif MC >= 1.15
         //$$ super.renderBackground()
         //#else
         //$$ super.drawDefaultBackground()
@@ -192,14 +193,14 @@ abstract class MultiScreen(
         openScreen(previousScreen)
     }
 
-    //#if MC>=11500
-    final override fun getTitle() = Text.translatable(titleKey ?: "").toVanilla()
+    //#if MC >= 1.15
+    final override fun getTitle(): net.minecraft.text.Text = (this as Screen).title
 
     final override fun init() {
         handleInitialize(width, height)
     }
 
-    //#if MC>=11600
+    //#if MC >= 1.16
     final override fun render(stack: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
         handleRender(MultiMatrixStack(stack), mouseX, mouseY, tickDelta)
     }
@@ -260,7 +261,7 @@ abstract class MultiScreen(
         handleClose()
     }
 
-    //#if MC>=11600
+    //#if MC >= 1.16
     final override fun renderBackground(stack: MatrixStack) {
         handleBackgroundRender(MultiMatrixStack(stack))
     }
