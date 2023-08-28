@@ -17,7 +17,7 @@ if (mcData.isForge && mcData.version <= 1_15_02) {
 
 dependencies {
     implementation(kotlin("reflect"))
-//    modImplementation("xyz.deftu:TextCraft-${mcData.versionStr}-${mcData.loader.name}:1.0.1")
+    modImplementation("xyz.deftu:TextCraft-${mcData.versionStr}-${mcData.loader.name}:1.0.0")
 
     if (mcData.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.fabricApiVersion}")
