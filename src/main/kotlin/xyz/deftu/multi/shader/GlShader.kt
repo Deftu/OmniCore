@@ -1,9 +1,9 @@
 // For versions 1.16.5 and below
 package xyz.deftu.multi.shader
 
-//#if MC<11700
+//#if MC < 1.17
 //$$
-//#if MC<=11202
+//#if MC <= 1.12.2
 //$$ import java.nio.ByteBuffer
 //$$ import java.nio.ByteOrder
 //#endif
@@ -231,7 +231,7 @@ package xyz.deftu.multi.shader
         //$$ buffer.rewind()
         //#endif
 //$$         when (matrix.size) {
-            //#if MC>=11400
+            //#if MC >= 1.14
             //$$ 4 -> if (MultiRenderEnvironment.isGL21Available()) {
             //$$     GL20.glUniformMatrix2fv(location, false, matrix)
             //$$ } else {

@@ -7,7 +7,6 @@ import net.minecraft.client.gl.ShaderProgram
 
 import net.minecraft.util.Identifier
 import java.util.function.Supplier
-import org.lwjgl.opengl.GL13
 
 object MultiRenderSystem {
     //#if MC >= 1.17

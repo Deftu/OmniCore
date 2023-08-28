@@ -1,11 +1,11 @@
 package xyz.deftu.multi.shader
 
-//#if MC>=11700
-//#if MC>=11903
+//#if MC >= 1.17
+//#if MC >= 1.19.3
 import xyz.deftu.multi.DummyResourcePack
 //#endif
 
-//#if MC>=11900
+//#if MC >= 1.19
 import net.minecraft.resource.Resource
 import java.util.Optional
 //#else
@@ -143,9 +143,9 @@ internal class VanillaShader(
                     "fsh" -> transformedFrag
                     else -> throw IllegalArgumentException("Unknown shader resource type: ${id.path}")
                 }
-                //#if MC>=11903
+                //#if MC >= 1.19.3
                 Optional.of(Resource(DummyResourcePack, content::byteInputStream))
-                //#elseif MC>=11900
+                //#elseif MC >= 1.19
                 //$$ Optional.of(Resource("__generated__", content::byteInputStream))
                 //#else
                 //$$ ResourceImpl("__generated__", id, content.byteInputStream(), null)

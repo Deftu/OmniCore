@@ -1,6 +1,6 @@
 package xyz.deftu.multi
 
-//#if MC<=11202
+//#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper;
 //#endif
 
@@ -22,18 +22,18 @@ class MultiFramebuffer(
         private val clearColor = floatArrayOf(1f, 1f, 1f, 0f)
 
         @JvmStatic fun genFramebuffers() =
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager.glGenFramebuffers()
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GlStateManager.genFramebuffers()
             //#else
             //$$ OpenGlHelper.glGenFramebuffers()
             //#endif
 
         @JvmStatic fun bindFramebuffer(id: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._glBindFramebuffer(GL30.GL_FRAMEBUFFER, id)
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GlStateManager.bindFramebuffer(GL30.GL_FRAMEBUFFER, id)
             //#else
             //$$ OpenGlHelper.glBindFramebuffer(GL30.GL_FRAMEBUFFER, id)
@@ -41,9 +41,9 @@ class MultiFramebuffer(
         }
 
         @JvmStatic fun deleteFramebuffers(id: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._glDeleteFramebuffers(id)
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GlStateManager.deleteFramebuffers(id)
             //#else
             //$$ OpenGlHelper.glDeleteFramebuffers(id)
@@ -51,9 +51,9 @@ class MultiFramebuffer(
         }
 
         @JvmStatic fun framebufferTexture2D(target: Int, attachment: Int, textarget: Int, texture: Int, level: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._glFramebufferTexture2D(target, attachment, textarget, texture, level)
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GlStateManager.framebufferTexture2D(target, attachment, textarget, texture, level)
             //#else
             //$$ OpenGlHelper.glFramebufferTexture2D(target, attachment, textarget, texture, level)
@@ -61,9 +61,9 @@ class MultiFramebuffer(
         }
 
         @JvmStatic fun framebufferRenderbuffer(target: Int, attachment: Int, renderbuffertarget: Int, renderbuffer: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer)
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GL30.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer)
             //#else
             //$$ OpenGlHelper.glFramebufferRenderbuffer(target, attachment, renderbuffertarget, renderbuffer)
@@ -71,29 +71,29 @@ class MultiFramebuffer(
         }
 
         @JvmStatic fun genTexture() =
-            //#if MC>=11700
+            //#if MC >= 1.17
             TextureUtil.generateTextureId()
-            //#elseif MC>=11600
+            //#elseif MC >= 1.16
             //$$ TextureUtil.generateId()
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ TextureUtil.generateTextureId()
             //#else
             //$$ TextureUtil.glGenTextures()
             //#endif
 
         @JvmStatic fun genRenderbuffers() =
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager.glGenRenderbuffers()
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GL30.glGenRenderbuffers()
             //#else
             //$$ OpenGlHelper.glGenRenderbuffers()
             //#endif
 
         @JvmStatic fun getBoundFramebuffer() =
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._getInteger(GL30.GL_FRAMEBUFFER_BINDING)
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ GlStateManager.getInteger(GL30.GL_FRAMEBUFFER_BINDING)
             //#else
             //$$ GL11.glGetInteger(GL30.GL_FRAMEBUFFER_BINDING)

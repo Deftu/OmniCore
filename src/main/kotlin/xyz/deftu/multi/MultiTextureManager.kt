@@ -1,9 +1,8 @@
-//#if MC!=11404
 package xyz.deftu.multi
 
-//#if MC>=11500
+//#if MC >= 1.15
 import net.minecraft.resource.ResourceManager
-//#if FORGE==1
+//#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
 //#else
 import net.minecraft.client.texture.*
@@ -32,6 +31,7 @@ class MultiTextureManager(
     private val textureManager: TextureManager
 ) {
     companion object {
+        @JvmStatic
         val INSTANCE by lazy {
             MultiTextureManager(get())
         }
@@ -42,9 +42,9 @@ class MultiTextureManager(
             GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
 
         @JvmStatic fun setActiveTexture(id: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._activeTexture(id)
-            //#elseif MC>=11400
+            //#elseif MC >= 1.14
             //$$ GlStateManager.activeTexture(id)
             //#else
             //$$ GlStateManager.setActiveTexture(id)
@@ -52,7 +52,7 @@ class MultiTextureManager(
         }
 
         @JvmStatic fun bindTexture(id: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._bindTexture(id)
             //#else
             //$$ GlStateManager.bindTexture(id)
@@ -60,7 +60,7 @@ class MultiTextureManager(
         }
 
         @JvmStatic fun deleteTexture(id: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._deleteTexture(id)
             //#else
             //$$ GlStateManager.deleteTexture(id)
@@ -84,7 +84,7 @@ class MultiTextureManager(
 
     fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
         try {
-            //#if MC>=11400
+            //#if MC >= 1.14
             val image = NativeImage.read(stream)
             //#else
             //$$ val image = ImageIO.read(stream)
@@ -99,7 +99,7 @@ class MultiTextureManager(
         textureManager.bindTexture(path)
     }
 
-    //#if MC>=11400
+    //#if MC >= 1.14
     fun registerTexture(path: Identifier, texture: AbstractTexture) = apply {
     //#else
     //$$ fun registerTexture(path: ResourceLocation, texture: ITextureObject) = apply {
@@ -135,25 +135,25 @@ class MultiTextureManager(
 class ReleasedDynamicTexture(
     val width: Int,
     val height: Int,
-    //#if MC>=11400
+    //#if MC >= 1.14
     data: NativeImage?
     //#else
     //$$ data: IntArray?
     //#endif
-//#if MC>=11400
+//#if MC >= 1.14
 ) : AbstractTexture() {
 //#else
 //$$ ) : AbstractTexture() {
 //#endif
     constructor(width: Int, height: Int) : this(width, height, null)
-    //#if MC>=11400
+    //#if MC >= 1.14
     constructor(image: NativeImage) : this(image.width, image.height, image)
     //#else
     //$$ constructor(image: BufferedImage) : this(image.width, image.height, image.getRGB(0, 0, image.width, image.height, null, 0, image.width))
     //#endif
 
     private var resources = Resources(this)
-    //#if MC>=11400
+    //#if MC >= 1.14
     private var data by resources::data
 
     init {
@@ -171,21 +171,26 @@ class ReleasedDynamicTexture(
 
     fun upload() {
         if (!uploaded) {
-            //#if FORGE && MC>=11700
+            //#if FORGE && MC >= 1.17
             //$$ TextureUtil.m_85283_(allocGlId(), width, height)
             //#else
-            //#if MC>=11700
+
+            //#if MC >= 1.17
             TextureUtil.prepareImage(allocGlId(), width, height)
-            //#elseif MC>=11600
+            //#elseif MC >= 1.16
             //$$ TextureUtil.allocate(allocGlId(), width, height)
-            //#elseif MC>=11400
+            //$$
+            //#if MC >= 1.14
             //$$ TextureUtil.prepareImage(allocGlId(), width, height)
             //#else
             //$$ TextureUtil.allocateTexture(allocGlId(), width, height)
             //#endif
+            //$$
             //#endif
 
-            //#if MC>=11400
+            //#endif
+
+            //#if MC >= 1.14
             MultiTextureManager.configureTexture(allocGlId()) {
                 data?.upload(0, 0, 0, false)
             }
@@ -215,7 +220,7 @@ class ReleasedDynamicTexture(
         referent: ReleasedDynamicTexture
     ) : PhantomReference<ReleasedDynamicTexture>(referent, referenceQueue), Closeable {
         var glId: Int = -1
-        //#if MC>=11400
+        //#if MC >= 1.14
         var data: NativeImage? = null
             set(value) {
                 field?.close()
@@ -234,7 +239,7 @@ class ReleasedDynamicTexture(
                 glId = -1
             }
 
-            //#if MC>=11400
+            //#if MC >= 1.14
             data = null
             //#endif
         }
@@ -251,4 +256,3 @@ class ReleasedDynamicTexture(
         }
     }
 }
-//#endif

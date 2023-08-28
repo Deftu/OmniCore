@@ -1,24 +1,24 @@
 package xyz.deftu.multi
 
-//#if MC>=11500
+//#if MC >= 1.15
 import net.minecraft.util.math.MathHelper
 import net.minecraft.client.util.math.MatrixStack
 //#endif
 
-//#if MC>=11700
+//#if MC >= 1.17
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
-//#if MC>=11903
+//#if MC >= 1.19.3
 import org.joml.Quaternionf
-//#elseif MC>=11400
+//#elseif MC >= 1.14
 //$$ import net.minecraft.util.math.Quaternion
 //#else
 //$$ import org.lwjgl.util.vector.Vector3f
 //#endif
 
-//#if MC>=10809 && MC<11700
-//#if MC<11500
+//#if MC >= 1.8.9 && MC < 1.17
+//#if MC < 1.15
 //$$ import net.minecraft.client.renderer.GLAllocation
 //#else
 //$$ import net.minecraft.client.util.GlAllocationUtils
@@ -38,11 +38,11 @@ class MultiMatrixStack private constructor(
     private val stack: Deque<StackEntry>
 ) {
     companion object {
-        //#if MC<11700
+        //#if MC < 1.17
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$
         //$$ private fun createFloatBuffer(capacity: Int): FloatBuffer {
-            //#if MC>=11500
+            //#if MC >= 1.15
             //$$ return GlAllocationUtils.allocateFloatBuffer(capacity)
             //#else
             //$$ return GLAllocation.createDirectFloatBuffer(capacity)
@@ -58,7 +58,7 @@ class MultiMatrixStack private constructor(
         ))
     })
 
-    //#if MC>=11600
+    //#if MC >= 1.16
     constructor(entry: MatrixStack.Entry) : this(ArrayDeque<StackEntry>().apply {
         add(StackEntry(
             entry.positionMatrix,
@@ -82,11 +82,11 @@ class MultiMatrixStack private constructor(
             z == 1f
         ) return
         stack.last.run {
-            //#if MC>=11903
+            //#if MC >= 1.19.3
             matrix.scale(x, y, z)
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ matrix.multiply(Matrix4f.scale(x, y, z))
-            //#elseif MC>=11400
+            //#elseif MC >= 1.14
             //$$ matrix.mul(Matrix4f.scale(x, y, z))
             //#else
             //$$ Matrix4f.scale(Vector3f(x, y, z), matrix, matrix)
@@ -94,9 +94,9 @@ class MultiMatrixStack private constructor(
 
             if (x == y && y == z) {
                 if (0f > x) {
-                    //#if MC>=11903
+                    //#if MC >= 1.19.3
                     normal.scale(-1f)
-                    //#elseif MC>=11400
+                    //#elseif MC >= 1.14
                     //$$ normal.multiply(-1f)
                     //#else
                     //$$ Matrix3f.negate(normal, normal)
@@ -108,15 +108,15 @@ class MultiMatrixStack private constructor(
                 val iy = 1f / y
                 val iz = 1f / z
 
-                //#if MC>=11400
+                //#if MC >= 1.14
                 val rt = MathHelper.fastInverseCbrt(ix * iy * iz)
                 //#else
                 //$$ val rt = Math.cbrt((ix * iy * iz).toDouble()).toFloat()
                 //#endif
 
-                //#if MC>=11903
+                //#if MC >= 1.19.3
                 normal.scale(rt * ix, rt * iy, rt * iz)
-                //#elseif MC>=11400
+                //#elseif MC >= 1.14
                 //$$ normal.multiply(Matrix3f.scale(rt * ix, rt * iy, rt * iz))
                 //#else
                 //$$ val scale = Matrix3f()
@@ -146,9 +146,9 @@ class MultiMatrixStack private constructor(
             z == 0f
         ) return
         stack.last.run {
-            //#if MC>=11903
+            //#if MC >= 1.19.3
             matrix.translate(x, y, z)
-            //#elseif MC>=11400
+            //#elseif MC >= 1.14
             //$$ matrix.multiply(Matrix4f.translate(x, y, z))
             //#else
             //$$ Matrix4f.translate(Vector3f(x, y, z), matrix, matrix)
@@ -173,11 +173,11 @@ class MultiMatrixStack private constructor(
         if (angle == 0f) return
         stack.last.run {
             val radians = if (degrees) Math.toRadians(angle.toDouble()).toFloat() else angle
-            //#if MC>=11903
+            //#if MC >= 1.19.3
             val quaternion = Quaternionf().rotateAxis(radians, x, y, z)
             matrix.rotate(quaternion)
             normal.rotate(quaternion)
-            //#elseif MC>=11400
+            //#elseif MC >= 1.14
             //$$ matrix.multiply(Quaternion(x, y, z, radians))
             //#else
             //$$ val axis = Vector3f(x, y, z)
@@ -229,16 +229,16 @@ class MultiMatrixStack private constructor(
     fun copy() = MultiMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
 
     fun applyToGlobalState() {
-        //#if MC>=11700
-        //#if MC>=11800
+        //#if MC >= 1.17
+        //#if MC >= 1.18
         RenderSystem.getModelViewStack().multiplyPositionMatrix(stack.last.matrix)
         //#else
         //$$ RenderSystem.getModelViewStack().method_34425(stack.last.matrix)
         //#endif
         RenderSystem.applyModelViewMatrix()
         //#else
-        //#if MC<11600
-        //#if MC>=11500
+        //#if MC < 1.16
+        //#if MC >= 1.15
         //$$ stack.last.matrix.writeToBuffer(MATRIX_BUFFER)
         //#else
         //$$ stack.last.matrix.store(MATRIX_BUFFER)
@@ -248,7 +248,7 @@ class MultiMatrixStack private constructor(
         //#endif
         //$$ // Explicit cast to Buffer required so we do not use the JDK9+ override in FloatBuffer
         //$$ (MATRIX_BUFFER as Buffer).rewind()
-        //#if MC>=11500
+        //#if MC >= 1.15
         //$$ GL11.glMultMatrixf(MATRIX_BUFFER)
         //#else
         //$$ GL11.glMultMatrix(MATRIX_BUFFER)
@@ -257,7 +257,7 @@ class MultiMatrixStack private constructor(
     }
 
     fun replaceGlobalState() {
-        //#if MC>=11700
+        //#if MC >= 1.17
         RenderSystem.getModelViewStack().loadIdentity()
         //#else
         //$$ GL11.glLoadIdentity()
@@ -266,14 +266,14 @@ class MultiMatrixStack private constructor(
     }
 
     private inline fun <R> withGlobalStackPushed(block: () -> R) : R {
-        //#if MC>=11700
+        //#if MC >= 1.17
         val stack = RenderSystem.getModelViewStack()
         stack.push()
         //#else
         //$$ GlStateManager.pushMatrix()
         //#endif
         return block().also {
-            //#if MC>=11700
+            //#if MC >= 1.17
             stack.pop()
             RenderSystem.applyModelViewMatrix()
             //#else
@@ -300,9 +300,9 @@ class MultiMatrixStack private constructor(
         val matrix: Matrix4f,
         val normal: Matrix3f
     ) {
-        //#if MC>=11600
+        //#if MC >= 1.16
         fun toVanillaStack() = MatrixStack().also { stack ->
-        //#if MC>=11903
+        //#if MC >= 1.19.3
             stack.peek().positionMatrix.mul(matrix)
             stack.peek().normalMatrix.mul(normal)
         //#else
@@ -313,9 +313,9 @@ class MultiMatrixStack private constructor(
         //#endif
 
         fun deepCopy(): StackEntry {
-            //#if MC>=11903
+            //#if MC >= 1.19.3
             return StackEntry(Matrix4f(matrix), Matrix3f(normal))
-            //#elseif MC>=11500
+            //#elseif MC >= 1.15
             //$$ return StackEntry(matrix.copy(), normal.copy())
             //#else
             //$$ return StackEntry(Matrix4f.load(matrix, null), Matrix3f.load(normal, null))

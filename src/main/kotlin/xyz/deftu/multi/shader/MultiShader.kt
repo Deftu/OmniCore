@@ -1,11 +1,10 @@
 package xyz.deftu.multi.shader
 
-//#if MC<=11202
+//#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper;
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 
 interface MultiShader {
@@ -16,7 +15,7 @@ interface MultiShader {
             frag: String,
             blend: BlendState
         ): MultiShader {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return VanillaShader.fromLegacy(name, vert, frag, blend)
             //#else
             //$$ return GlShader(name, vert, frag, blend)
@@ -38,9 +37,9 @@ interface MultiShader {
         // Utilities
 
         @JvmStatic fun getCurrentProgram(): Int {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager._getInteger(GL20.GL_CURRENT_PROGRAM)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.getInteger(GL20.GL_CURRENT_PROGRAM)
             //#else
             //$$ return GL11.glGetInteger(GL20.GL_CURRENT_PROGRAM)
@@ -48,9 +47,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun createProgram(): Int {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager.glCreateProgram()
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.createProgram()
             //#else
             //$$ return OpenGlHelper.glCreateProgram()
@@ -58,9 +57,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun linkProgram(program: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager.glLinkProgram(program)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ GlStateManager.linkProgram(program)
             //#else
             //$$ OpenGlHelper.glLinkProgram(program)
@@ -68,9 +67,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun getProgram(program: Int, pname: Int): Int {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager.glGetProgrami(program, pname)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.getProgram(program, pname)
             //#else
             //$$ return OpenGlHelper.glGetProgrami(program, pname)
@@ -78,9 +77,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun getProgramInfoLog(program: Int, maxLength: Int): String {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager.glGetProgramInfoLog(program, maxLength)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.getProgramInfoLog(program, maxLength)
             //#else
             //$$ return OpenGlHelper.glGetProgramInfoLog(program, maxLength)
@@ -88,9 +87,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun useProgram(program: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager._glUseProgram(program)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ GlStateManager.useProgram(program)
             //#else
             //$$ OpenGlHelper.glUseProgram(program)
@@ -98,9 +97,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun createShader(type: Int): Int {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager.glCreateShader(type)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.createShader(type)
             //#else
             //$$ return OpenGlHelper.glCreateShader(type)
@@ -108,9 +107,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun compileShader(shader: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager.glCompileShader(shader)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ GlStateManager.compileShader(shader)
             //#else
             //$$ OpenGlHelper.glCompileShader(shader)
@@ -118,9 +117,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun getShader(shader: Int, pname: Int): Int {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager.glGetShaderi(shader, pname)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.getShader(shader, pname)
             //#else
             //$$ return OpenGlHelper.glGetShaderi(shader, pname)
@@ -128,9 +127,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun getShaderInfoLog(shader: Int, maxLength: Int): String {
-            //#if MC>=11700
+            //#if MC >= 1.17
             return GlStateManager.glGetShaderInfoLog(shader, maxLength)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ return GlStateManager.getShaderInfoLog(shader, maxLength)
             //#else
             //$$ return OpenGlHelper.glGetShaderInfoLog(shader, maxLength)
@@ -138,9 +137,9 @@ interface MultiShader {
         }
 
         @JvmStatic fun attachShader(program: Int, shader: Int) {
-            //#if MC>=11700
+            //#if MC >= 1.17
             GlStateManager.glAttachShader(program, shader)
-            //#elseif MC>=11502
+            //#elseif MC >= 1.15.2
             //$$ GlStateManager.attachShader(program, shader)
             //#else
             //$$ OpenGlHelper.glAttachShader(program, shader)

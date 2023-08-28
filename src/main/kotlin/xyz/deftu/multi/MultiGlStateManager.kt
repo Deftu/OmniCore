@@ -1,11 +1,10 @@
 package xyz.deftu.multi
 
-//#if MC>=11500
+//#if MC >= 1.15
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL14
 import com.mojang.blaze3d.platform.GlStateManager
 
 object MultiGlStateManager {

@@ -1,10 +1,10 @@
 package xyz.deftu.multi.shader
 
-//#if MC>=11700
+//#if MC >= 1.17
 import net.minecraft.client.gl.GlBlendState
 //#endif
 
-//#if MC>=11500
+//#if MC >= 1.15
 import org.lwjgl.opengl.GL20
 //#endif
 
@@ -31,7 +31,7 @@ data class BlendState(
         val NORMAL = BlendState(BlendEquation.ADD, BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
 
         @JvmStatic fun active() = BlendState(
-            //#if MC>=11500
+            //#if MC >= 1.15
             BlendEquation.fromId(GL11.glGetInteger(GL20.GL_BLEND_EQUATION_RGB)) ?: BlendEquation.ADD,
             //#else
             //$$ BlendEquation.fromId(GL11.glGetInteger(GL14.GL_BLEND_EQUATION)) ?: BlendEquation.ADD,
@@ -48,7 +48,7 @@ data class BlendState(
     val separateSrc = srcRgb != srcAlpha
     val separateDst = dstRgb != dstAlpha
 
-    //#if MC>=11700
+    //#if MC >= 1.17
     private inner class VanillaBlendState : GlBlendState {
         constructor() : super()
         constructor(

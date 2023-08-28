@@ -10,6 +10,10 @@ import net.minecraft.client.util.math.MatrixStack
 //$$ import org.lwjgl.input.Mouse
 //#endif
 
+//#if MC >= 1.20
+import net.minecraft.client.gui.DrawContext
+//#endif
+
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import xyz.deftu.text.Text
@@ -30,7 +34,6 @@ abstract class MultiScreen(
         }
     }
 
-    @JvmOverloads
     constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
@@ -51,6 +54,10 @@ abstract class MultiScreen(
     private var scrolledY = -1.0
     //#endif
 
+    //#if MC >= 1.20
+    private var contexts = mutableListOf<DrawContext>()
+    //#endif
+
     open fun handleInitialize(width: Int, height: Int) {
         //#if MC >= 1.15
         super.init()
@@ -65,8 +72,12 @@ abstract class MultiScreen(
         mouseY: Int,
         tickDelta: Float
     ) {
-        //#if MC >= 1.16
-        super.render(stack.toVanillaStack(), mouseX, mouseY, tickDelta)
+        //#if MC >= 1.20
+        withDrawContext(stack) { ctx ->
+            super.render(ctx, mouseX, mouseY, tickDelta)
+        }
+        //#elseif MC >= 1.16
+        //$$ super.render(stack.toVanillaStack(), mouseX, mouseY, tickDelta)
         //#elseif MC >= 1.15
         //$$ super.render(mouseX, mouseY, tickDelta)
         //#else
@@ -185,8 +196,12 @@ abstract class MultiScreen(
     open fun handleBackgroundRender(
         stack: MultiMatrixStack
     ) {
-        //#if MC >= 1.16
-        super.renderBackground(stack.toVanillaStack())
+        //#if MC >= 1.20
+        withDrawContext(stack) { ctx ->
+            super.renderBackground(ctx)
+        }
+        //#elseif MC >= 1.16
+        //$$ super.renderBackground(stack.toVanillaStack())
         //#elseif MC >= 1.15
         //$$ super.renderBackground()
         //#else
@@ -200,6 +215,20 @@ abstract class MultiScreen(
         openScreen(previousScreen)
     }
 
+    //#if MC >= 1.20
+    private inline fun <R> withDrawContext(stack: MultiMatrixStack, block: (DrawContext) -> R) {
+        val client = this.client!!
+        val context = contexts.lastOrNull() ?: DrawContext(client, client.bufferBuilders.entityVertexConsumers)
+        context.matrices.push()
+        val vanilla = context.matrices.peek()
+        val self = stack.peek()
+        vanilla.positionMatrix.set(self.matrix)
+        vanilla.normalMatrix.set(self.normal)
+        block(context)
+        context.matrices.pop()
+    }
+    //#endif
+
     //#if MC >= 1.15
     final override fun getTitle(): net.minecraft.text.Text = (this as Screen).title
 
@@ -207,10 +236,16 @@ abstract class MultiScreen(
         handleInitialize(width, height)
     }
 
-    //#if MC >= 1.16
-    final override fun render(stack: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-        handleRender(MultiMatrixStack(stack), mouseX, mouseY, tickDelta)
+    //#if MC >= 1.20
+    final override fun render(ctx: DrawContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
+        contexts.add(ctx)
+        handleRender(MultiMatrixStack(ctx.matrices), mouseX, mouseY, tickDelta)
+        contexts.removeLast()
     }
+    //#elseif MC >= 1.16
+    //$$ final override fun render(stack: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
+    //$$     handleRender(MultiMatrixStack(stack), mouseX, mouseY, tickDelta)
+    //$$ }
     //#else
     //$$ final override fun render(mouseX: Int, mouseY: Int, tickDelta: Float) {
     //$$     handleRender(MultiMatrixStack(), mouseX, mouseY, tickDelta)
@@ -268,10 +303,14 @@ abstract class MultiScreen(
         handleClose()
     }
 
-    //#if MC >= 1.16
-    final override fun renderBackground(stack: MatrixStack) {
-        handleBackgroundRender(MultiMatrixStack(stack))
+    //#if MC >= 1.20
+    final override fun renderBackground(ctx: DrawContext) {
+        handleBackgroundRender(MultiMatrixStack(ctx.matrices))
     }
+    //#elseif MC >= 1.16
+    //$$ final override fun renderBackground(stack: MatrixStack) {
+    //$$     handleBackgroundRender(MultiMatrixStack(stack))
+    //$$ }
     //#else
     //$$ final override fun renderBackground() {
     //$$     handleBackgroundRender(MultiMatrixStack())

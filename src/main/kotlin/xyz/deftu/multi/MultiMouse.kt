@@ -2,7 +2,7 @@ package xyz.deftu.multi
 
 //#if MC >= 1.15
 import org.lwjgl.glfw.GLFW
-//#elseif MC<=11202
+//#elseif MC <= 1.12.2
 //$$ import org.lwjgl.input.Mouse
 //#endif
 

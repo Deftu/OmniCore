@@ -1,10 +1,10 @@
 package xyz.deftu.multi
 
-//#if FABRIC==1
+//#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 //#else
-//#if MC>=11502
+//#if MC >= 1.15.2
 //$$ import net.minecraftforge.fml.ModList;
 //$$ import net.minecraftforge.fml.ModLoadingContext;
 //$$ import net.minecraftforge.fml.ModContainer;
