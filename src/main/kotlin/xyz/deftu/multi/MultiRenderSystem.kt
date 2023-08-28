@@ -1,6 +1,6 @@
 package xyz.deftu.multi
 
-//#if MC>=11700
+//#if MC >= 1.17
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gl.ShaderProgram
 //#endif
@@ -10,7 +10,7 @@ import java.util.function.Supplier
 import org.lwjgl.opengl.GL13
 
 object MultiRenderSystem {
-    //#if MC>=11700
+    //#if MC >= 1.17
     fun setShader(supplier: Supplier<ShaderProgram?>) {
         RenderSystem.setShader(supplier)
     }
@@ -25,7 +25,7 @@ object MultiRenderSystem {
     //#endif
 
     fun setTexture(index: Int, texture: Identifier) {
-        //#if MC>=11700
+        //#if MC >= 1.17
         setShaderTexture(index, texture)
         //#else
         //$$ MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
