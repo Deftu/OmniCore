@@ -1,11 +1,11 @@
 package xyz.deftu.multi
 
-//#if MC<=11202
+//#if MC <= 1.12.2
 //$$ import net.minecraft.client.gui.ScaledResolution
 //#endif
 
 object MultiResolution {
-    //#if MC<=11202
+    //#if MC <= 1.12.2
     //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val unicode: Boolean)
     //$$ private var scaledRes: ScaledResolution? = null
     //$$ private var cachedScaledRes: CachedScaledResolution? = null
@@ -14,7 +14,7 @@ object MultiResolution {
     @JvmStatic
     val screenWidth: Int
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.width
             //#else
             //$$ return MultiClient.getInstance().displayWidth
@@ -24,7 +24,7 @@ object MultiResolution {
     @JvmStatic
     val screenHeight: Int
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.height
             //#else
             //$$ return MultiClient.getInstance().displayHeight
@@ -34,7 +34,7 @@ object MultiResolution {
     @JvmStatic
     val viewportWidth: Int
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.framebufferWidth
             //#else
             //$$ return MultiClient.getInstance().displayWidth
@@ -44,7 +44,7 @@ object MultiResolution {
     @JvmStatic
     val viewportHeight: Int
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.framebufferHeight
             //#else
             //$$ return MultiClient.getInstance().displayHeight
@@ -54,7 +54,7 @@ object MultiResolution {
     @JvmStatic
     val scaledWidth: Int
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.scaledWidth
             //#else
             //$$ return getScaledRes().scaledWidth
@@ -64,7 +64,7 @@ object MultiResolution {
     @JvmStatic
     val scaledHeight: Int
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.scaledHeight
             //#else
             //$$ return getScaledRes().scaledHeight
@@ -74,14 +74,14 @@ object MultiResolution {
     @JvmStatic
     val scaleFactor: Double
         get() {
-            //#if MC>=11400
+            //#if MC >= 1.14
             return MultiClient.getInstance().window.scaleFactor
             //#else
             //$$ return getScaledRes().scaleFactor.toDouble()
             //#endif
         }
 
-    //#if MC<=11202
+    //#if MC <= 1.12.2
     //$$ private fun getScaledRes(): ScaledResolution {
     //$$     if (scaledRes == null) {
     //$$         scaledRes = ScaledResolution(MultiClient.getInstance())
