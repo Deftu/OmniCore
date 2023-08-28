@@ -17,10 +17,9 @@ import xyz.deftu.text.utils.toVanilla
 
 abstract class MultiScreen(
     val restorePreviousScreen: Boolean = true,
-    val titleKey: String? = null
-) : Screen(Text.translatable(titleKey ?: "").toVanilla()) {
     val title: Text? = null
 //#if MC >= 1.15
+) : Screen(title?.toVanilla() ?: Text.translatable("").toVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
@@ -32,7 +31,15 @@ abstract class MultiScreen(
     }
 
     @JvmOverloads
-    constructor(restorePreviousScreen: Boolean = true) : this(restorePreviousScreen, null)
+    constructor(
+        restorePreviousScreen: Boolean = true,
+        titleKey: String? = null
+    ) : this(restorePreviousScreen, Text.translatable(titleKey ?: ""))
+
+    @JvmOverloads
+    constructor(
+        restorePreviousScreen: Boolean = true
+    ) : this(restorePreviousScreen, null as Text?)
 
     private val previousScreen = if (restorePreviousScreen) MultiClient.getCurrentScreen() else null
 
