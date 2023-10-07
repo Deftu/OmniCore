@@ -22,4 +22,5 @@ net.minecraft.client.renderer.texture.AbstractTexture getId() getGlTextureId()
 net.minecraft.client.renderer.texture.AbstractTexture releaseId() deleteGlTexture()
 net.minecraft.server.packs.resources.ResourceManager net.minecraft.client.resources.IResourceManager
 net.minecraft.client.gui.screens.Screen net.minecraft.client.gui.GuiScreen
+net.minecraft.client.gui.screens.Screen isPauseScreen() doesGuiPauseGame()
 net.minecraft.client.Minecraft setScreen() displayGuiScreen()
