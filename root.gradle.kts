@@ -3,8 +3,8 @@ plugins {
 }
 
 preprocess {
-    val forge12001 = createNode("1.20.1-forge", 1_20_01, "srg")
-    val fabric12001 = createNode("1.20.1-fabric", 1_20_01, "yarn")
+    val forge12002 = createNode("1.20.2-forge", 1_20_02, "srg")
+    val fabric12002 = createNode("1.20.2-fabric", 1_20_02, "yarn")
     val forge11904 = createNode("1.19.4-forge", 1_19_04, "srg")
     val fabric11904 = createNode("1.19.4-fabric", 1_19_04, "yarn")
     val forge11903 = createNode("1.19.3-forge", 1_19_03, "srg")
@@ -20,8 +20,8 @@ preprocess {
     val forge11202 = createNode("1.12.2-forge", 1_12_02, "srg")
     val forge10809 = createNode("1.8.9-forge", 1_08_09, "srg")
 
-    forge12001.link(fabric12001)
-    fabric12001.link(fabric11904)
+    forge12002.link(fabric12002)
+    fabric12002.link(fabric11904)
     forge11904.link(fabric11904)
     fabric11904.link(fabric11903)
     forge11903.link(fabric11903)
