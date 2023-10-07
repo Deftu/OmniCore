@@ -53,10 +53,10 @@ abstract class MultiScreen(
     private var scrolledX = -1.0
     private var scrolledY = -1.0
     //#if MC >= 1.20.2
-    //$$ private var scrolledDX = 0.0
-    //$$ private var backgroundMouseX = 0
-    //$$ private var backgroundMouseY = 0
-    //$$ private var backgroundDelta = 0f
+    private var scrolledDX = 0.0
+    private var backgroundMouseX = 0
+    private var backgroundMouseY = 0
+    private var backgroundDelta = 0f
     //#endif
     //#endif
 
@@ -175,7 +175,7 @@ abstract class MultiScreen(
             scrolledX,
             scrolledY,
             //#if MC >= 1.20.2
-            //$$ scrolledDX,
+            scrolledDX,
             //#endif
             delta
         )
@@ -214,9 +214,9 @@ abstract class MultiScreen(
             super.renderBackground(
                 ctx,
                 //#if MC >= 1.20.2
-                //$$ backgroundMouseX,
-                //$$ backgroundMouseY,
-                //$$ backgroundDelta
+                backgroundMouseX,
+                backgroundMouseY,
+                backgroundDelta
                 //#endif
             )
         }
@@ -308,14 +308,14 @@ abstract class MultiScreen(
         mouseX: Double,
         mouseY: Double,
         //#if MC >= 1.20.2
-        //$$ horizontalScroll: Double,
+        horizontalScroll: Double,
         //#endif
         scrollDelta: Double
     ): Boolean {
         scrolledX = mouseX
         scrolledY = mouseY
         //#if MC >= 1.20.2
-        //$$ scrolledDX = horizontalScroll
+        scrolledDX = horizontalScroll
         //#endif
         handleMouseScrolled(scrollDelta)
         return false
@@ -337,15 +337,15 @@ abstract class MultiScreen(
     final override fun renderBackground(
         ctx: DrawContext,
         //#if MC >= 1.20.2
-        //$$ mouseX: Int,
-        //$$ mouseY: Int,
-        //$$ delta: Float
+        mouseX: Int,
+        mouseY: Int,
+        delta: Float
         //#endif
     ) {
         //#if MC >= 1.20.2
-        //$$ backgroundMouseX = mouseX
-        //$$ backgroundMouseY = mouseY
-        //$$ backgroundDelta = delta
+        backgroundMouseX = mouseX
+        backgroundMouseY = mouseY
+        backgroundDelta = delta
         //#endif
         contexts.add(ctx)
         handleBackgroundRender(MultiMatrixStack(ctx.matrices))

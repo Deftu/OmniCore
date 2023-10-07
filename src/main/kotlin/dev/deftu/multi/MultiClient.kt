@@ -72,9 +72,9 @@ object MultiClient {
     object Multiplayer {
         @JvmStatic fun getServerBrand() =
             //#if MC >= 1.20.2
-            //$$ getPlayer()?.networkHandler?.brand
+            getPlayer()?.networkHandler?.brand
             //#else
-            getPlayer()?.serverBrand
+            //$$ getPlayer()?.serverBrand
             //#endif
         @JvmStatic fun getCurrentServerAddress() = getCurrentServerInfo()?.address
 
@@ -89,9 +89,9 @@ object MultiClient {
         @JvmStatic
         fun isMultiplayerBanned() =
             //#if MC >= 1.20.2
-            //$$ getInstance().multiplayerBanDetails != null
+            getInstance().multiplayerBanDetails != null
             //#elseif MC >= 1.19.2
-            getInstance().isMultiplayerBanned
+            //$$ getInstance().isMultiplayerBanned
             //#else
             //$$ false // TODO - Find a way to fetch this value in earlier versions
             //#endif
