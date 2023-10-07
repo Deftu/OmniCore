@@ -2,12 +2,12 @@ plugins {
     java
     kotlin("jvm")
     `maven-publish`
-    id("xyz.deftu.gradle.multiversion")
-    id("xyz.deftu.gradle.tools")
-    id("xyz.deftu.gradle.tools.blossom")
-    id("xyz.deftu.gradle.tools.minecraft.loom")
-    id("xyz.deftu.gradle.tools.minecraft.api")
-    id("xyz.deftu.gradle.tools.minecraft.releases")
+    id("dev.deftu.gradle.multiversion")
+    id("dev.deftu.gradle.tools")
+    id("dev.deftu.gradle.tools.blossom")
+    id("dev.deftu.gradle.tools.minecraft.loom")
+    id("dev.deftu.gradle.tools.minecraft.api")
+    id("dev.deftu.gradle.tools.minecraft.releases")
 }
 
 toolkitLoomApi.setupTestClient()
