@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper;

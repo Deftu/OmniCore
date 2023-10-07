@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if MC >= 1.17
 import com.mojang.blaze3d.systems.RenderSystem

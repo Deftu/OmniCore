@@ -1,4 +1,4 @@
-package xyz.deftu.multi.shader
+package dev.deftu.multi.shader
 
 //#if MC >= 1.17
 import net.minecraft.client.gl.GlBlendState

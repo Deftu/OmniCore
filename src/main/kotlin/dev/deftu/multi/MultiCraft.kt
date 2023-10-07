@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 object MultiCraft {
     val debug: Boolean

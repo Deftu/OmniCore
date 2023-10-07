@@ -1,8 +1,8 @@
-package xyz.deftu.multi.shader
+package dev.deftu.multi.shader
 
 //#if MC >= 1.17
 //#if MC >= 1.19.3
-import xyz.deftu.multi.DummyResourcePack
+import dev.deftu.multi.DummyResourcePack
 //#endif
 
 //#if MC >= 1.19
@@ -144,7 +144,7 @@ internal class VanillaShader(
                     else -> throw IllegalArgumentException("Unknown shader resource type: ${id.path}")
                 }
                 //#if MC >= 1.19.3
-                Optional.of(Resource(DummyResourcePack, content::byteInputStream))
+                Optional.of(Resource(dev.deftu.multi.DummyResourcePack, content::byteInputStream))
                 //#elseif MC >= 1.19
                 //$$ Optional.of(Resource("__generated__", content::byteInputStream))
                 //#else

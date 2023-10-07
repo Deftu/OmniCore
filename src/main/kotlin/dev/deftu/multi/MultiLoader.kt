@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader

@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if MC >= 1.15
 import net.minecraft.resource.ResourceManager
@@ -37,7 +37,7 @@ class MultiTextureManager(
             MultiTextureManager(get())
         }
 
-        @JvmStatic fun get() = MultiClient.getInstance().textureManager
+        @JvmStatic fun get() = dev.deftu.multi.MultiClient.getInstance().textureManager
 
         @JvmStatic fun getActiveTexture() =
             GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
@@ -111,7 +111,7 @@ class MultiTextureManager(
     fun registerImageTexture(path: Identifier, texture: BufferedImage) = apply {
         val stream = ByteArrayOutputStream()
         ImageIO.write(texture, "png", stream)
-        MultiClient.execute {
+        dev.deftu.multi.MultiClient.execute {
             registerTexture(path, getReleasedDynamicTexture(stream.toByteArray().inputStream()))
         }
     }
@@ -232,7 +232,7 @@ class ReleasedDynamicTexture(
         override fun close() {
             toBeCleanedUp.remove(this)
             if (glId != -1) {
-                MultiClient.getTextureManager().deleteTexture(glId)
+                dev.deftu.multi.MultiClient.getTextureManager().deleteTexture(glId)
                 glId = -1
             }
 

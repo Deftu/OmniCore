@@ -1,5 +1,5 @@
 // For versions 1.16.5 and below
-package xyz.deftu.multi.shader
+package dev.deftu.multi.shader
 
 //#if MC < 1.17
 //$$

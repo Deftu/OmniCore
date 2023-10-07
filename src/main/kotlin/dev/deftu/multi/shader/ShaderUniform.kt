@@ -1,4 +1,4 @@
-package xyz.deftu.multi.shader
+package dev.deftu.multi.shader
 
 interface ShaderUniform {
     val location: Int

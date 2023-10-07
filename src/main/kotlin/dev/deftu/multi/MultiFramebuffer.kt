@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper;
@@ -100,7 +100,7 @@ class MultiFramebuffer(
             //#endif
 
         @JvmStatic fun getMinecraftFramebuffer() =
-            MultiClient.getInstance().framebuffer.fbo
+            dev.deftu.multi.MultiClient.getInstance().framebuffer.fbo
     }
 
     private var framebuffer = -1

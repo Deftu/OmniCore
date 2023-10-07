@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if MC >= 1.15
 import net.minecraft.client.util.math.MatrixStack
@@ -30,7 +30,7 @@ abstract class MultiScreen(
     companion object {
         @JvmStatic
         fun openScreen(screen: Screen?) {
-            MultiClient.getInstance().setScreen(screen)
+            dev.deftu.multi.MultiClient.getInstance().setScreen(screen)
         }
     }
 
@@ -44,7 +44,7 @@ abstract class MultiScreen(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as Text?)
 
-    private val previousScreen = if (restorePreviousScreen) MultiClient.getCurrentScreen() else null
+    private val previousScreen = if (restorePreviousScreen) dev.deftu.multi.MultiClient.getCurrentScreen() else null
 
     //#if MC >= 1.15
     private var lastClick = 0L
@@ -125,7 +125,7 @@ abstract class MultiScreen(
         button: Int
     ) {
         //#if MC >= 1.15
-        if (button == 1) lastClick = MultiClient.getTime()
+        if (button == 1) lastClick = dev.deftu.multi.MultiClient.getTime()
         super.mouseClicked(x, y, button)
         //#else
         //$$ try {
@@ -187,7 +187,7 @@ abstract class MultiScreen(
 
     open fun handleResize(width: Int, height: Int) {
         //#if MC >= 1.15
-        super.resize(MultiClient.getInstance(), width, height)
+        super.resize(dev.deftu.multi.MultiClient.getInstance(), width, height)
         //#else
         //$$ super.setWorldAndResolution(MultiClient.getInstance(), width, height)
         //#endif
@@ -280,7 +280,7 @@ abstract class MultiScreen(
     final override fun mouseDragged(mouseX: Double, mouseY: Double, mouseBtn: Int, dx: Double, dy: Double): Boolean {
         dragDx = dx
         dragDy = dy
-        handleMouseDragged(mouseX, mouseY, mouseBtn, MultiClient.getTime() - lastClick)
+        handleMouseDragged(mouseX, mouseY, mouseBtn, dev.deftu.multi.MultiClient.getTime() - lastClick)
         return false
     }
 

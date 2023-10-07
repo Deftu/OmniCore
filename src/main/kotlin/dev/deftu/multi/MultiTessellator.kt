@@ -1,4 +1,4 @@
-package xyz.deftu.multi
+package dev.deftu.multi
 
 //#if MC >= 1.20
 import com.mojang.blaze3d.systems.RenderSystem
@@ -66,7 +66,7 @@ class MultiTessellator(
                 net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
                 net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
                 net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram),
-                net.minecraft.client.render.VertexFormats.BLIT_SCREEN to Supplier { MultiClient.getInstance().gameRenderer.blitScreenProgram }
+                net.minecraft.client.render.VertexFormats.BLIT_SCREEN to Supplier { dev.deftu.multi.MultiClient.getInstance().gameRenderer.blitScreenProgram }
             ).forEach { (format, supplier) ->
                 defaultShaders[format] = supplier
             }
