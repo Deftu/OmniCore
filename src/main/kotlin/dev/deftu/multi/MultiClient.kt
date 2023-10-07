@@ -13,7 +13,7 @@ object MultiClient {
     @JvmStatic
     val isRunningOnMainThread: Boolean
         //#if MC >= 1.15
-        get() = dev.deftu.multi.MultiClient.getInstance().isOnThread
+        get() = getInstance().isOnThread
         //#else
         //$$ get() = getInstance().isCallingFromMinecraftThread()
         //#endif
@@ -21,44 +21,44 @@ object MultiClient {
     @JvmStatic
     fun getInstance() = MinecraftClient.getInstance()
     @JvmStatic
-    fun getWorld() = dev.deftu.multi.MultiClient.getInstance().world
+    fun getWorld() = getInstance().world
     @JvmStatic
-    fun getServer() = dev.deftu.multi.MultiClient.getInstance().server
+    fun getServer() = getInstance().server
     @JvmStatic
-    fun getPlayer() = dev.deftu.multi.MultiClient.getInstance().player
+    fun getPlayer() = getInstance().player
     @JvmStatic
-    fun getHud() = dev.deftu.multi.MultiClient.getInstance().inGameHud
+    fun getHud() = getInstance().inGameHud
     @JvmStatic
     fun getChat() =
         //#if MC > 1.15
-        dev.deftu.multi.MultiClient.getHud().chatHud
+        getHud().chatHud
         //#else
         //$$ getHud().chatGUI
         //#endif
     @JvmStatic
-    fun getCurrentServerInfo() = dev.deftu.multi.MultiClient.getInstance().currentServerEntry
+    fun getCurrentServerInfo() = getInstance().currentServerEntry
     @JvmStatic
-    fun getNetworkHandler() = dev.deftu.multi.MultiClient.getInstance().networkHandler
+    fun getNetworkHandler() = getInstance().networkHandler
     @JvmStatic
-    fun getSoundManager() = dev.deftu.multi.MultiClient.getInstance().soundManager
+    fun getSoundManager() = getInstance().soundManager
     @JvmStatic
-    fun getFontRenderer() = dev.deftu.multi.MultiClient.getInstance().textRenderer
+    fun getFontRenderer() = getInstance().textRenderer
     @JvmStatic
-    fun getOptions() = dev.deftu.multi.MultiClient.getInstance().options
+    fun getOptions() = getInstance().options
     @JvmStatic
-    fun getCurrentScreen() = dev.deftu.multi.MultiClient.getInstance().currentScreen
+    fun getCurrentScreen() = getInstance().currentScreen
     @JvmStatic
-    fun getTextureManager() = dev.deftu.multi.MultiTextureManager.Companion.INSTANCE
+    fun getTextureManager() = MultiTextureManager.INSTANCE
 
     @JvmStatic fun execute(runnable: () -> Unit) {
         //#if MC >= 1.15.2
-        dev.deftu.multi.MultiClient.getInstance().execute(runnable)
+        getInstance().execute(runnable)
         //#else
         //$$ getInstance().addScheduledTask(runnable::invoke)
         //#endif
     }
 
-    @JvmStatic fun execute(runnable: Runnable) = dev.deftu.multi.MultiClient.execute(runnable::run)
+    @JvmStatic fun execute(runnable: Runnable) = execute(runnable::run)
 
     @JvmStatic
     fun getTime(): Long {
@@ -70,30 +70,37 @@ object MultiClient {
     }
 
     object Multiplayer {
-        @JvmStatic fun getServerBrand() = dev.deftu.multi.MultiClient.getPlayer()?.serverBrand
-        @JvmStatic fun getCurrentServerAddress() = dev.deftu.multi.MultiClient.getCurrentServerInfo()?.address
+        @JvmStatic fun getServerBrand() =
+            //#if MC >= 1.20.2
+            //$$ getPlayer()?.networkHandler?.brand
+            //#else
+            getPlayer()?.serverBrand
+            //#endif
+        @JvmStatic fun getCurrentServerAddress() = getCurrentServerInfo()?.address
 
         @JvmStatic
         fun isMultiplayerEnabled() =
             //#if MC >= 1.19.2
-            dev.deftu.multi.MultiClient.getInstance().isMultiplayerEnabled
+            getInstance().isMultiplayerEnabled
             //#else
             //$$ true // TODO - Find a way to fetch this value in earlier versions
             //#endif
 
         @JvmStatic
         fun isMultiplayerBanned() =
-            //#if MC >= 1.19.2
-            dev.deftu.multi.MultiClient.getInstance().isMultiplayerBanned
+            //#if MC >= 1.20.2
+            //$$ getInstance().multiplayerBanDetails != null
+            //#elseif MC >= 1.19.2
+            getInstance().isMultiplayerBanned
             //#else
             //$$ false // TODO - Find a way to fetch this value in earlier versions
             //#endif
 
         @JvmStatic
-        fun isInMultiplayer() = dev.deftu.multi.MultiClient.getWorld() != null && dev.deftu.multi.MultiClient.getServer() != null && dev.deftu.multi.MultiClient.Multiplayer.isMultiplayerEnabled() && !dev.deftu.multi.MultiClient.Multiplayer.isMultiplayerBanned() && run {
-            if (dev.deftu.multi.MultiClient.getInstance().isInSingleplayer) return@run false
+        fun isInMultiplayer() = getWorld() != null && getServer() != null && isMultiplayerEnabled() && !isMultiplayerBanned() && run {
+            if (getInstance().isInSingleplayer) return@run false
 
-            val serverInfo = dev.deftu.multi.MultiClient.getInstance().currentServerEntry
+            val serverInfo = getInstance().currentServerEntry
             serverInfo?.address != null
         }
     }

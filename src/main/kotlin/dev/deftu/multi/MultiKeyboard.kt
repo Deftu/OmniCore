@@ -253,7 +253,7 @@ object MultiKeyboard {
         if (code == 0) return false // TODO
 
         //#if MC >= 1.15
-        val handle = dev.deftu.multi.MultiClient.getInstance().window.handle
+        val handle = MultiClient.getInstance().window.handle
         val state = if (!MultiMouse.isMouseButton(code)) GLFW.glfwGetKey(handle, code) else MultiMouse.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else

@@ -22,8 +22,8 @@ import net.minecraft.client.render.GameRenderer
 //$$ import net.minecraft.util.math.Matrix3f
 //#endif
 
-//#if MC <= 1.15.2
-//$$ import net.minecraft.client.util.math.Vector4f
+//#if MC <= 1.12.2
+//$$ import org.lwjgl.util.vector.Vector4f
 //#endif
 
 import org.lwjgl.opengl.GL11
@@ -66,7 +66,7 @@ class MultiTessellator(
                 net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
                 net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
                 net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram),
-                net.minecraft.client.render.VertexFormats.BLIT_SCREEN to Supplier { dev.deftu.multi.MultiClient.getInstance().gameRenderer.blitScreenProgram }
+                net.minecraft.client.render.VertexFormats.BLIT_SCREEN to Supplier { MultiClient.getInstance().gameRenderer.blitScreenProgram }
             ).forEach { (format, supplier) ->
                 defaultShaders[format] = supplier
             }

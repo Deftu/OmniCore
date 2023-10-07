@@ -1,6 +1,25 @@
 com.mojang.blaze3d.platform.GlStateManager net.minecraft.client.renderer.GlStateManager
-net.minecraft.client.renderer.Matrix4f org.lwjgl.util.vector.Matrix4f
-net.minecraft.client.renderer.Matrix3f org.lwjgl.util.vector.Matrix3f
-net.minecraft.client.renderer.Vector4f org.lwjgl.util.vector.Vector4f
-net.minecraft.client.gui.screen.Screen net.minecraft.client.gui.GuiScreen
-net.minecraft.client.gui.screen.Screen isPauseScreen() doesGuiPauseGame()
+com.mojang.blaze3d.platform.GlStateManager _viewport() viewport()
+com.mojang.blaze3d.platform.GlStateManager _enableCull() enableCull()
+com.mojang.blaze3d.platform.GlStateManager _disableCull() disableCull()
+com.mojang.blaze3d.platform.GlStateManager _enableBlend() enableBlend()
+com.mojang.blaze3d.platform.GlStateManager _disableBlend() disableBlend()
+com.mojang.blaze3d.platform.GlStateManager _blendFunc() blendFunc()
+com.mojang.blaze3d.platform.GlStateManager _depthFunc() depthFunc()
+com.mojang.blaze3d.platform.GlStateManager _depthMask() depthMask()
+com.mojang.blaze3d.platform.GlStateManager _enableLighting() enableLighting()
+com.mojang.blaze3d.platform.GlStateManager _disableLighting() disableLighting()
+com.mojang.blaze3d.platform.GlStateManager _pushMatrix() pushMatrix()
+com.mojang.blaze3d.platform.GlStateManager _popMatrix() popMatrix()
+com.mojang.blaze3d.platform.GlStateManager _bindTexture() bindTexture()
+com.mojang.blaze3d.platform.GlStateManager _deleteTexture() deleteTexture()
+com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
+com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
+net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
+net.minecraft.client.renderer.texture.TextureManager register() loadTexture()
+net.minecraft.client.renderer.texture.AbstractTexture load() loadTexture()
+net.minecraft.client.renderer.texture.AbstractTexture getId() getGlTextureId()
+net.minecraft.client.renderer.texture.AbstractTexture releaseId() deleteGlTexture()
+net.minecraft.server.packs.resources.ResourceManager net.minecraft.client.resources.IResourceManager
+net.minecraft.client.gui.screens.Screen net.minecraft.client.gui.GuiScreen
+net.minecraft.client.Minecraft setScreen() displayGuiScreen()

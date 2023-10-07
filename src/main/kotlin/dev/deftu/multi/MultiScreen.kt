@@ -30,7 +30,7 @@ abstract class MultiScreen(
     companion object {
         @JvmStatic
         fun openScreen(screen: Screen?) {
-            dev.deftu.multi.MultiClient.getInstance().setScreen(screen)
+            MultiClient.getInstance().setScreen(screen)
         }
     }
 
@@ -44,7 +44,7 @@ abstract class MultiScreen(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as Text?)
 
-    private val previousScreen = if (restorePreviousScreen) dev.deftu.multi.MultiClient.getCurrentScreen() else null
+    private val previousScreen = if (restorePreviousScreen) MultiClient.getCurrentScreen() else null
 
     //#if MC >= 1.15
     private var lastClick = 0L
@@ -52,6 +52,12 @@ abstract class MultiScreen(
     private var dragDy = -1.0
     private var scrolledX = -1.0
     private var scrolledY = -1.0
+    //#if MC >= 1.20.2
+    //$$ private var scrolledDX = 0.0
+    //$$ private var backgroundMouseX = 0
+    //$$ private var backgroundMouseY = 0
+    //$$ private var backgroundDelta = 0f
+    //#endif
     //#endif
 
     //#if MC >= 1.20
@@ -125,7 +131,7 @@ abstract class MultiScreen(
         button: Int
     ) {
         //#if MC >= 1.15
-        if (button == 1) lastClick = dev.deftu.multi.MultiClient.getTime()
+        if (button == 1) lastClick = MultiClient.getTime()
         super.mouseClicked(x, y, button)
         //#else
         //$$ try {
@@ -165,7 +171,14 @@ abstract class MultiScreen(
         delta: Double
     ) {
         //#if MC >= 1.15
-        super.mouseScrolled(scrolledX, scrolledY, delta)
+        super.mouseScrolled(
+            scrolledX,
+            scrolledY,
+            //#if MC >= 1.20.2
+            //$$ scrolledDX,
+            //#endif
+            delta
+        )
         //#endif
     }
 
@@ -187,7 +200,7 @@ abstract class MultiScreen(
 
     open fun handleResize(width: Int, height: Int) {
         //#if MC >= 1.15
-        super.resize(dev.deftu.multi.MultiClient.getInstance(), width, height)
+        super.resize(MultiClient.getInstance(), width, height)
         //#else
         //$$ super.setWorldAndResolution(MultiClient.getInstance(), width, height)
         //#endif
@@ -198,7 +211,14 @@ abstract class MultiScreen(
     ) {
         //#if MC >= 1.20
         withDrawContext(stack) { ctx ->
-            super.renderBackground(ctx)
+            super.renderBackground(
+                ctx,
+                //#if MC >= 1.20.2
+                //$$ backgroundMouseX,
+                //$$ backgroundMouseY,
+                //$$ backgroundDelta
+                //#endif
+            )
         }
         //#elseif MC >= 1.16
         //$$ super.renderBackground(stack.toVanillaStack())
@@ -280,13 +300,23 @@ abstract class MultiScreen(
     final override fun mouseDragged(mouseX: Double, mouseY: Double, mouseBtn: Int, dx: Double, dy: Double): Boolean {
         dragDx = dx
         dragDy = dy
-        handleMouseDragged(mouseX, mouseY, mouseBtn, dev.deftu.multi.MultiClient.getTime() - lastClick)
+        handleMouseDragged(mouseX, mouseY, mouseBtn, MultiClient.getTime() - lastClick)
         return false
     }
 
-    final override fun mouseScrolled(mouseX: Double, mouseY: Double, scrollDelta: Double): Boolean {
+    final override fun mouseScrolled(
+        mouseX: Double,
+        mouseY: Double,
+        //#if MC >= 1.20.2
+        //$$ horizontalScroll: Double,
+        //#endif
+        scrollDelta: Double
+    ): Boolean {
         scrolledX = mouseX
         scrolledY = mouseY
+        //#if MC >= 1.20.2
+        //$$ scrolledDX = horizontalScroll
+        //#endif
         handleMouseScrolled(scrollDelta)
         return false
     }
@@ -304,7 +334,20 @@ abstract class MultiScreen(
     }
 
     //#if MC >= 1.20
-    final override fun renderBackground(ctx: DrawContext) {
+    final override fun renderBackground(
+        ctx: DrawContext,
+        //#if MC >= 1.20.2
+        //$$ mouseX: Int,
+        //$$ mouseY: Int,
+        //$$ delta: Float
+        //#endif
+    ) {
+        //#if MC >= 1.20.2
+        //$$ backgroundMouseX = mouseX
+        //$$ backgroundMouseY = mouseY
+        //$$ backgroundDelta = delta
+        //#endif
+        contexts.add(ctx)
         handleBackgroundRender(MultiMatrixStack(ctx.matrices))
     }
     //#elseif MC >= 1.16

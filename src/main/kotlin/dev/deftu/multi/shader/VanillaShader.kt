@@ -18,12 +18,12 @@ import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.util.Identifier
 import org.apache.commons.codec.digest.DigestUtils
-import xyz.deftu.multi.MultiRenderSystem
+import dev.deftu.multi.MultiRenderSystem
 import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import xyz.deftu.multi.MultiCraft
+import dev.deftu.multi.MultiCraft
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
@@ -126,10 +126,10 @@ internal class VanillaShader(
                 println("""
                     JSON:
                     ${gson.toJson(json)}
-                    
+
                     Vertex:
                     $transformedVert
-                    
+
                     Fragment:
                     $transformedFrag
                 """.trimIndent())
@@ -144,7 +144,7 @@ internal class VanillaShader(
                     else -> throw IllegalArgumentException("Unknown shader resource type: ${id.path}")
                 }
                 //#if MC >= 1.19.3
-                Optional.of(Resource(dev.deftu.multi.DummyResourcePack, content::byteInputStream))
+                Optional.of(Resource(DummyResourcePack, content::byteInputStream))
                 //#elseif MC >= 1.19
                 //$$ Optional.of(Resource("__generated__", content::byteInputStream))
                 //#else

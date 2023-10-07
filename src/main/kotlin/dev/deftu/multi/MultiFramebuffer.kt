@@ -100,7 +100,7 @@ class MultiFramebuffer(
             //#endif
 
         @JvmStatic fun getMinecraftFramebuffer() =
-            dev.deftu.multi.MultiClient.getInstance().framebuffer.fbo
+            MultiClient.getInstance().framebuffer.fbo
     }
 
     private var framebuffer = -1

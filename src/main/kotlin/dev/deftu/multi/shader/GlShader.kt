@@ -11,8 +11,8 @@ package dev.deftu.multi.shader
 //$$ import org.lwjgl.opengl.GL11
 //$$ import org.lwjgl.opengl.GL13
 //$$ import org.lwjgl.opengl.GL20
-//$$ import xyz.deftu.multi.MultiRenderEnvironment
-//$$ import xyz.deftu.multi.MultiTextureManager
+//$$ import dev.deftu.multi.MultiRenderEnvironment
+//$$ import dev.deftu.multi.MultiTextureManager
 //$$
 //$$ /**
 //$$  * Adapted from EssentialGG UniversalCraft under LGPL-3.0

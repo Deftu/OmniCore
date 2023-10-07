@@ -1,7 +1,8 @@
 package dev.deftu.multi.shader
 
 //#if MC <= 1.12.2
-//$$ import net.minecraft.client.renderer.OpenGlHelper;
+//$$ import net.minecraft.client.renderer.OpenGlHelper
+//$$ import org.lwjgl.opengl.GL11
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager

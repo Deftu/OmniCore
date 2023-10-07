@@ -15,7 +15,7 @@ object MultiResolution {
     val screenWidth: Int
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.width
+            return MultiClient.getInstance().window.width
             //#else
             //$$ return MultiClient.getInstance().displayWidth
             //#endif
@@ -25,7 +25,7 @@ object MultiResolution {
     val screenHeight: Int
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.height
+            return MultiClient.getInstance().window.height
             //#else
             //$$ return MultiClient.getInstance().displayHeight
             //#endif
@@ -35,7 +35,7 @@ object MultiResolution {
     val viewportWidth: Int
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.framebufferWidth
+            return MultiClient.getInstance().window.framebufferWidth
             //#else
             //$$ return MultiClient.getInstance().displayWidth
             //#endif
@@ -45,7 +45,7 @@ object MultiResolution {
     val viewportHeight: Int
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.framebufferHeight
+            return MultiClient.getInstance().window.framebufferHeight
             //#else
             //$$ return MultiClient.getInstance().displayHeight
             //#endif
@@ -55,7 +55,7 @@ object MultiResolution {
     val scaledWidth: Int
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.scaledWidth
+            return MultiClient.getInstance().window.scaledWidth
             //#else
             //$$ return getScaledRes().scaledWidth
             //#endif
@@ -65,7 +65,7 @@ object MultiResolution {
     val scaledHeight: Int
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.scaledHeight
+            return MultiClient.getInstance().window.scaledHeight
             //#else
             //$$ return getScaledRes().scaledHeight
             //#endif
@@ -75,7 +75,7 @@ object MultiResolution {
     val scaleFactor: Double
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().window.scaleFactor
+            return MultiClient.getInstance().window.scaleFactor
             //#else
             //$$ return getScaledRes().scaleFactor.toDouble()
             //#endif

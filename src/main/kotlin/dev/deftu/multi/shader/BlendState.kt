@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL20
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL14
-import xyz.deftu.multi.MultiGlStateManager
+import dev.deftu.multi.MultiGlStateManager
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0

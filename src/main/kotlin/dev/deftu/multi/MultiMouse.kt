@@ -33,7 +33,7 @@ object MultiMouse {
     val rawX: Double
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().mouse.x
+            return MultiClient.getInstance().mouse.x
             //#else
             //$$ return Mouse.getX().toDouble()
             //#endif
@@ -43,7 +43,7 @@ object MultiMouse {
     val rawY: Double
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().mouse.y
+            return MultiClient.getInstance().mouse.y
             //#else
             //$$ return Mouse.getY().toDouble()
             //#endif
@@ -61,7 +61,7 @@ object MultiMouse {
     val isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.14
-            return dev.deftu.multi.MultiClient.getInstance().mouse.isCursorLocked
+            return MultiClient.getInstance().mouse.isCursorLocked
             //#else
             //$$ return Mouse.isGrabbed()
             //#endif
@@ -70,8 +70,8 @@ object MultiMouse {
     @JvmStatic
     fun setCursorGrabbed(grabbed: Boolean) {
         //#if MC >= 1.14
-        if (grabbed) dev.deftu.multi.MultiClient.getInstance().mouse.lockCursor()
-        else dev.deftu.multi.MultiClient.getInstance().mouse.unlockCursor()
+        if (grabbed) MultiClient.getInstance().mouse.lockCursor()
+        else MultiClient.getInstance().mouse.unlockCursor()
         //#else
         //$$ Mouse.setGrabbed(grabbed)
         //#endif
@@ -89,7 +89,7 @@ object MultiMouse {
     @JvmStatic
     fun isPressed(code: Int): Boolean {
         //#if MC >= 1.15
-        val handle = dev.deftu.multi.MultiClient.getInstance().window.handle
+        val handle = MultiClient.getInstance().window.handle
         val state = if (!MultiKeyboard.isKeyboardButton(code)) GLFW.glfwGetMouseButton(handle, code) else MultiKeyboard.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else
