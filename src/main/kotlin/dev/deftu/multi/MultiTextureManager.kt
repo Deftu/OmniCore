@@ -172,10 +172,6 @@ class ReleasedDynamicTexture(
 
     fun upload() {
         if (!uploaded) {
-            //#if FORGE && MC >= 1.17
-            //$$ TextureUtil.m_85283_(allocGlId(), width, height)
-            //#else
-
             //#if MC >= 1.17
             TextureUtil.prepareImage(allocGlId(), width, height)
             //#elseif MC >= 1.16
@@ -184,7 +180,6 @@ class ReleasedDynamicTexture(
             //$$ TextureUtil.prepareImage(allocGlId(), width, height)
             //#else
             //$$ TextureUtil.allocateTexture(allocGlId(), width, height)
-            //#endif
             //#endif
 
             //#if MC >= 1.14
