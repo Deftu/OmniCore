@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier
 internal object DummyResourcePack : ResourcePack {
     override fun getName() = "__generated__"
     override fun close() = throw UnsupportedOperationException()
+    //#if FABRIC
     override fun openRoot(vararg strings: String?) = throw UnsupportedOperationException()
     override fun open(resourceType: ResourceType?, identifier: Identifier?) = throw UnsupportedOperationException()
     override fun findResources(
@@ -21,8 +22,18 @@ internal object DummyResourcePack : ResourcePack {
         string2: String?,
         resultConsumer: ResourcePack.ResultConsumer?
     ) = throw UnsupportedOperationException()
-    override fun getNamespaces(resourceType: ResourceType?) = throw UnsupportedOperationException()
     override fun <T : Any?> parseMetadata(resourceMetadataReader: ResourceMetadataReader<T>?) = throw UnsupportedOperationException()
+    //#else
+    //$$ override fun getRootResource(vararg strings: String?) = throw UnsupportedOperationException()
+    //$$ override fun getResource(packType: PackType?, resourceLocation: ResourceLocation?) = throw UnsupportedOperationException()
+    //$$ override fun listResources(
+    //$$     packType: PackType?,
+    //$$     string: String?,
+    //$$     string2: String?,
+    //$$     resultConsumer: PackResources.ResourceOutput?
+    //$$ ) = throw UnsupportedOperationException()
+    //$$ override fun <T : Any?> getMetadataSection(arg: MetadataSectionSerializer<T>) = throw UnsupportedOperationException()
+    //#endif
+    override fun getNamespaces(resourceType: ResourceType?) = throw UnsupportedOperationException()
 }
-
 //#endif
