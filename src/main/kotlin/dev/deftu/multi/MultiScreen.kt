@@ -18,14 +18,14 @@ import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import dev.deftu.textful.Text
-import dev.deftu.textful.impl.TranslatableText
+import dev.deftu.textful.impl.TranslatableText as TextfulTranslatableText
 import dev.deftu.textful.toVanilla
 
 abstract class MultiScreen(
     val restorePreviousScreen: Boolean = true,
     val screenTitle: Text? = null
 //#if MC >= 1.15
-) : Screen(screenTitle?.toVanilla() ?: TranslatableText("").toVanilla()) {
+) : Screen(screenTitle?.toVanilla() ?: TextfulTranslatableText("").toVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
@@ -39,7 +39,7 @@ abstract class MultiScreen(
     constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
-    ) : this(restorePreviousScreen, TranslatableText(titleKey ?: ""))
+    ) : this(restorePreviousScreen, TextfulTranslatableText(titleKey ?: ""))
 
     @JvmOverloads
     constructor(
