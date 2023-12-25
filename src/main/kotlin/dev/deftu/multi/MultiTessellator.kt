@@ -51,25 +51,23 @@ class MultiTessellator(
         @JvmStatic fun getFromSize(size: Int) = getWithBuffer(BufferBuilder(size))
 
         //#if MC >= 1.17
-        @JvmStatic val defaultShaders = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
+        @JvmStatic val defaultShaders by lazy {
+            val value = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
 
-        init {
-            mapOf(
-                net.minecraft.client.render.VertexFormats.LINES to referenceToSupplier(GameRenderer::getRenderTypeLinesProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT to referenceToSupplier(GameRenderer::getParticleProgram),
-                net.minecraft.client.render.VertexFormats.POSITION to referenceToSupplier(GameRenderer::getPositionProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_COLOR to referenceToSupplier(GameRenderer::getPositionColorProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT to referenceToSupplier(GameRenderer::getPositionColorLightmapProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE to referenceToSupplier(GameRenderer::getPositionTexProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE to referenceToSupplier(GameRenderer::getPositionColorTexProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR to referenceToSupplier(GameRenderer::getPositionTexColorProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT to referenceToSupplier(GameRenderer::getPositionColorTexLightmapProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR to referenceToSupplier(GameRenderer::getPositionTexLightmapColorProgram),
-                net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL to referenceToSupplier(GameRenderer::getPositionTexColorNormalProgram),
-                net.minecraft.client.render.VertexFormats.BLIT_SCREEN to Supplier { MultiClient.getInstance().gameRenderer.blitScreenProgram }
-            ).forEach { (format, supplier) ->
-                defaultShaders[format] = supplier
-            }
+            value[net.minecraft.client.render.VertexFormats.POSITION] = Supplier { GameRenderer.getPositionProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_COLOR] = Supplier { GameRenderer.getPositionColorProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE] = Supplier { GameRenderer.getPositionTexProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR] = Supplier { GameRenderer.getPositionTexColorProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT] = Supplier { GameRenderer.getParticleProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT] = Supplier { GameRenderer.getPositionColorTexLightmapProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR] = Supplier { GameRenderer.getPositionTexLightmapColorProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL] = Supplier { GameRenderer.getPositionTexColorNormalProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE] = Supplier { GameRenderer.getPositionColorTexProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT] = Supplier { GameRenderer.getPositionColorLightmapProgram() }
+            value[net.minecraft.client.render.VertexFormats.LINES] = Supplier { GameRenderer.getRenderTypeLinesProgram() }
+            value[net.minecraft.client.render.VertexFormats.BLIT_SCREEN] = Supplier { MultiClient.getInstance().gameRenderer.blitScreenProgram }
+
+            value
         }
 
         private fun <T> referenceToSupplier(reference: KFunction<T>): Supplier<T> {
@@ -94,7 +92,7 @@ class MultiTessellator(
 
     fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat) = apply {
         //#if MC >= 1.17
-        val supplier = defaultShaders[format] ?: error("Unsupported vertex format $format - no default shader")
+        val supplier = defaultShaders[format] ?: error("Unsupported vertex format '$format' - no default shader")
         MultiRenderSystem.setShader(supplier)
         //#endif
         beginWithActiveShader(mode, format)
