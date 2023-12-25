@@ -1,7 +1,6 @@
 package dev.deftu.multi
 
 //#if MC >= 1.15
-import net.minecraft.client.util.math.MatrixStack
 //#if MC < 1.19
 //$$ import net.minecraft.text.TranslatableText
 //#endif
@@ -12,18 +11,21 @@ import net.minecraft.client.util.math.MatrixStack
 
 //#if MC >= 1.20
 import net.minecraft.client.gui.DrawContext
+//#elseif MC >= 1.16.5
+//$$ import net.minecraft.client.util.math.MatrixStack
 //#endif
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
-import xyz.deftu.text.Text
-import xyz.deftu.text.utils.toVanilla
+import dev.deftu.textful.Text
+import dev.deftu.textful.impl.TranslatableText
+import dev.deftu.textful.toVanilla
 
 abstract class MultiScreen(
     val restorePreviousScreen: Boolean = true,
-    val title: Text? = null
+    val screenTitle: Text? = null
 //#if MC >= 1.15
-) : Screen(title?.toVanilla() ?: Text.translatable("").toVanilla()) {
+) : Screen(screenTitle?.toVanilla() ?: TranslatableText("").toVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
@@ -37,7 +39,7 @@ abstract class MultiScreen(
     constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
-    ) : this(restorePreviousScreen, Text.translatable(titleKey ?: ""))
+    ) : this(restorePreviousScreen, TranslatableText(titleKey ?: ""))
 
     @JvmOverloads
     constructor(
@@ -250,7 +252,7 @@ abstract class MultiScreen(
     //#endif
 
     //#if MC >= 1.15
-    final override fun getTitle(): net.minecraft.text.Text = (this as Screen).title
+    final override fun getTitle(): net.minecraft.text.Text = title
 
     final override fun init() {
         handleInitialize(width, height)

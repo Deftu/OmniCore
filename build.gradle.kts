@@ -4,6 +4,7 @@ plugins {
     `maven-publish`
     id("dev.deftu.gradle.multiversion")
     id("dev.deftu.gradle.tools")
+    id("dev.deftu.gradle.tools.resources")
     id("dev.deftu.gradle.tools.blossom")
     id("dev.deftu.gradle.tools.maven-publishing")
     id("dev.deftu.gradle.tools.minecraft.loom")
@@ -12,13 +13,17 @@ plugins {
 }
 
 toolkitLoomApi.setupTestClient()
-if (mcData.isForge && mcData.version <= 1_15_02) {
+if (mcData.isForge && mcData.version >= 1_15_02) {
     toolkitLoomHelper.useKotlinForForge()
+}
+
+toolkitMavenPublishing {
+    artifactName.set(modData.name.lowercase())
 }
 
 dependencies {
     implementation(kotlin("reflect"))
-    modImplementation("dev.deftu:TextCraft-${mcData.versionStr}-${mcData.loader.name}:1.0.0")
+    modImplementation("dev.deftu:textful-${mcData.versionStr}-${mcData.loader.name}:0.1.0")
 
     if (mcData.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.fabricApiVersion}")
