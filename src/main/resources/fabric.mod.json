@@ -5,6 +5,7 @@
     "version": "${mod_version}",
     "description": "Universal Minecraft utility.",
     "environment": "*",
+    "icon": "icon.png",
     "authors": [
         "Deftu"
     ],
