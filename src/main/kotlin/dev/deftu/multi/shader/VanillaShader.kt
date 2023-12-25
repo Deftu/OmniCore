@@ -50,11 +50,8 @@ internal class VanillaShader(
         ): VanillaShader {
             val transformer = ShaderTransformer()
 
-            // If it's just a pre-existing shader, we don't need to transform it
-            val isExistingVert = vert.startsWith("#version")
-            val isExistingFrag = frag.startsWith("#version")
-            val transformedVert = if (!isExistingVert) transformer.transform(vert) else vert
-            val transformedFrag = if (!isExistingFrag) transformer.transform(frag) else frag
+            val transformedVert = transformer.transform(vert)
+            val transformedFrag = transformer.transform(frag)
 
             val json = JsonObject()
 
@@ -68,8 +65,8 @@ internal class VanillaShader(
                 blendJson.addProperty("dstalpha", blend.dstAlpha.mcStr)
             json.add("blend", blendJson)
 
-            json.addProperty("vertex", if (isExistingVert) vert else DigestUtils.sha1Hex(transformedVert).lowercase())
-            json.addProperty("fragment", if (isExistingFrag) frag else DigestUtils.sha1Hex(transformedFrag).lowercase())
+            json.addProperty("vertex", DigestUtils.sha1Hex(transformedVert).lowercase())
+            json.addProperty("fragment", DigestUtils.sha1Hex(transformedFrag).lowercase())
 
             val attributesJson = JsonArray()
             transformer.attributes.forEach { attributesJson.add(it) }
