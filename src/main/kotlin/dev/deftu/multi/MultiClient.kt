@@ -1,6 +1,7 @@
 package dev.deftu.multi
 
-//#if MC >= 1.14
+//#if MC >= 1.16
+import net.minecraft.client.util.GlfwUtil
 //#endif
 
 import net.minecraft.client.MinecraftClient
@@ -13,7 +14,6 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.network.ServerInfo
 import net.minecraft.client.option.GameOptions
 import net.minecraft.client.sound.SoundManager
-import net.minecraft.client.util.GlfwUtil
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.server.integrated.IntegratedServer
 

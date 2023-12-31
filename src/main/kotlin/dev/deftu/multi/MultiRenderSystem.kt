@@ -4,10 +4,13 @@ package dev.deftu.multi
 //$$ import org.lwjgl.opengl.GL13
 //#endif
 
+//#if MC >= 1.17
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.gl.ShaderProgram
-import net.minecraft.util.Identifier
 import java.util.function.Supplier
+//#endif
+
+import net.minecraft.util.Identifier
 
 public object MultiRenderSystem {
     //#if MC >= 1.17

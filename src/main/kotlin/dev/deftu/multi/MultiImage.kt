@@ -16,7 +16,7 @@ public class MultiImage(
     //#if MC >= 1.16
     public val image: NativeImage,
     //#else
-    //$$ val image: BufferedImage,
+    //$$ public val image: BufferedImage,
     //#endif
 ) {
     public companion object {

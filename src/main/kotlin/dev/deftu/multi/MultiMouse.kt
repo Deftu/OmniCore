@@ -19,14 +19,14 @@ public object MultiMouse {
     @JvmField public val BUTTON7: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_7 }
     @JvmField public val BUTTON8: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_8 }
     //#else
-    //$$ @JvmField val LEFT = noInline { 0 }
-    //$$ @JvmField val RIGHT = noInline { 1 }
-    //$$ @JvmField val MIDDLE = noInline { 2 } // FIXME Is this correct?
-    //$$ @JvmField val BACK = noInline { 3 } // FIXME Is this correct?
-    //$$ @JvmField val FORWARD = noInline { 4 } // FIXME Is this correct?
-    //$$ @JvmField val BUTTON6 = noInline { 5 } // FIXME Is this correct?
-    //$$ @JvmField val BUTTON7 = noInline { 6 } // FIXME Is this correct?
-    //$$ @JvmField val BUTTON8 = noInline { 7 } // FIXME Is this correct?
+    //$$ @JvmField public val LEFT: Int = noInline { 0 }
+    //$$ @JvmField public val RIGHT: Int = noInline { 1 }
+    //$$ @JvmField public val MIDDLE: Int = noInline { 2 } // FIXME Is this correct?
+    //$$ @JvmField public val BACK: Int = noInline { 3 } // FIXME Is this correct?
+    //$$ @JvmField public val FORWARD: Int = noInline { 4 } // FIXME Is this correct?
+    //$$ @JvmField public val BUTTON6: Int = noInline { 5 } // FIXME Is this correct?
+    //$$ @JvmField public val BUTTON7: Int = noInline { 6 } // FIXME Is this correct?
+    //$$ @JvmField public val BUTTON8: Int = noInline { 7 } // FIXME Is this correct?
     //#endif
 
     @JvmStatic

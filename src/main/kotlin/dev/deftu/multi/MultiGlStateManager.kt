@@ -3,10 +3,14 @@
 package dev.deftu.multi
 
 //#if MC >= 1.15
+import com.mojang.blaze3d.systems.RenderSystem
+//#endif
+
+//#if MC <= 1.16.5
+//$$ import org.lwjgl.opengl.GL14
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
-import com.mojang.blaze3d.systems.RenderSystem
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 
@@ -79,6 +83,8 @@ public object MultiGlStateManager {
     @JvmStatic public fun clear(mask: Int) {
         //#if MC >= 1.17
         RenderSystem.clear(mask, false)
+        //#elseif MC >= 1.16
+        //$$ GlStateManager.clear(mask, false)
         //#else
         //$$ GlStateManager.clear(mask)
         //#endif

@@ -3,20 +3,18 @@
 package dev.deftu.multi
 
 //#if MC >= 1.15
+import net.minecraft.client.texture.NativeImage
 //#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
-//$$ import com.mojang.blaze3d.platform.NativeImage
 //#else
 //#endif
 //#else
-//$$ import net.minecraft.client.resources.IResourceManager
 //$$ import net.minecraft.client.renderer.texture.*
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.platform.TextureUtil
 import net.minecraft.client.texture.AbstractTexture
-import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.texture.TextureManager
 import net.minecraft.resource.ResourceManager
@@ -57,6 +55,18 @@ public class MultiTextureManager(
             //$$ GlStateManager.activeTexture(id)
             //#else
             //$$ GlStateManager.setActiveTexture(id)
+            //#endif
+        }
+
+        @JvmStatic
+        public fun generateTexture(): Int {
+            //#if MC >= 1.17
+            return TextureUtil.generateTextureId()
+            //#elseif MC >= 1.16.5
+            //$$ return TextureUtil.generateId()
+            //#else
+            //$$ // TODO
+            //$$ return 0
             //#endif
         }
 
@@ -120,7 +130,7 @@ public class MultiTextureManager(
     //#if MC >= 1.14
     public fun registerTexture(path: Identifier, texture: AbstractTexture): MultiTextureManager = apply {
     //#else
-    //$$ fun registerTexture(path: ResourceLocation, texture: ITextureObject) = apply {
+    //$$ public fun registerTexture(path: ResourceLocation, texture: ITextureObject): MultiTextureManager = apply {
     //#endif
         textureManager.registerTexture(path, texture)
     }
@@ -167,7 +177,7 @@ public class ReleasedDynamicTexture(
     //#if MC >= 1.14
     public constructor(image: NativeImage) : this(image.width, image.height, image)
     //#else
-    //$$ constructor(image: BufferedImage) : this(image.width, image.height, image.getRGB(0, 0, image.width, image.height, null, 0, image.width))
+    //$$ public constructor(image: BufferedImage) : this(image.width, image.height, image.getRGB(0, 0, image.width, image.height, null, 0, image.width))
     //#endif
 
     private var resources = Resources(this)

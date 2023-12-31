@@ -13,9 +13,16 @@ com.mojang.blaze3d.platform.GlStateManager _pushMatrix() pushMatrix()
 com.mojang.blaze3d.platform.GlStateManager _popMatrix() popMatrix()
 com.mojang.blaze3d.platform.GlStateManager _bindTexture() bindTexture()
 com.mojang.blaze3d.platform.GlStateManager _deleteTexture() deleteTexture()
+com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
+net.minecraft.client.multiplayer.ClientLevel net.minecraft.client.multiplayer.WorldClient
+net.minecraft.client.player.LocalPlayer net.minecraft.client.entity.EntityPlayerSP
+net.minecraft.client.gui.Gui net.minecraft.client.gui.GuiIngame
+net.minecraft.client.gui.components.ChatComponent net.minecraft.client.gui.GuiNewChat
+net.minecraft.client.multiplayer.ClientPacketListener net.minecraft.client.network.NetHandlerPlayClient
+net.minecraft.client.Options net.minecraft.client.settings.GameSettings
 net.minecraft.client.renderer.texture.TextureManager register() loadTexture()
 net.minecraft.client.renderer.texture.AbstractTexture load() loadTexture()
 net.minecraft.client.renderer.texture.AbstractTexture getId() getGlTextureId()

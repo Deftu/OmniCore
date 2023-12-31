@@ -412,6 +412,6 @@ public abstract class MultiScreen(
     //$$     handleBackgroundRender(MultiMatrixStack())
     //$$ }
     //$$
-    //$$ final override fun doesGuiPauseGame() = doesPauseGame()
+    //$$ final override fun doesGuiPauseGame(): Boolean = doesPauseGame()
     //#endif
 }

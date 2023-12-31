@@ -2,11 +2,14 @@
 
 package dev.deftu.multi
 
-//#if MC >= 1.17.1
+//#if MC >= 1.16
+import net.minecraft.client.texture.NativeImage
+//#else
+//$$ import org.lwjgl.BufferUtils
+//$$ import java.awt.image.BufferedImage
+//$$ import javax.imageio.ImageIO
 //#endif
 
-import com.mojang.blaze3d.platform.TextureUtil
-import net.minecraft.client.texture.NativeImage
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL30
@@ -118,12 +121,12 @@ public class MultiFramebuffer {
         unbind()
 
         if (depthAttachment != -1) {
-            TextureUtil.releaseTextureId(depthAttachment)
+            MultiTextureManager.deleteTexture(depthAttachment)
             depthAttachment = -1
         }
 
         if (colorAttachment != -1) {
-            TextureUtil.releaseTextureId(colorAttachment)
+            MultiTextureManager.deleteTexture(colorAttachment)
             colorAttachment = -1
         }
 
@@ -184,13 +187,55 @@ public class MultiFramebuffer {
         unbind()
     }
 
+    public fun copyFrom(
+        other: MultiFramebuffer
+    ) {
+        bindReadFramebuffer(other.fbo)
+        GL30.glFramebufferTexture2D(GL30.GL_READ_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, other.colorAttachment, 0)
+        GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0)
+
+        bindDrawFramebuffer(fbo)
+        GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT1, GL11.GL_TEXTURE_2D, colorAttachment, 0)
+        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1)
+
+        GL30.glBlitFramebuffer(
+            0, 0, other.width, other.height,
+            0, 0, width, height,
+            GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST
+        )
+
+        unbindTexture()
+        unbind()
+    }
+
     public fun writeToFile(file: File) {
+        //#if MC >= 1.16
         val image = NativeImage(width, height, false)
         bindTexture()
         image.loadFromTextureImage(0, true)
         image.mirrorVertically()
         image.writeTo(file)
         unbindTexture()
+        //#else
+        //$$ val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        //$$ val buffer = BufferUtils.createByteBuffer(width * height * 4)
+        //$$ bindTexture()
+        //$$ GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
+        //$$ for (y in 0..<height) {
+        //$$     for (x in 0..<width) {
+        //$$         val i = (x + y * width) * 4
+        //$$         val r = buffer.get(i).toInt() and 0xFF
+        //$$         val g = buffer.get(i + 1).toInt() and 0xFF
+        //$$         val b = buffer.get(i + 2).toInt() and 0xFF
+        //$$         val a = buffer.get(i + 3).toInt() and 0xFF
+        //$$         val argb = (a shl 24) or (r shl 16) or (g shl 8) or b
+        //$$         image.setRGB(x, height - y - 1, argb)
+        //$$     }
+        //$$ }
+        //$$
+        //$$ unbindTexture()
+        //$$ ImageIO.write(image, "png", file)
+        //#endif
     }
 
     private fun initialize(
@@ -200,8 +245,8 @@ public class MultiFramebuffer {
         this.width = width
         this.height = height
 
-        this.colorAttachment = TextureUtil.generateTextureId()
-        this.depthAttachment = TextureUtil.generateTextureId()
+        this.colorAttachment = MultiTextureManager.generateTexture()
+        this.depthAttachment = MultiTextureManager.generateTexture()
         val size = findSize(width, height)
 
         this.fbo = genFramebuffer()
@@ -242,7 +287,7 @@ public class MultiFramebuffer {
 
     private fun trySetupColor(size: Size): Boolean {
         if (colorAttachment == -1) {
-            colorAttachment = TextureUtil.generateTextureId()
+            colorAttachment = MultiTextureManager.generateTexture()
         }
 
         MultiGlStateManager.getError()
@@ -253,7 +298,7 @@ public class MultiFramebuffer {
 
     private fun trySetupDepth(size: Size): Boolean {
         if (depthAttachment == -1) {
-            depthAttachment = TextureUtil.generateTextureId()
+            depthAttachment = MultiTextureManager.generateTexture()
         }
 
         MultiGlStateManager.getError()
@@ -294,7 +339,7 @@ public class MultiFramebuffer {
             }
 
             error("Framebuffer is not complete: $message (${status.toString(16)})")
-        } else println("Framebuffer is complete")
+        }
     }
 
     private class Size(

@@ -2,21 +2,12 @@
 
 package dev.deftu.multi
 
-//#if MC >= 1.20
-import com.mojang.blaze3d.systems.RenderSystem
-//#endif
-
 //#if MC >= 1.17
 import net.minecraft.client.gl.ShaderProgram
 //#endif
 
 //#if MC >= 1.16
-import net.minecraft.client.render.RenderLayer
-//#endif
-
-//#if MC >= 1.14
-import net.minecraft.client.render.BufferRenderer
-import net.minecraft.client.render.GameRenderer
+import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 //#if MC <= 1.19.2
@@ -28,14 +19,24 @@ import net.minecraft.client.render.GameRenderer
 //$$ import org.lwjgl.util.vector.Vector4f
 //#endif
 
+//#if FABRIC
+import net.minecraft.client.render.*
+//#else
+//#if MC >= 1.16
+//$$ import com.mojang.blaze3d.vertex.*
+//$$ import net.minecraft.client.renderer.GameRenderer
+//$$ import net.minecraft.client.renderer.RenderType
+//#else
+//$$ import net.minecraft.client.renderer.*
+//$$ import net.minecraft.client.renderer.vertex.VertexFormat
+//$$ import net.minecraft.client.renderer.vertex.VertexFormatElement
+//#endif
+//#endif
+
 import org.lwjgl.opengl.GL11
 import java.awt.Color
+import java.util.*
 import java.util.function.Supplier
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormatElement
-import java.util.IdentityHashMap
 
 public class MultiTessellator(
     private val buffer: BufferBuilder
@@ -346,7 +347,7 @@ public class MultiTessellator(
         //#if MC >= 1.17
         public val vanilla: VertexFormat.DrawMode
         //#else
-        //$$ val vanilla: Int
+        //$$ public val vanilla: Int
         //#endif
 
         init {
