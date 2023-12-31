@@ -12,6 +12,7 @@ plugins {
     id("dev.deftu.gradle.tools.minecraft.releases")
 }
 
+kotlin.explicitApi()
 toolkitLoomApi.setupTestClient()
 if (mcData.isForge && mcData.version >= 1_15_02) {
     toolkitLoomHelper.useKotlinForForge()
