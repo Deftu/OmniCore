@@ -1,36 +1,36 @@
 package dev.deftu.multi.shader
 
 //#if MC >= 1.17
-import net.minecraft.client.gl.GlBlendState
 //#endif
 
 //#if MC >= 1.15
-import org.lwjgl.opengl.GL20
 //#endif
 
+import dev.deftu.multi.MultiGlStateManager
+import net.minecraft.client.gl.GlBlendState
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL14
-import dev.deftu.multi.MultiGlStateManager
+import org.lwjgl.opengl.GL20
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
  */
-data class BlendState(
-    val equation: BlendEquation,
-    val srcRgb: BlendFactor,
-    val dstRgb: BlendFactor,
-    val srcAlpha: BlendFactor = srcRgb,
-    val dstAlpha: BlendFactor = dstRgb,
-    val enabled: Boolean = true
+public data class BlendState(
+    public val equation: BlendEquation,
+    public val srcRgb: BlendFactor,
+    public val dstRgb: BlendFactor,
+    public val srcAlpha: BlendFactor = srcRgb,
+    public val dstAlpha: BlendFactor = dstRgb,
+    public val enabled: Boolean = true
 ) {
-    companion object {
+    public companion object {
         @JvmField
-        val DISABLED = BlendState(BlendEquation.ADD, BlendFactor.ONE, BlendFactor.ZERO, enabled = false)
+        public val DISABLED: BlendState = BlendState(BlendEquation.ADD, BlendFactor.ONE, BlendFactor.ZERO, enabled = false)
         @JvmField
-        val NORMAL = BlendState(BlendEquation.ADD, BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
+        public val NORMAL: BlendState = BlendState(BlendEquation.ADD, BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
 
-        @JvmStatic fun active() = BlendState(
+        @JvmStatic public fun active(): BlendState = BlendState(
             //#if MC >= 1.15
             BlendEquation.fromId(GL11.glGetInteger(GL20.GL_BLEND_EQUATION_RGB)) ?: BlendEquation.ADD,
             //#else
@@ -44,9 +44,9 @@ data class BlendState(
         )
     }
 
-    val separate = srcRgb != srcAlpha || dstRgb != dstAlpha
-    val separateSrc = srcRgb != srcAlpha
-    val separateDst = dstRgb != dstAlpha
+    public val separate: Boolean = srcRgb != srcAlpha || dstRgb != dstAlpha
+    public val separateSrc: Boolean = srcRgb != srcAlpha
+    public val separateDst: Boolean = dstRgb != dstAlpha
 
     //#if MC >= 1.17
     private inner class VanillaBlendState : GlBlendState {
@@ -77,9 +77,9 @@ data class BlendState(
         VanillaBlendState()
     }
 
-    fun activate() = vanilla.enable()
+    public fun activate(): Unit = vanilla.enable()
     //#else
-    //$$ fun activate() = apply()
+    //$$ fun activate(): Unit = apply()
     //#endif
 
     private fun apply() {
@@ -88,7 +88,7 @@ data class BlendState(
         MultiGlStateManager.blendFuncSeparate(srcRgb.value, dstRgb.value, srcAlpha.value, dstAlpha.value)
     }
 
-    enum class BlendEquation(
+    public enum class BlendEquation(
         internal val mcStr: String,
         internal val value: Int
     ) {
@@ -98,13 +98,13 @@ data class BlendState(
         MIN("min", GL14.GL_MIN),
         MAX("max", GL14.GL_MAX);
 
-        companion object {
+        public companion object {
             private val byGlId = values().associateBy { it.value }
-            @JvmStatic fun fromId(id: Int) = byGlId[id]
+            @JvmStatic public fun fromId(id: Int): BlendEquation? = byGlId[id]
         }
     }
 
-    enum class BlendFactor(
+    public enum class BlendFactor(
         internal val mcStr: String,
         internal val value: Int
     ) {
@@ -119,9 +119,9 @@ data class BlendState(
         DST_ALPHA("dstalpha", GL11.GL_DST_ALPHA),
         ONE_MINUS_DST_ALPHA("1-dstalpha", GL11.GL_ONE_MINUS_DST_ALPHA);
 
-        companion object {
+        public companion object {
             private val byGlId = values().associateBy { it.value }
-            @JvmStatic fun fromId(id: Int) = byGlId[id]
+            @JvmStatic public fun fromId(id: Int): BlendFactor? = byGlId[id]
         }
     }
 }
