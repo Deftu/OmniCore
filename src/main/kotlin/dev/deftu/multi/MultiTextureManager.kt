@@ -1,20 +1,25 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package dev.deftu.multi
 
 //#if MC >= 1.15
-import net.minecraft.resource.ResourceManager
 //#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
 //$$ import com.mojang.blaze3d.platform.NativeImage
 //#else
-import net.minecraft.client.texture.*
 //#endif
 //#else
 //$$ import net.minecraft.client.resources.IResourceManager
 //$$ import net.minecraft.client.renderer.texture.*
 //#endif
 
-import com.mojang.blaze3d.platform.TextureUtil
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.platform.TextureUtil
+import net.minecraft.client.texture.AbstractTexture
+import net.minecraft.client.texture.NativeImage
+import net.minecraft.client.texture.NativeImageBackedTexture
+import net.minecraft.client.texture.TextureManager
+import net.minecraft.resource.ResourceManager
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -28,21 +33,24 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
 
-class MultiTextureManager(
+public class MultiTextureManager(
     private val textureManager: TextureManager
 ) {
-    companion object {
+    public companion object {
         @JvmStatic
-        val INSTANCE by lazy {
+        public val INSTANCE: MultiTextureManager by lazy {
             MultiTextureManager(get())
         }
 
-        @JvmStatic fun get() = MultiClient.getInstance().textureManager
+        @JvmStatic
+        public fun get(): TextureManager = MultiClient.getInstance().textureManager
 
-        @JvmStatic fun getActiveTexture() =
+        @JvmStatic
+        public fun getActiveTexture(): Int =
             GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
 
-        @JvmStatic fun setActiveTexture(id: Int) {
+        @JvmStatic
+        public fun setActiveTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._activeTexture(id)
             //#elseif MC >= 1.14
@@ -52,7 +60,8 @@ class MultiTextureManager(
             //#endif
         }
 
-        @JvmStatic fun bindTexture(id: Int) {
+        @JvmStatic
+        public fun bindTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._bindTexture(id)
             //#else
@@ -60,7 +69,13 @@ class MultiTextureManager(
             //#endif
         }
 
-        @JvmStatic fun deleteTexture(id: Int) {
+        @JvmStatic
+        public fun removeTexture() {
+            bindTexture(GL11.GL_NONE)
+        }
+
+        @JvmStatic
+        public fun deleteTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._deleteTexture(id)
             //#else
@@ -68,14 +83,16 @@ class MultiTextureManager(
             //#endif
         }
 
-        @JvmStatic fun configureTexture(id: Int, block: Runnable) {
+        @JvmStatic
+        public fun configureTexture(id: Int, block: Runnable) {
             val prevActiveTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
             bindTexture(id)
             block.run()
             bindTexture(prevActiveTexture)
         }
 
-        @JvmStatic fun configureTextureUnit(index: Int, block: Runnable) {
+        @JvmStatic
+        public fun configureTextureUnit(index: Int, block: Runnable) {
             val prevActiveTexture = getActiveTexture()
             setActiveTexture(GL13.GL_TEXTURE0 + index)
             block.run()
@@ -83,7 +100,7 @@ class MultiTextureManager(
         }
     }
 
-    fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
+    public fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
         try {
             //#if MC >= 1.14
             val image = NativeImage.read(stream)
@@ -96,19 +113,19 @@ class MultiTextureManager(
         }
     }
 
-    fun bindTexture(path: Identifier) = apply {
+    public fun bindTexture(path: Identifier): MultiTextureManager = apply {
         textureManager.bindTexture(path)
     }
 
     //#if MC >= 1.14
-    fun registerTexture(path: Identifier, texture: AbstractTexture) = apply {
+    public fun registerTexture(path: Identifier, texture: AbstractTexture): MultiTextureManager = apply {
     //#else
     //$$ fun registerTexture(path: ResourceLocation, texture: ITextureObject) = apply {
     //#endif
         textureManager.registerTexture(path, texture)
     }
 
-    fun registerImageTexture(path: Identifier, texture: BufferedImage) = apply {
+    public fun registerImageTexture(path: Identifier, texture: BufferedImage): MultiTextureManager = apply {
         val stream = ByteArrayOutputStream()
         ImageIO.write(texture, "png", stream)
         MultiClient.execute {
@@ -116,15 +133,15 @@ class MultiTextureManager(
         }
     }
 
-    fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture) = apply {
+    public fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture): MultiTextureManager = apply {
         textureManager.registerDynamicTexture(path, texture)
     }
 
-    fun destroyTexture(path: Identifier) = apply {
+    public fun destroyTexture(path: Identifier): MultiTextureManager = apply {
         textureManager.destroyTexture(path)
     }
 
-    fun deleteTexture(id: Int) = apply {
+    public fun deleteTexture(id: Int): MultiTextureManager = apply {
         MultiTextureManager.deleteTexture(id)
     }
 }
@@ -133,9 +150,9 @@ class MultiTextureManager(
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
  */
-class ReleasedDynamicTexture(
-    val width: Int,
-    val height: Int,
+public class ReleasedDynamicTexture(
+    public val width: Int,
+    public val height: Int,
     //#if MC >= 1.14
     data: NativeImage?
     //#else
@@ -146,9 +163,9 @@ class ReleasedDynamicTexture(
 //#else
 //$$ ) : AbstractTexture() {
 //#endif
-    constructor(width: Int, height: Int) : this(width, height, null)
+    public constructor(width: Int, height: Int) : this(width, height, null)
     //#if MC >= 1.14
-    constructor(image: NativeImage) : this(image.width, image.height, image)
+    public constructor(image: NativeImage) : this(image.width, image.height, image)
     //#else
     //$$ constructor(image: BufferedImage) : this(image.width, image.height, image.getRGB(0, 0, image.width, image.height, null, 0, image.width))
     //#endif
@@ -163,14 +180,14 @@ class ReleasedDynamicTexture(
     //#else
     //$$ private var data = data ?: IntArray(width * height)
     //#endif
-    var uploaded = false
+    public var uploaded: Boolean = false
 
     override fun load(resourceManager: ResourceManager?) {
     }
 
     private fun allocGlId() = super.getGlId()
 
-    fun upload() {
+    public fun upload() {
         if (!uploaded) {
             //#if MC >= 1.17
             TextureUtil.prepareImage(allocGlId(), width, height)

@@ -8,16 +8,16 @@ import org.lwjgl.glfw.GLFW
 
 import kotlin.math.max
 
-object MultiMouse {
+public object MultiMouse {
     //#if MC >= 1.15
-    @JvmField val LEFT = noInline { GLFW.GLFW_MOUSE_BUTTON_LEFT }
-    @JvmField val RIGHT = noInline { GLFW.GLFW_MOUSE_BUTTON_RIGHT }
-    @JvmField val MIDDLE = noInline { GLFW.GLFW_MOUSE_BUTTON_MIDDLE }
-    @JvmField val BACK = noInline { GLFW.GLFW_MOUSE_BUTTON_4 }
-    @JvmField val FORWARD = noInline { GLFW.GLFW_MOUSE_BUTTON_5 }
-    @JvmField val BUTTON6 = noInline { GLFW.GLFW_MOUSE_BUTTON_6 }
-    @JvmField val BUTTON7 = noInline { GLFW.GLFW_MOUSE_BUTTON_7 }
-    @JvmField val BUTTON8 = noInline { GLFW.GLFW_MOUSE_BUTTON_8 }
+    @JvmField public val LEFT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_LEFT }
+    @JvmField public val RIGHT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_RIGHT }
+    @JvmField public val MIDDLE: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_MIDDLE }
+    @JvmField public val BACK: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_4 }
+    @JvmField public val FORWARD: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_5 }
+    @JvmField public val BUTTON6: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_6 }
+    @JvmField public val BUTTON7: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_7 }
+    @JvmField public val BUTTON8: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_8 }
     //#else
     //$$ @JvmField val LEFT = noInline { 0 }
     //$$ @JvmField val RIGHT = noInline { 1 }
@@ -30,7 +30,7 @@ object MultiMouse {
     //#endif
 
     @JvmStatic
-    val rawX: Double
+    public val rawX: Double
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().mouse.x
@@ -40,7 +40,7 @@ object MultiMouse {
         }
 
     @JvmStatic
-    val rawY: Double
+    public val rawY: Double
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().mouse.y
@@ -50,15 +50,15 @@ object MultiMouse {
         }
 
     @JvmStatic
-    val scaledX: Double
+    public val scaledX: Double
         get() = rawX * MultiResolution.scaledWidth / max(1, MultiResolution.screenWidth)
 
     @JvmStatic
-    val scaledY: Double
+    public val scaledY: Double
         get() = rawY * MultiResolution.scaledHeight / max(1, MultiResolution.screenHeight)
 
     @JvmStatic
-    val isCursorGrabbed: Boolean
+    public val isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().mouse.isCursorLocked
@@ -68,7 +68,7 @@ object MultiMouse {
         }
 
     @JvmStatic
-    fun setCursorGrabbed(grabbed: Boolean) {
+    public fun setCursorGrabbed(grabbed: Boolean) {
         //#if MC >= 1.14
         if (grabbed) MultiClient.getInstance().mouse.lockCursor()
         else MultiClient.getInstance().mouse.unlockCursor()
@@ -78,7 +78,7 @@ object MultiMouse {
     }
 
     @JvmStatic
-    fun isMouseButton(code: Int): Boolean {
+    public fun isMouseButton(code: Int): Boolean {
         //#if MC >= 1.15
         return code < 20
         //#else
@@ -87,7 +87,7 @@ object MultiMouse {
     }
 
     @JvmStatic
-    fun isPressed(code: Int): Boolean {
+    public fun isPressed(code: Int): Boolean {
         //#if MC >= 1.15
         val handle = MultiClient.getInstance().window.handle
         val state = if (!MultiKeyboard.isKeyboardButton(code)) GLFW.glfwGetMouseButton(handle, code) else MultiKeyboard.isPressed(code)

@@ -21,28 +21,28 @@ import dev.deftu.textful.Text
 import dev.deftu.textful.impl.TranslatableText as TextfulTranslatableText
 import dev.deftu.textful.toVanilla
 
-abstract class MultiScreen(
-    val restorePreviousScreen: Boolean = true,
-    val screenTitle: Text? = null
+public abstract class MultiScreen(
+    public val restorePreviousScreen: Boolean = true,
+    public val screenTitle: Text? = null
 //#if MC >= 1.15
 ) : Screen(screenTitle?.toVanilla() ?: TextfulTranslatableText("").toVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
-    companion object {
+    public companion object {
         @JvmStatic
-        fun openScreen(screen: Screen?) {
+        public fun openScreen(screen: Screen?) {
             MultiClient.getInstance().setScreen(screen)
         }
     }
 
-    constructor(
+    public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
     ) : this(restorePreviousScreen, TextfulTranslatableText(titleKey ?: ""))
 
     @JvmOverloads
-    constructor(
+    public constructor(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as Text?)
 
@@ -66,7 +66,7 @@ abstract class MultiScreen(
     private var contexts = mutableListOf<DrawContext>()
     //#endif
 
-    open fun handleInitialize(width: Int, height: Int) {
+    public open fun handleInitialize(width: Int, height: Int) {
         //#if MC >= 1.15
         super.init()
         //#else
@@ -74,7 +74,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleRender(
+    public open fun handleRender(
         stack: MultiMatrixStack,
         mouseX: Int,
         mouseY: Int,
@@ -93,7 +93,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleKeyPress(
+    public open fun handleKeyPress(
         code: Int,
         char: Char,
         modifiers: MultiKeyboard.KeyboardModifiers
@@ -115,7 +115,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleKeyRelease(
+    public open fun handleKeyRelease(
         code: Int,
         char: Char,
         modifiers: Int
@@ -127,7 +127,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleMouseClick(
+    public open fun handleMouseClick(
         x: Double,
         y: Double,
         button: Int
@@ -144,7 +144,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleMouseReleased(
+    public open fun handleMouseReleased(
         x: Double,
         y: Double,
         state: Int
@@ -156,7 +156,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleMouseDragged(
+    public open fun handleMouseDragged(
         x: Double,
         y: Double,
         button: Int,
@@ -169,7 +169,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleMouseScrolled(
+    public open fun handleMouseScrolled(
         delta: Double
     ) {
         //#if MC >= 1.15
@@ -184,7 +184,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleTick() {
+    public open fun handleTick() {
         //#if MC >= 1.15
         super.tick()
         //#else
@@ -192,7 +192,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleClose() {
+    public open fun handleClose() {
         //#if MC >= 1.15
         super.close()
         //#else
@@ -200,7 +200,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleResize(width: Int, height: Int) {
+    public open fun handleResize(width: Int, height: Int) {
         //#if MC >= 1.15
         super.resize(MultiClient.getInstance(), width, height)
         //#else
@@ -208,7 +208,7 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun handleBackgroundRender(
+    public open fun handleBackgroundRender(
         stack: MultiMatrixStack
     ) {
         //#if MC >= 1.20
@@ -231,9 +231,9 @@ abstract class MultiScreen(
         //#endif
     }
 
-    open fun doesPauseGame() = super.shouldPause()
+    public open fun doesPauseGame(): Boolean = super.shouldPause()
 
-    fun restorePreviousScreen() {
+    public fun restorePreviousScreen() {
         openScreen(previousScreen)
     }
 
@@ -362,7 +362,7 @@ abstract class MultiScreen(
     //$$ }
     //#endif
 
-    final override fun shouldPause() = doesPauseGame()
+    final override fun shouldPause(): Boolean = doesPauseGame()
     //#else
     //$$ final override fun initGui() {
     //$$     handleInitialize(width, height)

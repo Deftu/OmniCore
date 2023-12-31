@@ -4,7 +4,7 @@ package dev.deftu.multi
 //$$ import net.minecraft.client.gui.ScaledResolution
 //#endif
 
-object MultiResolution {
+public object MultiResolution {
     //#if MC <= 1.12.2
     //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val unicode: Boolean)
     //$$ private var scaledRes: ScaledResolution? = null
@@ -12,7 +12,7 @@ object MultiResolution {
     //#endif
 
     @JvmStatic
-    val screenWidth: Int
+    public val screenWidth: Int
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.width
@@ -22,7 +22,7 @@ object MultiResolution {
         }
 
     @JvmStatic
-    val screenHeight: Int
+    public val screenHeight: Int
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.height
@@ -32,7 +32,7 @@ object MultiResolution {
         }
 
     @JvmStatic
-    val viewportWidth: Int
+    public val viewportWidth: Int
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.framebufferWidth
@@ -42,7 +42,7 @@ object MultiResolution {
         }
 
     @JvmStatic
-    val viewportHeight: Int
+    public val viewportHeight: Int
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.framebufferHeight
@@ -52,7 +52,7 @@ object MultiResolution {
         }
 
     @JvmStatic
-    val scaledWidth: Int
+    public val scaledWidth: Int
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.scaledWidth
@@ -62,7 +62,7 @@ object MultiResolution {
         }
 
     @JvmStatic
-    val scaledHeight: Int
+    public val scaledHeight: Int
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.scaledHeight
@@ -72,7 +72,7 @@ object MultiResolution {
         }
 
     @JvmStatic
-    val scaleFactor: Double
+    public val scaleFactor: Double
         get() {
             //#if MC >= 1.14
             return MultiClient.getInstance().window.scaleFactor

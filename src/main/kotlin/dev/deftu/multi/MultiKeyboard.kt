@@ -7,119 +7,119 @@ import org.lwjgl.glfw.GLFW
 //$$ import org.lwjgl.input.Keyboard
 //#endif
 
-object MultiKeyboard {
-    data class KeyboardModifiers(
+public object MultiKeyboard {
+    public data class KeyboardModifiers(
         val shift: Boolean,
         val ctrl: Boolean,
         val alt: Boolean
     )
 
     //#if MC >= 1.15
-    @JvmField val KEY_NONE: Int = noInline { InputUtil.UNKNOWN_KEY.code }
-    @JvmField val KEY_ESCAPE: Int = noInline { GLFW.GLFW_KEY_ESCAPE }
-    @JvmField val KEY_LMETA: Int = noInline { GLFW.GLFW_KEY_LEFT_SUPER }
-    @JvmField val KEY_RMETA: Int = noInline { GLFW.GLFW_KEY_RIGHT_SUPER }
-    @JvmField val KEY_LCONTROL: Int = noInline { GLFW.GLFW_KEY_LEFT_CONTROL }
-    @JvmField val KEY_RCONTROL: Int = noInline { GLFW.GLFW_KEY_RIGHT_CONTROL }
-    @JvmField val KEY_LSHIFT: Int = noInline { GLFW.GLFW_KEY_LEFT_SHIFT }
-    @JvmField val KEY_RSHIFT: Int = noInline { GLFW.GLFW_KEY_RIGHT_SHIFT }
-    @JvmField val KEY_LMENU: Int = noInline { GLFW.GLFW_KEY_LEFT_ALT }
-    @JvmField val KEY_RMENU: Int = noInline { GLFW.GLFW_KEY_RIGHT_ALT }
-    @JvmField val KEY_MINUS: Int = noInline { GLFW.GLFW_KEY_MINUS }
-    @JvmField val KEY_EQUALS: Int = noInline { GLFW.GLFW_KEY_EQUAL }
-    @JvmField val KEY_BACKSPACE: Int = noInline { GLFW.GLFW_KEY_BACKSPACE }
-    @JvmField val KEY_ENTER: Int = noInline { GLFW.GLFW_KEY_ENTER }
-    @JvmField val KEY_TAB: Int = noInline { GLFW.GLFW_KEY_TAB }
-    @JvmField val KEY_LBRACKET: Int = noInline { GLFW.GLFW_KEY_LEFT_BRACKET }
-    @JvmField val KEY_RBRACKET: Int = noInline { GLFW.GLFW_KEY_RIGHT_BRACKET }
-    @JvmField val KEY_SEMICOLON: Int = noInline { GLFW.GLFW_KEY_SEMICOLON }
-    @JvmField val KEY_APOSTROPHE: Int = noInline { GLFW.GLFW_KEY_APOSTROPHE }
-    @JvmField val KEY_GRAVE: Int = noInline { GLFW.GLFW_KEY_GRAVE_ACCENT }
-    @JvmField val KEY_BACKSLASH: Int = noInline { GLFW.GLFW_KEY_BACKSLASH }
-    @JvmField val KEY_COMMA: Int = noInline { GLFW.GLFW_KEY_COMMA }
-    @JvmField val KEY_PERIOD: Int = noInline { GLFW.GLFW_KEY_PERIOD }
-    @JvmField val KEY_SLASH: Int = noInline { GLFW.GLFW_KEY_SLASH }
-    @JvmField val KEY_MULTIPLY: Int = noInline { GLFW.GLFW_KEY_KP_MULTIPLY }
-    @JvmField val KEY_SPACE: Int = noInline { GLFW.GLFW_KEY_SPACE }
-    @JvmField val KEY_CAPITAL: Int = noInline { GLFW.GLFW_KEY_CAPS_LOCK }
-    @JvmField val KEY_LEFT: Int = noInline { GLFW.GLFW_KEY_LEFT }
-    @JvmField val KEY_UP: Int = noInline { GLFW.GLFW_KEY_UP }
-    @JvmField val KEY_RIGHT: Int = noInline { GLFW.GLFW_KEY_RIGHT }
-    @JvmField val KEY_DOWN: Int = noInline { GLFW.GLFW_KEY_DOWN }
-    @JvmField val KEY_NUMLOCK: Int = noInline { GLFW.GLFW_KEY_NUM_LOCK }
-    @JvmField val KEY_SCROLL: Int = noInline { GLFW.GLFW_KEY_SCROLL_LOCK }
-    @JvmField val KEY_SUBTRACT: Int = noInline { GLFW.GLFW_KEY_KP_SUBTRACT }
-    @JvmField val KEY_ADD: Int = noInline { GLFW.GLFW_KEY_KP_ADD }
-    @JvmField val KEY_DIVIDE: Int = noInline { GLFW.GLFW_KEY_KP_DIVIDE }
-    @JvmField val KEY_DECIMAL: Int = noInline { GLFW.GLFW_KEY_KP_DECIMAL }
-    @JvmField val KEY_NUMPAD0: Int = noInline { GLFW.GLFW_KEY_KP_0 }
-    @JvmField val KEY_NUMPAD1: Int = noInline { GLFW.GLFW_KEY_KP_1 }
-    @JvmField val KEY_NUMPAD2: Int = noInline { GLFW.GLFW_KEY_KP_2 }
-    @JvmField val KEY_NUMPAD3: Int = noInline { GLFW.GLFW_KEY_KP_3 }
-    @JvmField val KEY_NUMPAD4: Int = noInline { GLFW.GLFW_KEY_KP_4 }
-    @JvmField val KEY_NUMPAD5: Int = noInline { GLFW.GLFW_KEY_KP_5 }
-    @JvmField val KEY_NUMPAD6: Int = noInline { GLFW.GLFW_KEY_KP_6 }
-    @JvmField val KEY_NUMPAD7: Int = noInline { GLFW.GLFW_KEY_KP_7 }
-    @JvmField val KEY_NUMPAD8: Int = noInline { GLFW.GLFW_KEY_KP_8 }
-    @JvmField val KEY_NUMPAD9: Int = noInline { GLFW.GLFW_KEY_KP_9 }
-    @JvmField val KEY_A: Int = noInline { GLFW.GLFW_KEY_A }
-    @JvmField val KEY_B: Int = noInline { GLFW.GLFW_KEY_B }
-    @JvmField val KEY_C: Int = noInline { GLFW.GLFW_KEY_C }
-    @JvmField val KEY_D: Int = noInline { GLFW.GLFW_KEY_D }
-    @JvmField val KEY_E: Int = noInline { GLFW.GLFW_KEY_E }
-    @JvmField val KEY_F: Int = noInline { GLFW.GLFW_KEY_F }
-    @JvmField val KEY_G: Int = noInline { GLFW.GLFW_KEY_G }
-    @JvmField val KEY_H: Int = noInline { GLFW.GLFW_KEY_H }
-    @JvmField val KEY_I: Int = noInline { GLFW.GLFW_KEY_I }
-    @JvmField val KEY_J: Int = noInline { GLFW.GLFW_KEY_J }
-    @JvmField val KEY_K: Int = noInline { GLFW.GLFW_KEY_K }
-    @JvmField val KEY_L: Int = noInline { GLFW.GLFW_KEY_L }
-    @JvmField val KEY_M: Int = noInline { GLFW.GLFW_KEY_M }
-    @JvmField val KEY_N: Int = noInline { GLFW.GLFW_KEY_N }
-    @JvmField val KEY_O: Int = noInline { GLFW.GLFW_KEY_O }
-    @JvmField val KEY_P: Int = noInline { GLFW.GLFW_KEY_P }
-    @JvmField val KEY_Q: Int = noInline { GLFW.GLFW_KEY_Q }
-    @JvmField val KEY_R: Int = noInline { GLFW.GLFW_KEY_R }
-    @JvmField val KEY_S: Int = noInline { GLFW.GLFW_KEY_S }
-    @JvmField val KEY_T: Int = noInline { GLFW.GLFW_KEY_T }
-    @JvmField val KEY_U: Int = noInline { GLFW.GLFW_KEY_U }
-    @JvmField val KEY_V: Int = noInline { GLFW.GLFW_KEY_V }
-    @JvmField val KEY_W: Int = noInline { GLFW.GLFW_KEY_W }
-    @JvmField val KEY_X: Int = noInline { GLFW.GLFW_KEY_X }
-    @JvmField val KEY_Y: Int = noInline { GLFW.GLFW_KEY_Y }
-    @JvmField val KEY_Z: Int = noInline { GLFW.GLFW_KEY_Z }
-    @JvmField val KEY_0: Int = noInline { GLFW.GLFW_KEY_0 }
-    @JvmField val KEY_1: Int = noInline { GLFW.GLFW_KEY_1 }
-    @JvmField val KEY_2: Int = noInline { GLFW.GLFW_KEY_2 }
-    @JvmField val KEY_3: Int = noInline { GLFW.GLFW_KEY_3 }
-    @JvmField val KEY_4: Int = noInline { GLFW.GLFW_KEY_4 }
-    @JvmField val KEY_5: Int = noInline { GLFW.GLFW_KEY_5 }
-    @JvmField val KEY_6: Int = noInline { GLFW.GLFW_KEY_6 }
-    @JvmField val KEY_7: Int = noInline { GLFW.GLFW_KEY_7 }
-    @JvmField val KEY_8: Int = noInline { GLFW.GLFW_KEY_8 }
-    @JvmField val KEY_9: Int = noInline { GLFW.GLFW_KEY_9 }
-    @JvmField val KEY_F1: Int = noInline { GLFW.GLFW_KEY_F1 }
-    @JvmField val KEY_F2: Int = noInline { GLFW.GLFW_KEY_F2 }
-    @JvmField val KEY_F3: Int = noInline { GLFW.GLFW_KEY_F3 }
-    @JvmField val KEY_F4: Int = noInline { GLFW.GLFW_KEY_F4 }
-    @JvmField val KEY_F5: Int = noInline { GLFW.GLFW_KEY_F5 }
-    @JvmField val KEY_F6: Int = noInline { GLFW.GLFW_KEY_F6 }
-    @JvmField val KEY_F7: Int = noInline { GLFW.GLFW_KEY_F7 }
-    @JvmField val KEY_F8: Int = noInline { GLFW.GLFW_KEY_F8 }
-    @JvmField val KEY_F9: Int = noInline { GLFW.GLFW_KEY_F9 }
-    @JvmField val KEY_F10: Int = noInline { GLFW.GLFW_KEY_F10 }
-    @JvmField val KEY_F11: Int = noInline { GLFW.GLFW_KEY_F11 }
-    @JvmField val KEY_F12: Int = noInline { GLFW.GLFW_KEY_F12 }
-    @JvmField val KEY_F13: Int = noInline { GLFW.GLFW_KEY_F13 }
-    @JvmField val KEY_F14: Int = noInline { GLFW.GLFW_KEY_F14 }
-    @JvmField val KEY_F15: Int = noInline { GLFW.GLFW_KEY_F15 }
-    @JvmField val KEY_F16: Int = noInline { GLFW.GLFW_KEY_F16 }
-    @JvmField val KEY_F17: Int = noInline { GLFW.GLFW_KEY_F17 }
-    @JvmField val KEY_F18: Int = noInline { GLFW.GLFW_KEY_F18 }
-    @JvmField val KEY_F19: Int = noInline { GLFW.GLFW_KEY_F19 }
-    @JvmField val KEY_DELETE: Int = noInline { GLFW.GLFW_KEY_DELETE }
-    @JvmField val KEY_HOME: Int = noInline { GLFW.GLFW_KEY_HOME }
-    @JvmField val KEY_END: Int = noInline { GLFW.GLFW_KEY_END }
+    @JvmField public val KEY_NONE: Int = noInline { InputUtil.UNKNOWN_KEY.code }
+    @JvmField public val KEY_ESCAPE: Int = noInline { GLFW.GLFW_KEY_ESCAPE }
+    @JvmField public val KEY_LMETA: Int = noInline { GLFW.GLFW_KEY_LEFT_SUPER }
+    @JvmField public val KEY_RMETA: Int = noInline { GLFW.GLFW_KEY_RIGHT_SUPER }
+    @JvmField public val KEY_LCONTROL: Int = noInline { GLFW.GLFW_KEY_LEFT_CONTROL }
+    @JvmField public val KEY_RCONTROL: Int = noInline { GLFW.GLFW_KEY_RIGHT_CONTROL }
+    @JvmField public val KEY_LSHIFT: Int = noInline { GLFW.GLFW_KEY_LEFT_SHIFT }
+    @JvmField public val KEY_RSHIFT: Int = noInline { GLFW.GLFW_KEY_RIGHT_SHIFT }
+    @JvmField public val KEY_LMENU: Int = noInline { GLFW.GLFW_KEY_LEFT_ALT }
+    @JvmField public val KEY_RMENU: Int = noInline { GLFW.GLFW_KEY_RIGHT_ALT }
+    @JvmField public val KEY_MINUS: Int = noInline { GLFW.GLFW_KEY_MINUS }
+    @JvmField public val KEY_EQUALS: Int = noInline { GLFW.GLFW_KEY_EQUAL }
+    @JvmField public val KEY_BACKSPACE: Int = noInline { GLFW.GLFW_KEY_BACKSPACE }
+    @JvmField public val KEY_ENTER: Int = noInline { GLFW.GLFW_KEY_ENTER }
+    @JvmField public val KEY_TAB: Int = noInline { GLFW.GLFW_KEY_TAB }
+    @JvmField public val KEY_LBRACKET: Int = noInline { GLFW.GLFW_KEY_LEFT_BRACKET }
+    @JvmField public val KEY_RBRACKET: Int = noInline { GLFW.GLFW_KEY_RIGHT_BRACKET }
+    @JvmField public val KEY_SEMICOLON: Int = noInline { GLFW.GLFW_KEY_SEMICOLON }
+    @JvmField public val KEY_APOSTROPHE: Int = noInline { GLFW.GLFW_KEY_APOSTROPHE }
+    @JvmField public val KEY_GRAVE: Int = noInline { GLFW.GLFW_KEY_GRAVE_ACCENT }
+    @JvmField public val KEY_BACKSLASH: Int = noInline { GLFW.GLFW_KEY_BACKSLASH }
+    @JvmField public val KEY_COMMA: Int = noInline { GLFW.GLFW_KEY_COMMA }
+    @JvmField public val KEY_PERIOD: Int = noInline { GLFW.GLFW_KEY_PERIOD }
+    @JvmField public val KEY_SLASH: Int = noInline { GLFW.GLFW_KEY_SLASH }
+    @JvmField public val KEY_MULTIPLY: Int = noInline { GLFW.GLFW_KEY_KP_MULTIPLY }
+    @JvmField public val KEY_SPACE: Int = noInline { GLFW.GLFW_KEY_SPACE }
+    @JvmField public val KEY_CAPITAL: Int = noInline { GLFW.GLFW_KEY_CAPS_LOCK }
+    @JvmField public val KEY_LEFT: Int = noInline { GLFW.GLFW_KEY_LEFT }
+    @JvmField public val KEY_UP: Int = noInline { GLFW.GLFW_KEY_UP }
+    @JvmField public val KEY_RIGHT: Int = noInline { GLFW.GLFW_KEY_RIGHT }
+    @JvmField public val KEY_DOWN: Int = noInline { GLFW.GLFW_KEY_DOWN }
+    @JvmField public val KEY_NUMLOCK: Int = noInline { GLFW.GLFW_KEY_NUM_LOCK }
+    @JvmField public val KEY_SCROLL: Int = noInline { GLFW.GLFW_KEY_SCROLL_LOCK }
+    @JvmField public val KEY_SUBTRACT: Int = noInline { GLFW.GLFW_KEY_KP_SUBTRACT }
+    @JvmField public val KEY_ADD: Int = noInline { GLFW.GLFW_KEY_KP_ADD }
+    @JvmField public val KEY_DIVIDE: Int = noInline { GLFW.GLFW_KEY_KP_DIVIDE }
+    @JvmField public val KEY_DECIMAL: Int = noInline { GLFW.GLFW_KEY_KP_DECIMAL }
+    @JvmField public val KEY_NUMPAD0: Int = noInline { GLFW.GLFW_KEY_KP_0 }
+    @JvmField public val KEY_NUMPAD1: Int = noInline { GLFW.GLFW_KEY_KP_1 }
+    @JvmField public val KEY_NUMPAD2: Int = noInline { GLFW.GLFW_KEY_KP_2 }
+    @JvmField public val KEY_NUMPAD3: Int = noInline { GLFW.GLFW_KEY_KP_3 }
+    @JvmField public val KEY_NUMPAD4: Int = noInline { GLFW.GLFW_KEY_KP_4 }
+    @JvmField public val KEY_NUMPAD5: Int = noInline { GLFW.GLFW_KEY_KP_5 }
+    @JvmField public val KEY_NUMPAD6: Int = noInline { GLFW.GLFW_KEY_KP_6 }
+    @JvmField public val KEY_NUMPAD7: Int = noInline { GLFW.GLFW_KEY_KP_7 }
+    @JvmField public val KEY_NUMPAD8: Int = noInline { GLFW.GLFW_KEY_KP_8 }
+    @JvmField public val KEY_NUMPAD9: Int = noInline { GLFW.GLFW_KEY_KP_9 }
+    @JvmField public val KEY_A: Int = noInline { GLFW.GLFW_KEY_A }
+    @JvmField public val KEY_B: Int = noInline { GLFW.GLFW_KEY_B }
+    @JvmField public val KEY_C: Int = noInline { GLFW.GLFW_KEY_C }
+    @JvmField public val KEY_D: Int = noInline { GLFW.GLFW_KEY_D }
+    @JvmField public val KEY_E: Int = noInline { GLFW.GLFW_KEY_E }
+    @JvmField public val KEY_F: Int = noInline { GLFW.GLFW_KEY_F }
+    @JvmField public val KEY_G: Int = noInline { GLFW.GLFW_KEY_G }
+    @JvmField public val KEY_H: Int = noInline { GLFW.GLFW_KEY_H }
+    @JvmField public val KEY_I: Int = noInline { GLFW.GLFW_KEY_I }
+    @JvmField public val KEY_J: Int = noInline { GLFW.GLFW_KEY_J }
+    @JvmField public val KEY_K: Int = noInline { GLFW.GLFW_KEY_K }
+    @JvmField public val KEY_L: Int = noInline { GLFW.GLFW_KEY_L }
+    @JvmField public val KEY_M: Int = noInline { GLFW.GLFW_KEY_M }
+    @JvmField public val KEY_N: Int = noInline { GLFW.GLFW_KEY_N }
+    @JvmField public val KEY_O: Int = noInline { GLFW.GLFW_KEY_O }
+    @JvmField public val KEY_P: Int = noInline { GLFW.GLFW_KEY_P }
+    @JvmField public val KEY_Q: Int = noInline { GLFW.GLFW_KEY_Q }
+    @JvmField public val KEY_R: Int = noInline { GLFW.GLFW_KEY_R }
+    @JvmField public val KEY_S: Int = noInline { GLFW.GLFW_KEY_S }
+    @JvmField public val KEY_T: Int = noInline { GLFW.GLFW_KEY_T }
+    @JvmField public val KEY_U: Int = noInline { GLFW.GLFW_KEY_U }
+    @JvmField public val KEY_V: Int = noInline { GLFW.GLFW_KEY_V }
+    @JvmField public val KEY_W: Int = noInline { GLFW.GLFW_KEY_W }
+    @JvmField public val KEY_X: Int = noInline { GLFW.GLFW_KEY_X }
+    @JvmField public val KEY_Y: Int = noInline { GLFW.GLFW_KEY_Y }
+    @JvmField public val KEY_Z: Int = noInline { GLFW.GLFW_KEY_Z }
+    @JvmField public val KEY_0: Int = noInline { GLFW.GLFW_KEY_0 }
+    @JvmField public val KEY_1: Int = noInline { GLFW.GLFW_KEY_1 }
+    @JvmField public val KEY_2: Int = noInline { GLFW.GLFW_KEY_2 }
+    @JvmField public val KEY_3: Int = noInline { GLFW.GLFW_KEY_3 }
+    @JvmField public val KEY_4: Int = noInline { GLFW.GLFW_KEY_4 }
+    @JvmField public val KEY_5: Int = noInline { GLFW.GLFW_KEY_5 }
+    @JvmField public val KEY_6: Int = noInline { GLFW.GLFW_KEY_6 }
+    @JvmField public val KEY_7: Int = noInline { GLFW.GLFW_KEY_7 }
+    @JvmField public val KEY_8: Int = noInline { GLFW.GLFW_KEY_8 }
+    @JvmField public val KEY_9: Int = noInline { GLFW.GLFW_KEY_9 }
+    @JvmField public val KEY_F1: Int = noInline { GLFW.GLFW_KEY_F1 }
+    @JvmField public val KEY_F2: Int = noInline { GLFW.GLFW_KEY_F2 }
+    @JvmField public val KEY_F3: Int = noInline { GLFW.GLFW_KEY_F3 }
+    @JvmField public val KEY_F4: Int = noInline { GLFW.GLFW_KEY_F4 }
+    @JvmField public val KEY_F5: Int = noInline { GLFW.GLFW_KEY_F5 }
+    @JvmField public val KEY_F6: Int = noInline { GLFW.GLFW_KEY_F6 }
+    @JvmField public val KEY_F7: Int = noInline { GLFW.GLFW_KEY_F7 }
+    @JvmField public val KEY_F8: Int = noInline { GLFW.GLFW_KEY_F8 }
+    @JvmField public val KEY_F9: Int = noInline { GLFW.GLFW_KEY_F9 }
+    @JvmField public val KEY_F10: Int = noInline { GLFW.GLFW_KEY_F10 }
+    @JvmField public val KEY_F11: Int = noInline { GLFW.GLFW_KEY_F11 }
+    @JvmField public val KEY_F12: Int = noInline { GLFW.GLFW_KEY_F12 }
+    @JvmField public val KEY_F13: Int = noInline { GLFW.GLFW_KEY_F13 }
+    @JvmField public val KEY_F14: Int = noInline { GLFW.GLFW_KEY_F14 }
+    @JvmField public val KEY_F15: Int = noInline { GLFW.GLFW_KEY_F15 }
+    @JvmField public val KEY_F16: Int = noInline { GLFW.GLFW_KEY_F16 }
+    @JvmField public val KEY_F17: Int = noInline { GLFW.GLFW_KEY_F17 }
+    @JvmField public val KEY_F18: Int = noInline { GLFW.GLFW_KEY_F18 }
+    @JvmField public val KEY_F19: Int = noInline { GLFW.GLFW_KEY_F19 }
+    @JvmField public val KEY_DELETE: Int = noInline { GLFW.GLFW_KEY_DELETE }
+    @JvmField public val KEY_HOME: Int = noInline { GLFW.GLFW_KEY_HOME }
+    @JvmField public val KEY_END: Int = noInline { GLFW.GLFW_KEY_END }
     //#else
     //$$ @JvmField val KEY_NONE: Int = noInline { Keyboard.KEY_NONE }
     //$$ @JvmField val KEY_ESCAPE: Int = noInline { Keyboard.KEY_ESCAPE }
@@ -229,7 +229,7 @@ object MultiKeyboard {
     //#endif
 
     @JvmStatic
-    fun allowRepeatEvents(enabled: Boolean) {
+    public fun allowRepeatEvents(enabled: Boolean) {
         //#if MC >= 1.19.3
         // This function was removed in 1.19.3. Repeat events are permanently enabled.
         //#elseif MC >= 1.15.2
@@ -240,7 +240,7 @@ object MultiKeyboard {
     }
 
     @JvmStatic
-    fun isKeyboardButton(code: Int): Boolean {
+    public fun isKeyboardButton(code: Int): Boolean {
         //#if MC >= 1.15
         return code > 20
         //#else
@@ -249,7 +249,7 @@ object MultiKeyboard {
     }
 
     @JvmStatic
-    fun isPressed(code: Int): Boolean {
+    public fun isPressed(code: Int): Boolean {
         if (code == 0) return false // TODO
 
         //#if MC >= 1.15
@@ -268,16 +268,16 @@ object MultiKeyboard {
     }
 
     @JvmStatic
-    fun isShiftKeyPressed() = isPressed(KEY_LSHIFT) || isPressed(KEY_RSHIFT)
+    public fun isShiftKeyPressed(): Boolean = isPressed(KEY_LSHIFT) || isPressed(KEY_RSHIFT)
 
     @JvmStatic
-    fun isCtrlKeyPressed() = isPressed(KEY_LCONTROL) || isPressed(KEY_RCONTROL)
+    public fun isCtrlKeyPressed(): Boolean = isPressed(KEY_LCONTROL) || isPressed(KEY_RCONTROL)
 
     @JvmStatic
-    fun isAltKeyPressed() = isPressed(KEY_LMENU) || isPressed(KEY_RMENU)
+    public fun isAltKeyPressed(): Boolean = isPressed(KEY_LMENU) || isPressed(KEY_RMENU)
 
     @JvmStatic
-    fun getModifiers() = KeyboardModifiers(
+    public fun getModifiers(): KeyboardModifiers = KeyboardModifiers(
         shift = isShiftKeyPressed(),
         ctrl = isCtrlKeyPressed(),
         alt = isAltKeyPressed()
@@ -291,7 +291,7 @@ object MultiKeyboard {
 }
 
 //#if MC >= 1.15
-fun MultiKeyboard.KeyboardModifiers?.toInt() = listOf(
+public fun MultiKeyboard.KeyboardModifiers?.toInt(): Int = listOf(
     this?.shift to GLFW.GLFW_MOD_SHIFT,
     this?.ctrl to GLFW.GLFW_MOD_CONTROL,
     this?.alt to GLFW.GLFW_MOD_ALT
@@ -299,7 +299,7 @@ fun MultiKeyboard.KeyboardModifiers?.toInt() = listOf(
     if (mod == true) glfw else 0
 }
 
-fun Int.toKeyboardModifiers() = MultiKeyboard.KeyboardModifiers(
+public fun Int.toKeyboardModifiers(): MultiKeyboard.KeyboardModifiers = MultiKeyboard.KeyboardModifiers(
     shift = (this and GLFW.GLFW_MOD_SHIFT) != 0,
     ctrl = (this and GLFW.GLFW_MOD_CONTROL) != 0,
     alt = (this and GLFW.GLFW_MOD_ALT) != 0

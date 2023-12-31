@@ -1,15 +1,23 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package dev.deftu.multi
 
 //#if MC >= 1.15
-import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
-import org.lwjgl.opengl.GL14
-import org.lwjgl.opengl.GL11
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.systems.RenderSystem
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL30
 
-object MultiGlStateManager {
-    @JvmStatic fun color4f(
+public object MultiGlStateManager {
+    @JvmStatic public fun getErrorCode(): Int =
+        GL11.glGetError()
+
+    @JvmStatic public fun getError(): GlError =
+        GlError.values().firstOrNull { it.value == getErrorCode() } ?: GlError.NO_ERROR
+
+    @JvmStatic public fun color4f(
         red: Float,
         green: Float,
         blue: Float,
@@ -26,7 +34,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun color3f(
+    @JvmStatic public fun color3f(
         red: Float,
         green: Float,
         blue: Float
@@ -42,7 +50,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun colorMask(
+    @JvmStatic public fun colorMask(
         red: Boolean,
         green: Boolean,
         blue: Boolean,
@@ -55,7 +63,33 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun viewport(
+    @JvmStatic public fun clearColor(
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
+    ) {
+        //#if MC >= 1.17
+        RenderSystem.clearColor(red, green, blue, alpha)
+        //#else
+        //$$ GlStateManager.clearColor(red, green, blue, alpha)
+        //#endif
+    }
+
+    @JvmStatic public fun clear(mask: Int) {
+        //#if MC >= 1.17
+        RenderSystem.clear(mask, false)
+        //#else
+        //$$ GlStateManager.clear(mask)
+        //#endif
+    }
+
+    @JvmStatic public fun clear(vararg mask: ClearMask) {
+        val maskInt = mask.fold(0) { acc, clearMask -> acc or clearMask.value }
+        clear(maskInt)
+    }
+
+    @JvmStatic public fun viewport(
         x: Int,
         y: Int,
         width: Int,
@@ -68,7 +102,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun enableTexture2D() {
+    @JvmStatic public fun enableTexture2D() {
         //#if MC>=1.19.4
         // no-op
         //#elseif MC >= 1.17
@@ -80,7 +114,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun disableTexture2D() {
+    @JvmStatic public fun disableTexture2D() {
         //#if MC >= 1.19.4
         // no-op
         //#elseif MC >= 1.17
@@ -92,11 +126,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun toggleTexture2D(enable: Boolean) {
+    @JvmStatic public fun toggleTexture2D(enable: Boolean) {
         if (enable) enableTexture2D() else disableTexture2D()
     }
 
-    @JvmStatic fun enableBasicTexture2D() {
+    @JvmStatic public fun enableBasicTexture2D() {
         //#if MC >= 1.19.4
         // no-op
         //#elseif MC >= 1.17
@@ -108,7 +142,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun disableBasicTexture2D() {
+    @JvmStatic public fun disableBasicTexture2D() {
         //#if MC >= 1.19.4
         // no-op
         //#elseif MC >= 1.17
@@ -120,11 +154,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun toggleBasicTexture2D(enable: Boolean) {
+    @JvmStatic public fun toggleBasicTexture2D(enable: Boolean) {
         if (enable) enableBasicTexture2D() else disableBasicTexture2D()
     }
 
-    @JvmStatic fun enableCull() {
+    @JvmStatic public fun enableCull() {
         //#if MC >= 1.17
         RenderSystem.enableCull()
         //#else
@@ -132,7 +166,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun disableCull() {
+    @JvmStatic public fun disableCull() {
         //#if MC >= 1.17
         RenderSystem.disableCull()
         //#else
@@ -140,11 +174,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun toggleCull(enable: Boolean) {
+    @JvmStatic public fun toggleCull(enable: Boolean) {
         if (enable) enableCull() else disableCull()
     }
 
-    @JvmStatic fun enableBlend() {
+    @JvmStatic public fun enableBlend() {
         //#if MC >= 1.17
         RenderSystem.enableBlend()
         //#else
@@ -152,7 +186,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun disableBlend() {
+    @JvmStatic public fun disableBlend() {
         //#if MC >= 1.17
         RenderSystem.disableBlend()
         //#else
@@ -160,11 +194,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun toggleBlend(enable: Boolean) {
+    @JvmStatic public fun toggleBlend(enable: Boolean) {
         if (enable) enableBlend() else disableBlend()
     }
 
-    @JvmStatic fun blendFunc(srcFactor: Int, dstFactor: Int) {
+    @JvmStatic public fun blendFunc(srcFactor: Int, dstFactor: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
@@ -172,11 +206,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
+    @JvmStatic public fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
         blendFunc(srcFactor.value, dstFactorAlpha.value)
     }
 
-    @JvmStatic fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
+    @JvmStatic public fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#elseif MC >= 1.14
@@ -186,11 +220,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
+    @JvmStatic public fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
         blendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
     }
 
-    @JvmStatic fun defaultBlendFunc() {
+    @JvmStatic public fun defaultBlendFunc() {
         //#if MC >= 1.17
         RenderSystem.defaultBlendFunc()
         //#else
@@ -198,7 +232,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun blendEquation(equation: Int) {
+    @JvmStatic public fun blendEquation(equation: Int) {
         //#if MC >= 1.17
         RenderSystem.blendEquation(equation)
         //#else
@@ -206,7 +240,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun enableDepth() {
+    @JvmStatic public fun enableDepth() {
         //#if MC >= 1.17
         RenderSystem.enableDepthTest()
         //#elseif MC >= 1.14
@@ -216,7 +250,7 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun disableDepth() {
+    @JvmStatic public fun disableDepth() {
         //#if MC >= 1.17
         RenderSystem.disableDepthTest()
         //#elseif MC >= 1.14
@@ -226,11 +260,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun toggleDepth(enable: Boolean) {
+    @JvmStatic public fun toggleDepth(enable: Boolean) {
         if (enable) enableDepth() else disableDepth()
     }
 
-    @JvmStatic fun depthFunc(func: Int) {
+    @JvmStatic public fun depthFunc(func: Int) {
         //#if MC >= 1.17
         RenderSystem.depthFunc(func)
         //#else
@@ -238,11 +272,11 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun depthFunc(state: DepthState) {
+    @JvmStatic public fun depthFunc(state: DepthState) {
         depthFunc(state.value)
     }
 
-    @JvmStatic fun depthMask(flag: Boolean) {
+    @JvmStatic public fun depthMask(flag: Boolean) {
         //#if MC >= 1.17
         RenderSystem.depthMask(flag)
         //#else
@@ -250,26 +284,39 @@ object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic fun enableLighting() {
+    @JvmStatic public fun enableLighting() {
         //#if MC < 1.17
         //$$ GlStateManager.enableLighting()
         //#endif
     }
 
-    @JvmStatic fun disableLighting() {
+    @JvmStatic public fun disableLighting() {
         //#if MC < 1.17
         //$$ GlStateManager.disableLighting()
         //#endif
     }
 
-    @JvmStatic fun toggleLighting(enable: Boolean) {
+    @JvmStatic public fun toggleLighting(enable: Boolean) {
         //#if MC < 1.17
         //$$ if (enable) enableLighting() else disableLighting()
         //#endif
     }
 
-    enum class SrcFactor(
-        val value: Int
+    public enum class GlError(
+        public val value: Int
+    ) {
+        NO_ERROR(GL11.GL_NO_ERROR),
+        INVALID_ENUM(GL11.GL_INVALID_ENUM),
+        INVALID_VALUE(GL11.GL_INVALID_VALUE),
+        INVALID_OPERATION(GL11.GL_INVALID_OPERATION),
+        STACK_OVERFLOW(GL11.GL_STACK_OVERFLOW),
+        STACK_UNDERFLOW(GL11.GL_STACK_UNDERFLOW),
+        OUT_OF_MEMORY(GL11.GL_OUT_OF_MEMORY),
+        INVALID_FRAMEBUFFER_OPERATION(GL30.GL_INVALID_FRAMEBUFFER_OPERATION)
+    }
+
+    public enum class SrcFactor(
+        public val value: Int
     ) {
         CONSTANT_ALPHA(GL11.GL_SRC_ALPHA),
         CONSTANT_COLOR(GL11.GL_SRC_COLOR),
@@ -288,8 +335,8 @@ object MultiGlStateManager {
         ZERO(GL11.GL_ZERO)
     }
 
-    enum class DstFactor(
-        val value: Int
+    public enum class DstFactor(
+        public val value: Int
     ) {
         CONSTANT_ALPHA(GL11.GL_SRC_ALPHA),
         CONSTANT_COLOR(GL11.GL_SRC_COLOR),
@@ -307,8 +354,8 @@ object MultiGlStateManager {
         ZERO(GL11.GL_ZERO)
     }
 
-    enum class DepthState(
-        val value: Int
+    public enum class DepthState(
+        public val value: Int
     ) {
         ALWAYS(GL11.GL_ALWAYS),
         EQUAL(GL11.GL_EQUAL),
@@ -318,5 +365,13 @@ object MultiGlStateManager {
         LESS(GL11.GL_LESS),
         NEVER(GL11.GL_NEVER),
         NOTEQUAL(GL11.GL_NOTEQUAL)
+    }
+
+    public enum class ClearMask(
+        public val value: Int
+    ) {
+        COLOR(GL11.GL_COLOR_BUFFER_BIT),
+        DEPTH(GL11.GL_DEPTH_BUFFER_BIT),
+        STENCIL(GL11.GL_STENCIL_BUFFER_BIT)
     }
 }

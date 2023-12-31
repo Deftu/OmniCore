@@ -17,38 +17,38 @@ import net.fabricmc.loader.api.ModContainer
 
 import java.nio.file.Path
 
-object MultiLoader {
-    enum class LoaderType {
+public object MultiLoader {
+    public enum class LoaderType {
         FABRIC,
         FORGE
     }
 
-    data class ModInfo(
+    public data class ModInfo(
         val name: String,
         val id: String,
         val version: String,
         val file: Path?
     ) {
-        companion object {
+        public companion object {
             @JvmStatic
-            val DUMMY = ModInfo("Dummy", "dummy", "0.0.0", null)
+            public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null)
         }
 
-        fun isLoaded() = isModLoaded(id)
-        fun isVersionLoaded() = isModLoaded(id, version)
+        public fun isLoaded(): Boolean = isModLoaded(id)
+        public fun isVersionLoaded(): Boolean = isModLoaded(id, version)
     }
 
-    @JvmStatic fun getLoaderType() =
+    @JvmStatic public fun getLoaderType(): LoaderType =
         //#if FABRIC
         LoaderType.FABRIC
         //#else
         //$$ LoaderType.FORGE
         //#endif
 
-    @JvmStatic fun isFabric() = getLoaderType() == LoaderType.FABRIC
-    @JvmStatic fun isForge() = getLoaderType() == LoaderType.FORGE
+    @JvmStatic public fun isFabric(): Boolean = getLoaderType() == LoaderType.FABRIC
+    @JvmStatic public fun isForge(): Boolean = getLoaderType() == LoaderType.FORGE
 
-    @JvmStatic fun isModLoaded(id: String, version: String): Boolean {
+    @JvmStatic public fun isModLoaded(id: String, version: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id) && FabricLoader.getInstance().getModContainer(id).get().metadata.version.friendlyString == version
         //#else
@@ -60,7 +60,7 @@ object MultiLoader {
         //#endif
     }
 
-    @JvmStatic fun isModLoaded(id: String): Boolean {
+    @JvmStatic public fun isModLoaded(id: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id)
         //#else
@@ -72,7 +72,7 @@ object MultiLoader {
         //#endif
     }
 
-    @JvmStatic fun getLoadedMods(): Set<ModInfo> {
+    @JvmStatic public fun getLoadedMods(): Set<ModInfo> {
         val value = mutableSetOf<ModInfo>()
 
         //#if FABRIC
@@ -88,7 +88,7 @@ object MultiLoader {
         return value
     }
 
-    @JvmStatic fun hasActiveMod(): Boolean {
+    @JvmStatic public fun hasActiveMod(): Boolean {
         //#if FABRIC
         return false
         //#else
@@ -100,7 +100,7 @@ object MultiLoader {
         //#endif
     }
 
-    @JvmStatic fun getActiveMod(): ModInfo {
+    @JvmStatic public fun getActiveMod(): ModInfo {
         //#if FABRIC
         return ModInfo.DUMMY
         //#else

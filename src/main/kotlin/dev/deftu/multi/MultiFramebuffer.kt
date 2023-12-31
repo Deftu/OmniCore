@@ -1,7 +1,8 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package dev.deftu.multi
 
 //#if MC >= 1.17.1
-import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 import com.mojang.blaze3d.platform.TextureUtil
@@ -15,8 +16,32 @@ import java.nio.ByteBuffer
 import kotlin.math.max
 
 public class MultiFramebuffer {
-    private companion object {
+    public companion object {
         private var maxSupportedTextureSize = -1
+
+        @JvmStatic
+        public fun genFramebuffer(): Int =
+            GL30.glGenFramebuffers()
+
+        @JvmStatic
+        public fun bindFramebuffer(fbo: Int) {
+            GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo)
+        }
+
+        @JvmStatic
+        public fun bindDrawFramebuffer(fbo: Int) {
+            GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo)
+        }
+
+        @JvmStatic
+        public fun bindReadFramebuffer(fbo: Int) {
+            GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, fbo)
+        }
+
+        @JvmStatic
+        public fun deleteFramebuffer(fbo: Int) {
+            GL30.glDeleteFramebuffers(fbo)
+        }
 
         private fun getMaxSupportedTextureSize(): Int {
             if (maxSupportedTextureSize == -1) {
@@ -57,22 +82,22 @@ public class MultiFramebuffer {
     private var depthAttachment = -1
 
     public fun bind(modifyViewport: Boolean) {
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo)
+        bindFramebuffer(fbo)
         if (modifyViewport) {
-            GL11.glViewport(0, 0, width, height)
+            MultiGlStateManager.viewport(0, 0, width, height)
         }
     }
 
     public fun unbind() {
-        GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, mcFbo)
+        bindFramebuffer(mcFbo)
     }
 
     public fun bindTexture() {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorAttachment)
+        MultiTextureManager.bindTexture(colorAttachment)
     }
 
     public fun unbindTexture() {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, GL11.GL_NONE)
+        MultiTextureManager.removeTexture()
     }
 
     public fun resize(
@@ -104,7 +129,7 @@ public class MultiFramebuffer {
 
         if (fbo != -1) {
             unbindTexture()
-            GL30.glDeleteFramebuffers(fbo)
+            deleteFramebuffer(fbo)
             fbo = -1
         }
     }
@@ -113,7 +138,7 @@ public class MultiFramebuffer {
         unbind()
 
         stack.push()
-        MultiGlStateManager.colorMask(true, true, true, false)
+        MultiGlStateManager.colorMask(red = true, green = true, blue = true, alpha = false)
         MultiGlStateManager.disableDepth()
         MultiGlStateManager.depthMask(false)
         MultiGlStateManager.viewport(0, 0, width, height)
@@ -122,10 +147,7 @@ public class MultiFramebuffer {
         val yScale = height / scaleFactor / height.toDouble()
         stack.scale(xScale, yScale, 0.0)
         MultiGlStateManager.enableBlend()
-        //#if MC >= 1.17.1
-        RenderSystem.setShaderTexture(0, colorAttachment)
-        //#endif
-        bindTexture()
+        MultiRenderSystem.setTexture(0, colorAttachment)
 
         val tessellator = MultiTessellator.getFromBuffer()
         tessellator.beginWithDefaultShader(MultiTessellator.DrawModes.QUADS, MultiTessellator.VertexFormats.POSITION_TEXTURE_COLOR)
@@ -150,15 +172,15 @@ public class MultiFramebuffer {
 
         unbindTexture()
         MultiGlStateManager.depthMask(true)
-        MultiGlStateManager.colorMask(true, true, true, true)
+        MultiGlStateManager.colorMask(red = true, green = true, blue = true, alpha = true)
         MultiGlStateManager.viewport(0, 0, width, height)
         stack.pop()
     }
 
     public fun clear() {
         bind(true)
-        GL11.glClearColor(1f, 1f, 1f, 0f)
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+        MultiGlStateManager.clearColor(1f, 1f, 1f, 0f)
+        MultiGlStateManager.clear(MultiGlStateManager.ClearMask.COLOR, MultiGlStateManager.ClearMask.DEPTH)
         unbind()
     }
 
@@ -182,7 +204,7 @@ public class MultiFramebuffer {
         this.depthAttachment = TextureUtil.generateTextureId()
         val size = findSize(width, height)
 
-        this.fbo = GL30.glGenFramebuffers()
+        this.fbo = genFramebuffer()
 
         bind(false)
         createColorAttachment()
@@ -223,10 +245,10 @@ public class MultiFramebuffer {
             colorAttachment = TextureUtil.generateTextureId()
         }
 
-        GL11.glGetError()
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorAttachment)
+        MultiGlStateManager.getError()
+        MultiTextureManager.bindTexture(colorAttachment)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, size.width, size.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        return GL11.glGetError() == GL11.GL_NO_ERROR
+        return MultiGlStateManager.getError() == MultiGlStateManager.GlError.NO_ERROR
     }
 
     private fun trySetupDepth(size: Size): Boolean {
@@ -234,14 +256,14 @@ public class MultiFramebuffer {
             depthAttachment = TextureUtil.generateTextureId()
         }
 
-        GL11.glGetError()
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthAttachment)
+        MultiGlStateManager.getError()
+        MultiTextureManager.bindTexture(depthAttachment)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_DEPTH_COMPONENT, size.width, size.height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        return GL11.glGetError() == GL11.GL_NO_ERROR
+        return MultiGlStateManager.getError() == MultiGlStateManager.GlError.NO_ERROR
     }
 
     private fun createColorAttachment() {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, colorAttachment)
+        MultiTextureManager.bindTexture(colorAttachment)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
@@ -250,7 +272,7 @@ public class MultiFramebuffer {
     }
 
     private fun createDepthAttachment() {
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, depthAttachment)
+        MultiTextureManager.bindTexture(depthAttachment)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)

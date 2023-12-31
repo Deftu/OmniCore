@@ -12,17 +12,17 @@ import java.awt.Color
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
  */
-class MultiImage(
+public class MultiImage(
     //#if MC >= 1.16
-    val image: NativeImage,
+    public val image: NativeImage,
     //#else
     //$$ val image: BufferedImage,
     //#endif
 ) {
-    companion object {
+    public companion object {
         @JvmStatic
         @JvmOverloads
-        fun create(
+        public fun create(
             width: Int,
             height: Int,
             clear: Boolean = true
@@ -35,7 +35,7 @@ class MultiImage(
         }
     }
 
-    fun copyFrom(other: MultiImage) {
+    public fun copyFrom(other: MultiImage) {
         //#if MC >= 1.16
         image.copyFrom(other.image)
         //#else
@@ -43,7 +43,7 @@ class MultiImage(
         //#endif
     }
 
-    fun copy(): MultiImage {
+    public fun copy(): MultiImage {
         //#if MC >= 1.16
         return MultiImage(NativeImage(getWidth(), getHeight(), image.format.hasAlpha()))
         //#else
@@ -51,7 +51,7 @@ class MultiImage(
         //#endif
     }
 
-    fun deepCopy(): MultiImage {
+    public fun deepCopy(): MultiImage {
         //#if MC >= 1.16
         return MultiImage(NativeImage(image.format, getWidth(), getHeight(), image.format.hasAlpha()).also { it.copyFrom(image) })
         //#else
@@ -59,13 +59,13 @@ class MultiImage(
         //#endif
     }
 
-    fun close() {
+    public fun close() {
         //#if MC >= 1.16
         image.close()
         //#endif
     }
 
-    fun getPixel(x: Int, y: Int): Int {
+    public fun getPixel(x: Int, y: Int): Int {
         //#if MC >= 1.16
         return image.getColor(x, y)
         //#else
@@ -73,7 +73,7 @@ class MultiImage(
         //#endif
     }
 
-    fun setPixel(x: Int, y: Int, color: Int) {
+    public fun setPixel(x: Int, y: Int, color: Int) {
         //#if MC >= 1.16
         image.setColor(x, y, color)
         //#else
@@ -81,8 +81,8 @@ class MultiImage(
         //#endif
     }
 
-    fun setPixel(x: Int, y: Int, color: Color) = setPixel(x, y, color.rgb)
+    public fun setPixel(x: Int, y: Int, color: Color): Unit = setPixel(x, y, color.rgb)
 
-    fun getWidth() = image.width
-    fun getHeight() = image.height
+    public fun getWidth(): Int = image.width
+    public fun getHeight(): Int = image.height
 }

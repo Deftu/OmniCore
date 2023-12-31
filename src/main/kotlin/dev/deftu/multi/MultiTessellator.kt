@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter")
+
 package dev.deftu.multi
 
 //#if MC >= 1.20
@@ -29,29 +31,28 @@ import net.minecraft.client.render.GameRenderer
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.util.function.Supplier
-import kotlin.reflect.KFunction
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormatElement
 import java.util.IdentityHashMap
 
-class MultiTessellator(
+public class MultiTessellator(
     private val buffer: BufferBuilder
 ) {
-    companion object {
-        @JvmStatic fun getTessellator() = Tessellator.getInstance()
-        @JvmStatic fun getFromBuffer() =
+    public companion object {
+        @JvmStatic public fun getTessellator(): Tessellator = Tessellator.getInstance()
+        @JvmStatic public fun getFromBuffer(): MultiTessellator =
             //#if MC >= 1.12
             MultiTessellator(getTessellator().buffer)
             //#else
             //$$ MultiTessellator(getTessellator().worldRenderer)
             //#endif
-        @JvmStatic fun getWithBuffer(buffer: BufferBuilder) = MultiTessellator(buffer)
-        @JvmStatic fun getFromSize(size: Int) = getWithBuffer(BufferBuilder(size))
+        @JvmStatic public fun getWithBuffer(buffer: BufferBuilder): MultiTessellator = MultiTessellator(buffer)
+        @JvmStatic public fun getFromSize(size: Int): MultiTessellator = getWithBuffer(BufferBuilder(size))
 
         //#if MC >= 1.17
-        @JvmStatic val defaultShaders by lazy {
+        @JvmStatic public val defaultShaders: IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>> by lazy {
             val value = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
 
             value[net.minecraft.client.render.VertexFormats.POSITION] = Supplier { GameRenderer.getPositionProgram() }
@@ -69,10 +70,6 @@ class MultiTessellator(
 
             value
         }
-
-        private fun <T> referenceToSupplier(reference: KFunction<T>): Supplier<T> {
-            return Supplier { reference.call() }
-        }
         //#endif
     }
 
@@ -81,16 +78,16 @@ class MultiTessellator(
     private var renderLayer: RenderLayer? = null
     //#endif
 
-    fun beginWithActiveShader(mode: DrawModes, format: VertexFormat) = apply {
+    public fun beginWithActiveShader(mode: DrawModes, format: VertexFormat): MultiTessellator = apply {
         currentVertexFormat = format
         buffer.begin(mode.vanilla, format)
     }
 
-    fun beginWithActiveShader(mode: DrawModes, format: VertexFormats) = apply {
+    public fun beginWithActiveShader(mode: DrawModes, format: VertexFormats): MultiTessellator = apply {
         beginWithActiveShader(mode, format.vanilla)
     }
 
-    fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat) = apply {
+    public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat): MultiTessellator = apply {
         //#if MC >= 1.17
         val supplier = defaultShaders[format] ?: error("Unsupported vertex format '$format' - no default shader")
         MultiRenderSystem.setShader(supplier)
@@ -98,18 +95,18 @@ class MultiTessellator(
         beginWithActiveShader(mode, format)
     }
 
-    fun beginWithDefaultShader(mode: DrawModes, format: VertexFormats) = apply {
+    public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormats): MultiTessellator = apply {
         beginWithDefaultShader(mode, format.vanilla)
     }
 
     //#if MC >= 1.16
-    fun beginRenderLayer(layer: RenderLayer) = apply {
+    public fun beginRenderLayer(layer: RenderLayer): MultiTessellator = apply {
         renderLayer = layer
         beginWithActiveShader(DrawModes.fromRenderLayer(layer), layer.vertexFormat)
     }
     //#endif
 
-    fun draw() {
+    public fun draw() {
         //#if MC >= 1.16
         if (renderLayer != null) {
             //#if MC >= 1.20
@@ -178,12 +175,12 @@ class MultiTessellator(
         //#endif
     }
 
-    fun vertex(
+    public fun vertex(
         stack: MultiMatrixStack,
         x: Float,
         y: Float,
         z: Float
-    ) = apply {
+    ): MultiTessellator = apply {
         //#if MC >= 1.16
         buffer.vertex(stack.peek().matrix, x, y, z)
         //#else
@@ -201,12 +198,12 @@ class MultiTessellator(
         //#endif
     }
 
-    fun normal(
+    public fun normal(
         stack: MultiMatrixStack,
         x: Float,
         y: Float,
         z: Float
-    ) = apply {
+    ): MultiTessellator = apply {
         //#if MC >= 1.15
         buffer.normal(stack.peek().normal, x, y, z)
         //#else
@@ -220,49 +217,49 @@ class MultiTessellator(
         //#endif
     }
 
-    fun color(
+    public fun color(
         red: Float,
         green: Float,
         blue: Float,
         alpha: Float
-    ) = apply {
+    ): MultiTessellator = apply {
         buffer.color(red, green, blue, alpha)
     }
 
-    fun color(
+    public fun color(
         red: Int,
         green: Int,
         blue: Int,
         alpha: Int
-    ) = color(
+    ): MultiTessellator = color(
         red / 255.0f,
         green / 255.0f,
         blue / 255.0f,
         alpha / 255.0f
     )
 
-    fun color(
+    public fun color(
         color: Int
-    ) = color(
+    ): MultiTessellator = color(
         (color shr 16 and 255) / 255.0f,
         (color shr 8 and 255) / 255.0f,
         (color and 255) / 255.0f,
         (color shr 24 and 255) / 255.0f
     )
 
-    fun color(
+    public fun color(
         color: Color
-    ) = color(
+    ): MultiTessellator = color(
         color.red / 255.0f,
         color.green / 255.0f,
         color.blue / 255.0f,
         color.alpha / 255.0f
     )
 
-    fun texture(
+    public fun texture(
         u: Float,
         v: Float
-    ) = apply {
+    ): MultiTessellator = apply {
         //#if MC >= 1.15
         buffer.texture(u, v)
         //#else
@@ -274,10 +271,10 @@ class MultiTessellator(
         //#endif
     }
 
-    fun overlay(
+    public fun overlay(
         u: Int,
         v: Int
-    ) = apply {
+    ): MultiTessellator = apply {
         //#if MC >= 1.15
         buffer.overlay(u, v)
         //#else
@@ -289,10 +286,10 @@ class MultiTessellator(
         //#endif
     }
 
-    fun light(
+    public fun light(
         u: Int,
         v: Int
-    ) = apply {
+    ): MultiTessellator = apply {
         //#if MC >= 1.14
         buffer.light(u, v)
         //#else
@@ -300,7 +297,7 @@ class MultiTessellator(
         //#endif
     }
 
-    fun next() = apply {
+    public fun next(): MultiTessellator = apply {
         //#if MC >= 1.14
         buffer.next()
         //#else
@@ -327,8 +324,8 @@ class MultiTessellator(
         return wantEnabled
     }
 
-    enum class VertexFormats(
-        val vanilla: VertexFormat
+    public enum class VertexFormats(
+        public val vanilla: VertexFormat
     ) {
         POSITION(net.minecraft.client.render.VertexFormats.POSITION),
         POSITION_COLOR(net.minecraft.client.render.VertexFormats.POSITION_COLOR),
@@ -336,8 +333,8 @@ class MultiTessellator(
         POSITION_TEXTURE_COLOR(net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR)
     }
 
-    enum class DrawModes(
-        val gl: Int
+    public enum class DrawModes(
+        public val gl: Int
     ) {
         LINES(GL11.GL_LINES),
         LINE_STRIP(GL11.GL_LINE_STRIP),
@@ -347,7 +344,7 @@ class MultiTessellator(
         QUADS(GL11.GL_QUADS);
 
         //#if MC >= 1.17
-        val vanilla: VertexFormat.DrawMode
+        public val vanilla: VertexFormat.DrawMode
         //#else
         //$$ val vanilla: Int
         //#endif
@@ -368,8 +365,8 @@ class MultiTessellator(
             //#endif
         }
 
-        companion object {
-            @JvmStatic fun fromGl(gl: Int): DrawModes {
+        public companion object {
+            @JvmStatic public fun fromGl(gl: Int): DrawModes {
                 return when (gl) {
                     GL11.GL_LINES -> LINES
                     GL11.GL_LINE_STRIP -> LINE_STRIP
@@ -382,7 +379,7 @@ class MultiTessellator(
             }
 
             //#if MC >= 1.17
-            @JvmStatic fun glToVanillaDrawMode(glMode: Int): VertexFormat.DrawMode {
+            @JvmStatic public fun glToVanillaDrawMode(glMode: Int): VertexFormat.DrawMode {
                 return when (glMode) {
                     GL11.GL_LINES -> VertexFormat.DrawMode.LINES
                     GL11.GL_LINE_STRIP -> VertexFormat.DrawMode.LINE_STRIP
@@ -394,7 +391,7 @@ class MultiTessellator(
                 }
             }
 
-            @JvmStatic fun fromMc(mcMode: VertexFormat.DrawMode): DrawModes {
+            @JvmStatic public fun fromMc(mcMode: VertexFormat.DrawMode): DrawModes {
                 return when (mcMode) {
                     VertexFormat.DrawMode.LINES -> LINES
                     VertexFormat.DrawMode.LINE_STRIP -> LINE_STRIP
@@ -408,7 +405,7 @@ class MultiTessellator(
             //#endif
 
             //#if MC >= 1.16
-            @JvmStatic fun fromRenderLayer(layer: RenderLayer): DrawModes {
+            @JvmStatic public fun fromRenderLayer(layer: RenderLayer): DrawModes {
                 //#if MC >= 1.17
                 return fromMc(layer.drawMode)
                 //#else

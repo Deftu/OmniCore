@@ -4,15 +4,15 @@ package dev.deftu.multi
 //$$ import net.minecraft.client.renderer.OpenGlHelper;
 //#endif
 
-object MultiRenderEnvironment {
-    @JvmStatic fun isGL21Available() =
+public object MultiRenderEnvironment {
+    @JvmStatic public fun isGL21Available(): Boolean =
         //#if MC >= 1.15.2
         true
         //#else
         //$$ OpenGlHelper.openGL21
         //#endif
 
-    @JvmStatic fun isFramebufferEnabled() =
+    @JvmStatic public fun isFramebufferEnabled(): Boolean =
         //#if MC >= 1.15.2
         true
         //#else

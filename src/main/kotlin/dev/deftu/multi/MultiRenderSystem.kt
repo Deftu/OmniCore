@@ -1,35 +1,48 @@
 package dev.deftu.multi
 
-//#if MC >= 1.17
-import com.mojang.blaze3d.systems.RenderSystem
-import net.minecraft.client.gl.ShaderProgram
+//#if MC <= 1.16.5
+//$$ import org.lwjgl.opengl.GL13
 //#endif
 
-import org.lwjgl.opengl.GL13
+import com.mojang.blaze3d.systems.RenderSystem
+import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.util.Identifier
 import java.util.function.Supplier
 
-object MultiRenderSystem {
+public object MultiRenderSystem {
     //#if MC >= 1.17
-    fun setShader(supplier: Supplier<ShaderProgram?>) {
+    public fun setShader(supplier: Supplier<ShaderProgram?>) {
         RenderSystem.setShader(supplier)
     }
 
-    fun removeShader() {
+    public fun removeShader() {
         setShader { null }
     }
 
-    fun setShaderTexture(index: Int, texture: Identifier) {
+    public fun setShaderTexture(index: Int, texture: Identifier) {
+        RenderSystem.setShaderTexture(index, texture)
+    }
+
+    public fun setShaderTexture(index: Int, texture: Int) {
         RenderSystem.setShaderTexture(index, texture)
     }
     //#endif
 
-    fun setTexture(index: Int, texture: Identifier) {
+    public fun setTexture(index: Int, texture: Identifier) {
         //#if MC >= 1.17
         setShaderTexture(index, texture)
         //#else
         //$$ MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
         //$$ MultiClient.getTextureManager().bindTexture(texture)
+        //#endif
+    }
+
+    public fun setTexture(index: Int, texture: Int) {
+        //#if MC >= 1.17
+        setShaderTexture(index, texture)
+        //#else
+        //$$ MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
+        //$$ MultiTextureManager.bindTexture(texture)
         //#endif
     }
 }

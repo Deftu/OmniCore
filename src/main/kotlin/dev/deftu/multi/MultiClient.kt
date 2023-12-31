@@ -1,17 +1,28 @@
 package dev.deftu.multi
 
 //#if MC >= 1.14
-import net.minecraft.client.util.GlfwUtil
 //#endif
 
 import net.minecraft.client.MinecraftClient
+import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.gui.hud.ChatHud
+import net.minecraft.client.gui.hud.InGameHud
+import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.network.ClientPlayNetworkHandler
+import net.minecraft.client.network.ClientPlayerEntity
+import net.minecraft.client.network.ServerInfo
+import net.minecraft.client.option.GameOptions
+import net.minecraft.client.sound.SoundManager
+import net.minecraft.client.util.GlfwUtil
+import net.minecraft.client.world.ClientWorld
+import net.minecraft.server.integrated.IntegratedServer
 
-object MultiClient {
+public object MultiClient {
     @JvmStatic
-    val isRunningOnMac: Boolean
+    public val isRunningOnMac: Boolean
         get() = MinecraftClient.IS_SYSTEM_MAC
     @JvmStatic
-    val isRunningOnMainThread: Boolean
+    public val isRunningOnMainThread: Boolean
         //#if MC >= 1.15
         get() = getInstance().isOnThread
         //#else
@@ -19,38 +30,38 @@ object MultiClient {
         //#endif
 
     @JvmStatic
-    fun getInstance() = MinecraftClient.getInstance()
+    public fun getInstance(): MinecraftClient = MinecraftClient.getInstance()
     @JvmStatic
-    fun getWorld() = getInstance().world
+    public fun getWorld(): ClientWorld? = getInstance().world
     @JvmStatic
-    fun getServer() = getInstance().server
+    public fun getServer(): IntegratedServer? = getInstance().server
     @JvmStatic
-    fun getPlayer() = getInstance().player
+    public fun getPlayer(): ClientPlayerEntity? = getInstance().player
     @JvmStatic
-    fun getHud() = getInstance().inGameHud
+    public fun getHud(): InGameHud = getInstance().inGameHud
     @JvmStatic
-    fun getChat() =
+    public fun getChat(): ChatHud =
         //#if MC > 1.15
         getHud().chatHud
         //#else
         //$$ getHud().chatGUI
         //#endif
     @JvmStatic
-    fun getCurrentServerInfo() = getInstance().currentServerEntry
+    public fun getCurrentServerInfo(): ServerInfo? = getInstance().currentServerEntry
     @JvmStatic
-    fun getNetworkHandler() = getInstance().networkHandler
+    public fun getNetworkHandler(): ClientPlayNetworkHandler? = getInstance().networkHandler
     @JvmStatic
-    fun getSoundManager() = getInstance().soundManager
+    public fun getSoundManager(): SoundManager = getInstance().soundManager
     @JvmStatic
-    fun getFontRenderer() = getInstance().textRenderer
+    public fun getFontRenderer(): TextRenderer = getInstance().textRenderer
     @JvmStatic
-    fun getOptions() = getInstance().options
+    public fun getOptions(): GameOptions = getInstance().options
     @JvmStatic
-    fun getCurrentScreen() = getInstance().currentScreen
+    public fun getCurrentScreen(): Screen? = getInstance().currentScreen
     @JvmStatic
-    fun getTextureManager() = MultiTextureManager.INSTANCE
+    public fun getTextureManager(): MultiTextureManager = MultiTextureManager.INSTANCE
 
-    @JvmStatic fun execute(runnable: () -> Unit) {
+    @JvmStatic public fun execute(runnable: () -> Unit) {
         //#if MC >= 1.15.2
         getInstance().execute(runnable)
         //#else
@@ -58,10 +69,10 @@ object MultiClient {
         //#endif
     }
 
-    @JvmStatic fun execute(runnable: Runnable) = execute(runnable::run)
+    @JvmStatic public fun execute(runnable: Runnable): Unit = execute(runnable::run)
 
     @JvmStatic
-    fun getTime(): Long {
+    public fun getTime(): Long {
         //#if MC >= 1.14
         return (GlfwUtil.getTime() * 1000).toLong()
         //#else
@@ -69,17 +80,17 @@ object MultiClient {
         //#endif
     }
 
-    object Multiplayer {
-        @JvmStatic fun getServerBrand() =
+    public object Multiplayer {
+        @JvmStatic public fun getServerBrand(): String? =
             //#if MC >= 1.20.2
             getPlayer()?.networkHandler?.brand
             //#else
             //$$ getPlayer()?.serverBrand
             //#endif
-        @JvmStatic fun getCurrentServerAddress() = getCurrentServerInfo()?.address
+        @JvmStatic public fun getCurrentServerAddress(): String? = getCurrentServerInfo()?.address
 
         @JvmStatic
-        fun isMultiplayerEnabled() =
+        public fun isMultiplayerEnabled(): Boolean =
             //#if MC >= 1.19.2
             getInstance().isMultiplayerEnabled
             //#else
@@ -87,7 +98,7 @@ object MultiClient {
             //#endif
 
         @JvmStatic
-        fun isMultiplayerBanned() =
+        public fun isMultiplayerBanned(): Boolean =
             //#if MC >= 1.20.2
             getInstance().multiplayerBanDetails != null
             //#elseif MC >= 1.19.2
@@ -97,7 +108,7 @@ object MultiClient {
             //#endif
 
         @JvmStatic
-        fun isInMultiplayer() = getWorld() != null && getServer() != null && isMultiplayerEnabled() && !isMultiplayerBanned() && run {
+        public fun isInMultiplayer(): Boolean = getWorld() != null && getServer() != null && isMultiplayerEnabled() && !isMultiplayerBanned() && run {
             if (getInstance().isInSingleplayer) return@run false
 
             val serverInfo = getInstance().currentServerEntry

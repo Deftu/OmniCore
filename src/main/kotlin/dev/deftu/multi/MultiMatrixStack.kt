@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate", "UnusedImport")
+
 package dev.deftu.multi
 
 //#if MC >= 1.15
@@ -34,10 +36,10 @@ import com.mojang.blaze3d.platform.GlStateManager
 import org.joml.Matrix4f
 import org.joml.Matrix3f
 
-class MultiMatrixStack private constructor(
+public class MultiMatrixStack private constructor(
     private val stack: Deque<StackEntry>
 ) {
-    companion object {
+    private companion object {
         //#if MC < 1.17
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$
@@ -51,7 +53,7 @@ class MultiMatrixStack private constructor(
         //#endif
     }
 
-    constructor() : this(ArrayDeque<StackEntry>().apply {
+    public constructor() : this(ArrayDeque<StackEntry>().apply {
         add(StackEntry(
             Matrix4f(),
             Matrix3f()
@@ -59,19 +61,19 @@ class MultiMatrixStack private constructor(
     })
 
     //#if MC >= 1.16
-    constructor(entry: MatrixStack.Entry) : this(ArrayDeque<StackEntry>().apply {
+    public constructor(entry: MatrixStack.Entry) : this(ArrayDeque<StackEntry>().apply {
         add(StackEntry(
             entry.positionMatrix,
             entry.normalMatrix
         ))
     })
 
-    constructor(stack: MatrixStack) : this(stack.peek())
+    public constructor(stack: MatrixStack) : this(stack.peek())
 
-    fun toVanillaStack() = peek().toVanillaStack()
+    public fun toVanillaStack(): MatrixStack = peek().toVanillaStack()
     //#endif
 
-    fun scale(
+    public fun scale(
         x: Float,
         y: Float,
         z: Float
@@ -129,13 +131,13 @@ class MultiMatrixStack private constructor(
         }
     }
 
-    fun scale(
+    public fun scale(
         x: Double,
         y: Double,
         z: Double
-    ) = scale(x.toFloat(), y.toFloat(), z.toFloat())
+    ): Unit = scale(x.toFloat(), y.toFloat(), z.toFloat())
 
-    fun translate(
+    public fun translate(
         x: Float,
         y: Float,
         z: Float
@@ -156,14 +158,14 @@ class MultiMatrixStack private constructor(
         }
     }
 
-    fun translate(
+    public fun translate(
         x: Double,
         y: Double,
         z: Double
-    ) = translate(x.toFloat(), y.toFloat(), z.toFloat())
+    ): Unit = translate(x.toFloat(), y.toFloat(), z.toFloat())
 
     @JvmOverloads
-    fun rotate(
+    public fun rotate(
         angle: Float,
         x: Float,
         y: Float,
@@ -213,22 +215,22 @@ class MultiMatrixStack private constructor(
     }
 
     @JvmOverloads
-    fun rotate(
+    public fun rotate(
         angle: Double,
         x: Double,
         y: Double,
         z: Double,
         degrees: Boolean = true
-    ) = rotate(angle.toFloat(), x.toFloat(), y.toFloat(), z.toFloat(), degrees)
+    ): Unit = rotate(angle.toFloat(), x.toFloat(), y.toFloat(), z.toFloat(), degrees)
 
-    fun push() = stack.addLast(stack.last.deepCopy())
-    fun pop() = stack.removeLast()
-    fun peek() = stack.last
-    fun isEmpty() = stack.size == 1
+    public fun push(): Unit = stack.addLast(stack.last.deepCopy())
+    public fun pop(): StackEntry = stack.removeLast()
+    public fun peek(): StackEntry = stack.last
+    public fun isEmpty(): Boolean = stack.size == 1
 
-    fun copy() = MultiMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
+    public fun copy(): MultiMatrixStack = MultiMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
 
-    fun applyToGlobalState() {
+    public fun applyToGlobalState() {
         //#if MC >= 1.17
         //#if MC >= 1.18
         RenderSystem.getModelViewStack().multiplyPositionMatrix(stack.last.matrix)
@@ -246,7 +248,7 @@ class MultiMatrixStack private constructor(
         //#else
         //$$ stack.last.matrix.writeRowFirst(MATRIX_BUFFER)
         //#endif
-        //$$ // Explicit cast to Buffer required so we do not use the JDK9+ override in FloatBuffer
+        //$$ // Explicit cast to Buffer required, so we do not use the JDK9+ override in FloatBuffer
         //$$ (MATRIX_BUFFER as Buffer).rewind()
         //#if MC >= 1.15
         //$$ GL11.glMultMatrixf(MATRIX_BUFFER)
@@ -256,7 +258,7 @@ class MultiMatrixStack private constructor(
         //#endif
     }
 
-    fun replaceGlobalState() {
+    public fun replaceGlobalState() {
         //#if MC >= 1.17
         RenderSystem.getModelViewStack().loadIdentity()
         //#else
@@ -282,26 +284,26 @@ class MultiMatrixStack private constructor(
         }
     }
 
-    fun <R> runWithGlobalState(block: () -> R): R  = withGlobalStackPushed {
+    public fun <R> runWithGlobalState(block: () -> R): R  = withGlobalStackPushed {
         applyToGlobalState()
         block()
     }
 
-    fun runWithGlobalState(block: Runnable) = runWithGlobalState { block.run() }
+    public fun runWithGlobalState(block: Runnable): Unit = runWithGlobalState { block.run() }
 
-    fun <R> runReplacingGlobalState(block: () -> R): R = withGlobalStackPushed {
+    public fun <R> runReplacingGlobalState(block: () -> R): R = withGlobalStackPushed {
         replaceGlobalState()
         block()
     }
 
-    fun runReplacingGlobalState(block: Runnable) = runReplacingGlobalState { block.run() }
+    public fun runReplacingGlobalState(block: Runnable): Unit = runReplacingGlobalState { block.run() }
 
-    data class StackEntry(
+    public data class StackEntry(
         val matrix: Matrix4f,
         val normal: Matrix3f
     ) {
         //#if MC >= 1.16
-        fun toVanillaStack() = MatrixStack().also { stack ->
+        public fun toVanillaStack(): MatrixStack = MatrixStack().also { stack ->
         //#if MC >= 1.19.3
             stack.peek().positionMatrix.mul(matrix)
             stack.peek().normalMatrix.mul(normal)
@@ -312,7 +314,7 @@ class MultiMatrixStack private constructor(
         }
         //#endif
 
-        fun deepCopy(): StackEntry {
+        public fun deepCopy(): StackEntry {
             //#if MC >= 1.19.3
             return StackEntry(Matrix4f(matrix), Matrix3f(normal))
             //#elseif MC >= 1.15
