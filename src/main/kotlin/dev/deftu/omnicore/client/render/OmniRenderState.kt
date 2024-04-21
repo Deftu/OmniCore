@@ -18,7 +18,7 @@ import com.mojang.blaze3d.platform.GlStateManager
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
 
-public object MultiRenderState {
+public object OmniRenderState {
 
     //#if MC >= 1.17
     @JvmStatic
