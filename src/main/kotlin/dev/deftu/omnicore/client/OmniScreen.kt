@@ -17,6 +17,7 @@ import net.minecraft.client.gui.DrawContext
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
+import dev.deftu.omnicore.client.render.OmniMatrixStack
 import dev.deftu.textile.Text
 import dev.deftu.textile.impl.TranslatableText as TextileTranslatableText
 import dev.deftu.textile.toVanilla

@@ -4,6 +4,7 @@ package dev.deftu.omnicore.client
 import net.minecraft.client.util.GlfwUtil
 //#endif
 
+import dev.deftu.omnicore.client.render.OmniTextureManager
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.hud.ChatHud

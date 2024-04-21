@@ -33,6 +33,8 @@ import net.minecraft.client.render.*
 //#endif
 //#endif
 
+import dev.deftu.omnicore.client.render.OmniMatrixStack
+import dev.deftu.omnicore.client.render.OmniRenderState
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.util.*
@@ -91,7 +93,7 @@ public class OmniTessellator(
     public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat): OmniTessellator = apply {
         //#if MC >= 1.17
         val supplier = defaultShaders[format] ?: error("Unsupported vertex format '$format' - no default shader")
-        MultiRenderSystem.setShader(supplier)
+        OmniRenderState.setShader(supplier)
         //#endif
         beginWithActiveShader(mode, format)
     }

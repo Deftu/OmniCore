@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW
 //$$ import org.lwjgl.input.Mouse
 //#endif
 
+import dev.deftu.omnicore.client.render.OmniResolution
 import kotlin.math.max
 
 public object OmniMouse {
