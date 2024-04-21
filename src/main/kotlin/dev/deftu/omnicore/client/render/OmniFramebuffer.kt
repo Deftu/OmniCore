@@ -90,7 +90,7 @@ public class OmniFramebuffer {
     public fun bind(modifyViewport: Boolean) {
         bindFramebuffer(fbo)
         if (modifyViewport) {
-            MultiGlStateManager.viewport(0, 0, width, height)
+            OmniRenderState.setViewport(0, 0, width, height)
         }
     }
 
@@ -143,16 +143,16 @@ public class OmniFramebuffer {
     public fun draw(stack: OmniMatrixStack) {
         stack.push()
 
-        MultiRenderSystem.setTexture(0, colorAttachment)
-        MultiGlStateManager.colorMask(red = true, green = true, blue = true, alpha = false)
-        MultiGlStateManager.disableDepth()
-        MultiGlStateManager.depthMask(false)
-        MultiGlStateManager.viewport(0, 0, width, height)
+        OmniRenderState.setTexture(0, colorAttachment)
+        OmniRenderState.setColorMask(red = true, green = true, blue = true, alpha = false)
+        OmniRenderState.disableDepth()
+        OmniRenderState.setDepthMask(false)
+        OmniRenderState.setViewport(0, 0, width, height)
         val scaleFactor = OmniResolution.scaleFactor
         val xScale = width / scaleFactor / width.toDouble()
         val yScale = height / scaleFactor / height.toDouble()
         stack.scale(xScale, yScale, 0.0)
-        MultiGlStateManager.enableBlend()
+        OmniRenderState.enableBlend()
 
         val tessellator = OmniTessellator.getFromBuffer()
         tessellator.beginWithDefaultShader(
@@ -179,16 +179,16 @@ public class OmniFramebuffer {
         tessellator.draw()
 
         unbindTexture()
-        MultiGlStateManager.depthMask(true)
-        MultiGlStateManager.colorMask(red = true, green = true, blue = true, alpha = true)
-        MultiGlStateManager.viewport(0, 0, width, height)
+        OmniRenderState.setDepthMask(true)
+        OmniRenderState.setColorMask(red = true, green = true, blue = true, alpha = true)
+        OmniRenderState.setViewport(0, 0, width, height)
         stack.pop()
     }
 
     public fun clear() {
         bind(true)
-        MultiGlStateManager.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])
-        MultiGlStateManager.clear(MultiGlStateManager.ClearMask.COLOR, MultiGlStateManager.ClearMask.DEPTH)
+        OmniRenderState.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])
+        OmniRenderState.clear(OmniRenderState.ClearMask.COLOR, OmniRenderState.ClearMask.DEPTH)
         unbind()
     }
 
@@ -332,10 +332,10 @@ public class OmniFramebuffer {
             colorAttachment = OmniTextureManager.generateTexture()
         }
 
-        MultiGlStateManager.getError()
+        OmniRenderEnv.getError()
         OmniTextureManager.bindTexture(colorAttachment)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, size.width, size.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        return MultiGlStateManager.getError() == MultiGlStateManager.GlError.NO_ERROR
+        return OmniRenderEnv.getError() == OmniRenderEnv.GlError.NO_ERROR
     }
 
     private fun trySetupDepth(size: Size): Boolean {
@@ -343,10 +343,10 @@ public class OmniFramebuffer {
             depthAttachment = OmniTextureManager.generateTexture()
         }
 
-        MultiGlStateManager.getError()
+        OmniRenderEnv.getError()
         OmniTextureManager.bindTexture(depthAttachment)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_DEPTH_COMPONENT, size.width, size.height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        return MultiGlStateManager.getError() == MultiGlStateManager.GlError.NO_ERROR
+        return OmniRenderEnv.getError() == OmniRenderEnv.GlError.NO_ERROR
     }
 
     private fun createColorAttachment() {
