@@ -34,6 +34,10 @@ import org.joml.Quaternionf
 //$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
+//#if MC <= 1.12.2
+//$$ import kotlin.math.*
+//#endif
+
 import java.util.*
 import org.joml.Matrix4f
 import org.joml.Matrix3f

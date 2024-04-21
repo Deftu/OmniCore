@@ -259,8 +259,8 @@ public object MultiKeyboard {
         //#else
         //$$ return if (isKeyboardButton(code)) {
         //$$     Keyboard.isKeyDown(code)
-        //$$ } else if (MultiMouse.isMouseButton(code)) {
-        //$$     MultiMouse.isPressed(code)
+        //$$ } else if (OmniMouse.isMouseButton(code)) {
+        //$$     OmniMouse.isPressed(code)
         //$$ } else {
         //$$     false
         //$$ }

@@ -133,7 +133,7 @@ public class OmniTextureManager(
     //#if MC >= 1.14
     public fun registerTexture(path: Identifier, texture: AbstractTexture): OmniTextureManager = apply {
     //#else
-    //$$ public fun registerTexture(path: ResourceLocation, texture: ITextureObject): MultiTextureManager = apply {
+    //$$ public fun registerTexture(path: ResourceLocation, texture: ITextureObject): OmniTextureManager = apply {
     //#endif
         textureManager.registerTexture(path, texture)
     }

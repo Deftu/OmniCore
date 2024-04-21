@@ -209,7 +209,7 @@ public abstract class OmniScreen(
         //#if MC >= 1.15
         super.resize(OmniClient.getInstance(), width, height)
         //#else
-        //$$ super.setWorldAndResolution(MultiClient.getInstance(), width, height)
+        //$$ super.setWorldAndResolution(OmniClient.getInstance(), width, height)
         //#endif
     }
 

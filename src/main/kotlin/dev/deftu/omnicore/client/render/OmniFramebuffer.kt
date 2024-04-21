@@ -3,7 +3,6 @@
 package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.16
-import dev.deftu.omnicore.client.*
 import net.minecraft.client.texture.NativeImage
 //#else
 //$$ import org.lwjgl.BufferUtils
@@ -11,6 +10,7 @@ import net.minecraft.client.texture.NativeImage
 //$$ import javax.imageio.ImageIO
 //#endif
 
+import dev.deftu.omnicore.client.*
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL30
@@ -79,7 +79,7 @@ public class OmniFramebuffer {
             //#if MC >= 1.16.5
             OmniClient.getInstance().framebuffer.fbo
             //#else
-            //$$ MultiClient.getInstance().framebuffer.framebufferObject
+            //$$ OmniClient.getInstance().framebuffer.framebufferObject
             //#endif
 
     private var fbo = -1

@@ -48,7 +48,7 @@ public class OmniTessellator(
             //#if MC >= 1.12
             OmniTessellator(getTessellator().buffer)
             //#else
-            //$$ MultiTessellator(getTessellator().worldRenderer)
+            //$$ OmniTessellator(getTessellator().worldRenderer)
             //#endif
         @JvmStatic public fun getWithBuffer(buffer: BufferBuilder): OmniTessellator = OmniTessellator(buffer)
         @JvmStatic public fun getFromSize(size: Int): OmniTessellator = getWithBuffer(BufferBuilder(size))

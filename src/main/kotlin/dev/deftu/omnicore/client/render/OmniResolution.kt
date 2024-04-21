@@ -19,7 +19,7 @@ public object OmniResolution {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.width
             //#else
-            //$$ return MultiClient.getInstance().displayWidth
+            //$$ return OmniClient.getInstance().displayWidth
             //#endif
         }
 
@@ -29,7 +29,7 @@ public object OmniResolution {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.height
             //#else
-            //$$ return MultiClient.getInstance().displayHeight
+            //$$ return OmniClient.getInstance().displayHeight
             //#endif
         }
 
@@ -39,7 +39,7 @@ public object OmniResolution {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.framebufferWidth
             //#else
-            //$$ return MultiClient.getInstance().displayWidth
+            //$$ return OmniClient.getInstance().displayWidth
             //#endif
         }
 
@@ -49,7 +49,7 @@ public object OmniResolution {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.framebufferHeight
             //#else
-            //$$ return MultiClient.getInstance().displayHeight
+            //$$ return OmniClient.getInstance().displayHeight
             //#endif
         }
 
@@ -86,18 +86,18 @@ public object OmniResolution {
     //#if MC <= 1.12.2
     //$$ private fun getScaledRes(): ScaledResolution {
     //$$     if (scaledRes == null) {
-    //$$         scaledRes = ScaledResolution(MultiClient.getInstance())
+    //$$         scaledRes = ScaledResolution(OmniClient.getInstance())
     //$$         return scaledRes!!
     //$$     }
     //$$
     //$$     val cached = CachedScaledResolution(
-    //$$         MultiClient.getInstance().displayWidth,
-    //$$         MultiClient.getInstance().displayHeight,
+    //$$         OmniClient.getInstance().displayWidth,
+    //$$         OmniClient.getInstance().displayHeight,
     //$$         scaledRes!!.scaleFactor,
-    //$$         MultiClient.getInstance().isUnicode
+    //$$         OmniClient.getInstance().isUnicode
     //$$     )
     //$$     if (cached != cachedScaledRes) {
-    //$$         scaledRes = ScaledResolution(MultiClient.getInstance())
+    //$$         scaledRes = ScaledResolution(OmniClient.getInstance())
     //$$         cachedScaledRes = cached
     //$$     }
     //$$
