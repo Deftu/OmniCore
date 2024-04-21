@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.shaders
+package dev.deftu.omnicore.client.shaders
 
 public interface ShaderUniform {
     public val location: Int

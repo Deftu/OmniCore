@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.shaders
+package dev.deftu.omnicore.client.shaders
 
 //#if MC >= 1.17
 import net.minecraft.client.gl.GlBlendState
@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL20
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL14
-import dev.deftu.omnicore.MultiGlStateManager
+import dev.deftu.omnicore.client.render.OmniRenderState
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
@@ -83,9 +83,9 @@ public data class BlendState(
     //#endif
 
     private fun apply() {
-        MultiGlStateManager.toggleBlend(enabled)
-        MultiGlStateManager.blendEquation(equation.value)
-        MultiGlStateManager.blendFuncSeparate(srcRgb.value, dstRgb.value, srcAlpha.value, dstAlpha.value)
+        OmniRenderState.toggleBlend(enabled)
+        OmniRenderState.blendEquation(equation.value)
+        OmniRenderState.blendFuncSeparate(srcRgb.value, dstRgb.value, srcAlpha.value, dstAlpha.value)
     }
 
     public enum class BlendEquation(

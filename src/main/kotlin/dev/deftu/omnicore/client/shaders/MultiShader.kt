@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.shaders
+package dev.deftu.omnicore.client.shaders
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
@@ -7,7 +7,8 @@ package dev.deftu.omnicore.shaders
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
-import dev.deftu.omnicore.MultiRenderEnvironment
+import dev.deftu.omnicore.client.render.OmniRenderEnv
+import dev.deftu.omnicore.client.shaders.*
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
@@ -82,13 +83,13 @@ public interface MultiShader {
         }
 
         @JvmStatic public fun validateProgram(program: Int) {
-            if (MultiRenderEnvironment.isGL21Available()) {
+            if (OmniRenderEnv.isGl21Available()) {
                 GL20.glValidateProgram(program)
             } else ARBShaderObjects.glValidateProgramARB(program)
         }
 
         @JvmStatic public fun getProgramInfoLog(program: Int, maxLength: Int): String {
-            return if (MultiRenderEnvironment.isGL21Available()) {
+            return if (OmniRenderEnv.isGl21Available()) {
                 //#if MC >= 1.17
                 GlStateManager.glGetProgramInfoLog(program, maxLength)
                 //#elseif MC >= 1.15.2
@@ -100,7 +101,7 @@ public interface MultiShader {
         }
 
         @JvmStatic public fun getProgramValidateStatus(program: Int): Int {
-            return if (MultiRenderEnvironment.isGL21Available()) {
+            return if (OmniRenderEnv.isGl21Available()) {
                 GL20.glGetProgrami(program, GL20.GL_VALIDATE_STATUS)
             } else ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB)
         }
@@ -126,7 +127,7 @@ public interface MultiShader {
         }
 
         @JvmStatic public fun deleteShader(shader: Int) {
-            if (MultiRenderEnvironment.isGL21Available()) {
+            if (OmniRenderEnv.isGl21Available()) {
                 //#if MC >= 1.17
                 GlStateManager.glDeleteShader(shader)
                 //#elseif MC >= 1.15.2
@@ -138,7 +139,7 @@ public interface MultiShader {
         }
 
         @JvmStatic public fun detachShader(program: Int, shader: Int) {
-            if (MultiRenderEnvironment.isGL21Available()) {
+            if (OmniRenderEnv.isGl21Available()) {
                 GL20.glDetachShader(program, shader)
             } else ARBShaderObjects.glDetachObjectARB(program, shader)
         }

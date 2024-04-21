@@ -1,6 +1,6 @@
-package dev.deftu.omnicore.shaders
+package dev.deftu.omnicore.client.shaders
 
-import dev.deftu.omnicore.MultiTextureManager
+import dev.deftu.omnicore.client.render.OmniTextureManager
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL20
@@ -38,12 +38,12 @@ internal class GlShader(
 
     override fun unbind() {
         for ((textureUnit, texture) in prevTextureBindings) {
-            MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
-            MultiTextureManager.bindTexture(texture)
+            OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
+            OmniTextureManager.bindTexture(texture)
         }
 
         prevTextureBindings.clear()
-        MultiTextureManager.setActiveTexture(prevActiveTexture)
+        OmniTextureManager.setActiveTexture(prevActiveTexture)
         prevBlendState?.activate()
         MultiShader.useProgram(GL11.GL_NONE)
         bound = false
@@ -81,9 +81,9 @@ internal class GlShader(
     }
 
     internal fun bindTexture(textureUnit: Int, texture: Int) {
-        MultiTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
+        OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + textureUnit)
         prevTextureBindings.computeIfAbsent(textureUnit) { GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D) }
-        MultiTextureManager.bindTexture(texture)
+        OmniTextureManager.bindTexture(texture)
     }
 
     private fun setupShader() {

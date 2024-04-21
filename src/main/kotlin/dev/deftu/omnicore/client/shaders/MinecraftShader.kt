@@ -1,8 +1,8 @@
-package dev.deftu.omnicore.shaders
+package dev.deftu.omnicore.client.shaders
 
 //#if MC >= 1.17
 //#if MC >= 1.19.3
-import dev.deftu.omnicore.DummyResourcePack
+import dev.deftu.omnicore.client.DummyResourcePack
 //#endif
 
 //#if MC >= 1.19
@@ -16,8 +16,8 @@ import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import dev.deftu.omnicore.MultiRenderSystem
-import dev.deftu.omnicore.MultiTessellator
+import dev.deftu.omnicore.client.OmniTessellator
+import dev.deftu.omnicore.client.render.OmniRenderState
 import net.minecraft.client.gl.GlUniform
 import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.client.render.VertexFormat
@@ -42,7 +42,7 @@ internal class MinecraftShader(
             vert: String,
             frag: String,
             blend: BlendState,
-            vertexFormat: MultiTessellator.VertexFormats
+            vertexFormat: OmniTessellator.VertexFormats
         ): MinecraftShader {
             val transformer = Transformer(vertexFormat)
 
@@ -113,11 +113,11 @@ internal class MinecraftShader(
     override val usable: Boolean = true
 
     override fun bind() {
-        MultiRenderSystem.setShader(::shader)
+        OmniRenderState.setShader(::shader)
     }
 
     override fun unbind() {
-        MultiRenderSystem.removeShader()
+        OmniRenderState.removeShader()
     }
 
     private fun getUniformOrNull(name: String) = shader.getUniform(name)?.let(::VanillaShaderUniform)
@@ -130,7 +130,7 @@ internal class MinecraftShader(
     override fun getSamplerUniformOrNull(name: String) = VanillaSamplerUniform(shader, name)
 
     internal class Transformer(
-        private val vertexFormat: MultiTessellator.VertexFormats?
+        private val vertexFormat: OmniTessellator.VertexFormats?
     ) {
         val uniforms = mutableMapOf<String, UniformType>()
         val samplers = mutableSetOf<String>()
