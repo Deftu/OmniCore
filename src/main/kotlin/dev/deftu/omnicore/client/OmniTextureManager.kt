@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.15
 import net.minecraft.client.texture.NativeImage
@@ -31,17 +31,18 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
 
-public class MultiTextureManager(
+public class OmniTextureManager(
     private val textureManager: TextureManager
 ) {
     public companion object {
+
         @JvmStatic
-        public val INSTANCE: MultiTextureManager by lazy {
-            MultiTextureManager(get())
+        public val INSTANCE: OmniTextureManager by lazy {
+            OmniTextureManager(get())
         }
 
         @JvmStatic
-        public fun get(): TextureManager = MultiClient.getInstance().textureManager
+        public fun get(): TextureManager = OmniClient.getInstance().textureManager
 
         @JvmStatic
         public fun getActiveTexture(): Int =
@@ -108,6 +109,7 @@ public class MultiTextureManager(
             block.run()
             setActiveTexture(prevActiveTexture)
         }
+
     }
 
     public fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
@@ -123,36 +125,36 @@ public class MultiTextureManager(
         }
     }
 
-    public fun bindTexture(path: Identifier): MultiTextureManager = apply {
+    public fun bindTexture(path: Identifier): OmniTextureManager = apply {
         textureManager.bindTexture(path)
     }
 
     //#if MC >= 1.14
-    public fun registerTexture(path: Identifier, texture: AbstractTexture): MultiTextureManager = apply {
+    public fun registerTexture(path: Identifier, texture: AbstractTexture): OmniTextureManager = apply {
     //#else
     //$$ public fun registerTexture(path: ResourceLocation, texture: ITextureObject): MultiTextureManager = apply {
     //#endif
         textureManager.registerTexture(path, texture)
     }
 
-    public fun registerImageTexture(path: Identifier, texture: BufferedImage): MultiTextureManager = apply {
+    public fun registerImageTexture(path: Identifier, texture: BufferedImage): OmniTextureManager = apply {
         val stream = ByteArrayOutputStream()
         ImageIO.write(texture, "png", stream)
-        MultiClient.execute {
+        OmniClient.execute {
             registerTexture(path, getReleasedDynamicTexture(stream.toByteArray().inputStream()))
         }
     }
 
-    public fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture): MultiTextureManager = apply {
+    public fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture): OmniTextureManager = apply {
         textureManager.registerDynamicTexture(path, texture)
     }
 
-    public fun destroyTexture(path: Identifier): MultiTextureManager = apply {
+    public fun destroyTexture(path: Identifier): OmniTextureManager = apply {
         textureManager.destroyTexture(path)
     }
 
-    public fun deleteTexture(id: Int): MultiTextureManager = apply {
-        MultiTextureManager.deleteTexture(id)
+    public fun deleteTexture(id: Int): OmniTextureManager = apply {
+        OmniTextureManager.deleteTexture(id)
     }
 }
 
@@ -210,7 +212,7 @@ public class ReleasedDynamicTexture(
             //#endif
 
             //#if MC >= 1.14
-            MultiTextureManager.configureTexture(allocGlId()) {
+            OmniTextureManager.configureTexture(allocGlId()) {
                 data?.upload(0, 0, 0, false)
             }
             data = null
@@ -254,7 +256,7 @@ public class ReleasedDynamicTexture(
         override fun close() {
             toBeCleanedUp.remove(this)
             if (glId != -1) {
-                MultiClient.getTextureManager().deleteTexture(glId)
+                OmniClient.getTextureManager().deleteTexture(glId)
                 glId = -1
             }
 

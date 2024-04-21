@@ -1,4 +1,4 @@
-package dev.deftu.multi
+package dev.deftu.omnicore
 
 //#if MC <= 1.16.5
 //$$ import org.lwjgl.opengl.GL13

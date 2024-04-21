@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.16
 import net.minecraft.client.texture.NativeImage
@@ -18,7 +18,7 @@ import java.io.File
 import java.nio.ByteBuffer
 import kotlin.math.max
 
-public class MultiFramebuffer {
+public class OmniFramebuffer {
     public companion object {
         private var maxSupportedTextureSize = -1
 
@@ -75,7 +75,7 @@ public class MultiFramebuffer {
     private val mcFbo: Int
         get() =
             //#if MC >= 1.16.5
-            MultiClient.getInstance().framebuffer.fbo
+            OmniClient.getInstance().framebuffer.fbo
             //#else
             //$$ MultiClient.getInstance().framebuffer.framebufferObject
             //#endif
@@ -83,6 +83,8 @@ public class MultiFramebuffer {
     private var fbo = -1
     private var colorAttachment = -1
     private var depthAttachment = -1
+
+    private var clearColor = floatArrayOf(0f, 0f, 0f, 0f)
 
     public fun bind(modifyViewport: Boolean) {
         bindFramebuffer(fbo)
@@ -96,11 +98,11 @@ public class MultiFramebuffer {
     }
 
     public fun bindTexture() {
-        MultiTextureManager.bindTexture(colorAttachment)
+        OmniTextureManager.bindTexture(colorAttachment)
     }
 
     public fun unbindTexture() {
-        MultiTextureManager.removeTexture()
+        OmniTextureManager.removeTexture()
     }
 
     public fun resize(
@@ -121,12 +123,12 @@ public class MultiFramebuffer {
         unbind()
 
         if (depthAttachment != -1) {
-            MultiTextureManager.deleteTexture(depthAttachment)
+            OmniTextureManager.deleteTexture(depthAttachment)
             depthAttachment = -1
         }
 
         if (colorAttachment != -1) {
-            MultiTextureManager.deleteTexture(colorAttachment)
+            OmniTextureManager.deleteTexture(colorAttachment)
             colorAttachment = -1
         }
 
@@ -137,23 +139,22 @@ public class MultiFramebuffer {
         }
     }
 
-    public fun draw(stack: MultiMatrixStack) {
-        unbind()
-
+    public fun draw(stack: OmniMatrixStack) {
         stack.push()
+
+        MultiRenderSystem.setTexture(0, colorAttachment)
         MultiGlStateManager.colorMask(red = true, green = true, blue = true, alpha = false)
         MultiGlStateManager.disableDepth()
         MultiGlStateManager.depthMask(false)
         MultiGlStateManager.viewport(0, 0, width, height)
-        val scaleFactor = MultiResolution.scaleFactor
+        val scaleFactor = OmniResolution.scaleFactor
         val xScale = width / scaleFactor / width.toDouble()
         val yScale = height / scaleFactor / height.toDouble()
         stack.scale(xScale, yScale, 0.0)
         MultiGlStateManager.enableBlend()
-        MultiRenderSystem.setTexture(0, colorAttachment)
 
-        val tessellator = MultiTessellator.getFromBuffer()
-        tessellator.beginWithDefaultShader(MultiTessellator.DrawModes.QUADS, MultiTessellator.VertexFormats.POSITION_TEXTURE_COLOR)
+        val tessellator = OmniTessellator.getFromBuffer()
+        tessellator.beginWithDefaultShader(OmniTessellator.DrawModes.QUADS, OmniTessellator.VertexFormats.POSITION_TEXTURE_COLOR)
         tessellator.vertex(stack, 0f, 0f, 0f)
             .texture(0f, 1f)
             .color(Color.WHITE)
@@ -182,29 +183,66 @@ public class MultiFramebuffer {
 
     public fun clear() {
         bind(true)
-        MultiGlStateManager.clearColor(1f, 1f, 1f, 0f)
+        MultiGlStateManager.clearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])
         MultiGlStateManager.clear(MultiGlStateManager.ClearMask.COLOR, MultiGlStateManager.ClearMask.DEPTH)
         unbind()
     }
 
-    public fun copyFrom(
-        other: MultiFramebuffer
+    public fun setClearColor(
+        red: Float,
+        green: Float,
+        blue: Float,
+        alpha: Float
     ) {
-        bindReadFramebuffer(other.fbo)
-        GL30.glFramebufferTexture2D(GL30.GL_READ_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, other.colorAttachment, 0)
-        GL11.glReadBuffer(GL30.GL_COLOR_ATTACHMENT0)
+        val r = red.coerceIn(0f, 1f)
+        val g = green.coerceIn(0f, 1f)
+        val b = blue.coerceIn(0f, 1f)
+        val a = alpha.coerceIn(0f, 1f)
+        clearColor = floatArrayOf(r, g, b, a)
+    }
 
+    public fun setClearColor(
+        color: Color
+    ) {
+        setClearColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+    }
+
+    /**
+     * Copies the contents of the other framebuffer's texture to this framebuffer's texture.
+     */
+    // IMPLEMENTING NOW - @Deprecated("Use copyFromRender(stack, other) instead. This function is currently unimplemented.", level = DeprecationLevel.ERROR)
+    public fun copyFrom(
+        other: OmniFramebuffer
+    ) {
+        // Clear the current framebuffer.
+        bind(true)
+        setClearColor(other.clearColor[0], other.clearColor[1], other.clearColor[2], other.clearColor[3])
+        clear()
+        unbind()
+
+        // Set the draw and read framebuffers to this framebuffer and the other framebuffer, respectively.
         bindDrawFramebuffer(fbo)
-        GL30.glFramebufferTexture2D(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT1, GL11.GL_TEXTURE_2D, colorAttachment, 0)
-        GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT1)
+        bindReadFramebuffer(other.fbo)
 
+        // Blit the other framebuffer's texture to this framebuffer's texture.
         GL30.glBlitFramebuffer(
             0, 0, other.width, other.height,
             0, 0, width, height,
-            GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST
+            GL11.GL_COLOR_BUFFER_BIT,
+            GL11.GL_NEAREST
         )
 
-        unbindTexture()
+        // Unbind the framebuffers.
+        unbind()
+    }
+
+    @JvmOverloads
+    public fun copyFromRender(
+        stack: OmniMatrixStack = OmniMatrixStack(),
+        other: OmniFramebuffer
+    ) {
+        bind(true)
+        other.draw(stack)
         unbind()
     }
 
@@ -245,8 +283,8 @@ public class MultiFramebuffer {
         this.width = width
         this.height = height
 
-        this.colorAttachment = MultiTextureManager.generateTexture()
-        this.depthAttachment = MultiTextureManager.generateTexture()
+        this.colorAttachment = OmniTextureManager.generateTexture()
+        this.depthAttachment = OmniTextureManager.generateTexture()
         val size = findSize(width, height)
 
         this.fbo = genFramebuffer()
@@ -287,28 +325,28 @@ public class MultiFramebuffer {
 
     private fun trySetupColor(size: Size): Boolean {
         if (colorAttachment == -1) {
-            colorAttachment = MultiTextureManager.generateTexture()
+            colorAttachment = OmniTextureManager.generateTexture()
         }
 
         MultiGlStateManager.getError()
-        MultiTextureManager.bindTexture(colorAttachment)
+        OmniTextureManager.bindTexture(colorAttachment)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, size.width, size.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
         return MultiGlStateManager.getError() == MultiGlStateManager.GlError.NO_ERROR
     }
 
     private fun trySetupDepth(size: Size): Boolean {
         if (depthAttachment == -1) {
-            depthAttachment = MultiTextureManager.generateTexture()
+            depthAttachment = OmniTextureManager.generateTexture()
         }
 
         MultiGlStateManager.getError()
-        MultiTextureManager.bindTexture(depthAttachment)
+        OmniTextureManager.bindTexture(depthAttachment)
         GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_DEPTH_COMPONENT, size.width, size.height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
         return MultiGlStateManager.getError() == MultiGlStateManager.GlError.NO_ERROR
     }
 
     private fun createColorAttachment() {
-        MultiTextureManager.bindTexture(colorAttachment)
+        OmniTextureManager.bindTexture(colorAttachment)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
@@ -317,7 +355,7 @@ public class MultiFramebuffer {
     }
 
     private fun createDepthAttachment() {
-        MultiTextureManager.bindTexture(depthAttachment)
+        OmniTextureManager.bindTexture(depthAttachment)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)

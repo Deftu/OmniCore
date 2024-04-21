@@ -1,7 +1,7 @@
-package dev.deftu.multi
+package dev.deftu.omnicore
 
 //#if MC <= 1.12.2
-//$$ import net.minecraft.client.renderer.OpenGlHelper;
+//$$ import net.minecraft.client.renderer.OpenGlHelper
 //#endif
 
 public object MultiRenderEnvironment {

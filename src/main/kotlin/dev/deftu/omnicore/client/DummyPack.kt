@@ -1,5 +1,5 @@
 //#if MC >= 1.19.3
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 import net.minecraft.resource.ResourcePack
 import net.minecraft.resource.ResourceType

@@ -1,6 +1,6 @@
 @file:Suppress("UNUSED_PARAMETER")
 
-package dev.deftu.multi
+package dev.deftu.omnicore
 
 //#if MC >= 1.15
 import com.mojang.blaze3d.systems.RenderSystem

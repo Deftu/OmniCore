@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "UnusedImport")
 
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.15
 import net.minecraft.util.math.MathHelper
@@ -30,13 +30,10 @@ import org.joml.Quaternionf
 //#endif
 
 import java.util.*
-import kotlin.math.*
-import org.lwjgl.opengl.GL11
-import com.mojang.blaze3d.platform.GlStateManager
 import org.joml.Matrix4f
 import org.joml.Matrix3f
 
-public class MultiMatrixStack private constructor(
+public class OmniMatrixStack private constructor(
     private val stack: Deque<StackEntry>
 ) {
     private companion object {
@@ -228,7 +225,7 @@ public class MultiMatrixStack private constructor(
     public fun peek(): StackEntry = stack.last
     public fun isEmpty(): Boolean = stack.size == 1
 
-    public fun copy(): MultiMatrixStack = MultiMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
+    public fun copy(): OmniMatrixStack = OmniMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
 
     public fun applyToGlobalState() {
         //#if MC >= 1.17

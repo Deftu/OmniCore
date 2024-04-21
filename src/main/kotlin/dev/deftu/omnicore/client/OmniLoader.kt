@@ -1,4 +1,4 @@
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
@@ -17,7 +17,7 @@ import net.fabricmc.loader.api.ModContainer
 
 import java.nio.file.Path
 
-public object MultiLoader {
+public object OmniLoader {
     public enum class LoaderType {
         FABRIC,
         FORGE

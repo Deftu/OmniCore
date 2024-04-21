@@ -1,4 +1,4 @@
-package dev.deftu.multi.shader
+package dev.deftu.omnicore.shaders
 
 //#if MC >= 1.17
 import net.minecraft.client.gl.GlBlendState
@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL20
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL14
-import dev.deftu.multi.MultiGlStateManager
+import dev.deftu.omnicore.MultiGlStateManager
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
@@ -79,7 +79,7 @@ public data class BlendState(
 
     public fun activate(): Unit = vanilla.enable()
     //#else
-    //$$ fun activate(): Unit = apply()
+    //$$ public fun activate(): Unit = apply()
     //#endif
 
     private fun apply() {

@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter")
 
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.17
 import net.minecraft.client.gl.ShaderProgram
@@ -38,19 +38,19 @@ import java.awt.Color
 import java.util.*
 import java.util.function.Supplier
 
-public class MultiTessellator(
+public class OmniTessellator(
     private val buffer: BufferBuilder
 ) {
     public companion object {
         @JvmStatic public fun getTessellator(): Tessellator = Tessellator.getInstance()
-        @JvmStatic public fun getFromBuffer(): MultiTessellator =
+        @JvmStatic public fun getFromBuffer(): OmniTessellator =
             //#if MC >= 1.12
-            MultiTessellator(getTessellator().buffer)
+            OmniTessellator(getTessellator().buffer)
             //#else
             //$$ MultiTessellator(getTessellator().worldRenderer)
             //#endif
-        @JvmStatic public fun getWithBuffer(buffer: BufferBuilder): MultiTessellator = MultiTessellator(buffer)
-        @JvmStatic public fun getFromSize(size: Int): MultiTessellator = getWithBuffer(BufferBuilder(size))
+        @JvmStatic public fun getWithBuffer(buffer: BufferBuilder): OmniTessellator = OmniTessellator(buffer)
+        @JvmStatic public fun getFromSize(size: Int): OmniTessellator = getWithBuffer(BufferBuilder(size))
 
         //#if MC >= 1.17
         @JvmStatic public val defaultShaders: IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>> by lazy {
@@ -67,7 +67,7 @@ public class MultiTessellator(
             value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE] = Supplier { GameRenderer.getPositionColorTexProgram() }
             value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT] = Supplier { GameRenderer.getPositionColorLightmapProgram() }
             value[net.minecraft.client.render.VertexFormats.LINES] = Supplier { GameRenderer.getRenderTypeLinesProgram() }
-            value[net.minecraft.client.render.VertexFormats.BLIT_SCREEN] = Supplier { MultiClient.getInstance().gameRenderer.blitScreenProgram }
+            value[net.minecraft.client.render.VertexFormats.BLIT_SCREEN] = Supplier { OmniClient.getInstance().gameRenderer.blitScreenProgram }
 
             value
         }
@@ -79,16 +79,16 @@ public class MultiTessellator(
     private var renderLayer: RenderLayer? = null
     //#endif
 
-    public fun beginWithActiveShader(mode: DrawModes, format: VertexFormat): MultiTessellator = apply {
+    public fun beginWithActiveShader(mode: DrawModes, format: VertexFormat): OmniTessellator = apply {
         currentVertexFormat = format
         buffer.begin(mode.vanilla, format)
     }
 
-    public fun beginWithActiveShader(mode: DrawModes, format: VertexFormats): MultiTessellator = apply {
+    public fun beginWithActiveShader(mode: DrawModes, format: VertexFormats): OmniTessellator = apply {
         beginWithActiveShader(mode, format.vanilla)
     }
 
-    public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat): MultiTessellator = apply {
+    public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat): OmniTessellator = apply {
         //#if MC >= 1.17
         val supplier = defaultShaders[format] ?: error("Unsupported vertex format '$format' - no default shader")
         MultiRenderSystem.setShader(supplier)
@@ -96,12 +96,12 @@ public class MultiTessellator(
         beginWithActiveShader(mode, format)
     }
 
-    public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormats): MultiTessellator = apply {
+    public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormats): OmniTessellator = apply {
         beginWithDefaultShader(mode, format.vanilla)
     }
 
     //#if MC >= 1.16
-    public fun beginRenderLayer(layer: RenderLayer): MultiTessellator = apply {
+    public fun beginRenderLayer(layer: RenderLayer): OmniTessellator = apply {
         renderLayer = layer
         beginWithActiveShader(DrawModes.fromRenderLayer(layer), layer.vertexFormat)
     }
@@ -177,11 +177,11 @@ public class MultiTessellator(
     }
 
     public fun vertex(
-        stack: MultiMatrixStack,
+        stack: OmniMatrixStack,
         x: Float,
         y: Float,
         z: Float
-    ): MultiTessellator = apply {
+    ): OmniTessellator = apply {
         //#if MC >= 1.16
         buffer.vertex(stack.peek().matrix, x, y, z)
         //#else
@@ -200,11 +200,11 @@ public class MultiTessellator(
     }
 
     public fun normal(
-        stack: MultiMatrixStack,
+        stack: OmniMatrixStack,
         x: Float,
         y: Float,
         z: Float
-    ): MultiTessellator = apply {
+    ): OmniTessellator = apply {
         //#if MC >= 1.15
         buffer.normal(stack.peek().normal, x, y, z)
         //#else
@@ -223,7 +223,7 @@ public class MultiTessellator(
         green: Float,
         blue: Float,
         alpha: Float
-    ): MultiTessellator = apply {
+    ): OmniTessellator = apply {
         buffer.color(red, green, blue, alpha)
     }
 
@@ -232,7 +232,7 @@ public class MultiTessellator(
         green: Int,
         blue: Int,
         alpha: Int
-    ): MultiTessellator = color(
+    ): OmniTessellator = color(
         red / 255.0f,
         green / 255.0f,
         blue / 255.0f,
@@ -241,7 +241,7 @@ public class MultiTessellator(
 
     public fun color(
         color: Int
-    ): MultiTessellator = color(
+    ): OmniTessellator = color(
         (color shr 16 and 255) / 255.0f,
         (color shr 8 and 255) / 255.0f,
         (color and 255) / 255.0f,
@@ -250,7 +250,7 @@ public class MultiTessellator(
 
     public fun color(
         color: Color
-    ): MultiTessellator = color(
+    ): OmniTessellator = color(
         color.red / 255.0f,
         color.green / 255.0f,
         color.blue / 255.0f,
@@ -260,7 +260,7 @@ public class MultiTessellator(
     public fun texture(
         u: Float,
         v: Float
-    ): MultiTessellator = apply {
+    ): OmniTessellator = apply {
         //#if MC >= 1.15
         buffer.texture(u, v)
         //#else
@@ -275,7 +275,7 @@ public class MultiTessellator(
     public fun overlay(
         u: Int,
         v: Int
-    ): MultiTessellator = apply {
+    ): OmniTessellator = apply {
         //#if MC >= 1.15
         buffer.overlay(u, v)
         //#else
@@ -290,7 +290,7 @@ public class MultiTessellator(
     public fun light(
         u: Int,
         v: Int
-    ): MultiTessellator = apply {
+    ): OmniTessellator = apply {
         //#if MC >= 1.14
         buffer.light(u, v)
         //#else
@@ -298,7 +298,7 @@ public class MultiTessellator(
         //#endif
     }
 
-    public fun next(): MultiTessellator = apply {
+    public fun next(): OmniTessellator = apply {
         //#if MC >= 1.14
         buffer.next()
         //#else

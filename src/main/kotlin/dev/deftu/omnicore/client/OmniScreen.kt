@@ -1,4 +1,4 @@
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.15
 //#if MC < 1.19
@@ -17,36 +17,40 @@ import net.minecraft.client.gui.DrawContext
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
-import dev.deftu.textful.Text
-import dev.deftu.textful.impl.TranslatableText as TextfulTranslatableText
-import dev.deftu.textful.toVanilla
+import dev.deftu.textile.Text
+import dev.deftu.textile.impl.TranslatableText as TextileTranslatableText
+import dev.deftu.textile.toVanilla
 
-public abstract class MultiScreen(
+public abstract class OmniScreen(
     public val restorePreviousScreen: Boolean = true,
     public val screenTitle: Text? = null
 //#if MC >= 1.15
-) : Screen(screenTitle?.toVanilla() ?: TextfulTranslatableText("").toVanilla()) {
+) : Screen(screenTitle?.toVanilla() ?: TextileTranslatableText("").toVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
     public companion object {
+
+        @JvmStatic
+        public fun getCurrentScreen(): Screen? = OmniClient.getCurrentScreen()
+
         @JvmStatic
         public fun openScreen(screen: Screen?) {
-            MultiClient.getInstance().setScreen(screen)
+            OmniClient.getInstance().setScreen(screen)
         }
     }
 
     public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
-    ) : this(restorePreviousScreen, TextfulTranslatableText(titleKey ?: ""))
+    ) : this(restorePreviousScreen, TextileTranslatableText(titleKey ?: ""))
 
     @JvmOverloads
     public constructor(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as Text?)
 
-    private val previousScreen = if (restorePreviousScreen) MultiClient.getCurrentScreen() else null
+    private val previousScreen = if (restorePreviousScreen) OmniClient.getCurrentScreen() else null
 
     //#if MC >= 1.15
     private var lastClick = 0L
@@ -75,7 +79,7 @@ public abstract class MultiScreen(
     }
 
     public open fun handleRender(
-        stack: MultiMatrixStack,
+        stack: OmniMatrixStack,
         mouseX: Int,
         mouseY: Int,
         tickDelta: Float
@@ -133,7 +137,7 @@ public abstract class MultiScreen(
         button: Int
     ) {
         //#if MC >= 1.15
-        if (button == 1) lastClick = MultiClient.getTime()
+        if (button == 1) lastClick = OmniClient.getTimeSinceStart()
         super.mouseClicked(x, y, button)
         //#else
         //$$ try {
@@ -202,14 +206,14 @@ public abstract class MultiScreen(
 
     public open fun handleResize(width: Int, height: Int) {
         //#if MC >= 1.15
-        super.resize(MultiClient.getInstance(), width, height)
+        super.resize(OmniClient.getInstance(), width, height)
         //#else
         //$$ super.setWorldAndResolution(MultiClient.getInstance(), width, height)
         //#endif
     }
 
     public open fun handleBackgroundRender(
-        stack: MultiMatrixStack
+        stack: OmniMatrixStack
     ) {
         //#if MC >= 1.20
         withDrawContext(stack) { ctx ->
@@ -238,7 +242,7 @@ public abstract class MultiScreen(
     }
 
     //#if MC >= 1.20
-    private inline fun <R> withDrawContext(stack: MultiMatrixStack, block: (DrawContext) -> R) {
+    private inline fun <R> withDrawContext(stack: OmniMatrixStack, block: (DrawContext) -> R) {
         val client = this.client!!
         val context = contexts.lastOrNull() ?: DrawContext(client, client.bufferBuilders.entityVertexConsumers)
         context.matrices.push()
@@ -261,7 +265,7 @@ public abstract class MultiScreen(
     //#if MC >= 1.20
     final override fun render(ctx: DrawContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
         contexts.add(ctx)
-        handleRender(MultiMatrixStack(ctx.matrices), mouseX, mouseY, tickDelta)
+        handleRender(OmniMatrixStack(ctx.matrices), mouseX, mouseY, tickDelta)
         contexts.removeLast()
     }
     //#elseif MC >= 1.16
@@ -302,7 +306,7 @@ public abstract class MultiScreen(
     final override fun mouseDragged(mouseX: Double, mouseY: Double, mouseBtn: Int, dx: Double, dy: Double): Boolean {
         dragDx = dx
         dragDy = dy
-        handleMouseDragged(mouseX, mouseY, mouseBtn, MultiClient.getTime() - lastClick)
+        handleMouseDragged(mouseX, mouseY, mouseBtn, OmniClient.getTimeSinceStart() - lastClick)
         return false
     }
 
@@ -350,7 +354,7 @@ public abstract class MultiScreen(
         backgroundDelta = delta
         //#endif
         contexts.add(ctx)
-        handleBackgroundRender(MultiMatrixStack(ctx.matrices))
+        handleBackgroundRender(OmniMatrixStack(ctx.matrices))
     }
     //#elseif MC >= 1.16
     //$$ final override fun renderBackground(stack: MatrixStack) {

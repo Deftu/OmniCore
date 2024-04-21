@@ -1,4 +1,4 @@
-package dev.deftu.multi
+package dev.deftu.omnicore
 
 //#if MC >= 1.16
 import net.minecraft.client.texture.NativeImage

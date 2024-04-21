@@ -1,4 +1,4 @@
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.15
 import org.lwjgl.glfw.GLFW
@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW
 
 import kotlin.math.max
 
-public object MultiMouse {
+public object OmniMouse {
     //#if MC >= 1.15
     @JvmField public val LEFT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_LEFT }
     @JvmField public val RIGHT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_RIGHT }
@@ -33,7 +33,7 @@ public object MultiMouse {
     public val rawX: Double
         get() {
             //#if MC >= 1.14
-            return MultiClient.getInstance().mouse.x
+            return OmniClient.getInstance().mouse.x
             //#else
             //$$ return Mouse.getX().toDouble()
             //#endif
@@ -43,7 +43,7 @@ public object MultiMouse {
     public val rawY: Double
         get() {
             //#if MC >= 1.14
-            return MultiClient.getInstance().mouse.y
+            return OmniClient.getInstance().mouse.y
             //#else
             //$$ return Mouse.getY().toDouble()
             //#endif
@@ -51,17 +51,17 @@ public object MultiMouse {
 
     @JvmStatic
     public val scaledX: Double
-        get() = rawX * MultiResolution.scaledWidth / max(1, MultiResolution.screenWidth)
+        get() = rawX * OmniResolution.scaledWidth / max(1, OmniResolution.screenWidth)
 
     @JvmStatic
     public val scaledY: Double
-        get() = rawY * MultiResolution.scaledHeight / max(1, MultiResolution.screenHeight)
+        get() = rawY * OmniResolution.scaledHeight / max(1, OmniResolution.screenHeight)
 
     @JvmStatic
     public val isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.14
-            return MultiClient.getInstance().mouse.isCursorLocked
+            return OmniClient.getInstance().mouse.isCursorLocked
             //#else
             //$$ return Mouse.isGrabbed()
             //#endif
@@ -70,8 +70,8 @@ public object MultiMouse {
     @JvmStatic
     public fun setCursorGrabbed(grabbed: Boolean) {
         //#if MC >= 1.14
-        if (grabbed) MultiClient.getInstance().mouse.lockCursor()
-        else MultiClient.getInstance().mouse.unlockCursor()
+        if (grabbed) OmniClient.getInstance().mouse.lockCursor()
+        else OmniClient.getInstance().mouse.unlockCursor()
         //#else
         //$$ Mouse.setGrabbed(grabbed)
         //#endif
@@ -89,7 +89,7 @@ public object MultiMouse {
     @JvmStatic
     public fun isPressed(code: Int): Boolean {
         //#if MC >= 1.15
-        val handle = MultiClient.getInstance().window.handle
+        val handle = OmniClient.getInstance().window.handle
         val state = if (!MultiKeyboard.isKeyboardButton(code)) GLFW.glfwGetMouseButton(handle, code) else MultiKeyboard.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else

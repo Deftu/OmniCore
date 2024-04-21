@@ -1,4 +1,4 @@
-package dev.deftu.multi
+package dev.deftu.omnicore.client
 
 //#if MC >= 1.15
 import net.minecraft.client.util.InputUtil
@@ -253,8 +253,8 @@ public object MultiKeyboard {
         if (code == 0) return false // TODO
 
         //#if MC >= 1.15
-        val handle = MultiClient.getInstance().window.handle
-        val state = if (!MultiMouse.isMouseButton(code)) GLFW.glfwGetKey(handle, code) else MultiMouse.isPressed(code)
+        val handle = OmniClient.getInstance().window.handle
+        val state = if (!OmniMouse.isMouseButton(code)) GLFW.glfwGetKey(handle, code) else OmniMouse.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else
         //$$ return if (isKeyboardButton(code)) {
