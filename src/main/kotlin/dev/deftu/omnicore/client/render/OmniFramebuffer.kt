@@ -1,8 +1,9 @@
 @file:Suppress("MemberVisibilityCanBePrivate")
 
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.16
+import dev.deftu.omnicore.client.*
 import net.minecraft.client.texture.NativeImage
 //#else
 //$$ import org.lwjgl.BufferUtils
@@ -154,7 +155,10 @@ public class OmniFramebuffer {
         MultiGlStateManager.enableBlend()
 
         val tessellator = OmniTessellator.getFromBuffer()
-        tessellator.beginWithDefaultShader(OmniTessellator.DrawModes.QUADS, OmniTessellator.VertexFormats.POSITION_TEXTURE_COLOR)
+        tessellator.beginWithDefaultShader(
+            OmniTessellator.DrawModes.QUADS,
+            OmniTessellator.VertexFormats.POSITION_TEXTURE_COLOR
+        )
         tessellator.vertex(stack, 0f, 0f, 0f)
             .texture(0f, 1f)
             .color(Color.WHITE)

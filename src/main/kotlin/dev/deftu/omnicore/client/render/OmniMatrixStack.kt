@@ -1,6 +1,6 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "UnusedImport")
 
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.15
 import net.minecraft.util.math.MathHelper

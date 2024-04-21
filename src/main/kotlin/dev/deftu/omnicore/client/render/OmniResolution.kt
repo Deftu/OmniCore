@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.client.render
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.gui.ScaledResolution
