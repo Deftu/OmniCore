@@ -318,7 +318,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun depthMask(flag: Boolean) {
+    public fun setDepthMask(flag: Boolean) {
         //#if MC >= 1.17
         RenderSystem.depthMask(flag)
         //#else
