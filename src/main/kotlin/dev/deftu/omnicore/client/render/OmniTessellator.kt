@@ -1,9 +1,10 @@
 @file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter")
 
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.17
 import net.minecraft.client.gl.ShaderProgram
+import dev.deftu.omnicore.client.OmniClient
 //#endif
 
 //#if MC >= 1.16
@@ -33,8 +34,6 @@ import net.minecraft.client.render.*
 //#endif
 //#endif
 
-import dev.deftu.omnicore.client.render.OmniMatrixStack
-import dev.deftu.omnicore.client.render.OmniRenderState
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.util.*
@@ -131,14 +130,14 @@ public class OmniTessellator(
         //$$ val wantEnabledStates = getDesiredTextureUnitState(currentVertexFormat!!)
         //$$ val wasEnabledStates = BooleanArray(wantEnabledStates.size)
         //$$ for (i in wasEnabledStates.indices) {
-        //$$     MultiTextureManager.configureTextureUnit(i) {
+        //$$     OmniTextureManager.configureTextureUnit(i) {
         //$$         val isEnabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D).also { wasEnabledStates[i] = it }
         //$$         val wantEnabled = wantEnabledStates[i]
         //$$         if (isEnabled != wantEnabled) {
         //$$             if (wantEnabled) {
-        //$$                 MultiGlStateManager.enableBasicTexture2D()
+        //$$                 OmniRenderState.enableTexture2D()
         //$$             } else {
-        //$$                 MultiGlStateManager.disableBasicTexture2D()
+        //$$                 OmniRenderState.disableTexture2D()
         //$$             }
         //$$         }
         //$$     }
@@ -154,9 +153,9 @@ public class OmniTessellator(
         //$$     }
         //$$
         //$$     if (wasEnabledStates[i]) {
-        //$$         MultiTextureManager.configureTextureUnit(i, MultiGlStateManager::enableBasicTexture2D)
+        //$$         OmniTextureManager.configureTextureUnit(i, OmniRenderState::enableTexture2D)
         //$$     } else {
-        //$$         MultiTextureManager.configureTextureUnit(i, MultiGlStateManager::disableBasicTexture2D)
+        //$$         OmniTextureManager.configureTextureUnit(i, OmniRenderState::disableTexture2D)
         //$$     }
         //$$ }
         //#endif

@@ -271,11 +271,11 @@ public abstract class OmniScreen(
     }
     //#elseif MC >= 1.16
     //$$ final override fun render(stack: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     handleRender(MultiMatrixStack(stack), mouseX, mouseY, tickDelta)
+    //$$     handleRender(OmniMatrixStack(stack), mouseX, mouseY, tickDelta)
     //$$ }
     //#else
     //$$ final override fun render(mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     handleRender(MultiMatrixStack(), mouseX, mouseY, tickDelta)
+    //$$     handleRender(OmniMatrixStack(), mouseX, mouseY, tickDelta)
     //$$ }
     //#endif
 
@@ -359,11 +359,11 @@ public abstract class OmniScreen(
     }
     //#elseif MC >= 1.16
     //$$ final override fun renderBackground(stack: MatrixStack) {
-    //$$     handleBackgroundRender(MultiMatrixStack(stack))
+    //$$     handleBackgroundRender(OmniMatrixStack(stack))
     //$$ }
     //#else
     //$$ final override fun renderBackground() {
-    //$$     handleBackgroundRender(MultiMatrixStack())
+    //$$     handleBackgroundRender(OmniMatrixStack())
     //$$ }
     //#endif
 
@@ -374,7 +374,7 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun drawScreen(mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     handleRender(MultiMatrixStack(), mouseX, mouseY, tickDelta)
+    //$$     handleRender(OmniMatrixStack(), mouseX, mouseY, tickDelta)
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
@@ -414,7 +414,7 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun drawWorldBackground(tint: Int) {
-    //$$     handleBackgroundRender(MultiMatrixStack())
+    //$$     handleBackgroundRender(OmniMatrixStack())
     //$$ }
     //$$
     //$$ final override fun doesGuiPauseGame(): Boolean = doesPauseGame()

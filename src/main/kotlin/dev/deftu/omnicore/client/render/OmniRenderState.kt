@@ -10,6 +10,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 //#if MC <= 1.16.5
+//$$ import dev.deftu.omnicore.client.OmniClient
 //$$ import org.lwjgl.opengl.GL14
 //$$ import org.lwjgl.opengl.GL13
 //#endif

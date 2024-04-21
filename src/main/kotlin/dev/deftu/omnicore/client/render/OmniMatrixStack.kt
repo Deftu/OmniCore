@@ -29,6 +29,11 @@ import org.joml.Quaternionf
 //$$ import java.nio.Buffer
 //#endif
 
+//#if MC <= 1.16.5
+//$$ import org.lwjgl.opengl.GL11
+//$$ import com.mojang.blaze3d.platform.GlStateManager
+//#endif
+
 import java.util.*
 import org.joml.Matrix4f
 import org.joml.Matrix3f

@@ -16,7 +16,7 @@ import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import dev.deftu.omnicore.client.OmniTessellator
+import dev.deftu.omnicore.client.render.OmniTessellator
 import dev.deftu.omnicore.client.render.OmniRenderState
 import net.minecraft.client.gl.GlUniform
 import net.minecraft.client.gl.ShaderProgram
