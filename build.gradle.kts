@@ -1,3 +1,5 @@
+import dev.deftu.gradle.utils.VersionType
+
 plugins {
     java
     kotlin("jvm")
@@ -20,6 +22,16 @@ if (mcData.isForge && mcData.version >= 1_15_02) {
 
 toolkitMavenPublishing {
     artifactName.set(modData.name.lowercase())
+}
+
+toolkitReleases {
+    if (modData.version.startsWith("0.")) {
+        versionType.set(VersionType.BETA)
+    }
+
+    modrinth {
+        projectId.set("MaDESStl")
+    }
 }
 
 dependencies {
