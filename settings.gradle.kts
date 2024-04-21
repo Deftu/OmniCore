@@ -24,7 +24,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "MultiCraft"
+rootProject.name = "OmniCore"
 rootProject.buildFileName = "root.gradle.kts"
 
 listOf(
