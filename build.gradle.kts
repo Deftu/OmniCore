@@ -24,7 +24,7 @@ toolkitMavenPublishing {
 
 dependencies {
     implementation(kotlin("reflect"))
-    modImplementation("dev.deftu:textful-${mcData.versionStr}-${mcData.loader.name}:0.1.1")
+    modImplementation("dev.deftu:textile-${mcData.versionStr}-${mcData.loader.name}:0.1.0")
 
     if (mcData.isFabric) {
         modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.fabricApiVersion}")
