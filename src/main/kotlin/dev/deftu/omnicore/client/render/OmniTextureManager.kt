@@ -14,6 +14,7 @@ import net.minecraft.client.texture.NativeImage
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.platform.TextureUtil
+import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.texture.TextureManager

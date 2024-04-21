@@ -4,6 +4,8 @@ package dev.deftu.omnicore.client.render
 //$$ import net.minecraft.client.gui.ScaledResolution
 //#endif
 
+import dev.deftu.omnicore.client.OmniClient
+
 public object OmniResolution {
     //#if MC <= 1.12.2
     //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val unicode: Boolean)
