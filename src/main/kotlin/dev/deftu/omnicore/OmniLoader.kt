@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore
 
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
