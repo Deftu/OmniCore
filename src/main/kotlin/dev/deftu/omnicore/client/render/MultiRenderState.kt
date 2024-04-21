@@ -1,6 +1,9 @@
-@file:Suppress("UNUSED_PARAMETER")
+package dev.deftu.omnicore.client.render
 
-package dev.deftu.omnicore
+//#if MC >= 1.17
+import net.minecraft.client.gl.ShaderProgram
+import java.util.function.Supplier
+//#endif
 
 //#if MC >= 1.15
 import com.mojang.blaze3d.systems.RenderSystem
@@ -8,20 +11,49 @@ import com.mojang.blaze3d.systems.RenderSystem
 
 //#if MC <= 1.16.5
 //$$ import org.lwjgl.opengl.GL14
+//$$ import org.lwjgl.opengl.GL13
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
+import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL30
 
-public object MultiGlStateManager {
-    @JvmStatic public fun getErrorCode(): Int =
-        GL11.glGetError()
+public object MultiRenderState {
 
-    @JvmStatic public fun getError(): GlError =
-        GlError.values().firstOrNull { it.value == getErrorCode() } ?: GlError.NO_ERROR
+    //#if MC >= 1.17
+    @JvmStatic
+    public fun setShader(supplier: Supplier<ShaderProgram?>) {
+        RenderSystem.setShader(supplier)
+    }
 
-    @JvmStatic public fun color4f(
+    @JvmStatic
+    public fun removeShader() {
+        setShader { null }
+    }
+    //#endif
+
+    @JvmStatic
+    public fun setTexture(index: Int, texture: Int) {
+        //#if MC >= 1.17
+        RenderSystem.setShaderTexture(index, texture)
+        //#else
+        //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
+        //$$ OmniTextureManager.bindTexture(texture)
+        //#endif
+    }
+
+    @JvmStatic
+    public fun setTexture(index: Int, texture: Identifier) {
+        //#if MC >= 1.17
+        RenderSystem.setShaderTexture(index, texture)
+        //#else
+        //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
+        //$$ OmniClient.getTextureManager().bindTexture(texture)
+        //#endif
+    }
+
+    @JvmStatic
+    public fun setColor4f(
         red: Float,
         green: Float,
         blue: Float,
@@ -38,13 +70,14 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun color3f(
+    @JvmStatic
+    public fun setColor3f(
         red: Float,
         green: Float,
         blue: Float
     ) {
         //#if MC >= 1.17
-        color4f(red, green, blue, 1f)
+        setColor4f(red, green, blue, 1f)
         //#else
         //#if MC >= 1.15
         //$$ RenderSystem.color3f(red, green, blue)
@@ -54,7 +87,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun colorMask(
+    @JvmStatic
+    public fun setColorMask(
         red: Boolean,
         green: Boolean,
         blue: Boolean,
@@ -67,7 +101,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun clearColor(
+    @JvmStatic
+    public fun setClearColor(
         red: Float,
         green: Float,
         blue: Float,
@@ -80,7 +115,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun clear(mask: Int) {
+    @JvmStatic
+    public fun clear(mask: Int) {
         //#if MC >= 1.17
         RenderSystem.clear(mask, false)
         //#elseif MC >= 1.16
@@ -90,12 +126,15 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun clear(vararg mask: ClearMask) {
-        val maskInt = mask.fold(0) { acc, clearMask -> acc or clearMask.value }
-        clear(maskInt)
+    @JvmStatic
+    public fun clear(vararg mask: ClearMask) {
+        clear(mask.fold(0) { acc, clearMask ->
+            acc or clearMask.value
+        })
     }
 
-    @JvmStatic public fun viewport(
+    @JvmStatic
+    public fun setViewport(
         x: Int,
         y: Int,
         width: Int,
@@ -108,8 +147,9 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun enableTexture2D() {
-        //#if MC>=1.19.4
+    @JvmStatic
+    public fun enableTexture2D() {
+        //#if MC >= 1.19.4
         // no-op
         //#elseif MC >= 1.17
         //$$ RenderSystem.enableTexture()
@@ -120,7 +160,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun disableTexture2D() {
+    @JvmStatic
+    public fun disableTexture2D() {
         //#if MC >= 1.19.4
         // no-op
         //#elseif MC >= 1.17
@@ -132,39 +173,15 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun toggleTexture2D(enable: Boolean) {
-        if (enable) enableTexture2D() else disableTexture2D()
+    @JvmStatic
+    public fun toggleTexture2D(enable: Boolean) {
+        if (enable) {
+            enableTexture2D()
+        } else disableTexture2D()
     }
 
-    @JvmStatic public fun enableBasicTexture2D() {
-        //#if MC >= 1.19.4
-        // no-op
-        //#elseif MC >= 1.17
-        //$$ GlStateManager._enableTexture()
-        //#elseif MC >= 1.14
-        //$$ GlStateManager.enableTexture()
-        //#else
-        //$$ GlStateManager.enableTexture2D()
-        //#endif
-    }
-
-    @JvmStatic public fun disableBasicTexture2D() {
-        //#if MC >= 1.19.4
-        // no-op
-        //#elseif MC >= 1.17
-        //$$ GlStateManager._disableTexture()
-        //#elseif MC >= 1.14
-        //$$ GlStateManager.disableTexture()
-        //#else
-        //$$ GlStateManager.disableTexture2D()
-        //#endif
-    }
-
-    @JvmStatic public fun toggleBasicTexture2D(enable: Boolean) {
-        if (enable) enableBasicTexture2D() else disableBasicTexture2D()
-    }
-
-    @JvmStatic public fun enableCull() {
+    @JvmStatic
+    public fun enableCull() {
         //#if MC >= 1.17
         RenderSystem.enableCull()
         //#else
@@ -172,7 +189,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun disableCull() {
+    @JvmStatic
+    public fun disableCull() {
         //#if MC >= 1.17
         RenderSystem.disableCull()
         //#else
@@ -181,7 +199,9 @@ public object MultiGlStateManager {
     }
 
     @JvmStatic public fun toggleCull(enable: Boolean) {
-        if (enable) enableCull() else disableCull()
+        if (enable) {
+            enableCull()
+        } else disableCull()
     }
 
     @JvmStatic public fun enableBlend() {
@@ -201,10 +221,13 @@ public object MultiGlStateManager {
     }
 
     @JvmStatic public fun toggleBlend(enable: Boolean) {
-        if (enable) enableBlend() else disableBlend()
+        if (enable) {
+            enableBlend()
+        } else disableBlend()
     }
 
-    @JvmStatic public fun blendFunc(srcFactor: Int, dstFactor: Int) {
+    @JvmStatic
+    public fun blendFunc(srcFactor: Int, dstFactor: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
@@ -212,11 +235,13 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
+    @JvmStatic
+    public fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
         blendFunc(srcFactor.value, dstFactorAlpha.value)
     }
 
-    @JvmStatic public fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
+    @JvmStatic
+    public fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#elseif MC >= 1.14
@@ -226,11 +251,13 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
+    @JvmStatic
+    public fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
         blendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
     }
 
-    @JvmStatic public fun defaultBlendFunc() {
+    @JvmStatic
+    public fun defaultBlendFunc() {
         //#if MC >= 1.17
         RenderSystem.defaultBlendFunc()
         //#else
@@ -238,7 +265,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun blendEquation(equation: Int) {
+    @JvmStatic
+    public fun blendEquation(equation: Int) {
         //#if MC >= 1.17
         RenderSystem.blendEquation(equation)
         //#else
@@ -246,7 +274,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun enableDepth() {
+    @JvmStatic
+    public fun enableDepth() {
         //#if MC >= 1.17
         RenderSystem.enableDepthTest()
         //#elseif MC >= 1.14
@@ -256,7 +285,8 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun disableDepth() {
+    @JvmStatic
+    public fun disableDepth() {
         //#if MC >= 1.17
         RenderSystem.disableDepthTest()
         //#elseif MC >= 1.14
@@ -266,11 +296,15 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun toggleDepth(enable: Boolean) {
-        if (enable) enableDepth() else disableDepth()
+    @JvmStatic
+    public fun toggleDepth(enable: Boolean) {
+        if (enable) {
+            enableDepth()
+        } else disableDepth()
     }
 
-    @JvmStatic public fun depthFunc(func: Int) {
+    @JvmStatic
+    public fun depthFunc(func: Int) {
         //#if MC >= 1.17
         RenderSystem.depthFunc(func)
         //#else
@@ -278,11 +312,13 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun depthFunc(state: DepthState) {
+    @JvmStatic
+    public fun depthFunc(state: DepthState) {
         depthFunc(state.value)
     }
 
-    @JvmStatic public fun depthMask(flag: Boolean) {
+    @JvmStatic
+    public fun depthMask(flag: Boolean) {
         //#if MC >= 1.17
         RenderSystem.depthMask(flag)
         //#else
@@ -290,35 +326,25 @@ public object MultiGlStateManager {
         //#endif
     }
 
-    @JvmStatic public fun enableLighting() {
+    @JvmStatic
+    public fun enableLighting() {
         //#if MC < 1.17
         //$$ GlStateManager.enableLighting()
         //#endif
     }
 
-    @JvmStatic public fun disableLighting() {
+    @JvmStatic
+    public fun disableLighting() {
         //#if MC < 1.17
         //$$ GlStateManager.disableLighting()
         //#endif
     }
 
-    @JvmStatic public fun toggleLighting(enable: Boolean) {
+    @JvmStatic
+    public fun toggleLighting(enable: Boolean) {
         //#if MC < 1.17
         //$$ if (enable) enableLighting() else disableLighting()
         //#endif
-    }
-
-    public enum class GlError(
-        public val value: Int
-    ) {
-        NO_ERROR(GL11.GL_NO_ERROR),
-        INVALID_ENUM(GL11.GL_INVALID_ENUM),
-        INVALID_VALUE(GL11.GL_INVALID_VALUE),
-        INVALID_OPERATION(GL11.GL_INVALID_OPERATION),
-        STACK_OVERFLOW(GL11.GL_STACK_OVERFLOW),
-        STACK_UNDERFLOW(GL11.GL_STACK_UNDERFLOW),
-        OUT_OF_MEMORY(GL11.GL_OUT_OF_MEMORY),
-        INVALID_FRAMEBUFFER_OPERATION(GL30.GL_INVALID_FRAMEBUFFER_OPERATION)
     }
 
     public enum class SrcFactor(
@@ -380,4 +406,5 @@ public object MultiGlStateManager {
         DEPTH(GL11.GL_DEPTH_BUFFER_BIT),
         STENCIL(GL11.GL_STENCIL_BUFFER_BIT)
     }
+
 }
