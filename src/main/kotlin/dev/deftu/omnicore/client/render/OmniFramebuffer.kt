@@ -19,6 +19,7 @@ import java.io.File
 import java.nio.ByteBuffer
 import kotlin.math.max
 
+@Deprecated("This class is currently a work in progress.", level = DeprecationLevel.WARNING)
 public class OmniFramebuffer {
     public companion object {
         private var maxSupportedTextureSize = -1
