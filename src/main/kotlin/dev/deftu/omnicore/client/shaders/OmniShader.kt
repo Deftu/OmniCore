@@ -21,7 +21,7 @@ public interface OmniShader {
             vert: String,
             frag: String,
             blend: BlendState,
-            vertexFormat: OmniTessellator.VertexFormats
+            vertexFormat: OmniTessellator.VertexFormats?
         ): OmniShader {
             //#if MC >= 1.17
             return MinecraftShader.fromLegacyShader(vert, frag, blend, vertexFormat)

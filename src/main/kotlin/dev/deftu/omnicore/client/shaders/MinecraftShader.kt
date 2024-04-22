@@ -42,7 +42,7 @@ internal class MinecraftShader(
             vert: String,
             frag: String,
             blend: BlendState,
-            vertexFormat: OmniTessellator.VertexFormats
+            vertexFormat: OmniTessellator.VertexFormats?
         ): MinecraftShader {
             val transformer = Transformer(vertexFormat)
 
@@ -222,7 +222,7 @@ internal class MinecraftShader(
             newValue: MutableList<Pair<String, String>>,
             needle: String,
             type: String,
-            replacementName: String = "m_${needle.substringAfter("_")}",
+            replacementName: String = "oc_${needle.substringAfter("_")}",
             replacement: String = replacementName
         ) {
             if (needle in value) {
@@ -238,7 +238,7 @@ internal class MinecraftShader(
 
             needle: String,
             type: UniformType,
-            replacementName: String = "m_${needle.substringAfter("_")}",
+            replacementName: String = "oc_${needle.substringAfter("_")}",
             replacement: String = replacementName
         ) {
             if (needle in value) {
