@@ -38,7 +38,7 @@ internal class MinecraftShader(
         }
 
         @JvmStatic
-        fun fromLegacyShader(
+        internal fun fromLegacyShader(
             vert: String,
             frag: String,
             blend: BlendState,
