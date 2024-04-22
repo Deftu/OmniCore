@@ -101,9 +101,9 @@ internal class MinecraftShader(
                 //#endif
             }
 
-            val vertexFormat = VertexFormat(ImmutableMap.copyOf(transformer.attributes.associateWith {
-                VertexFormats.POSITION_ELEMENT
-            }))
+            val vertexFormat = if (vertexFormat != null) {
+                VertexFormat(ImmutableMap.copyOf(transformer.attributes.withIndex().associate { (index, name) -> name to vertexFormat.vanilla.elements[index] }))
+            } else VertexFormat(ImmutableMap.copyOf(transformer.attributes.associateWith { VertexFormats.POSITION_ELEMENT }))
 
             val shaderName = DigestUtils.sha1Hex(jsonString).lowercase()
             return MinecraftShader(ShaderProgram(factory, shaderName, vertexFormat), blend)
