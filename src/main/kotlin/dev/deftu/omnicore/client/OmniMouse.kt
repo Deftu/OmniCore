@@ -91,13 +91,13 @@ public object OmniMouse {
     public fun isPressed(code: Int): Boolean {
         //#if MC >= 1.15
         val handle = OmniClient.getInstance().window.handle
-        val state = if (!MultiKeyboard.isKeyboardButton(code)) GLFW.glfwGetMouseButton(handle, code) else MultiKeyboard.isPressed(code)
+        val state = if (!OmniKeyboard.isKeyboardButton(code)) GLFW.glfwGetMouseButton(handle, code) else OmniKeyboard.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else
         //$$ return if (isMouseButton(code)) {
         //$$     Mouse.isButtonDown(code + 100)
-        //$$ } else if (MultiKeyboard.isKeyboardButton(code)) {
-        //$$     MultiKeyboard.isPressed(code)
+        //$$ } else if (OmniKeyboard.isKeyboardButton(code)) {
+        //$$     OmniKeyboard.isPressed(code)
         //$$ } else {
         //$$     false
         //$$ }

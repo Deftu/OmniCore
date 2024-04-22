@@ -7,7 +7,7 @@ import org.lwjgl.glfw.GLFW
 //$$ import org.lwjgl.input.Keyboard
 //#endif
 
-public object MultiKeyboard {
+public object OmniKeyboard {
     public data class KeyboardModifiers(
         val shift: Boolean,
         val ctrl: Boolean,
@@ -291,7 +291,7 @@ public object MultiKeyboard {
 }
 
 //#if MC >= 1.15
-public fun MultiKeyboard.KeyboardModifiers?.toInt(): Int = listOf(
+public fun OmniKeyboard.KeyboardModifiers?.toInt(): Int = listOf(
     this?.shift to GLFW.GLFW_MOD_SHIFT,
     this?.ctrl to GLFW.GLFW_MOD_CONTROL,
     this?.alt to GLFW.GLFW_MOD_ALT
@@ -299,7 +299,7 @@ public fun MultiKeyboard.KeyboardModifiers?.toInt(): Int = listOf(
     if (mod == true) glfw else 0
 }
 
-public fun Int.toKeyboardModifiers(): MultiKeyboard.KeyboardModifiers = MultiKeyboard.KeyboardModifiers(
+public fun Int.toKeyboardModifiers(): OmniKeyboard.KeyboardModifiers = OmniKeyboard.KeyboardModifiers(
     shift = (this and GLFW.GLFW_MOD_SHIFT) != 0,
     ctrl = (this and GLFW.GLFW_MOD_CONTROL) != 0,
     alt = (this and GLFW.GLFW_MOD_ALT) != 0

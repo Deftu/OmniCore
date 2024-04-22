@@ -101,7 +101,7 @@ public abstract class OmniScreen(
     public open fun handleKeyPress(
         code: Int,
         char: Char,
-        modifiers: MultiKeyboard.KeyboardModifiers
+        modifiers: OmniKeyboard.KeyboardModifiers
     ) {
         //#if MC >= 1.15
         if (code != 0) {
@@ -378,7 +378,7 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
-    //$$     handleKeyPress(keyCode, typedChar, MultiKeyboard.getModifiers())
+    //$$     handleKeyPress(keyCode, typedChar, OmniKeyboard.getModifiers())
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, mouseBtn: Int) {
