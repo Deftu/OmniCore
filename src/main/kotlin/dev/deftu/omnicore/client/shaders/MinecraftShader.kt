@@ -29,7 +29,7 @@ import kotlin.NoSuchElementException
 internal class MinecraftShader(
     private val shader: ShaderProgram,
     private val blend: BlendState
-) : MultiShader {
+) : OmniShader {
     companion object {
         private val gson by lazy {
             GsonBuilder()
@@ -114,6 +114,7 @@ internal class MinecraftShader(
 
     override fun bind() {
         OmniRenderState.setShader(::shader)
+        blend.activate()
     }
 
     override fun unbind() {

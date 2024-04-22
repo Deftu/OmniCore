@@ -8,37 +8,27 @@ package dev.deftu.omnicore.client.shaders
 
 import com.mojang.blaze3d.platform.GlStateManager
 import dev.deftu.omnicore.client.render.OmniRenderEnv
-import dev.deftu.omnicore.client.shaders.*
+import dev.deftu.omnicore.client.render.OmniTessellator
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
 
-public interface MultiShader {
+public interface OmniShader {
     public companion object {
-//        @JvmStatic public fun fromLegacyShader(
-//            name: String,
-//            vert: String,
-//            frag: String,
-//            blend: BlendState
-//        ): MultiShader {
-//            //#if MC >= 1.17
-//            return VanillaShader.fromLegacy(name, vert, frag, blend)
-//            //#else
-//            //$$ return GlShader(name, vert, frag, blend)
-//            //#endif
-//        }
-//
-//        @JvmStatic public fun readFromResource(
-//            name: String,
-//            vert: String,
-//            frag: String,
-//            blend: BlendState
-//        ) = fromLegacyShader(name, readShader(vert, "vsh"), readShader(frag, "fsh"), blend)
-//
-//        private fun readShader(
-//            name: String,
-//            extension: String
-//        ) = MultiShader::class.java.getResource("/shaders/$name.$extension")?.readText() ?: throw IllegalArgumentException("Shader $name not found")
+
+        @JvmStatic
+        public fun fromLegacyShader(
+            vert: String,
+            frag: String,
+            blend: BlendState,
+            vertexFormat: OmniTessellator.VertexFormats
+        ): OmniShader {
+            //#if MC >= 1.17
+            return MinecraftShader.fromLegacyShader(vert, frag, blend, vertexFormat)
+            //#else
+            //$$ return GlShader(vert, frag, blend)
+            //#endif
+        }
 
         // Utilities
 

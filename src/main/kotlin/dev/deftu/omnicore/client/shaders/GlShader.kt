@@ -14,10 +14,10 @@ internal class GlShader(
     val vert: String,
     val frag: String,
     val blend: BlendState
-) : MultiShader {
-    private var program = MultiShader.createProgram()
-    private var vertShader = MultiShader.createShader(GL20.GL_VERTEX_SHADER)
-    private var fragShader = MultiShader.createShader(GL20.GL_FRAGMENT_SHADER)
+) : OmniShader {
+    private var program = OmniShader.createProgram()
+    private var vertShader = OmniShader.createShader(GL20.GL_VERTEX_SHADER)
+    private var fragShader = OmniShader.createShader(GL20.GL_FRAGMENT_SHADER)
     private var samplers = mutableMapOf<String, DirectSamplerUniform>()
 
     override val usable: Boolean = false
@@ -37,7 +37,7 @@ internal class GlShader(
         for (sampler in samplers.values) bindTexture(sampler.textureUnit, sampler.texture)
         prevBlendState = BlendState.active()
         blend.activate()
-        MultiShader.useProgram(program)
+        OmniShader.useProgram(program)
         bound = true
     }
 
@@ -50,7 +50,7 @@ internal class GlShader(
         prevTextureBindings.clear()
         OmniTextureManager.setActiveTexture(prevActiveTexture)
         prevBlendState?.activate()
-        MultiShader.useProgram(GL11.GL_NONE)
+        OmniShader.useProgram(GL11.GL_NONE)
         bound = false
     }
 
@@ -69,18 +69,18 @@ internal class GlShader(
      }
 
     private fun getUniformLocation(name: String): Int? {
-        val location = MultiShader.getUniformLocation(program, name)
+        val location = OmniShader.getUniformLocation(program, name)
         return if (location == -1) null else location
     }
 
     internal inline fun withProgram(block: () -> Unit) {
         if (!bound) {
-            val previousProgram = MultiShader.getCurrentProgram()
+            val previousProgram = OmniShader.getCurrentProgram()
             try {
-                MultiShader.useProgram(program)
+                OmniShader.useProgram(program)
                 block()
             } finally {
-                MultiShader.useProgram(previousProgram)
+                OmniShader.useProgram(previousProgram)
             }
         } else block()
     }
@@ -96,33 +96,33 @@ internal class GlShader(
             vertShader to vert,
             fragShader to frag
         )) {
-            MultiShader.shaderSource(shader, source)
-            MultiShader.compileShader(shader)
-            if (MultiShader.getShader(shader, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE) {
-                val log = MultiShader.getShaderInfoLog(shader, Short.MAX_VALUE.toInt())
+            OmniShader.shaderSource(shader, source)
+            OmniShader.compileShader(shader)
+            if (OmniShader.getShader(shader, GL20.GL_COMPILE_STATUS) != GL11.GL_TRUE) {
+                val log = OmniShader.getShaderInfoLog(shader, Short.MAX_VALUE.toInt())
                 throw IllegalStateException("Shader failed to compile: $log")
             }
 
-            MultiShader.attachShader(program, shader)
+            OmniShader.attachShader(program, shader)
         }
 
-        MultiShader.linkProgram(program)
+        OmniShader.linkProgram(program)
 
-        if (MultiShader.getProgram(program, GL20.GL_LINK_STATUS) != GL11.GL_TRUE) {
-            val log = MultiShader.getProgramInfoLog(program, Short.MAX_VALUE.toInt())
+        if (OmniShader.getProgram(program, GL20.GL_LINK_STATUS) != GL11.GL_TRUE) {
+            val log = OmniShader.getProgramInfoLog(program, Short.MAX_VALUE.toInt())
             throw IllegalStateException("Shader failed to link: $log")
         }
 
-        MultiShader.validateProgram(program)
-        if (MultiShader.getProgramValidateStatus(program) != GL11.GL_TRUE) {
-            val log = MultiShader.getProgramInfoLog(program, Short.MAX_VALUE.toInt())
+        OmniShader.validateProgram(program)
+        if (OmniShader.getProgramValidateStatus(program) != GL11.GL_TRUE) {
+            val log = OmniShader.getProgramInfoLog(program, Short.MAX_VALUE.toInt())
             throw IllegalStateException("Shader failed to validate: $log")
         }
 
-        MultiShader.detachShader(program, vertShader)
-        MultiShader.detachShader(program, fragShader)
-        MultiShader.deleteShader(vertShader)
-        MultiShader.deleteShader(fragShader)
+        OmniShader.detachShader(program, vertShader)
+        OmniShader.detachShader(program, fragShader)
+        OmniShader.deleteShader(vertShader)
+        OmniShader.deleteShader(fragShader)
     }
 }
 
@@ -137,23 +137,23 @@ internal class DirectUniform(
     MatrixUniform {
 
     override fun setValue(value: Int) {
-        MultiShader.uniform1i(location, value)
+        OmniShader.uniform1i(location, value)
     }
 
     override fun setValue(a: Float) {
-        MultiShader.uniform1f(location, a)
+        OmniShader.uniform1f(location, a)
     }
 
     override fun setValue(a: Float, b: Float) {
-        MultiShader.uniform2f(location, a, b)
+        OmniShader.uniform2f(location, a, b)
     }
 
     override fun setValue(a: Float, b: Float, c: Float) {
-        MultiShader.uniform3f(location, a, b, c)
+        OmniShader.uniform3f(location, a, b, c)
     }
 
     override fun setValue(a: Float, b: Float, c: Float, d: Float) {
-        MultiShader.uniform4f(location, a, b, c, d)
+        OmniShader.uniform4f(location, a, b, c, d)
     }
 
     override fun setValue(matrix: FloatArray) {
@@ -165,9 +165,9 @@ internal class DirectUniform(
         //#endif
 
         when (size) {
-            4 -> MultiShader.uniformMatrix2fv(location, false, matrix)
-            9 -> MultiShader.uniformMatrix3fv(location, false, matrix)
-            16 -> MultiShader.uniformMatrix4fv(location, false, matrix)
+            4 -> OmniShader.uniformMatrix2fv(location, false, matrix)
+            9 -> OmniShader.uniformMatrix3fv(location, false, matrix)
+            16 -> OmniShader.uniformMatrix4fv(location, false, matrix)
             else -> throw IllegalArgumentException("Invalid matrix size: $size")
         }
     }
