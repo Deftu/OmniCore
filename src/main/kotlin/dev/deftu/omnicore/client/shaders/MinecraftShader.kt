@@ -151,37 +151,36 @@ internal class MinecraftShader(
             val isVert = !isFrag
 
             if (isFrag) {
-                transformed.add("out vec4 m_FragColor;")
-                replacements["gl_FragColor"] = "m_FragColor"
+                transformed.add("out vec4 oc_FragColor;")
+                replacements["gl_FragColor"] = "oc__FragColor"
             }
 
             if (
                 isVert &&
                 "gl_FrontColor" in value
             ) {
-                transformed.add("out vec4 m_FrontColor;")
-                replacements["gl_FrontColor"] = "m_FrontColor"
+                transformed.add("out vec4 oc_FrontColor;")
+                replacements["gl_FrontColor"] = "oc_FrontColor"
             }
 
             if (
                 isFrag &&
                 "gl_Color" in value
             ) {
-                transformed.add("in vec4 m_Color;")
-                replacements["gl_Color"] = "m_Color"
+                transformed.add("in vec4 oc_Color;")
+                replacements["gl_Color"] = "oc_Color"
             }
 
             if (isVert) {
                 val newAttributes = mutableListOf<Pair<String, String>>()
                 replaceAttribute(value, replacements, newAttributes, "gl_Color", "vec4")
-                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord0.st", "vec2", "m_UV0")
-                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord1.st", "vec2", "m_UV1")
-                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord2.st", "vec2", "m_UV2")
-                replaceAttribute(value, replacements, newAttributes, "gl_Vertex", "vec3", "m_Pos", replacement = "vec4(m_Pos, 1.0)")
+                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord0.st", "vec2", "oc_UV0")
+                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord1.st", "vec2", "oc_UV1")
+                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord2.st", "vec2", "oc_UV2")
+                replaceAttribute(value, replacements, newAttributes, "gl_Vertex", "vec3", "oc_Pos", replacement = "vec4(oc_Pos, 1.0)")
 
                 if (vertexFormat != null) {
                     newAttributes.sortedBy {  (name, type) ->
-                        vertexFormat.vanilla.attributeNames.indexOf(name.removePrefix("m_"))
                     }.forEach {(name, type) ->
                         attributes.add(name)
                         transformed.add(type)
