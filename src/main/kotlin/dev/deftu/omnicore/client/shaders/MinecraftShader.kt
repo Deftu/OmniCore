@@ -181,6 +181,7 @@ internal class MinecraftShader(
 
                 if (vertexFormat != null) {
                     newAttributes.sortedBy {  (name, type) ->
+                        vertexFormat.vanilla.attributeNames.indexOf(name.removePrefix("oc_"))
                     }.forEach {(name, type) ->
                         attributes.add(name)
                         transformed.add(type)
