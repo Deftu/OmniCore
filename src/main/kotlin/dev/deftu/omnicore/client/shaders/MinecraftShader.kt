@@ -75,7 +75,11 @@ internal class MinecraftShader(
                 })
 
                 add("samplers", JsonArray().apply {
-                    transformer.samplers.forEach(::add)
+                    transformer.samplers.forEach { sampler ->
+                        add(JsonObject().apply {
+                            addProperty("name", sampler)
+                        })
+                    }
                 })
 
                 add("uniforms", JsonArray().apply {
@@ -167,7 +171,7 @@ internal class MinecraftShader(
 
             if (isFrag) {
                 transformed.add("out vec4 oc_FragColor;")
-                replacements["gl_FragColor"] = "oc__FragColor"
+                replacements["gl_FragColor"] = "oc_FragColor"
             }
 
             if (
