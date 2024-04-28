@@ -8,9 +8,9 @@ import dev.deftu.omnicore.client.OmniClient
 
 public object OmniResolution {
     //#if MC <= 1.12.2
-    //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val unicode: Boolean)
-    //$$ private var scaledRes: ScaledResolution? = null
+    //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val isUnicode: Boolean)
     //$$ private var cachedScaledRes: CachedScaledResolution? = null
+    //$$ private var scaledRes: ScaledResolution? = null
     //#endif
 
     @JvmStatic
@@ -85,20 +85,17 @@ public object OmniResolution {
 
     //#if MC <= 1.12.2
     //$$ private fun getScaledRes(): ScaledResolution {
-    //$$     if (scaledRes == null) {
-    //$$         scaledRes = ScaledResolution(OmniClient.getInstance())
-    //$$         return scaledRes!!
-    //$$     }
-    //$$
+    //$$     val client = OmniClient.getInstance()
     //$$     val cached = CachedScaledResolution(
-    //$$         OmniClient.getInstance().displayWidth,
-    //$$         OmniClient.getInstance().displayHeight,
-    //$$         scaledRes!!.scaleFactor,
-    //$$         OmniClient.getInstance().isUnicode
+    //$$         client.displayWidth,
+    //$$         client.displayHeight,
+    //$$         client.gameSettings.guiScale,
+    //$$         client.isUnicode
     //$$     )
+    //$$
     //$$     if (cached != cachedScaledRes) {
-    //$$         scaledRes = ScaledResolution(OmniClient.getInstance())
     //$$         cachedScaledRes = cached
+    //$$         scaledRes = ScaledResolution(client, client.displayWidth, client.displayHeight)
     //$$     }
     //$$
     //$$     return scaledRes!!
