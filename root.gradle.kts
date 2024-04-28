@@ -45,32 +45,37 @@ preprocess {
     forge_1_12_02.link(forge_1_08_09, file("versions/1.12.2-forge+1.8.9-forge.txt"))
 }
 
+val versions = listOf(
+    "1.20.2-forge",
+    "1.20.2-fabric",
+    "1.20.1-forge",
+    "1.20.1-fabric",
+    "1.19.4-forge",
+    "1.19.4-fabric",
+    "1.19.3-forge",
+    "1.19.3-fabric",
+    "1.19.2-forge",
+    "1.19.2-fabric",
+    "1.18.2-forge",
+    "1.18.2-fabric",
+    "1.17.1-forge",
+    "1.17.1-fabric",
+    "1.16.5-forge",
+    "1.16.5-fabric",
+    "1.12.2-forge",
+    "1.8.9-forge"
+)
+
+val buildVersions by tasks.creating {
+    group = "deftu"
+    dependsOn(versions.map { ":$it:build" })
+}
+
 listOf(
     "DeftuReleasesRepository",
     "DeftuSnapshotsRepository",
     "MavenLocalRepository"
 ).forEach { repository ->
-    val versions = listOf(
-        "1.20.2-forge",
-        "1.20.2-fabric",
-        "1.20.1-forge",
-        "1.20.1-fabric",
-        "1.19.4-forge",
-        "1.19.4-fabric",
-        "1.19.3-forge",
-        "1.19.3-fabric",
-        "1.19.2-forge",
-        "1.19.2-fabric",
-        "1.18.2-forge",
-        "1.18.2-fabric",
-        "1.17.1-forge",
-        "1.17.1-fabric",
-        "1.16.5-forge",
-        "1.16.5-fabric",
-        "1.12.2-forge",
-        "1.8.9-forge"
-    )
-
     versions.forEach { version ->
         project(":$version").tasks.register("fullReleaseWith$repository") {
             group = "deftu"
