@@ -84,8 +84,8 @@ public data class BlendState(
 
     private fun apply() {
         OmniRenderState.toggleBlend(enabled)
-        OmniRenderState.blendEquation(equation.value)
-        OmniRenderState.blendFuncSeparate(srcRgb.value, dstRgb.value, srcAlpha.value, dstAlpha.value)
+        OmniRenderState.setBlendEquation(equation.value)
+        OmniRenderState.setBlendFuncSeparate(srcRgb.value, dstRgb.value, srcAlpha.value, dstAlpha.value)
     }
 
     public enum class BlendEquation(

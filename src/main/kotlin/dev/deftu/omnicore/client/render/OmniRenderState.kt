@@ -228,7 +228,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun blendFunc(srcFactor: Int, dstFactor: Int) {
+    public fun setBlendFunc(srcFactor: Int, dstFactor: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
@@ -237,12 +237,12 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
-        blendFunc(srcFactor.value, dstFactorAlpha.value)
+    public fun setBlendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
+        setBlendFunc(srcFactor.value, dstFactorAlpha.value)
     }
 
     @JvmStatic
-    public fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
+    public fun setBlendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#elseif MC >= 1.14
@@ -253,12 +253,12 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
-        blendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
+    public fun setBlendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
+        setBlendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
     }
 
     @JvmStatic
-    public fun defaultBlendFunc() {
+    public fun setDefaultBlendFunc() {
         //#if MC >= 1.17
         RenderSystem.defaultBlendFunc()
         //#else
@@ -267,7 +267,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun blendEquation(equation: Int) {
+    public fun setBlendEquation(equation: Int) {
         //#if MC >= 1.17
         RenderSystem.blendEquation(equation)
         //#else
@@ -305,7 +305,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun depthFunc(func: Int) {
+    public fun setDepthFunc(func: Int) {
         //#if MC >= 1.17
         RenderSystem.depthFunc(func)
         //#else
@@ -314,8 +314,8 @@ public object OmniRenderState {
     }
 
     @JvmStatic
-    public fun depthFunc(state: DepthState) {
-        depthFunc(state.value)
+    public fun setDepthFunc(state: DepthState) {
+        setDepthFunc(state.value)
     }
 
     @JvmStatic
