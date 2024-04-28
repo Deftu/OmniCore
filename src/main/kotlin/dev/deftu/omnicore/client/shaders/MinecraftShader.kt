@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.client.render.OmniTessellator
 import dev.deftu.omnicore.client.render.OmniRenderState
 import net.minecraft.client.gl.GlUniform
@@ -24,6 +25,7 @@ import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.util.Identifier
 import org.apache.commons.codec.digest.DigestUtils
+import org.slf4j.LoggerFactory
 import kotlin.NoSuchElementException
 
 internal class MinecraftShader(
@@ -31,6 +33,13 @@ internal class MinecraftShader(
     private val blend: BlendState
 ) : OmniShader {
     companion object {
+        private val isDebug: Boolean
+            get() = OmniCore.isDebug || System.getProperty("omnicore.shader.debug") == "true"
+
+        private val logger by lazy {
+            LoggerFactory.getLogger(MinecraftShader::class.java)
+        }
+
         private val gson by lazy {
             GsonBuilder()
                 .setPrettyPrinting()
@@ -84,6 +93,12 @@ internal class MinecraftShader(
             }
 
             val jsonString = gson.toJson(json)
+            if (isDebug) {
+                logger.info("Transformed vertex shader:\n$vert")
+                logger.info("Transformed fragment shader:\n$frag")
+                logger.info("Generated shader JSON: $jsonString")
+            }
+
             val factory = { id: Identifier ->
                 val content = when (id.path.substringAfter(".")) {
                     "json" -> jsonString
