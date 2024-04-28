@@ -1,6 +1,9 @@
 package dev.deftu.omnicore
 
 //#if FABRIC
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.IntendedLoader
+import dev.deftu.omnicore.annotations.Side
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 //#else
@@ -17,38 +20,59 @@ import net.fabricmc.loader.api.ModContainer
 
 import java.nio.file.Path
 
+@GameSide(Side.BOTH)
 public object OmniLoader {
+
+    @GameSide(Side.BOTH)
     public enum class LoaderType {
         FABRIC,
         FORGE
     }
 
+    @GameSide(Side.BOTH)
     public data class ModInfo(
         val name: String,
         val id: String,
         val version: String,
         val file: Path?
     ) {
+        @GameSide(Side.BOTH)
         public companion object {
+
             @JvmStatic
+            @GameSide(Side.BOTH)
             public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null)
+
         }
 
+        @GameSide(Side.BOTH)
         public fun isLoaded(): Boolean = isModLoaded(id)
+
+        @GameSide(Side.BOTH)
         public fun isVersionLoaded(): Boolean = isModLoaded(id, version)
+
     }
 
-    @JvmStatic public fun getLoaderType(): LoaderType =
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun getLoaderType(): LoaderType =
         //#if FABRIC
         LoaderType.FABRIC
         //#else
         //$$ LoaderType.FORGE
         //#endif
 
-    @JvmStatic public fun isFabric(): Boolean = getLoaderType() == LoaderType.FABRIC
-    @JvmStatic public fun isForge(): Boolean = getLoaderType() == LoaderType.FORGE
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun isFabric(): Boolean = getLoaderType() == LoaderType.FABRIC
 
-    @JvmStatic public fun isModLoaded(id: String, version: String): Boolean {
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun isForge(): Boolean = getLoaderType() == LoaderType.FORGE
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun isModLoaded(id: String, version: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id) && FabricLoader.getInstance().getModContainer(id).get().metadata.version.friendlyString == version
         //#else
@@ -60,7 +84,9 @@ public object OmniLoader {
         //#endif
     }
 
-    @JvmStatic public fun isModLoaded(id: String): Boolean {
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun isModLoaded(id: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id)
         //#else
@@ -72,7 +98,9 @@ public object OmniLoader {
         //#endif
     }
 
-    @JvmStatic public fun getLoadedMods(): Set<ModInfo> {
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun getLoadedMods(): Set<ModInfo> {
         val value = mutableSetOf<ModInfo>()
 
         //#if FABRIC
@@ -88,7 +116,10 @@ public object OmniLoader {
         return value
     }
 
-    @JvmStatic public fun hasActiveMod(): Boolean {
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    @IntendedLoader(LoaderType.FORGE)
+    public fun hasActiveMod(): Boolean {
         //#if FABRIC
         return false
         //#else
@@ -100,7 +131,10 @@ public object OmniLoader {
         //#endif
     }
 
-    @JvmStatic public fun getActiveMod(): ModInfo {
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    @IntendedLoader(LoaderType.FORGE)
+    public fun getActiveMod(): ModInfo {
         //#if FABRIC
         return ModInfo.DUMMY
         //#else
