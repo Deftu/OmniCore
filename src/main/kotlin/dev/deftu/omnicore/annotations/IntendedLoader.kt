@@ -2,6 +2,12 @@ package dev.deftu.omnicore.annotations
 
 import dev.deftu.omnicore.OmniLoader
 
+/**
+ * Any functionality annotated with [IntendedLoader] will only have functionality on the specified loader, or may only execute on the specified loader.
+ *
+ * @since 0.2.2
+ * @author Deftu
+ */
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
 @Target(

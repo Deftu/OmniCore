@@ -1,5 +1,11 @@
 package dev.deftu.omnicore.annotations
 
+/**
+ * Any functionality annotated with [GameSide] will only be executed on the specified side.
+ *
+ * @since 0.2.2
+ * @author Deftu
+ */
 @MustBeDocumented
 @Retention(AnnotationRetention.RUNTIME)
 @Target(
