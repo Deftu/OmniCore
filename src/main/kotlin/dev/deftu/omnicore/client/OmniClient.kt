@@ -163,15 +163,6 @@ public object OmniClient {
     public fun getFontRenderer(): TextRenderer = getInstance().textRenderer
 
     /**
-     * @return The game options instance, which contains all the game's settings.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     */
-    @JvmStatic
-    public fun getOptions(): GameOptions = getInstance().options
-
-    /**
      * @return OmniCore's wrapper around Minecraft's texture manager, which is used to load, bind, and manage textures.
      *
      * @since 0.1.0
