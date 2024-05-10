@@ -31,3 +31,8 @@ net.minecraft.server.packs.resources.ResourceManager net.minecraft.client.resour
 net.minecraft.client.gui.screens.Screen net.minecraft.client.gui.GuiScreen
 net.minecraft.client.gui.screens.Screen isPauseScreen() doesGuiPauseGame()
 net.minecraft.client.Minecraft setScreen() displayGuiScreen()
+net.minecraft.world.entity.LivingEntity net.minecraft.entity.EntityLiving
+net.minecraft.world.entity.LivingEntity getMainHandItem() getHeldItemMainhand()
+net.minecraft.world.entity.LivingEntity getOffhandItem() getHeldItemOffhand()
+net.minecraft.world.entity.LivingEntity getItemBySlot() getItemStackFromSlot()
+net.minecraft.world.entity.EquipmentSlot net.minecraft.inventory.EntityEquipmentSlot

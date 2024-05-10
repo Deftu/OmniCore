@@ -1,10 +1,13 @@
 package dev.deftu.omnicore.common
 
+//#if MC >= 1.12.2
+import net.minecraft.entity.EquipmentSlot
+//#endif
+
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
-import net.minecraft.entity.EquipmentSlot
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.ItemStack
 
@@ -40,17 +43,30 @@ public object OmniEquipment {
             //#if MC >= 1.12.2
             return if (type == EquipmentType.MAIN_HAND) entity.mainHandStack else entity.offHandStack
             //#else
-            //$$ return entity.heldItemMainhand
+            //$$ return entity.heldItem
             //#endif
         }
 
-        return entity.getEquippedStack(when (type) {
-            EquipmentType.HEAD -> EquipmentSlot.HEAD
-            EquipmentType.CHEST -> EquipmentSlot.CHEST
-            EquipmentType.LEGS -> EquipmentSlot.LEGS
-            EquipmentType.FEET -> EquipmentSlot.FEET
-            else -> throw IllegalArgumentException("Invalid equipment type $type") // Should never happen
-        })
+        val vanillaValue =
+            when (type) {
+                //#if MC >= 1.12.2
+                EquipmentType.HEAD -> EquipmentSlot.HEAD
+                EquipmentType.CHEST -> EquipmentSlot.CHEST
+                EquipmentType.LEGS -> EquipmentSlot.LEGS
+                EquipmentType.FEET -> EquipmentSlot.FEET
+                //#else
+                //$$ EquipmentType.HEAD -> 3
+                //$$ EquipmentType.CHEST -> 2
+                //$$ EquipmentType.LEGS -> 1
+                //$$ EquipmentType.FEET -> 0
+                //#endif
+                else -> throw IllegalArgumentException("Invalid equipment type $type") // Should never happen
+            }
+        //#if MC >= 1.12.2
+        return entity.getEquippedStack(vanillaValue)
+        //#else
+        //$$ return entity.getCurrentArmor(vanillaValue)
+        //#endif
     }
 
     @GameSide(Side.BOTH)
@@ -65,8 +81,8 @@ public object OmniEquipment {
         //$$ }
         //#else
         //$$ val enchantments = EnchantmentHelper.getEnchantments(stack)
-        //$$ return enchantments.keys.map { enchantment ->
-        //$$     EnchantmentInfo(enchantment, enchantments[enchantment] ?: 0)
+        //$$ return enchantments.map { (id, level) ->
+        //$$     EnchantmentInfo(Enchantment.getEnchantmentById(id), level)
         //$$ }
         //#endif
     }
