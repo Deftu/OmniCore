@@ -23,7 +23,9 @@ public object OmniChat {
             //#if MC >= 1.19.2
             .sendMessage(text.toVanilla())
             //#elseif MC >= 1.16.5
-            //$$ .sendMessage(text.toVanilla(), null)
+            //$$ .sendMessage(text.toVanilla(), false)
+            //#elseif MC >= 1.12.2
+            //$$ .sendMessage(text.toVanilla())
             //#else
             //$$ .addChatMessage(text.toVanilla())
             //#endif
