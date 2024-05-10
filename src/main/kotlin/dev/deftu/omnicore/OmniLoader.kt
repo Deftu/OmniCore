@@ -23,12 +23,18 @@ import java.nio.file.Path
 @GameSide(Side.BOTH)
 public object OmniLoader {
 
+    /**
+     * An enumeration of loaders which OmniCore supports, representing a loader that the current environment is running on.
+     */
     @GameSide(Side.BOTH)
     public enum class LoaderType {
         FABRIC,
         FORGE
     }
 
+    /**
+     * Represents a mod's basic information.
+     */
     @GameSide(Side.BOTH)
     public data class ModInfo(
         val name: String,
@@ -36,23 +42,34 @@ public object OmniLoader {
         val version: String,
         val file: Path?
     ) {
-        @GameSide(Side.BOTH)
         public companion object {
 
+            /**
+             * A dummy [ModInfo] object that represents a non-existent mod.
+             */
             @JvmStatic
             @GameSide(Side.BOTH)
             public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null)
 
         }
 
+        /**
+         * Checks if the mod is loaded.
+         */
         @GameSide(Side.BOTH)
         public fun isLoaded(): Boolean = isModLoaded(id)
 
+        /**
+         * Checks if the mod is loaded and has the specified version.
+         */
         @GameSide(Side.BOTH)
         public fun isVersionLoaded(): Boolean = isModLoaded(id, version)
 
     }
 
+    /**
+     * Gets the loader type that the current environment is running on.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun getLoaderType(): LoaderType =
@@ -62,14 +79,23 @@ public object OmniLoader {
         //$$ LoaderType.FORGE
         //#endif
 
+    /**
+     * Checks if the current environment is running on Fabric.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun isFabric(): Boolean = getLoaderType() == LoaderType.FABRIC
 
+    /**
+     * Checks if the current environment is running on Forge.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun isForge(): Boolean = getLoaderType() == LoaderType.FORGE
 
+    /**
+     * Checks if a mod is loaded and has the specified version.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun isModLoaded(id: String, version: String): Boolean {
@@ -84,6 +110,9 @@ public object OmniLoader {
         //#endif
     }
 
+    /**
+     * Checks if a mod is loaded.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun isModLoaded(id: String): Boolean {
@@ -98,6 +127,9 @@ public object OmniLoader {
         //#endif
     }
 
+    /**
+     * Gets the most basic info of all loaded mods.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun getLoadedMods(): Set<ModInfo> {
@@ -116,6 +148,11 @@ public object OmniLoader {
         return value
     }
 
+    /**
+     * Checks if a mod is currently in the active state.
+     *
+     * This method is only available on Forge, and will always return false on Fabric.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     @IntendedLoader(LoaderType.FORGE)
@@ -131,6 +168,11 @@ public object OmniLoader {
         //#endif
     }
 
+    /**
+     * Gets the most basic info of the active mod.
+     *
+     * This method is only available on Forge, and will always return [ModInfo.DUMMY]object on Fabric.
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     @IntendedLoader(LoaderType.FORGE)
