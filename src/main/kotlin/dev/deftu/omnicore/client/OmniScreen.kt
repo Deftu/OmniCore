@@ -25,7 +25,7 @@ import dev.deftu.textile.impl.TranslatableText as TextileTranslatableText
 import dev.deftu.textile.toVanilla
 
 @GameSide(Side.CLIENT)
-public abstract class OmniScreen @JvmOverloads constructor(
+public abstract class OmniScreen(
     public val restorePreviousScreen: Boolean = true,
     public val screenTitle: Text? = null
 //#if MC >= 1.15
@@ -35,16 +35,33 @@ public abstract class OmniScreen @JvmOverloads constructor(
 //#endif
     public companion object {
 
+        /**
+         * @return The current screen instance, null if the player is not in a screen.
+         *
+         * @since 0.1.0
+         * @author Deftu
+         */
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun getCurrentScreen(): Screen? = OmniClient.getCurrentScreen()
+        public fun getCurrentScreen(): Screen? = OmniClient.getInstance().currentScreen
 
+        /**
+         * @param screen The screen instance to open.
+         *
+         * @since 0.1.0
+         * @see Screen
+         */
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun openScreen(screen: Screen?) {
             OmniClient.getInstance().setScreen(screen)
         }
 
+        /**
+         * Closes the current screen.
+         *
+         * @since 0.2.2
+         */
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun closeScreen() {
@@ -52,7 +69,6 @@ public abstract class OmniScreen @JvmOverloads constructor(
         }
     }
 
-    @JvmOverloads
     public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
@@ -63,7 +79,7 @@ public abstract class OmniScreen @JvmOverloads constructor(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as Text?)
 
-    private val previousScreen = if (restorePreviousScreen) OmniClient.getCurrentScreen() else null
+    private val previousScreen = if (restorePreviousScreen) getCurrentScreen() else null
 
     //#if MC >= 1.15
     private var lastClick = 0L

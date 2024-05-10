@@ -172,16 +172,6 @@ public object OmniClient {
     public fun getOptions(): GameOptions = getInstance().options
 
     /**
-     * @return The current screen instance, null if the player is not in a screen.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     * @see OmniScreen
-     */
-    @JvmStatic
-    public fun getCurrentScreen(): Screen? = getInstance().currentScreen
-
-    /**
      * @return OmniCore's wrapper around Minecraft's texture manager, which is used to load, bind, and manage textures.
      *
      * @since 0.1.0
