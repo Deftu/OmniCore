@@ -46,6 +46,26 @@ public abstract class OmniScreen(
         public fun getCurrentScreen(): Screen? = OmniClient.getInstance().currentScreen
 
         /**
+         * @return True if the player is in a screen, false otherwise.
+         *
+         * @since 0.1.0
+         * @author Deftu
+         */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun isInScreen(): Boolean = getCurrentScreen() != null
+
+        /**
+         * @param screenClz The screen class to check.
+         * @return True if the player is in the specified screen, false otherwise.
+         *
+         * @since 0.2.2
+         */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun isInScreen(screenClz: Class<out Screen>): Boolean = getCurrentScreen()?.javaClass == screenClz
+
+        /**
          * @param screen The screen instance to open.
          *
          * @since 0.1.0
