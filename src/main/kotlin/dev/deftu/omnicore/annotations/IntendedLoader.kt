@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.annotations
 
-import dev.deftu.omnicore.OmniLoader
+import dev.deftu.omnicore.common.OmniLoader
 
 /**
  * Any functionality annotated with [IntendedLoader] will only have functionality on the specified loader, or may only execute on the specified loader.

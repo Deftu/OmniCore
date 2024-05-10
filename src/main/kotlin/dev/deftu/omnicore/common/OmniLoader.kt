@@ -1,4 +1,4 @@
-package dev.deftu.omnicore
+package dev.deftu.omnicore.common
 
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
@@ -136,7 +136,7 @@ public object OmniLoader {
         val value = mutableSetOf<ModInfo>()
 
         //#if FABRIC
-        FabricLoader.getInstance().allMods.map(::createModInfo).forEach(value::add)
+        FabricLoader.getInstance().allMods.map(OmniLoader::createModInfo).forEach(value::add)
         //#else
         //#if MC >= 1.15.2
         //$$ ModList.get().applyForEachModContainer(::createModInfo).collect(Collectors.toSet()).forEach(value::add)
