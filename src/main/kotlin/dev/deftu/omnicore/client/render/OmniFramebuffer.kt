@@ -3,7 +3,6 @@
 package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.16
-import dev.deftu.omnicore.annotations.Side
 import net.minecraft.client.texture.NativeImage
 //#else
 //$$ import org.lwjgl.BufferUtils
@@ -11,6 +10,7 @@ import net.minecraft.client.texture.NativeImage
 //$$ import javax.imageio.ImageIO
 //#endif
 
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.client.*
@@ -235,7 +235,7 @@ public class OmniFramebuffer {
 
     @GameSide(Side.CLIENT)
     public fun copyFrom(
-        other: OmniFramebuffer
+        @Suppress("UNUSED_PARAMETER") other: OmniFramebuffer
     ) {
         TODO("Not yet implemented")
     }

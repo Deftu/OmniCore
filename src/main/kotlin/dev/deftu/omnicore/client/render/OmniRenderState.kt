@@ -1,11 +1,11 @@
 package dev.deftu.omnicore.client.render
 
-//#if MC >= 1.17
+//#if MC >= 1.17.1
 import net.minecraft.client.gl.ShaderProgram
 import java.util.function.Supplier
 //#endif
 
-//#if MC >= 1.15
+//#if MC >= 1.16.5
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11
 @GameSide(Side.CLIENT)
 public object OmniRenderState {
 
-    //#if MC >= 1.17
+    //#if MC >= 1.17.1
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setShader(supplier: Supplier<ShaderProgram?>) {
@@ -41,7 +41,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setTexture(index: Int, texture: Int) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.setShaderTexture(index, texture)
         //#else
         //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
@@ -52,7 +52,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setTexture(index: Int, texture: Identifier) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.setShaderTexture(index, texture)
         //#else
         //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
@@ -68,12 +68,10 @@ public object OmniRenderState {
         blue: Float,
         alpha: Float
     ) {
-        //#if MC > 1.17
+        //#if MC >= 1.17.1
         RenderSystem.setShaderColor(red, green, blue, alpha)
-        //#elseif MC > 1.15.2
+        //#elseif MC >= 1.16.5
         //$$ RenderSystem.color4f(red, green, blue, alpha)
-        //#elseif MC >= 1.15
-        //$$ GlStateManager.color4f(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.color(red, green, blue, alpha)
         //#endif
@@ -86,10 +84,10 @@ public object OmniRenderState {
         green: Float,
         blue: Float
     ) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         setColor4f(red, green, blue, 1f)
         //#else
-        //#if MC >= 1.15
+        //#if MC >= 1.16.5
         //$$ RenderSystem.color3f(red, green, blue)
         //#else
         //$$ GlStateManager.color(red, green, blue)
@@ -105,7 +103,7 @@ public object OmniRenderState {
         blue: Boolean,
         alpha: Boolean
     ) {
-        //#if MC >= 1.15
+        //#if MC >= 1.16.5
         RenderSystem.colorMask(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.colorMask(red, green, blue, alpha)
@@ -120,7 +118,7 @@ public object OmniRenderState {
         blue: Float,
         alpha: Float
     ) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.clearColor(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.clearColor(red, green, blue, alpha)
@@ -130,9 +128,9 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun clear(mask: Int) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.clear(mask, false)
-        //#elseif MC >= 1.16
+        //#elseif MC >= 1.16.5
         //$$ GlStateManager.clear(mask, false)
         //#else
         //$$ GlStateManager.clear(mask)
@@ -155,7 +153,7 @@ public object OmniRenderState {
         width: Int,
         height: Int
     ) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         GlStateManager._viewport(x, y, width, height)
         //#else
         //$$ GlStateManager.viewport(x, y, width, height)
@@ -167,9 +165,9 @@ public object OmniRenderState {
     public fun enableTexture2D() {
         //#if MC >= 1.19.4
         // no-op
-        //#elseif MC >= 1.17
+        //#elseif MC >= 1.17.1
         //$$ RenderSystem.enableTexture()
-        //#elseif MC >= 1.14
+        //#elseif MC >= 1.16.5
         //$$ GlStateManager.enableTexture()
         //#else
         //$$ GlStateManager.enableTexture2D()
@@ -181,9 +179,9 @@ public object OmniRenderState {
     public fun disableTexture2D() {
         //#if MC >= 1.19.4
         // no-op
-        //#elseif MC >= 1.17
+        //#elseif MC >= 1.17.1
         //$$ RenderSystem.disableTexture()
-        //#elseif MC >= 1.14
+        //#elseif MC >= 1.16.5
         //$$ GlStateManager.disableTexture()
         //#else
         //$$ GlStateManager.disableTexture2D()
@@ -201,7 +199,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun enableCull() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.enableCull()
         //#else
         //$$ GlStateManager.enableCull()
@@ -211,7 +209,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun disableCull() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.disableCull()
         //#else
         //$$ GlStateManager.disableCull()
@@ -229,7 +227,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun enableBlend() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.enableBlend()
         //#else
         //$$ GlStateManager.enableBlend()
@@ -239,7 +237,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun disableBlend() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.disableBlend()
         //#else
         //$$ GlStateManager.disableBlend()
@@ -257,7 +255,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setBlendFunc(srcFactor: Int, dstFactor: Int) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
         //$$ GlStateManager.blendFunc(srcFactor, dstFactor)
@@ -273,9 +271,9 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setBlendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
-        //#elseif MC >= 1.14
+        //#elseif MC >= 1.16.5
         //$$ GlStateManager.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#else
         //$$ GlStateManager.tryBlendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
@@ -291,7 +289,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setDefaultBlendFunc() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.defaultBlendFunc()
         //#else
         //$$ setBlendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
@@ -301,7 +299,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setBlendEquation(equation: Int) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.blendEquation(equation)
         //#else
         //$$ GL14.glBlendEquation(equation)
@@ -311,9 +309,9 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun enableDepth() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.enableDepthTest()
-        //#elseif MC >= 1.14
+        //#elseif MC >= 1.16.5
         //$$ GlStateManager.enableDepthTest()
         //#else
         //$$ GlStateManager.enableDepth()
@@ -323,9 +321,9 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun disableDepth() {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.disableDepthTest()
-        //#elseif MC >= 1.14
+        //#elseif MC >= 1.16.5
         //$$ GlStateManager.disableDepthTest()
         //#else
         //$$ GlStateManager.disableDepth()
@@ -343,7 +341,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setDepthFunc(func: Int) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.depthFunc(func)
         //#else
         //$$ GlStateManager.depthFunc(func)
@@ -359,7 +357,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setDepthMask(flag: Boolean) {
-        //#if MC >= 1.17
+        //#if MC >= 1.17.1
         RenderSystem.depthMask(flag)
         //#else
         //$$ GlStateManager.depthMask(flag)
@@ -369,7 +367,7 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun enableLighting() {
-        //#if MC < 1.17
+        //#if MC <= 1.16.5
         //$$ GlStateManager.enableLighting()
         //#endif
     }
@@ -377,15 +375,15 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun disableLighting() {
-        //#if MC < 1.17
+        //#if MC <= 1.16.5
         //$$ GlStateManager.disableLighting()
         //#endif
     }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun toggleLighting(enable: Boolean) {
-        //#if MC < 1.17
+    public fun toggleLighting(@Suppress("UNUSED_PARAMETER") enable: Boolean) {
+        //#if MC <= 1.16.5
         //$$ if (enable) enableLighting() else disableLighting()
         //#endif
     }

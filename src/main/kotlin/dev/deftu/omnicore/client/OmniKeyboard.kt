@@ -865,7 +865,7 @@ public object OmniKeyboard {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun allowRepeatEvents(enabled: Boolean) {
+    public fun allowRepeatEvents(@Suppress("UNUSED_PARAMETER") enabled: Boolean) {
         //#if MC >= 1.19.3
         // This function was removed in 1.19.3. Repeat events are permanently enabled.
         //#elseif MC >= 1.15.2
@@ -890,7 +890,7 @@ public object OmniKeyboard {
     public fun isPressed(code: Int): Boolean {
         if (code == 0) return false // TODO
 
-        //#if MC >= 1.15
+        //#if MC >= 1.16.5
         val handle = OmniClient.getInstance().window.handle
         val state = if (!OmniMouse.isMouseButton(code)) GLFW.glfwGetKey(handle, code) else OmniMouse.isPressed(code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
@@ -932,7 +932,7 @@ public object OmniKeyboard {
     private inline fun <T> noInline(init: () -> T): T = init()
 }
 
-//#if MC >= 1.15
+//#if MC >= 1.16.5
 @GameSide(Side.CLIENT)
 public fun OmniKeyboard.KeyboardModifiers?.toInt(): Int = listOf(
     this?.shift to GLFW.GLFW_MOD_SHIFT,

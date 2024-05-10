@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
 
 @GameSide(Side.CLIENT)
-public class OmniTextureManager(
+public class OmniTextureManager private constructor(
     private val textureManager: TextureManager
 ) {
     public companion object {
