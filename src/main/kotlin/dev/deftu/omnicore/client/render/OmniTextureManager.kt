@@ -14,6 +14,8 @@ import net.minecraft.client.texture.NativeImage
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.platform.TextureUtil
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.client.texture.NativeImageBackedTexture
@@ -32,24 +34,29 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
 
+@GameSide(Side.CLIENT)
 public class OmniTextureManager(
     private val textureManager: TextureManager
 ) {
     public companion object {
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public val INSTANCE: OmniTextureManager by lazy {
             OmniTextureManager(get())
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun get(): TextureManager = OmniClient.getInstance().textureManager
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun getActiveTexture(): Int =
             GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun setActiveTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._activeTexture(id)
@@ -61,6 +68,7 @@ public class OmniTextureManager(
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun generateTexture(): Int {
             //#if MC >= 1.17
             return TextureUtil.generateTextureId()
@@ -73,6 +81,7 @@ public class OmniTextureManager(
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun bindTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._bindTexture(id)
@@ -82,11 +91,13 @@ public class OmniTextureManager(
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun removeTexture() {
             bindTexture(GL11.GL_NONE)
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun deleteTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._deleteTexture(id)
@@ -96,6 +107,7 @@ public class OmniTextureManager(
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun configureTexture(id: Int, block: Runnable) {
             val prevActiveTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
             bindTexture(id)
@@ -104,6 +116,7 @@ public class OmniTextureManager(
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun configureTextureUnit(index: Int, block: Runnable) {
             val prevActiveTexture = getActiveTexture()
             setActiveTexture(GL13.GL_TEXTURE0 + index)
@@ -113,6 +126,7 @@ public class OmniTextureManager(
 
     }
 
+    @GameSide(Side.CLIENT)
     public fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
         try {
             //#if MC >= 1.14
@@ -126,18 +140,22 @@ public class OmniTextureManager(
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun bindTexture(path: Identifier): OmniTextureManager = apply {
         textureManager.bindTexture(path)
     }
 
     //#if MC >= 1.14
+    @GameSide(Side.CLIENT)
     public fun registerTexture(path: Identifier, texture: AbstractTexture): OmniTextureManager = apply {
     //#else
+    //$$ @GameSide(Side.CLIENT)
     //$$ public fun registerTexture(path: ResourceLocation, texture: ITextureObject): OmniTextureManager = apply {
     //#endif
         textureManager.registerTexture(path, texture)
     }
 
+    @GameSide(Side.CLIENT)
     public fun registerImageTexture(path: Identifier, texture: BufferedImage): OmniTextureManager = apply {
         val stream = ByteArrayOutputStream()
         ImageIO.write(texture, "png", stream)
@@ -146,23 +164,28 @@ public class OmniTextureManager(
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture): OmniTextureManager = apply {
         textureManager.registerDynamicTexture(path, texture)
     }
 
+    @GameSide(Side.CLIENT)
     public fun destroyTexture(path: Identifier): OmniTextureManager = apply {
         textureManager.destroyTexture(path)
     }
 
+    @GameSide(Side.CLIENT)
     public fun deleteTexture(id: Int): OmniTextureManager = apply {
         OmniTextureManager.deleteTexture(id)
     }
+
 }
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0
  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
  */
+@GameSide(Side.CLIENT)
 public class ReleasedDynamicTexture(
     public val width: Int,
     public val height: Int,
@@ -193,6 +216,8 @@ public class ReleasedDynamicTexture(
     //#else
     //$$ private var data = data ?: IntArray(width * height)
     //#endif
+
+    @GameSide(Side.CLIENT)
     public var uploaded: Boolean = false
 
     override fun load(resourceManager: ResourceManager?) {
@@ -200,6 +225,7 @@ public class ReleasedDynamicTexture(
 
     private fun allocGlId() = super.getGlId()
 
+    @GameSide(Side.CLIENT)
     public fun upload() {
         if (!uploaded) {
             //#if MC >= 1.17
@@ -228,11 +254,13 @@ public class ReleasedDynamicTexture(
         }
     }
 
+    @GameSide(Side.CLIENT)
     override fun getGlId(): Int {
         upload()
         return super.getGlId()
     }
 
+    @GameSide(Side.CLIENT)
     override fun clearGlId() {
         super.clearGlId()
         resources.glId = -1

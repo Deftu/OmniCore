@@ -1,9 +1,6 @@
 package dev.deftu.omnicore
 
 //#if FABRIC
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.IntendedLoader
-import dev.deftu.omnicore.annotations.Side
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 //#else
@@ -18,6 +15,9 @@ import net.fabricmc.loader.api.ModContainer
 //#endif
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.IntendedLoader
+import dev.deftu.omnicore.annotations.Side
 import java.nio.file.Path
 
 @GameSide(Side.BOTH)

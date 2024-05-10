@@ -4,8 +4,11 @@ package dev.deftu.omnicore.client.render
 //$$ import net.minecraft.client.gui.ScaledResolution
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 
+@GameSide(Side.CLIENT)
 public object OmniResolution {
     //#if MC <= 1.12.2
     //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val isUnicode: Boolean)
@@ -14,6 +17,7 @@ public object OmniResolution {
     //#endif
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val screenWidth: Int
         get() {
             //#if MC >= 1.14
@@ -24,6 +28,7 @@ public object OmniResolution {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val screenHeight: Int
         get() {
             //#if MC >= 1.14
@@ -34,6 +39,7 @@ public object OmniResolution {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val viewportWidth: Int
         get() {
             //#if MC >= 1.14
@@ -44,6 +50,7 @@ public object OmniResolution {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val viewportHeight: Int
         get() {
             //#if MC >= 1.14
@@ -54,6 +61,7 @@ public object OmniResolution {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val scaledWidth: Int
         get() {
             //#if MC >= 1.14
@@ -64,6 +72,7 @@ public object OmniResolution {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val scaledHeight: Int
         get() {
             //#if MC >= 1.14
@@ -74,6 +83,7 @@ public object OmniResolution {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val scaleFactor: Double
         get() {
             //#if MC >= 1.14
@@ -95,7 +105,7 @@ public object OmniResolution {
     //$$
     //$$     if (cached != cachedScaledRes) {
     //$$         cachedScaledRes = cached
-    //$$         scaledRes = ScaledResolution(client, client.displayWidth, client.displayHeight)
+    //$$         scaledRes = ScaledResolution(client)
     //$$     }
     //$$
     //$$     return scaledRes!!

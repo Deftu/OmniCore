@@ -34,27 +34,44 @@ import net.minecraft.client.render.*
 //#endif
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.util.*
 import java.util.function.Supplier
 
+@GameSide(Side.CLIENT)
 public class OmniTessellator(
     private val buffer: BufferBuilder
 ) {
     public companion object {
-        @JvmStatic public fun getTessellator(): Tessellator = Tessellator.getInstance()
-        @JvmStatic public fun getFromBuffer(): OmniTessellator =
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getTessellator(): Tessellator = Tessellator.getInstance()
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getFromBuffer(): OmniTessellator =
             //#if MC >= 1.12
             OmniTessellator(getTessellator().buffer)
             //#else
             //$$ OmniTessellator(getTessellator().worldRenderer)
             //#endif
-        @JvmStatic public fun getWithBuffer(buffer: BufferBuilder): OmniTessellator = OmniTessellator(buffer)
-        @JvmStatic public fun getFromSize(size: Int): OmniTessellator = getWithBuffer(BufferBuilder(size))
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getWithBuffer(buffer: BufferBuilder): OmniTessellator = OmniTessellator(buffer)
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getFromSize(size: Int): OmniTessellator = getWithBuffer(BufferBuilder(size))
 
         //#if MC >= 1.17
-        @JvmStatic public val defaultShaders: IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>> by lazy {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public val defaultShaders: IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>> by lazy {
             val value = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
 
             value[net.minecraft.client.render.VertexFormats.POSITION] = Supplier { GameRenderer.getPositionProgram() }
@@ -73,6 +90,7 @@ public class OmniTessellator(
             value
         }
         //#endif
+
     }
 
     private var currentVertexFormat: VertexFormat? = null
@@ -80,15 +98,18 @@ public class OmniTessellator(
     private var renderLayer: RenderLayer? = null
     //#endif
 
+    @GameSide(Side.CLIENT)
     public fun beginWithActiveShader(mode: DrawModes, format: VertexFormat): OmniTessellator = apply {
         currentVertexFormat = format
         buffer.begin(mode.vanilla, format)
     }
 
+    @GameSide(Side.CLIENT)
     public fun beginWithActiveShader(mode: DrawModes, format: VertexFormats): OmniTessellator = apply {
         beginWithActiveShader(mode, format.vanilla)
     }
 
+    @GameSide(Side.CLIENT)
     public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormat): OmniTessellator = apply {
         //#if MC >= 1.17
         val supplier = defaultShaders[format] ?: error("Unsupported vertex format '$format' - no default shader")
@@ -97,17 +118,20 @@ public class OmniTessellator(
         beginWithActiveShader(mode, format)
     }
 
+    @GameSide(Side.CLIENT)
     public fun beginWithDefaultShader(mode: DrawModes, format: VertexFormats): OmniTessellator = apply {
         beginWithDefaultShader(mode, format.vanilla)
     }
 
     //#if MC >= 1.16
+    @GameSide(Side.CLIENT)
     public fun beginRenderLayer(layer: RenderLayer): OmniTessellator = apply {
         renderLayer = layer
         beginWithActiveShader(DrawModes.fromRenderLayer(layer), layer.vertexFormat)
     }
     //#endif
 
+    @GameSide(Side.CLIENT)
     public fun draw() {
         //#if MC >= 1.16
         if (renderLayer != null) {
@@ -177,6 +201,7 @@ public class OmniTessellator(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun vertex(
         stack: OmniMatrixStack,
         x: Float,
@@ -200,6 +225,7 @@ public class OmniTessellator(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun normal(
         stack: OmniMatrixStack,
         x: Float,
@@ -219,6 +245,7 @@ public class OmniTessellator(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun color(
         red: Float,
         green: Float,
@@ -228,6 +255,7 @@ public class OmniTessellator(
         buffer.color(red, green, blue, alpha)
     }
 
+    @GameSide(Side.CLIENT)
     public fun color(
         red: Int,
         green: Int,
@@ -240,6 +268,7 @@ public class OmniTessellator(
         alpha / 255.0f
     )
 
+    @GameSide(Side.CLIENT)
     public fun color(
         color: Int
     ): OmniTessellator = color(
@@ -249,6 +278,7 @@ public class OmniTessellator(
         (color shr 24 and 255) / 255.0f
     )
 
+    @GameSide(Side.CLIENT)
     public fun color(
         color: Color
     ): OmniTessellator = color(
@@ -258,6 +288,7 @@ public class OmniTessellator(
         color.alpha / 255.0f
     )
 
+    @GameSide(Side.CLIENT)
     public fun texture(
         u: Float,
         v: Float
@@ -273,6 +304,7 @@ public class OmniTessellator(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun overlay(
         u: Int,
         v: Int
@@ -288,6 +320,7 @@ public class OmniTessellator(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun light(
         u: Int,
         v: Int
@@ -299,6 +332,7 @@ public class OmniTessellator(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun next(): OmniTessellator = apply {
         //#if MC >= 1.14
         buffer.next()
@@ -326,6 +360,7 @@ public class OmniTessellator(
         return wantEnabled
     }
 
+    @GameSide(Side.CLIENT)
     public enum class VertexFormats(
         public val vanilla: VertexFormat
     ) {
@@ -335,6 +370,7 @@ public class OmniTessellator(
         POSITION_TEXTURE_COLOR(net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR)
     }
 
+    @GameSide(Side.CLIENT)
     public enum class DrawModes(
         public val gl: Int
     ) {
@@ -368,7 +404,10 @@ public class OmniTessellator(
         }
 
         public companion object {
-            @JvmStatic public fun fromGl(gl: Int): DrawModes {
+
+            @JvmStatic
+            @GameSide(Side.CLIENT)
+            public fun fromGl(gl: Int): DrawModes {
                 return when (gl) {
                     GL11.GL_LINES -> LINES
                     GL11.GL_LINE_STRIP -> LINE_STRIP
@@ -381,7 +420,9 @@ public class OmniTessellator(
             }
 
             //#if MC >= 1.17
-            @JvmStatic public fun glToVanillaDrawMode(glMode: Int): VertexFormat.DrawMode {
+            @JvmStatic
+            @GameSide(Side.CLIENT)
+            public fun glToVanillaDrawMode(glMode: Int): VertexFormat.DrawMode {
                 return when (glMode) {
                     GL11.GL_LINES -> VertexFormat.DrawMode.LINES
                     GL11.GL_LINE_STRIP -> VertexFormat.DrawMode.LINE_STRIP
@@ -393,7 +434,9 @@ public class OmniTessellator(
                 }
             }
 
-            @JvmStatic public fun fromMc(mcMode: VertexFormat.DrawMode): DrawModes {
+            @JvmStatic
+            @GameSide(Side.CLIENT)
+            public fun fromMc(mcMode: VertexFormat.DrawMode): DrawModes {
                 return when (mcMode) {
                     VertexFormat.DrawMode.LINES -> LINES
                     VertexFormat.DrawMode.LINE_STRIP -> LINE_STRIP
@@ -407,7 +450,9 @@ public class OmniTessellator(
             //#endif
 
             //#if MC >= 1.16
-            @JvmStatic public fun fromRenderLayer(layer: RenderLayer): DrawModes {
+            @JvmStatic
+            @GameSide(Side.CLIENT)
+            public fun fromRenderLayer(layer: RenderLayer): DrawModes {
                 //#if MC >= 1.17
                 return fromMc(layer.drawMode)
                 //#else
@@ -415,6 +460,7 @@ public class OmniTessellator(
                 //#endif
             }
             //#endif
+
         }
     }
 }

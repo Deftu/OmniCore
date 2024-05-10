@@ -3,6 +3,7 @@
 package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.16
+import dev.deftu.omnicore.annotations.Side
 import net.minecraft.client.texture.NativeImage
 //#else
 //$$ import org.lwjgl.BufferUtils
@@ -10,6 +11,8 @@ import net.minecraft.client.texture.NativeImage
 //$$ import javax.imageio.ImageIO
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.client.*
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
@@ -19,31 +22,38 @@ import java.io.File
 import java.nio.ByteBuffer
 import kotlin.math.max
 
-@Deprecated("This class is currently a work in progress.", level = DeprecationLevel.WARNING)
+@Incubating
+@GameSide(Side.CLIENT)
 public class OmniFramebuffer {
+
     public companion object {
         private var maxSupportedTextureSize = -1
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun genFramebuffer(): Int =
             GL30.glGenFramebuffers()
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun bindFramebuffer(fbo: Int) {
             GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, fbo)
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun bindDrawFramebuffer(fbo: Int) {
             GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, fbo)
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun bindReadFramebuffer(fbo: Int) {
             GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, fbo)
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun deleteFramebuffer(fbo: Int) {
             GL30.glDeleteFramebuffers(fbo)
         }
@@ -69,6 +79,7 @@ public class OmniFramebuffer {
 
             return maxSupportedTextureSize
         }
+
     }
 
     private var width: Int = 0
@@ -88,6 +99,7 @@ public class OmniFramebuffer {
 
     private var clearColor = floatArrayOf(0f, 0f, 0f, 0f)
 
+    @GameSide(Side.CLIENT)
     public fun bind(modifyViewport: Boolean) {
         bindFramebuffer(fbo)
         if (modifyViewport) {
@@ -95,18 +107,22 @@ public class OmniFramebuffer {
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun unbind() {
         bindFramebuffer(mcFbo)
     }
 
+    @GameSide(Side.CLIENT)
     public fun bindTexture() {
         OmniTextureManager.bindTexture(colorAttachment)
     }
 
+    @GameSide(Side.CLIENT)
     public fun unbindTexture() {
         OmniTextureManager.removeTexture()
     }
 
+    @GameSide(Side.CLIENT)
     public fun resize(
         width: Int,
         height: Int
@@ -120,6 +136,7 @@ public class OmniFramebuffer {
         unbind()
     }
 
+    @GameSide(Side.CLIENT)
     public fun delete() {
         unbindTexture()
         unbind()
@@ -141,6 +158,7 @@ public class OmniFramebuffer {
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun draw(stack: OmniMatrixStack) {
         stack.push()
 
@@ -186,6 +204,7 @@ public class OmniFramebuffer {
         stack.pop()
     }
 
+    @GameSide(Side.CLIENT)
     public fun clear() {
         bind(true)
         OmniRenderState.setClearColor(clearColor[0], clearColor[1], clearColor[2], clearColor[3])
@@ -193,6 +212,7 @@ public class OmniFramebuffer {
         unbind()
     }
 
+    @GameSide(Side.CLIENT)
     public fun setClearColor(
         red: Float,
         green: Float,
@@ -206,42 +226,22 @@ public class OmniFramebuffer {
         clearColor = floatArrayOf(r, g, b, a)
     }
 
+    @GameSide(Side.CLIENT)
     public fun setClearColor(
         color: Color
     ) {
         setClearColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
     }
 
-    /**
-     * Copies the contents of the other framebuffer's texture to this framebuffer's texture.
-     */
-    // IMPLEMENTING NOW - @Deprecated("Use copyFromRender(stack, other) instead. This function is currently unimplemented.", level = DeprecationLevel.ERROR)
+    @GameSide(Side.CLIENT)
     public fun copyFrom(
         other: OmniFramebuffer
     ) {
-        // Clear the current framebuffer.
-        bind(true)
-        setClearColor(other.clearColor[0], other.clearColor[1], other.clearColor[2], other.clearColor[3])
-        clear()
-        unbind()
-
-        // Set the draw and read framebuffers to this framebuffer and the other framebuffer, respectively.
-        bindDrawFramebuffer(fbo)
-        bindReadFramebuffer(other.fbo)
-
-        // Blit the other framebuffer's texture to this framebuffer's texture.
-        GL30.glBlitFramebuffer(
-            0, 0, other.width, other.height,
-            0, 0, width, height,
-            GL11.GL_COLOR_BUFFER_BIT,
-            GL11.GL_NEAREST
-        )
-
-        // Unbind the framebuffers.
-        unbind()
+        TODO("Not yet implemented")
     }
 
     @JvmOverloads
+    @GameSide(Side.CLIENT)
     public fun copyFromRender(
         stack: OmniMatrixStack = OmniMatrixStack(),
         other: OmniFramebuffer
@@ -251,6 +251,7 @@ public class OmniFramebuffer {
         unbind()
     }
 
+    @GameSide(Side.CLIENT)
     public fun writeToFile(file: File) {
         //#if MC >= 1.16
         val image = NativeImage(width, height, false)

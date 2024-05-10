@@ -7,16 +7,20 @@ package dev.deftu.omnicore.client.shaders
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniRenderEnv
 import dev.deftu.omnicore.client.render.OmniTessellator
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
 
+@GameSide(Side.CLIENT)
 public interface OmniShader {
     public companion object {
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun fromLegacyShader(
             vert: String,
             frag: String,
@@ -32,7 +36,9 @@ public interface OmniShader {
 
         // Utilities
 
-        @JvmStatic public fun getCurrentProgram(): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getCurrentProgram(): Int {
             //#if MC >= 1.17
             return GlStateManager._getInteger(GL20.GL_CURRENT_PROGRAM)
             //#elseif MC >= 1.15.2
@@ -42,7 +48,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun createProgram(): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun createProgram(): Int {
             //#if MC >= 1.17
             return GlStateManager.glCreateProgram()
             //#elseif MC >= 1.15.2
@@ -52,7 +60,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun linkProgram(program: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun linkProgram(program: Int) {
             //#if MC >= 1.17
             GlStateManager.glLinkProgram(program)
             //#elseif MC >= 1.15.2
@@ -62,7 +72,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun getProgram(program: Int, pname: Int): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getProgram(program: Int, pname: Int): Int {
             //#if MC >= 1.17
             return GlStateManager.glGetProgrami(program, pname)
             //#elseif MC >= 1.15.2
@@ -72,13 +84,17 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun validateProgram(program: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun validateProgram(program: Int) {
             if (OmniRenderEnv.isGl21Available()) {
                 GL20.glValidateProgram(program)
             } else ARBShaderObjects.glValidateProgramARB(program)
         }
 
-        @JvmStatic public fun getProgramInfoLog(program: Int, maxLength: Int): String {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getProgramInfoLog(program: Int, maxLength: Int): String {
             return if (OmniRenderEnv.isGl21Available()) {
                 //#if MC >= 1.17
                 GlStateManager.glGetProgramInfoLog(program, maxLength)
@@ -90,13 +106,17 @@ public interface OmniShader {
             } else ARBShaderObjects.glGetInfoLogARB(program, maxLength)
         }
 
-        @JvmStatic public fun getProgramValidateStatus(program: Int): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getProgramValidateStatus(program: Int): Int {
             return if (OmniRenderEnv.isGl21Available()) {
                 GL20.glGetProgrami(program, GL20.GL_VALIDATE_STATUS)
             } else ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB)
         }
 
-        @JvmStatic public fun useProgram(program: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun useProgram(program: Int) {
             //#if MC >= 1.17
             GlStateManager._glUseProgram(program)
             //#elseif MC >= 1.15.2
@@ -106,7 +126,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun createShader(type: Int): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun createShader(type: Int): Int {
             //#if MC >= 1.17
             return GlStateManager.glCreateShader(type)
             //#elseif MC >= 1.15.2
@@ -116,7 +138,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun deleteShader(shader: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun deleteShader(shader: Int) {
             if (OmniRenderEnv.isGl21Available()) {
                 //#if MC >= 1.17
                 GlStateManager.glDeleteShader(shader)
@@ -128,13 +152,17 @@ public interface OmniShader {
             } else ARBShaderObjects.glDeleteObjectARB(shader)
         }
 
-        @JvmStatic public fun detachShader(program: Int, shader: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun detachShader(program: Int, shader: Int) {
             if (OmniRenderEnv.isGl21Available()) {
                 GL20.glDetachShader(program, shader)
             } else ARBShaderObjects.glDetachObjectARB(program, shader)
         }
 
-        @JvmStatic public fun compileShader(shader: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun compileShader(shader: Int) {
             //#if MC >= 1.17
             GlStateManager.glCompileShader(shader)
             //#elseif MC >= 1.15.2
@@ -144,7 +172,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun shaderSource(shader: Int, source: String) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun shaderSource(shader: Int, source: String) {
             //#if MC >= 1.17
             GlStateManager.glShaderSource(shader, listOf(source))
             //#elseif MC >= 1.15.2
@@ -154,7 +184,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun getShader(shader: Int, pname: Int): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getShader(shader: Int, pname: Int): Int {
             //#if MC >= 1.17
             return GlStateManager.glGetShaderi(shader, pname)
             //#elseif MC >= 1.15.2
@@ -164,7 +196,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun getShaderInfoLog(shader: Int, maxLength: Int): String {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getShaderInfoLog(shader: Int, maxLength: Int): String {
             //#if MC >= 1.17
             return GlStateManager.glGetShaderInfoLog(shader, maxLength)
             //#elseif MC >= 1.15.2
@@ -174,7 +208,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun attachShader(program: Int, shader: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun attachShader(program: Int, shader: Int) {
             //#if MC >= 1.17
             GlStateManager.glAttachShader(program, shader)
             //#elseif MC >= 1.15.2
@@ -184,7 +220,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun getUniformLocation(program: Int, name: String): Int {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun getUniformLocation(program: Int, name: String): Int {
             //#if MC >= 1.17
             return GlStateManager._glGetUniformLocation(program, name)
             //#elseif MC >= 1.15.2
@@ -194,7 +232,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniform1i(location: Int, value: Int) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniform1i(location: Int, value: Int) {
             //#if MC >= 1.17
             GlStateManager._glUniform1i(location, value)
             //#elseif MC >= 1.15.2
@@ -204,7 +244,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniform1f(location: Int, value: Float) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniform1f(location: Int, value: Float) {
             val buffer = FloatBuffer.wrap(floatArrayOf(value))
             //#if MC >= 1.17
             GlStateManager._glUniform1(location, buffer)
@@ -215,7 +257,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniform2f(location: Int, a: Float, b: Float) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniform2f(location: Int, a: Float, b: Float) {
             val buffer = FloatBuffer.wrap(floatArrayOf(a, b))
             //#if MC >= 1.17
             GlStateManager._glUniform2(location, buffer)
@@ -226,7 +270,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniform3f(location: Int, a: Float, b: Float, c: Float) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniform3f(location: Int, a: Float, b: Float, c: Float) {
             val buffer = FloatBuffer.wrap(floatArrayOf(a, b, c))
             //#if MC >= 1.17
             GlStateManager._glUniform3(location, buffer)
@@ -237,7 +283,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniform4f(location: Int, a: Float, b: Float, c: Float, d: Float) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniform4f(location: Int, a: Float, b: Float, c: Float, d: Float) {
             val buffer = FloatBuffer.wrap(floatArrayOf(a, b, c, d))
             //#if MC >= 1.17
             GlStateManager._glUniform4(location, buffer)
@@ -248,7 +296,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix4f(location: Int, transpose: Boolean, matrix: FloatArray) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix4f(location: Int, transpose: Boolean, matrix: FloatArray) {
             val buffer = FloatBuffer.wrap(matrix)
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix4(location, transpose, buffer)
@@ -259,7 +309,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix3f(location: Int, transpose: Boolean, matrix: FloatArray) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix3f(location: Int, transpose: Boolean, matrix: FloatArray) {
             val buffer = FloatBuffer.wrap(matrix)
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix3(location, transpose, buffer)
@@ -270,7 +322,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix2f(location: Int, transpose: Boolean, matrix: FloatArray) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix2f(location: Int, transpose: Boolean, matrix: FloatArray) {
             val buffer = FloatBuffer.wrap(matrix)
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix2(location, transpose, buffer)
@@ -281,7 +335,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix4fv(location: Int, transpose: Boolean, matrix: FloatArray) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix4fv(location: Int, transpose: Boolean, matrix: FloatArray) {
             val buffer = FloatBuffer.wrap(matrix)
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix4(location, transpose, buffer)
@@ -292,7 +348,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix3fv(location: Int, transpose: Boolean, matrix: FloatArray) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix3fv(location: Int, transpose: Boolean, matrix: FloatArray) {
             val buffer = FloatBuffer.wrap(matrix)
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix3(location, transpose, buffer)
@@ -303,7 +361,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix2fv(location: Int, transpose: Boolean, matrix: FloatArray) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix2fv(location: Int, transpose: Boolean, matrix: FloatArray) {
             val buffer = FloatBuffer.wrap(matrix)
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix2(location, transpose, buffer)
@@ -314,7 +374,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix4fv(location: Int, transpose: Boolean, matrix: FloatBuffer) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix4fv(location: Int, transpose: Boolean, matrix: FloatBuffer) {
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix4(location, transpose, matrix)
             //#elseif MC >= 1.15.2
@@ -324,7 +386,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix3fv(location: Int, transpose: Boolean, matrix: FloatBuffer) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix3fv(location: Int, transpose: Boolean, matrix: FloatBuffer) {
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix3(location, transpose, matrix)
             //#elseif MC >= 1.15.2
@@ -334,7 +398,9 @@ public interface OmniShader {
             //#endif
         }
 
-        @JvmStatic public fun uniformMatrix2fv(location: Int, transpose: Boolean, matrix: FloatBuffer) {
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun uniformMatrix2fv(location: Int, transpose: Boolean, matrix: FloatBuffer) {
             //#if MC >= 1.17
             GlStateManager._glUniformMatrix2(location, transpose, matrix)
             //#elseif MC >= 1.15.2
@@ -345,24 +411,55 @@ public interface OmniShader {
         }
     }
 
+    @GameSide(Side.CLIENT)
     public val usable: Boolean
 
+    @GameSide(Side.CLIENT)
     public fun bind()
+
+    @GameSide(Side.CLIENT)
     public fun unbind()
 
+    @GameSide(Side.CLIENT)
     public fun getIntUniformOrNull(name: String): IntUniform?
+
+    @GameSide(Side.CLIENT)
     public fun getVecUniformOrNull(name: String): VecUniform?
+
+    @GameSide(Side.CLIENT)
     public fun getVec2UniformOrNull(name: String): Vec2Uniform?
+
+    @GameSide(Side.CLIENT)
     public fun getVec3UniformOrNull(name: String): Vec3Uniform?
+
+    @GameSide(Side.CLIENT)
     public fun getVec4UniformOrNull(name: String): Vec4Uniform?
+
+    @GameSide(Side.CLIENT)
     public fun getMatrixUniformOrNull(name: String): MatrixUniform?
+
+    @GameSide(Side.CLIENT)
     public fun getSamplerUniformOrNull(name: String): SamplerUniform?
 
+    @GameSide(Side.CLIENT)
     public fun getIntUniform(name: String): IntUniform = getIntUniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
+    @GameSide(Side.CLIENT)
     public fun getVecUniform(name: String): VecUniform = getVecUniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
+    @GameSide(Side.CLIENT)
     public fun getVec2Uniform(name: String): Vec2Uniform = getVec2UniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
+    @GameSide(Side.CLIENT)
     public fun getVec3Uniform(name: String): Vec3Uniform = getVec3UniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
+    @GameSide(Side.CLIENT)
     public fun getVec4Uniform(name: String): Vec4Uniform = getVec4UniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
+    @GameSide(Side.CLIENT)
     public fun getMatrixUniform(name: String): MatrixUniform = getMatrixUniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
+    @GameSide(Side.CLIENT)
     public fun getSamplerUniform(name: String): SamplerUniform = getSamplerUniformOrNull(name) ?: throw NoSuchElementException("Uniform $name not found")
+
 }

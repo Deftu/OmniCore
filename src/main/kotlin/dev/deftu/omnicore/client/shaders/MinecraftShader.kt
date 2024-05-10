@@ -2,7 +2,7 @@ package dev.deftu.omnicore.client.shaders
 
 //#if MC >= 1.17
 //#if MC >= 1.19.3
-import dev.deftu.omnicore.client.DummyResourcePack
+import dev.deftu.omnicore.client.shaders.DummyResourcePack
 //#endif
 
 //#if MC >= 1.19

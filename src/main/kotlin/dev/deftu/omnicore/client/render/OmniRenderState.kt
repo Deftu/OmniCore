@@ -16,24 +16,30 @@ import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
 
+@GameSide(Side.CLIENT)
 public object OmniRenderState {
 
     //#if MC >= 1.17
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setShader(supplier: Supplier<ShaderProgram?>) {
         RenderSystem.setShader(supplier)
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun removeShader() {
         setShader { null }
     }
     //#endif
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setTexture(index: Int, texture: Int) {
         //#if MC >= 1.17
         RenderSystem.setShaderTexture(index, texture)
@@ -44,6 +50,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setTexture(index: Int, texture: Identifier) {
         //#if MC >= 1.17
         RenderSystem.setShaderTexture(index, texture)
@@ -54,6 +61,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setColor4f(
         red: Float,
         green: Float,
@@ -72,6 +80,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setColor3f(
         red: Float,
         green: Float,
@@ -89,6 +98,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setColorMask(
         red: Boolean,
         green: Boolean,
@@ -103,6 +113,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setClearColor(
         red: Float,
         green: Float,
@@ -117,6 +128,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun clear(mask: Int) {
         //#if MC >= 1.17
         RenderSystem.clear(mask, false)
@@ -128,6 +140,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun clear(vararg mask: ClearMask) {
         clear(mask.fold(0) { acc, clearMask ->
             acc or clearMask.value
@@ -135,6 +148,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setViewport(
         x: Int,
         y: Int,
@@ -149,6 +163,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun enableTexture2D() {
         //#if MC >= 1.19.4
         // no-op
@@ -162,6 +177,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun disableTexture2D() {
         //#if MC >= 1.19.4
         // no-op
@@ -175,6 +191,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun toggleTexture2D(enable: Boolean) {
         if (enable) {
             enableTexture2D()
@@ -182,6 +199,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun enableCull() {
         //#if MC >= 1.17
         RenderSystem.enableCull()
@@ -191,6 +209,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun disableCull() {
         //#if MC >= 1.17
         RenderSystem.disableCull()
@@ -199,13 +218,17 @@ public object OmniRenderState {
         //#endif
     }
 
-    @JvmStatic public fun toggleCull(enable: Boolean) {
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun toggleCull(enable: Boolean) {
         if (enable) {
             enableCull()
         } else disableCull()
     }
 
-    @JvmStatic public fun enableBlend() {
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun enableBlend() {
         //#if MC >= 1.17
         RenderSystem.enableBlend()
         //#else
@@ -213,7 +236,9 @@ public object OmniRenderState {
         //#endif
     }
 
-    @JvmStatic public fun disableBlend() {
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun disableBlend() {
         //#if MC >= 1.17
         RenderSystem.disableBlend()
         //#else
@@ -221,13 +246,16 @@ public object OmniRenderState {
         //#endif
     }
 
-    @JvmStatic public fun toggleBlend(enable: Boolean) {
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun toggleBlend(enable: Boolean) {
         if (enable) {
             enableBlend()
         } else disableBlend()
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setBlendFunc(srcFactor: Int, dstFactor: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFunc(srcFactor, dstFactor)
@@ -237,11 +265,13 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setBlendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
         setBlendFunc(srcFactor.value, dstFactorAlpha.value)
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setBlendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
         //#if MC >= 1.17
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
@@ -253,20 +283,23 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setBlendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
         setBlendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setDefaultBlendFunc() {
         //#if MC >= 1.17
         RenderSystem.defaultBlendFunc()
         //#else
-        //$$ blendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
+        //$$ setBlendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
         //#endif
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setBlendEquation(equation: Int) {
         //#if MC >= 1.17
         RenderSystem.blendEquation(equation)
@@ -276,6 +309,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun enableDepth() {
         //#if MC >= 1.17
         RenderSystem.enableDepthTest()
@@ -287,6 +321,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun disableDepth() {
         //#if MC >= 1.17
         RenderSystem.disableDepthTest()
@@ -298,6 +333,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun toggleDepth(enable: Boolean) {
         if (enable) {
             enableDepth()
@@ -305,6 +341,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setDepthFunc(func: Int) {
         //#if MC >= 1.17
         RenderSystem.depthFunc(func)
@@ -314,11 +351,13 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setDepthFunc(state: DepthState) {
         setDepthFunc(state.value)
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setDepthMask(flag: Boolean) {
         //#if MC >= 1.17
         RenderSystem.depthMask(flag)
@@ -328,6 +367,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun enableLighting() {
         //#if MC < 1.17
         //$$ GlStateManager.enableLighting()
@@ -335,6 +375,7 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun disableLighting() {
         //#if MC < 1.17
         //$$ GlStateManager.disableLighting()
@@ -342,12 +383,14 @@ public object OmniRenderState {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun toggleLighting(enable: Boolean) {
         //#if MC < 1.17
         //$$ if (enable) enableLighting() else disableLighting()
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public enum class SrcFactor(
         public val value: Int
     ) {
@@ -368,6 +411,7 @@ public object OmniRenderState {
         ZERO(GL11.GL_ZERO)
     }
 
+    @GameSide(Side.CLIENT)
     public enum class DstFactor(
         public val value: Int
     ) {
@@ -387,6 +431,7 @@ public object OmniRenderState {
         ZERO(GL11.GL_ZERO)
     }
 
+    @GameSide(Side.CLIENT)
     public enum class DepthState(
         public val value: Int
     ) {
@@ -400,6 +445,7 @@ public object OmniRenderState {
         NOTEQUAL(GL11.GL_NOTEQUAL)
     }
 
+    @GameSide(Side.CLIENT)
     public enum class ClearMask(
         public val value: Int
     ) {

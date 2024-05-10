@@ -1,7 +1,10 @@
 package dev.deftu.omnicore.client.render
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 
+@GameSide(Side.CLIENT)
 public enum class GuiScale {
     AUTO,
     SMALL,
@@ -12,10 +15,12 @@ public enum class GuiScale {
     public companion object {
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun fromInt(value: Int): GuiScale =
             values()[value]
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun getCurrentScale(): GuiScale {
             val guiScale =
                 //#if MC >= 1.19.2
@@ -28,6 +33,7 @@ public enum class GuiScale {
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun setScale(value: Int) {
             //#if MC >= 1.19.2
             OmniClient.getInstance().options.guiScale.value = value
@@ -37,6 +43,7 @@ public enum class GuiScale {
         }
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun setScale(scale: GuiScale): Unit =
             setScale(scale.ordinal)
 

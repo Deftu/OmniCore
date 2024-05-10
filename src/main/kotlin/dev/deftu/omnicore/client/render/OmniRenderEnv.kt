@@ -1,24 +1,30 @@
 package dev.deftu.omnicore.client.render
 
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL30
-
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL30
+
+@GameSide(Side.CLIENT)
 public object OmniRenderEnv {
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun getErrorCode(): Int =
         GL11.glGetError()
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun getError(): GlError =
         @Suppress("EnumValuesSoftDeprecate")
         GlError.values().firstOrNull { it.value == getErrorCode() } ?: GlError.NO_ERROR
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun isGl21Available(): Boolean =
         //#if MC >= 1.15.2
         true
@@ -27,6 +33,7 @@ public object OmniRenderEnv {
         //#endif
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun isFramebufferEnabled(): Boolean =
         //#if MC >= 1.15.2
         true
@@ -34,6 +41,7 @@ public object OmniRenderEnv {
         //$$ OpenGlHelper.isFramebufferEnabled()
         //#endif
 
+    @GameSide(Side.CLIENT)
     public enum class GlError(
         public val value: Int
     ) {

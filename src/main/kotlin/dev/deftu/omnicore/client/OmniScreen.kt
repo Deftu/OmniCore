@@ -17,12 +17,15 @@ import net.minecraft.client.gui.DrawContext
 
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniMatrixStack
 import dev.deftu.textile.Text
 import dev.deftu.textile.impl.TranslatableText as TextileTranslatableText
 import dev.deftu.textile.toVanilla
 
-public abstract class OmniScreen(
+@GameSide(Side.CLIENT)
+public abstract class OmniScreen @JvmOverloads constructor(
     public val restorePreviousScreen: Boolean = true,
     public val screenTitle: Text? = null
 //#if MC >= 1.15
@@ -33,14 +36,23 @@ public abstract class OmniScreen(
     public companion object {
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun getCurrentScreen(): Screen? = OmniClient.getCurrentScreen()
 
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun openScreen(screen: Screen?) {
             OmniClient.getInstance().setScreen(screen)
         }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun closeScreen() {
+            openScreen(null)
+        }
     }
 
+    @JvmOverloads
     public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
@@ -71,6 +83,7 @@ public abstract class OmniScreen(
     private var contexts = mutableListOf<DrawContext>()
     //#endif
 
+    @GameSide(Side.CLIENT)
     public open fun handleInitialize(width: Int, height: Int) {
         //#if MC >= 1.15
         super.init()
@@ -79,6 +92,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleRender(
         stack: OmniMatrixStack,
         mouseX: Int,
@@ -98,6 +112,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleKeyPress(
         code: Int,
         char: Char,
@@ -120,6 +135,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleKeyRelease(
         code: Int,
         char: Char,
@@ -132,6 +148,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleMouseClick(
         x: Double,
         y: Double,
@@ -149,6 +166,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleMouseReleased(
         x: Double,
         y: Double,
@@ -161,6 +179,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleMouseDragged(
         x: Double,
         y: Double,
@@ -174,6 +193,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleMouseScrolled(
         delta: Double
     ) {
@@ -189,6 +209,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleTick() {
         //#if MC >= 1.15
         super.tick()
@@ -197,6 +218,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleClose() {
         //#if MC >= 1.15
         super.close()
@@ -205,6 +227,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleResize(width: Int, height: Int) {
         //#if MC >= 1.15
         super.resize(OmniClient.getInstance(), width, height)
@@ -213,6 +236,7 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun handleBackgroundRender(
         stack: OmniMatrixStack
     ) {
@@ -236,8 +260,10 @@ public abstract class OmniScreen(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public open fun doesPauseGame(): Boolean = super.shouldPause()
 
+    @GameSide(Side.CLIENT)
     public fun restorePreviousScreen() {
         openScreen(previousScreen)
     }

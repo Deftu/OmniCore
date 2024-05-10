@@ -6,31 +6,84 @@ import org.lwjgl.glfw.GLFW
 //$$ import org.lwjgl.input.Mouse
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniResolution
 import kotlin.math.max
 
+@GameSide(Side.CLIENT)
 public object OmniMouse {
+
     //#if MC >= 1.15
-    @JvmField public val LEFT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_LEFT }
-    @JvmField public val RIGHT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_RIGHT }
-    @JvmField public val MIDDLE: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_MIDDLE }
-    @JvmField public val BACK: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_4 }
-    @JvmField public val FORWARD: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_5 }
-    @JvmField public val BUTTON6: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_6 }
-    @JvmField public val BUTTON7: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_7 }
-    @JvmField public val BUTTON8: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_8 }
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val LEFT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_LEFT }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val RIGHT: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_RIGHT }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val MIDDLE: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_MIDDLE }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+
+    public val BACK: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_4 }
+    @JvmField
+    @GameSide(Side.CLIENT)
+
+    public val FORWARD: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_5 }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val BUTTON6: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_6 }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val BUTTON7: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_7 }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val BUTTON8: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_8 }
+
     //#else
-    //$$ @JvmField public val LEFT: Int = noInline { 0 }
-    //$$ @JvmField public val RIGHT: Int = noInline { 1 }
-    //$$ @JvmField public val MIDDLE: Int = noInline { 2 } // FIXME Is this correct?
-    //$$ @JvmField public val BACK: Int = noInline { 3 } // FIXME Is this correct?
-    //$$ @JvmField public val FORWARD: Int = noInline { 4 } // FIXME Is this correct?
-    //$$ @JvmField public val BUTTON6: Int = noInline { 5 } // FIXME Is this correct?
-    //$$ @JvmField public val BUTTON7: Int = noInline { 6 } // FIXME Is this correct?
-    //$$ @JvmField public val BUTTON8: Int = noInline { 7 } // FIXME Is this correct?
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val LEFT: Int = noInline { 0 }
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val RIGHT: Int = noInline { 1 }
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val MIDDLE: Int = noInline { 2 } // FIXME Is this correct?
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val BACK: Int = noInline { 3 } // FIXME Is this correct?
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val FORWARD: Int = noInline { 4 } // FIXME Is this correct?
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val BUTTON6: Int = noInline { 5 } // FIXME Is this correct?
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val BUTTON7: Int = noInline { 6 } // FIXME Is this correct?
+    //$$
+    //$$ @JvmField
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val BUTTON8: Int = noInline { 7 } // FIXME Is this correct?
     //#endif
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val rawX: Double
         get() {
             //#if MC >= 1.14
@@ -41,6 +94,7 @@ public object OmniMouse {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val rawY: Double
         get() {
             //#if MC >= 1.14
@@ -51,14 +105,17 @@ public object OmniMouse {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val scaledX: Double
         get() = rawX * OmniResolution.scaledWidth / max(1, OmniResolution.screenWidth)
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val scaledY: Double
         get() = rawY * OmniResolution.scaledHeight / max(1, OmniResolution.screenHeight)
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.14
@@ -69,6 +126,7 @@ public object OmniMouse {
         }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun setCursorGrabbed(grabbed: Boolean) {
         //#if MC >= 1.14
         if (grabbed) OmniClient.getInstance().mouse.lockCursor()
@@ -79,6 +137,7 @@ public object OmniMouse {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun isMouseButton(code: Int): Boolean {
         //#if MC >= 1.15
         return code < 20
@@ -88,6 +147,7 @@ public object OmniMouse {
     }
 
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun isPressed(code: Int): Boolean {
         //#if MC >= 1.15
         val handle = OmniClient.getInstance().window.handle
@@ -109,4 +169,5 @@ public object OmniMouse {
      * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
      */
     private inline fun <T> noInline(init: () -> T): T = init()
+
 }

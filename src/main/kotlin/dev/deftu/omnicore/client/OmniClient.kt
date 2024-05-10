@@ -1,9 +1,10 @@
 package dev.deftu.omnicore.client
 
-//#if MC >= 1.16
+//#if MC >= 1.16.5
 import net.minecraft.client.util.GlfwUtil
 //#endif
 
+import dev.deftu.omnicore.client.exceptions.UnavailableClientPlayerException
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
@@ -80,6 +81,27 @@ public object OmniClient {
      */
     @JvmStatic
     public fun getPlayer(): ClientPlayerEntity? = getInstance().player
+
+    /**
+     * @return True if the player is in a world, false otherwise.
+     *
+     * @since 0.2.2
+     * @see getPlayer
+     * @author Deftu
+     */
+    @JvmStatic
+    public fun hasPlayer(): Boolean = getPlayer() != null
+
+    /**
+     * @return The player instance, throws a [UnavailableClientPlayerException] if the player is not in a world.
+     *
+     * @throws UnavailableClientPlayerException If the player is not in a world.
+     * @since 0.2.2
+     * @see getPlayer
+     */
+    @JvmStatic
+    @Throws(UnavailableClientPlayerException::class)
+    public fun requirePlayer(): ClientPlayerEntity = getPlayer() ?: throw UnavailableClientPlayerException()
 
     /**
      * @return An instance of the [InGameHud], which controls the in-game UI elements, such as the hot bar.

@@ -38,10 +38,13 @@ import org.joml.Quaternionf
 //$$ import kotlin.math.*
 //#endif
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import java.util.*
 import org.joml.Matrix4f
 import org.joml.Matrix3f
 
+@GameSide(Side.CLIENT)
 public class OmniMatrixStack private constructor(
     private val stack: Deque<StackEntry>
 ) {
@@ -76,9 +79,11 @@ public class OmniMatrixStack private constructor(
 
     public constructor(stack: MatrixStack) : this(stack.peek())
 
+    @GameSide(Side.CLIENT)
     public fun toVanillaStack(): MatrixStack = peek().toVanillaStack()
     //#endif
 
+    @GameSide(Side.CLIENT)
     public fun scale(
         x: Float,
         y: Float,
@@ -137,12 +142,14 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun scale(
         x: Double,
         y: Double,
         z: Double
     ): Unit = scale(x.toFloat(), y.toFloat(), z.toFloat())
 
+    @GameSide(Side.CLIENT)
     public fun translate(
         x: Float,
         y: Float,
@@ -164,6 +171,7 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun translate(
         x: Double,
         y: Double,
@@ -171,6 +179,7 @@ public class OmniMatrixStack private constructor(
     ): Unit = translate(x.toFloat(), y.toFloat(), z.toFloat())
 
     @JvmOverloads
+    @GameSide(Side.CLIENT)
     public fun rotate(
         angle: Float,
         x: Float,
@@ -221,6 +230,7 @@ public class OmniMatrixStack private constructor(
     }
 
     @JvmOverloads
+    @GameSide(Side.CLIENT)
     public fun rotate(
         angle: Double,
         x: Double,
@@ -229,13 +239,22 @@ public class OmniMatrixStack private constructor(
         degrees: Boolean = true
     ): Unit = rotate(angle.toFloat(), x.toFloat(), y.toFloat(), z.toFloat(), degrees)
 
+    @GameSide(Side.CLIENT)
     public fun push(): Unit = stack.addLast(stack.last.deepCopy())
+
+    @GameSide(Side.CLIENT)
     public fun pop(): StackEntry = stack.removeLast()
+
+    @GameSide(Side.CLIENT)
     public fun peek(): StackEntry = stack.last
+
+    @GameSide(Side.CLIENT)
     public fun isEmpty(): Boolean = stack.size == 1
 
+    @GameSide(Side.CLIENT)
     public fun copy(): OmniMatrixStack = OmniMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
 
+    @GameSide(Side.CLIENT)
     public fun applyToGlobalState() {
         //#if MC >= 1.17
         //#if MC >= 1.18
@@ -264,6 +283,7 @@ public class OmniMatrixStack private constructor(
         //#endif
     }
 
+    @GameSide(Side.CLIENT)
     public fun replaceGlobalState() {
         //#if MC >= 1.17
         RenderSystem.getModelViewStack().loadIdentity()
@@ -273,6 +293,7 @@ public class OmniMatrixStack private constructor(
         applyToGlobalState()
     }
 
+    @GameSide(Side.CLIENT)
     private inline fun <R> withGlobalStackPushed(block: () -> R) : R {
         //#if MC >= 1.17
         val stack = RenderSystem.getModelViewStack()
@@ -290,25 +311,31 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun <R> runWithGlobalState(block: () -> R): R  = withGlobalStackPushed {
         applyToGlobalState()
         block()
     }
 
+    @GameSide(Side.CLIENT)
     public fun runWithGlobalState(block: Runnable): Unit = runWithGlobalState { block.run() }
 
+    @GameSide(Side.CLIENT)
     public fun <R> runReplacingGlobalState(block: () -> R): R = withGlobalStackPushed {
         replaceGlobalState()
         block()
     }
 
+    @GameSide(Side.CLIENT)
     public fun runReplacingGlobalState(block: Runnable): Unit = runReplacingGlobalState { block.run() }
 
+    @GameSide(Side.CLIENT)
     public data class StackEntry(
         val matrix: Matrix4f,
         val normal: Matrix3f
     ) {
         //#if MC >= 1.16
+        @GameSide(Side.CLIENT)
         public fun toVanillaStack(): MatrixStack = MatrixStack().also { stack ->
         //#if MC >= 1.19.3
             stack.peek().positionMatrix.mul(matrix)
@@ -320,6 +347,7 @@ public class OmniMatrixStack private constructor(
         }
         //#endif
 
+        @GameSide(Side.CLIENT)
         public fun deepCopy(): StackEntry {
             //#if MC >= 1.19.3
             return StackEntry(Matrix4f(matrix), Matrix3f(normal))
