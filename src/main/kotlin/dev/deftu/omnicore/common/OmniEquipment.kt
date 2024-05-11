@@ -5,12 +5,14 @@ import net.minecraft.entity.EquipmentSlot
 //#endif
 
 import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.annotations.Side
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.entity.LivingEntity
 import net.minecraft.item.ItemStack
 
+@Incubating
 @GameSide(Side.BOTH)
 public object OmniEquipment {
 
