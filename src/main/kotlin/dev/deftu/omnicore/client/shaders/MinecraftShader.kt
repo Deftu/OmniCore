@@ -1,10 +1,6 @@
 package dev.deftu.omnicore.client.shaders
 
 //#if MC >= 1.17
-//#if MC >= 1.19.3
-import dev.deftu.omnicore.client.shaders.DummyResourcePack
-//#endif
-
 //#if MC >= 1.19
 import net.minecraft.resource.Resource
 import java.util.Optional
@@ -32,7 +28,9 @@ internal class MinecraftShader(
     private val shader: ShaderProgram,
     private val blend: BlendState
 ) : OmniShader {
+
     companion object {
+
         private val isDebug: Boolean
             get() = OmniCore.isDebug || System.getProperty("omnicore.shader.debug") == "true"
 
@@ -55,13 +53,10 @@ internal class MinecraftShader(
         ): MinecraftShader {
             val transformer = Transformer(vertexFormat)
 
-            val vert = transformer.transform(vert)
-            val frag = transformer.transform(frag)
+            val transformedVert = transformer.transform(vert)
+            val transformedFrag = transformer.transform(frag)
 
             val json = JsonObject().apply {
-                addProperty("vertex", DigestUtils.sha1Hex(vert).lowercase())
-                addProperty("fragment", DigestUtils.sha1Hex(frag).lowercase())
-
                 add("blend", JsonObject().apply {
                     addProperty("func", blend.equation.mcStr)
                     addProperty("srcrgb", blend.srcRgb.mcStr)
@@ -69,6 +64,9 @@ internal class MinecraftShader(
                     if (blend.separateSrc) addProperty("srcalpha", blend.srcAlpha.mcStr)
                     if (blend.separateDst) addProperty("dstalpha", blend.dstAlpha.mcStr)
                 })
+
+                addProperty("vertex", DigestUtils.sha1Hex(transformedVert).lowercase())
+                addProperty("fragment", DigestUtils.sha1Hex(transformedFrag).lowercase())
 
                 add("attributes", JsonArray().apply {
                     transformer.attributes.forEach(::add)
@@ -98,16 +96,16 @@ internal class MinecraftShader(
 
             val jsonString = gson.toJson(json)
             if (isDebug) {
-                logger.info("Transformed vertex shader:\n$vert")
-                logger.info("Transformed fragment shader:\n$frag")
+                logger.info("Transformed vertex shader:\n$transformedVert")
+                logger.info("Transformed fragment shader:\n$transformedFrag")
                 logger.info("Generated shader JSON: $jsonString")
             }
 
             val factory = { id: Identifier ->
                 val content = when (id.path.substringAfter(".")) {
                     "json" -> jsonString
-                    "vsh" -> vert
-                    "fsh" -> frag
+                    "vsh" -> transformedVert
+                    "fsh" -> transformedFrag
                     else -> throw IllegalArgumentException("Unknown shader file type: ${id.path.substringAfter(".")}")
                 }
 
@@ -127,6 +125,7 @@ internal class MinecraftShader(
             val shaderName = DigestUtils.sha1Hex(jsonString).lowercase()
             return MinecraftShader(ShaderProgram(factory, shaderName, vertexFormat), blend)
         }
+
     }
 
     override val usable: Boolean = true
@@ -152,15 +151,15 @@ internal class MinecraftShader(
     internal class Transformer(
         private val vertexFormat: OmniTessellator.VertexFormats?
     ) {
-        val uniforms = mutableMapOf<String, UniformType>()
-        val samplers = mutableSetOf<String>()
         val attributes = mutableListOf<String>()
+        val samplers = mutableSetOf<String>()
+        val uniforms = mutableMapOf<String, UniformType>()
 
         fun transform(value: String): String {
-            var value = value
+            var source = value
 
-            value = value.replace("texture2D", "texture")
-            value = value.replace("gl_ModelViewProjectionMatrix", "gl_ProjectionMatrix * gl_ModelViewMatrix")
+            source = source.replace("gl_ModelViewProjectionMatrix", "gl_ProjectionMatrix * gl_ModelViewMatrix")
+            source = source.replace("texture2D", "texture")
 
             val replacements = mutableMapOf<String, String>()
             val transformed = mutableListOf<String>()
@@ -186,22 +185,35 @@ internal class MinecraftShader(
                 isFrag &&
                 "gl_Color" in value
             ) {
-                transformed.add("in vec4 oc_Color;")
-                replacements["gl_Color"] = "oc_Color"
+                transformed.add("in vec4 oc_FrontColor;")
+                replacements["gl_Color"] = "oc_FrontColor"
             }
 
             if (isVert) {
+                fun replaceAttrib(
+                    value: MutableList<Pair<String, String>>,
+                    needle: String,
+                    type: String,
+                    replacementName: String = "oc_${needle.substringAfter("_")}",
+                    replacement: String = replacementName
+                ) {
+                    if (needle in source) {
+                        replacements[needle] = replacement
+                        value.add(replacementName to "in $type $replacementName;")
+                    }
+                }
+
                 val newAttributes = mutableListOf<Pair<String, String>>()
-                replaceAttribute(value, replacements, newAttributes, "gl_Color", "vec4")
-                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord0.st", "vec2", "oc_UV0")
-                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord1.st", "vec2", "oc_UV1")
-                replaceAttribute(value, replacements, newAttributes, "gl_MultiTexCoord2.st", "vec2", "oc_UV2")
-                replaceAttribute(value, replacements, newAttributes, "gl_Vertex", "vec3", "oc_Pos", replacement = "vec4(oc_Pos, 1.0)")
+                replaceAttrib(newAttributes, "gl_Vertex", "vec3", "oc_Position", replacement = "vec4(oc_Position, 1.0)")
+                replaceAttrib(newAttributes, "gl_Color", "vec4")
+                replaceAttrib(newAttributes, "gl_MultiTexCoord0.st", "vec2", "oc_UV0")
+                replaceAttrib(newAttributes, "gl_MultiTexCoord1.st", "vec2", "oc_UV1")
+                replaceAttrib(newAttributes, "gl_MultiTexCoord2.st", "vec2", "oc_UV2")
 
                 if (vertexFormat != null) {
                     newAttributes.sortedBy {  (name, type) ->
                         vertexFormat.vanilla.attributeNames.indexOf(name.removePrefix("oc_"))
-                    }.forEach {(name, type) ->
+                    }.forEach { (name, type) ->
                         attributes.add(name)
                         transformed.add(type)
                     }
@@ -213,10 +225,25 @@ internal class MinecraftShader(
                 }
             }
 
-            replaceUniform(value, replacements, transformed, "gl_ModelViewMatrix", UniformType.Mat4, "ModelViewMat")
-            replaceUniform(value, replacements, transformed, "gl_ProjectionMatrix", UniformType.Mat4, "ProjMat")
+            fun replaceUniform(
+                needle: String,
+                type: UniformType,
+                replacementName: String,
+                replacement: String = replacementName
+            ) {
+                if (needle in source) {
+                    replacements[needle] = replacement
+                    if (replacementName !in uniforms) {
+                        uniforms[replacementName] = type
+                        transformed.add("uniform ${type.glslName} $replacementName;")
+                    }
+                }
+            }
 
-            for (line in value.lines()) {
+            replaceUniform("gl_ModelViewMatrix", UniformType.Mat4, "ModelViewMat")
+            replaceUniform("gl_ProjectionMatrix", UniformType.Mat4, "ProjMat")
+
+            for (line in source.lines()) {
                 transformed.add(when {
                     line.startsWith("#version") -> continue
                     line.startsWith("varying ") -> (if (isFrag) "in " else "out ") + line.substringAfter("varying ")
@@ -227,6 +254,7 @@ internal class MinecraftShader(
                         } else uniforms[name] = UniformType.fromGlsl(typeName)
                         line
                     }
+
                     else -> replacements.entries.fold(line) { acc, (needle, replacement) -> acc.replace(needle, replacement) }
                 })
             }
@@ -234,40 +262,6 @@ internal class MinecraftShader(
             return transformed.joinToString("\n")
         }
 
-        fun replaceAttribute(
-            value: String,
-            replacements: MutableMap<String, String>,
-
-            newValue: MutableList<Pair<String, String>>,
-            needle: String,
-            type: String,
-            replacementName: String = "oc_${needle.substringAfter("_")}",
-            replacement: String = replacementName
-        ) {
-            if (needle in value) {
-                replacements[needle] = replacement
-                newValue.add(replacementName to "in $type $replacementName;")
-            }
-        }
-
-        fun replaceUniform(
-            value: String,
-            replacements: MutableMap<String, String>,
-            transformed: MutableList<String>,
-
-            needle: String,
-            type: UniformType,
-            replacementName: String = "oc_${needle.substringAfter("_")}",
-            replacement: String = replacementName
-        ) {
-            if (needle in value) {
-                replacements[needle] = replacement
-                if (replacementName !in uniforms) {
-                    uniforms[replacementName] = type
-                    transformed.add("uniform ${type.typeName} $replacementName;")
-                }
-            }
-        }
     }
 
     internal enum class UniformType(

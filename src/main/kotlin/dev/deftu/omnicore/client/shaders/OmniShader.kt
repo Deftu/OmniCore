@@ -175,13 +175,9 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun shaderSource(shader: Int, source: String) {
-            //#if MC >= 1.17
-            GlStateManager.glShaderSource(shader, listOf(source))
-            //#elseif MC >= 1.15.2
-            //$$ GlStateManager.shaderSource(shader, source)
-            //#else
-            //$$ OpenGlHelper.glShaderSource(shader, ByteBuffer.wrap(source.toByteArray()))
-            //#endif
+            if (OmniRenderEnv.isGl21Available()) {
+                GL20.glShaderSource(shader, source)
+            } else ARBShaderObjects.glShaderSourceARB(shader, source)
         }
 
         @JvmStatic

@@ -20,7 +20,7 @@ internal class GlShader(
     private var fragShader = OmniShader.createShader(GL20.GL_FRAGMENT_SHADER)
     private var samplers = mutableMapOf<String, DirectSamplerUniform>()
 
-    override val usable: Boolean = false
+    override var usable: Boolean = false
     var bound = false
         private set
 
@@ -50,6 +50,7 @@ internal class GlShader(
         prevTextureBindings.clear()
         OmniTextureManager.setActiveTexture(prevActiveTexture)
         prevBlendState?.activate()
+
         OmniShader.useProgram(GL11.GL_NONE)
         bound = false
     }
@@ -107,6 +108,10 @@ internal class GlShader(
         }
 
         OmniShader.linkProgram(program)
+        OmniShader.detachShader(program, vertShader)
+        OmniShader.detachShader(program, fragShader)
+        OmniShader.deleteShader(vertShader)
+        OmniShader.deleteShader(fragShader)
 
         if (OmniShader.getProgram(program, GL20.GL_LINK_STATUS) != GL11.GL_TRUE) {
             val log = OmniShader.getProgramInfoLog(program, Short.MAX_VALUE.toInt())
@@ -119,10 +124,7 @@ internal class GlShader(
             throw IllegalStateException("Shader failed to validate: $log")
         }
 
-        OmniShader.detachShader(program, vertShader)
-        OmniShader.detachShader(program, fragShader)
-        OmniShader.deleteShader(vertShader)
-        OmniShader.deleteShader(fragShader)
+        usable = true
     }
 }
 
