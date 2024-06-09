@@ -167,9 +167,9 @@ internal class DirectUniform(
         //#endif
 
         when (size) {
-            4 -> OmniShader.uniformMatrix2fv(location, false, matrix)
-            9 -> OmniShader.uniformMatrix3fv(location, false, matrix)
-            16 -> OmniShader.uniformMatrix4fv(location, false, matrix)
+            4 -> OmniShader.uniformMatrix2(location, false, matrix)
+            9 -> OmniShader.uniformMatrix3(location, false, matrix)
+            16 -> OmniShader.uniformMatrix4(location, false, matrix)
             else -> throw IllegalArgumentException("Invalid matrix size: $size")
         }
     }
