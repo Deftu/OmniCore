@@ -81,11 +81,6 @@ public object OmniDesktop {
     public fun edit(file: File): Boolean =
         editInternally(file) || openWithCommand(file.absolutePath)
 
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun trash(file: File): Boolean =
-        trashInternally(file) || openWithCommand(file.absolutePath)
-
     private fun browseInternally(uri: URI): Boolean {
         if (!Desktop.isDesktopSupported())
             return false
@@ -130,22 +125,6 @@ public object OmniDesktop {
             true
         } catch (e: Exception) {
             logger.error("Failed to edit file", e)
-            false
-        }
-    }
-
-    private fun trashInternally(file: File): Boolean {
-        if (!Desktop.isDesktopSupported())
-            return false
-
-        return try {
-            if (!Desktop.getDesktop().isSupported(Desktop.Action.MOVE_TO_TRASH))
-                return false
-
-            Desktop.getDesktop().moveToTrash(file)
-            true
-        } catch (e: Exception) {
-            logger.error("Failed to move file to trash", e)
             false
         }
     }
