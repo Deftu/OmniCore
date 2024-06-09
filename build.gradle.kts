@@ -7,7 +7,7 @@ plugins {
     id("dev.deftu.gradle.multiversion")
     id("dev.deftu.gradle.tools")
     id("dev.deftu.gradle.tools.resources")
-    id("dev.deftu.gradle.tools.blossom")
+    id("dev.deftu.gradle.tools.bloom")
     id("dev.deftu.gradle.tools.maven-publishing")
     id("dev.deftu.gradle.tools.minecraft.loom")
     id("dev.deftu.gradle.tools.minecraft.api")
@@ -25,10 +25,7 @@ toolkitMavenPublishing {
 }
 
 toolkitReleases {
-    if (modData.version.startsWith("0.")) {
-        versionType.set(VersionType.BETA)
-    }
-
+    detectVersionType.set(true)
     modrinth {
         projectId.set("MaDESStl")
     }
@@ -42,4 +39,8 @@ dependencies {
         modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.fabricApiVersion}")
         modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.fabricLanguageKotlinVersion}")
     }
+}
+
+tasks.jar {
+    destinationDirectory.set(rootProject.layout.buildDirectory.asFile.get().resolve("jars"))
 }

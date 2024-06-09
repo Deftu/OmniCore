@@ -1,10 +1,5 @@
 pluginManagement {
     repositories {
-        // Snapshots
-        maven("https://maven.deftu.dev/snapshots")
-        maven("https://s01.oss.sonatype.org/content/groups/public/")
-        mavenLocal()
-
         // Repositories
         maven("https://maven.deftu.dev/releases")
         maven("https://maven.fabricmc.net")
@@ -13,14 +8,19 @@ pluginManagement {
         maven("https://repo.essential.gg/repository/maven-public")
         maven("https://jitpack.io/")
 
+        // Snapshots
+        maven("https://maven.deftu.dev/snapshots")
+        maven("https://s01.oss.sonatype.org/content/groups/public/")
+        mavenLocal()
+
         // Default repositories
         gradlePluginPortal()
         mavenCentral()
     }
 
     plugins {
-        kotlin("jvm") version("1.9.10")
-        id("dev.deftu.gradle.multiversion-root") version("1.24.0")
+        kotlin("jvm") version("2.0.0")
+        id("dev.deftu.gradle.multiversion-root") version("1.28.0")
     }
 }
 
