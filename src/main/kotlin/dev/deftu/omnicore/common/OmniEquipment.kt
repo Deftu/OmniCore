@@ -73,7 +73,16 @@ public object OmniEquipment {
 
     @GameSide(Side.BOTH)
     public fun getStackEnchantments(stack: ItemStack): List<EnchantmentInfo> {
-        //#if MC >= 1.16.5
+        //#if MC >= 1.20.5
+        //$$ val component = EnchantmentHelper.getEnchantments(stack)
+        //$$ return component.enchantmentsMap.map { (enchantment, level) ->
+        //#if FORGE-LIKE
+        //$$     EnchantmentInfo(enchantment.value(), level)
+        //#else
+        //$$     EnchantmentInfo(enchantment.comp_349(), level)
+        //#endif
+        //$$ }
+        //#elseif MC >= 1.16.5
         return EnchantmentHelper.fromNbt(stack.enchantments).map { (enchantment, level) ->
             EnchantmentInfo(enchantment, level)
         }

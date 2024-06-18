@@ -2,8 +2,8 @@ package dev.deftu.omnicore.client.shaders
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
-//$$ import org.lwjgl.opengl.GL11
 //$$ import java.nio.ByteBuffer
+//$$ import java.nio.FloatBuffer
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
@@ -14,7 +14,6 @@ import dev.deftu.omnicore.client.render.OmniTessellator
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
-import java.nio.FloatBuffer
 
 @GameSide(Side.CLIENT)
 public interface OmniShader {
@@ -46,7 +45,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun createProgram(): Int {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             return GlStateManager.glCreateProgram()
             //#else
             //$$ return OpenGlHelper.glCreateProgram()
@@ -56,7 +55,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun linkProgram(program: Int) {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             GlStateManager.glLinkProgram(program)
             //#else
             //$$ OpenGlHelper.glLinkProgram(program)
@@ -66,7 +65,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getProgram(program: Int, pname: Int): Int {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             return GlStateManager.glGetProgrami(program, pname)
             //#else
             //$$ return OpenGlHelper.glGetProgrami(program, pname)
@@ -87,7 +86,7 @@ public interface OmniShader {
         @GameSide(Side.CLIENT)
         public fun getProgramInfoLog(program: Int, maxLength: Int): String {
             return if (OmniRenderEnv.isGl21Available()) {
-                //#if MC >= 1.17.1
+                //#if MC >= 1.16.5
                 GlStateManager.glGetProgramInfoLog(program, maxLength)
                 //#else
                 //$$ OpenGlHelper.glGetProgramInfoLog(program, maxLength)
@@ -110,7 +109,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun useProgram(program: Int) {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             GlStateManager._glUseProgram(program)
             //#else
             //$$ OpenGlHelper.glUseProgram(program)
@@ -120,7 +119,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun createShader(type: Int): Int {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             return GlStateManager.glCreateShader(type)
             //#else
             //$$ return OpenGlHelper.glCreateShader(type)
@@ -131,7 +130,7 @@ public interface OmniShader {
         @GameSide(Side.CLIENT)
         public fun deleteShader(shader: Int) {
             if (OmniRenderEnv.isGl21Available()) {
-                //#if MC >= 1.17.1
+                //#if MC >= 1.16.5
                 GlStateManager.glDeleteShader(shader)
                 //#else
                 //$$ GL20.glDeleteShader(shader)
@@ -154,7 +153,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun compileShader(shader: Int) {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             GlStateManager.glCompileShader(shader)
             //#else
             //$$ OpenGlHelper.glCompileShader(shader)
@@ -174,7 +173,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getShader(shader: Int, pname: Int): Int {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             return GlStateManager.glGetShaderi(shader, pname)
             //#else
             //$$ return OpenGlHelper.glGetShaderi(shader, pname)
@@ -184,7 +183,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getShaderInfoLog(shader: Int, maxLength: Int): String {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             return GlStateManager.glGetShaderInfoLog(shader, maxLength)
             //#else
             //$$ return OpenGlHelper.glGetShaderInfoLog(shader, maxLength)
@@ -194,7 +193,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun attachShader(program: Int, shader: Int) {
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             GlStateManager.glAttachShader(program, shader)
             //#else
             //$$ OpenGlHelper.glAttachShader(program, shader)

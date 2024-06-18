@@ -8,7 +8,7 @@ plugins {
     id("dev.deftu.gradle.tools")
     id("dev.deftu.gradle.tools.resources")
     id("dev.deftu.gradle.tools.bloom")
-    id("dev.deftu.gradle.tools.maven-publishing")
+    id("dev.deftu.gradle.tools.publishing.maven")
     id("dev.deftu.gradle.tools.minecraft.loom")
     id("dev.deftu.gradle.tools.minecraft.api")
     id("dev.deftu.gradle.tools.minecraft.releases")
@@ -16,13 +16,11 @@ plugins {
 
 kotlin.explicitApi()
 toolkitLoomApi.setupTestClient()
+toolkitMavenPublishing.forceLowercase.set(true)
 if (mcData.isForge && mcData.version >= 1_15_02) {
     toolkitLoomHelper.useKotlinForForge()
 }
 
-toolkitMavenPublishing {
-    artifactName.set(modData.name.lowercase())
-}
 
 toolkitReleases {
     detectVersionType.set(true)
@@ -33,11 +31,11 @@ toolkitReleases {
 
 dependencies {
     implementation(kotlin("reflect"))
-    modImplementation("dev.deftu:textile-${mcData.versionStr}-${mcData.loader.name}:0.1.0")
+    modImplementation("dev.deftu:textile-$mcData:0.3.1")
 
     if (mcData.isFabric) {
-        modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.fabricApiVersion}")
-        modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.fabricLanguageKotlinVersion}")
+        modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.dependencies.fabric.fabricApiVersion}")
+        modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
     }
 }
 

@@ -2,6 +2,15 @@
 
 package dev.deftu.omnicore.client.render
 
+//#if MC >= 1.21
+//$$ import net.minecraft.client.render.BuiltBuffer
+//$$ import net.minecraft.client.util.BufferAllocator
+//#endif
+
+//#if MC >= 1.20.5
+//$$ import org.joml.Vector3f
+//#endif
+
 //#if MC >= 1.17
 import net.minecraft.client.gl.ShaderProgram
 import dev.deftu.omnicore.client.OmniClient
@@ -43,7 +52,10 @@ import java.util.function.Supplier
 
 @GameSide(Side.CLIENT)
 public class OmniTessellator(
-    private val buffer: BufferBuilder
+    private var buffer: BufferBuilder?,
+    //#if MC >= 1.21
+    //$$ private var size: Int = 0
+    //#endif
 ) {
     public companion object {
 
@@ -54,7 +66,9 @@ public class OmniTessellator(
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getFromBuffer(): OmniTessellator =
-            //#if MC >= 1.12
+            //#if MC >= 1.20.1
+            //$$ OmniTessellator(null)
+            //#elseif MC >= 1.12
             OmniTessellator(getTessellator().buffer)
             //#else
             //$$ OmniTessellator(getTessellator().worldRenderer)
@@ -66,7 +80,12 @@ public class OmniTessellator(
 
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun getFromSize(size: Int): OmniTessellator = getWithBuffer(BufferBuilder(size))
+        public fun getFromSize(size: Int): OmniTessellator =
+            //#if MC >= 1.21
+            //$$ OmniTessellator(null, size)
+            //#else
+            getWithBuffer(BufferBuilder(size))
+            //#endif
 
         //#if MC >= 1.17
         @JvmStatic
@@ -80,12 +99,18 @@ public class OmniTessellator(
             value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR] = Supplier { GameRenderer.getPositionTexColorProgram() }
             value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT] = Supplier { GameRenderer.getParticleProgram() }
             value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT] = Supplier { GameRenderer.getPositionColorTexLightmapProgram() }
-            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR] = Supplier { GameRenderer.getPositionTexLightmapColorProgram() }
-            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL] = Supplier { GameRenderer.getPositionTexColorNormalProgram() }
-            value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE] = Supplier { GameRenderer.getPositionColorTexProgram() }
             value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT] = Supplier { GameRenderer.getPositionColorLightmapProgram() }
             value[net.minecraft.client.render.VertexFormats.LINES] = Supplier { GameRenderer.getRenderTypeLinesProgram() }
             value[net.minecraft.client.render.VertexFormats.BLIT_SCREEN] = Supplier { OmniClient.getInstance().gameRenderer.blitScreenProgram }
+
+            //#if MC < 1.20.5
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_LIGHT_COLOR] = Supplier { GameRenderer.getPositionTexLightmapColorProgram() }
+            value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_NORMAL] = Supplier { GameRenderer.getPositionTexColorNormalProgram() }
+            //#endif
+
+            //#if MC < 1.20.1
+            value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE] = Supplier { GameRenderer.getPositionColorTexProgram() }
+            //#endif
 
             value
         }
@@ -101,7 +126,15 @@ public class OmniTessellator(
     @GameSide(Side.CLIENT)
     public fun beginWithActiveShader(mode: DrawModes, format: VertexFormat): OmniTessellator = apply {
         currentVertexFormat = format
-        buffer.begin(mode.vanilla, format)
+        //#if MC >= 1.21
+        //$$ buffer = if (size == 0) {
+        //$$     getTessellator().begin(mode.vanilla, format)
+        //$$ } else {
+        //$$     BufferBuilder(BufferAllocator(size), mode.vanilla, format)
+        //$$ }
+        //#else
+        buffer!!.begin(mode.vanilla, format)
+        //#endif
     }
 
     @GameSide(Side.CLIENT)
@@ -133,9 +166,16 @@ public class OmniTessellator(
 
     @GameSide(Side.CLIENT)
     public fun draw() {
+        checkBuffer()
+
+        //#if MC >= 1.21
+        //$$ val builtBuffer = buffer!!.end()
+        //#endif
         //#if MC >= 1.16
         if (renderLayer != null) {
-            //#if MC >= 1.20
+            //#if MC >= 1.21
+            //$$ renderLayer!!.draw(builtBuffer)
+            //#elseif MC >= 1.20
             renderLayer!!.draw(buffer, RenderSystem.getVertexSorting())
             //#else
             //$$ renderLayer!!.draw(buffer, 0, 0, 0)
@@ -144,11 +184,29 @@ public class OmniTessellator(
         }
 
         //#endif
-        handleDraw()
+        handleDraw(
+            //#if MC >= 1.21
+            //$$ builtBuffer
+            //#endif
+        )
     }
 
-    private fun handleDraw() {
-        if (currentVertexFormat == null) drawBuffer()
+    private fun handleDraw(
+        //#if MC >= 1.21
+        //$$ builtBuffer: BuiltBuffer
+        //#endif
+    ) {
+        checkBuffer()
+
+        if (currentVertexFormat == null) {
+            drawBuffer(
+                //#if MC >= 1.21
+                //$$ builtBuffer
+                //#endif
+            )
+
+            return
+        }
 
         //#if MC < 1.17
         //$$ val wantEnabledStates = getDesiredTextureUnitState(currentVertexFormat!!)
@@ -168,7 +226,11 @@ public class OmniTessellator(
         //$$ }
         //#endif
 
-        drawBuffer()
+        drawBuffer(
+            //#if MC >= 1.21
+            //$$ builtBuffer
+            //#endif
+        )
 
         //#if MC < 1.17
         //$$ for (i in wasEnabledStates.indices) {
@@ -185,13 +247,21 @@ public class OmniTessellator(
         //#endif
     }
 
-    private fun drawBuffer() {
-        //#if MC >= 1.16
+    private fun drawBuffer(
+        //#if MC >= 1.21
+        //$$ builtBuffer: BuiltBuffer
+        //#endif
+    ) {
+        checkBuffer()
+
+        //#if MC >= 1.21
+        //$$ BufferRenderer.drawWithGlobalProgram(builtBuffer)
+        //#elseif MC >= 1.16
         if (buffer == getTessellator().buffer) {
             getTessellator().draw()
         } else {
             //#if MC >= 1.19
-            BufferRenderer.drawWithGlobalProgram(buffer.end())
+            BufferRenderer.drawWithGlobalProgram(buffer!!.end())
             //#else
             //$$ BufferRenderer.draw(buffer)
             //#endif
@@ -208,8 +278,10 @@ public class OmniTessellator(
         y: Float,
         z: Float
     ): OmniTessellator = apply {
+        checkBuffer()
+
         //#if MC >= 1.16
-        buffer.vertex(stack.peek().matrix, x, y, z)
+        buffer!!.vertex(stack.peek().matrix, x, y, z)
         //#else
         //$$ val vec = Vector4f(x, y, z, 1f)
         //#if MC >= 1.14
@@ -218,9 +290,9 @@ public class OmniTessellator(
         //$$ Matrix4f.transform(stack.peek().matrix, vec, vec)
         //#endif
         //#if MC >= 1.14
-        //$$ buffer.vertex(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+        //$$ buffer!!.vertex(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
         //#else
-        //$$ buffer.pos(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
+        //$$ buffer!!.pos(vec.x.toDouble(), vec.y.toDouble(), vec.z.toDouble())
         //#endif
         //#endif
     }
@@ -232,8 +304,13 @@ public class OmniTessellator(
         y: Float,
         z: Float
     ): OmniTessellator = apply {
-        //#if MC >= 1.15
-        buffer.normal(stack.peek().normal, x, y, z)
+        checkBuffer()
+
+        //#if MC >= 1.20.5
+        //$$ val normal = stack.peek().normal.transform(x, y, z, Vector3f())
+        //$$ buffer!!.normal(normal.x, normal.y, normal.z)
+        //#elseif MC >= 1.16.2
+        buffer!!.normal(stack.peek().normal, x, y, z)
         //#else
         //$$ val vec = org.lwjgl.util.vector.Vector3f(x, y, z)
         //#if MC >= 1.14
@@ -241,7 +318,7 @@ public class OmniTessellator(
         //#else
         //$$ Matrix3f.transform(stack.peek().normal, vec, vec)
         //#endif
-        //$$ buffer.normal(vec.x, vec.y, vec.z)
+        //$$ buffer!!.normal(vec.x, vec.y, vec.z)
         //#endif
     }
 
@@ -252,7 +329,9 @@ public class OmniTessellator(
         blue: Float,
         alpha: Float
     ): OmniTessellator = apply {
-        buffer.color(red, green, blue, alpha)
+        checkBuffer()
+
+        buffer!!.color(red, green, blue, alpha)
     }
 
     @GameSide(Side.CLIENT)
@@ -293,14 +372,12 @@ public class OmniTessellator(
         u: Float,
         v: Float
     ): OmniTessellator = apply {
-        //#if MC >= 1.15
-        buffer.texture(u, v)
+        checkBuffer()
+
+        //#if MC >= 1.16.5
+        buffer!!.texture(u, v)
         //#else
-        //#if MC >= 1.14
-        //$$ buffer.texture(u.toDouble(), v.toDouble())
-        //#else
-        //$$ buffer.tex(u.toDouble(), v.toDouble())
-        //#endif
+        //$$ buffer!!.tex(u.toDouble(), v.toDouble())
         //#endif
     }
 
@@ -309,14 +386,12 @@ public class OmniTessellator(
         u: Int,
         v: Int
     ): OmniTessellator = apply {
-        //#if MC >= 1.15
-        buffer.overlay(u, v)
+        checkBuffer()
+
+        //#if MC >= 1.16.5
+        buffer!!.overlay(u, v)
         //#else
-        //#if MC >= 1.14
-        //$$ buffer.texture(u.toShort(), v.toShort())
-        //#else
-        //$$ buffer.tex(u.toDouble(), v.toDouble())
-        //#endif
+        //$$ buffer!!.tex(u.toDouble(), v.toDouble())
         //#endif
     }
 
@@ -325,40 +400,52 @@ public class OmniTessellator(
         u: Int,
         v: Int
     ): OmniTessellator = apply {
-        //#if MC >= 1.14
-        buffer.light(u, v)
+        checkBuffer()
+
+        //#if MC >= 1.16.5
+        buffer!!.light(u, v)
         //#else
-        //$$ buffer.lightmap(u, v)
+        //$$ buffer!!.lightmap(u, v)
         //#endif
     }
 
     @GameSide(Side.CLIENT)
     public fun next(): OmniTessellator = apply {
-        //#if MC >= 1.14
-        buffer.next()
+        checkBuffer()
+
+        //#if MC < 1.21
+        //#if MC >= 1.16.5
+        buffer!!.next()
         //#else
-        //$$ buffer.endVertex()
+        //$$ buffer!!.endVertex()
+        //#endif
         //#endif
     }
 
-    private fun getDesiredTextureUnitState(vertexFormat: VertexFormat): BooleanArray {
-        var wantEnabled = BooleanArray(2)
-        for (element in vertexFormat.elements) {
-            //#if MC >= 1.14
-            if (element.type === VertexFormatElement.Type.UV) {
-                val index: Int = element.uvIndex
-            //#else
-            //$$ if (element.usage == VertexFormatElement.EnumUsage.UV) {
-            //$$     val index: Int = element.index
-            //#endif
-                if (wantEnabled.size <= index)
-                    wantEnabled = wantEnabled.copyOf(index + 1)
-                wantEnabled[index] = true
-            }
-        }
-
-        return wantEnabled
+    private fun checkBuffer() {
+        checkNotNull(buffer) { "BufferBuilder is null" }
     }
+
+    //#if MC < 1.17.1
+    //$$ private fun getDesiredTextureUnitState(vertexFormat: VertexFormat): BooleanArray {
+    //$$     var wantEnabled = BooleanArray(2)
+    //$$     for (element in vertexFormat.elements) {
+    //$$         //#if MC >= 1.16.5
+    //$$         if (element.type === VertexFormatElement.Type.UV) {
+    //$$             val index: Int = element.textureIndex
+    //$$         //#else
+    //$$         //$$ if (element.usage == VertexFormatElement.EnumUsage.UV) {
+    //$$         //$$     val index: Int = element.index
+    //$$         //#endif
+    //$$             if (wantEnabled.size <= index)
+    //$$                 wantEnabled = wantEnabled.copyOf(index + 1)
+    //$$             wantEnabled[index] = true
+    //$$         }
+    //$$     }
+    //$$
+    //$$     return wantEnabled
+    //$$ }
+    //#endif
 
     @GameSide(Side.CLIENT)
     public enum class VertexFormats(

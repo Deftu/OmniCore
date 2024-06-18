@@ -40,6 +40,13 @@ public enum class GuiScale {
             //#else
             //$$ OmniClient.getInstance().options.guiScale = value
             //#endif
+
+            //#if MC >= 1.15.2 && MC < 1.20.5
+            val client = OmniClient.getInstance()
+            val window = client.window
+            val scaleFactor = window.calculateScaleFactor(value, client.forcesUnicodeFont())
+            window.scaleFactor = scaleFactor.toDouble()
+            //#endif
         }
 
         @JvmStatic

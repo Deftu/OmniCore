@@ -1,6 +1,10 @@
 //#if MC >= 1.19.3
 package dev.deftu.omnicore.client.shaders
 
+//#if MC >= 1.20.5
+//$$ import net.minecraft.resource.ResourcePackInfo
+//#endif
+
 import net.minecraft.resource.ResourcePack
 import net.minecraft.resource.ResourceType
 import net.minecraft.resource.metadata.ResourceMetadataReader
@@ -35,5 +39,8 @@ internal object DummyResourcePack : ResourcePack {
     //$$ override fun <T : Any?> getMetadataSection(arg: MetadataSectionSerializer<T>) = throw UnsupportedOperationException()
     //#endif
     override fun getNamespaces(resourceType: ResourceType?) = throw UnsupportedOperationException()
+    //#if MC >= 1.20.5
+    //$$ override fun getInfo(): ResourcePackInfo = throw UnsupportedOperationException()
+    //#endif
 }
 //#endif

@@ -257,7 +257,9 @@ public class OmniMatrixStack private constructor(
     @GameSide(Side.CLIENT)
     public fun applyToGlobalState() {
         //#if MC >= 1.17
-        //#if MC >= 1.18
+        //#if MC >= 1.20.5
+        //$$ RenderSystem.getModelViewStack().mul(stack.last.matrix)
+        //#elseif MC >= 1.18
         RenderSystem.getModelViewStack().multiplyPositionMatrix(stack.last.matrix)
         //#else
         //$$ RenderSystem.getModelViewStack().method_34425(stack.last.matrix)
@@ -285,7 +287,9 @@ public class OmniMatrixStack private constructor(
 
     @GameSide(Side.CLIENT)
     public fun replaceGlobalState() {
-        //#if MC >= 1.17
+        //#if MC >= 1.20.5
+        //$$ RenderSystem.getModelViewStack().identity()
+        //#elseif MC >= 1.17
         RenderSystem.getModelViewStack().loadIdentity()
         //#else
         //$$ GL11.glLoadIdentity()
@@ -297,13 +301,21 @@ public class OmniMatrixStack private constructor(
     private inline fun <R> withGlobalStackPushed(block: () -> R) : R {
         //#if MC >= 1.17
         val stack = RenderSystem.getModelViewStack()
+        //#if MC >= 1.20.5
+        //$$ stack.pushMatrix()
+        //#else
         stack.push()
+        //#endif
         //#else
         //$$ GlStateManager.pushMatrix()
         //#endif
         return block().also {
             //#if MC >= 1.17
+            //#if MC >= 1.20.5
+            //$$ stack.popMatrix()
+            //#else
             stack.pop()
+            //#endif
             RenderSystem.applyModelViewMatrix()
             //#else
             //$$ GlStateManager.popMatrix()

@@ -3,16 +3,23 @@ package dev.deftu.omnicore.common
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
-//#else
+//#elseif FORGE
 //#if MC >= 1.15.2
-//$$ import net.minecraftforge.fml.ModList;
-//$$ import net.minecraftforge.fml.ModLoadingContext;
-//$$ import net.minecraftforge.fml.ModContainer;
-//$$ import java.util.stream.Collectors
+//$$ import net.minecraftforge.fml.ModList
+//$$ import net.minecraftforge.fml.ModLoadingContext
+//$$ import net.minecraftforge.fml.ModContainer
 //#else
-//$$ import net.minecraftforge.fml.common.Loader;
-//$$ import net.minecraftforge.fml.common.ModContainer;
+//$$ import net.minecraftforge.fml.common.Loader
+//$$ import net.minecraftforge.fml.common.ModContainer
 //#endif
+//#else
+//$$ import net.neoforged.fml.ModList
+//$$ import net.neoforged.fml.ModLoadingContext
+//$$ import net.neoforged.fml.ModContainer
+//#endif
+
+//#if FORGE-LIKE && MC >= 1.15.2
+//$$ import java.util.stream.Collectors
 //#endif
 
 import dev.deftu.omnicore.annotations.GameSide
@@ -29,7 +36,8 @@ public object OmniLoader {
     @GameSide(Side.BOTH)
     public enum class LoaderType {
         FABRIC,
-        FORGE
+        FORGE,
+        NEOFORGE
     }
 
     /**
@@ -75,8 +83,10 @@ public object OmniLoader {
     public fun getLoaderType(): LoaderType =
         //#if FABRIC
         LoaderType.FABRIC
-        //#else
+        //#elseif FORGE
         //$$ LoaderType.FORGE
+        //#else
+        //$$ LoaderType.NEOFORGE
         //#endif
 
     /**
@@ -92,6 +102,13 @@ public object OmniLoader {
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun isForge(): Boolean = getLoaderType() == LoaderType.FORGE
+
+    /**
+     * Checks if the current environment is running on NeoForge.
+     */
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun isNeoForge(): Boolean = getLoaderType() == LoaderType.NEOFORGE
 
     /**
      * Checks if a mod is loaded and has the specified version.

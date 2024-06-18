@@ -18,6 +18,7 @@ import dev.deftu.omnicore.client.render.OmniRenderState
 import net.minecraft.client.gl.GlUniform
 import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.client.render.VertexFormat
+import net.minecraft.client.render.VertexFormatElement
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.util.Identifier
 import org.apache.commons.codec.digest.DigestUtils
@@ -119,11 +120,29 @@ internal class MinecraftShader(
             }
 
             val vertexFormat = if (vertexFormat != null) {
-                VertexFormat(ImmutableMap.copyOf(transformer.attributes.withIndex().associate { (index, name) -> name to vertexFormat.vanilla.elements[index] }))
-            } else VertexFormat(ImmutableMap.copyOf(transformer.attributes.associateWith { VertexFormats.POSITION_ELEMENT }))
+                buildVertexFormat(transformer.attributes.withIndex().associate { (index, name) -> name to vertexFormat.vanilla.elements[index] })
+            } else {
+                buildVertexFormat(transformer.attributes.associateWith {
+                    //#if MC >= 1.21
+                    //$$ VertexFormatElement.POSITION
+                    //#else
+                    VertexFormats.POSITION_ELEMENT
+                    //#endif
+                })
+            }
 
             val shaderName = DigestUtils.sha1Hex(jsonString).lowercase()
             return MinecraftShader(ShaderProgram(factory, shaderName, vertexFormat), blend)
+        }
+
+        private fun buildVertexFormat(elements: Map<String, VertexFormatElement>): VertexFormat {
+            //#if MC >= 1.21
+            //$$ val builder = VertexFormat.builder()
+            //$$ elements.forEach { (name, element) -> builder.add(name, element) }
+            //$$ return builder.build()
+            //#else
+            return VertexFormat(ImmutableMap.copyOf(elements))
+            //#endif
         }
 
     }

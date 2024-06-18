@@ -108,6 +108,7 @@ public abstract class OmniScreen(
     private var scrolledX = -1.0
     private var scrolledY = -1.0
     //#if MC >= 1.20.2
+    private var isCancellingBackground = false
     private var scrolledDX = 0.0
     private var backgroundMouseX = 0
     private var backgroundMouseY = 0
@@ -136,9 +137,15 @@ public abstract class OmniScreen(
         tickDelta: Float
     ) {
         //#if MC >= 1.20
+        //#if MC >= 1.20.2
+        isCancellingBackground = true
+        //#endif
         withDrawContext(stack) { ctx ->
             super.render(ctx, mouseX, mouseY, tickDelta)
         }
+        //#if MC >= 1.20.2
+        isCancellingBackground = false
+        //#endif
         //#elseif MC >= 1.16
         //$$ super.render(stack.toVanillaStack(), mouseX, mouseY, tickDelta)
         //#elseif MC >= 1.15
@@ -415,6 +422,8 @@ public abstract class OmniScreen(
         backgroundMouseX = mouseX
         backgroundMouseY = mouseY
         backgroundDelta = delta
+        if (isCancellingBackground) return
+
         //#endif
         contexts.add(ctx)
         handleBackgroundRender(OmniMatrixStack(ctx.matrices))
