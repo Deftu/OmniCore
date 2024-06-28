@@ -19,6 +19,7 @@ import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.client.texture.NativeImageBackedTexture
+import net.minecraft.client.texture.ResourceTexture
 import net.minecraft.client.texture.TextureManager
 import net.minecraft.resource.ResourceManager
 import net.minecraft.util.Identifier
@@ -92,6 +93,18 @@ public class OmniTextureManager private constructor(
 
         @JvmStatic
         @GameSide(Side.CLIENT)
+        public fun bindTexture(index: Int, id: Int) {
+            //#if MC >= 1.17.1
+            OmniRenderState.setTexture(index, id)
+            //#else
+            //$$ configureTextureUnit(index) {
+            //$$     bindTexture(id)
+            //$$ }
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun removeTexture() {
             bindTexture(GL11.GL_NONE)
         }
@@ -145,6 +158,11 @@ public class OmniTextureManager private constructor(
         textureManager.bindTexture(path)
     }
 
+    @GameSide(Side.CLIENT)
+    public fun bindTexture(index: Int, path: Identifier): OmniTextureManager = apply {
+        bindTexture(index, getOrLoadId(path))
+    }
+
     //#if MC >= 1.14
     @GameSide(Side.CLIENT)
     public fun registerTexture(path: Identifier, texture: AbstractTexture): OmniTextureManager = apply {
@@ -177,6 +195,17 @@ public class OmniTextureManager private constructor(
     @GameSide(Side.CLIENT)
     public fun deleteTexture(id: Int): OmniTextureManager = apply {
         OmniTextureManager.deleteTexture(id)
+    }
+
+    private fun getOrLoadId(identifier: Identifier): Int {
+        val texture = textureManager.getTexture(identifier)
+        return if (texture != null) {
+            texture.glId
+        } else {
+            val newTexture = ResourceTexture(identifier)
+            textureManager.registerTexture(identifier, newTexture)
+            newTexture.glId
+        }
     }
 
 }
