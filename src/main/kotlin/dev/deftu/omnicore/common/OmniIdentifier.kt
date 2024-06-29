@@ -13,9 +13,19 @@ public object OmniIdentifier {
     public fun create(namespace: String, path: String): Identifier {
         //#if MC >= 1.19.2
         return Identifier.of(namespace, path) ?: throw IllegalArgumentException("Invalid identifier")
-        //#if MC >= 1.16.5
-        //$$ return Identifier(namespace, path)
         //#else
+        //$$ return Identifier(namespace, path)
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun create(path: String): Identifier {
+        //#if MC >= 1.19.2
+        return Identifier.tryParse(path) ?: throw IllegalArgumentException("Invalid identifier")
+        //#else
+        //$$ return Identifier(path)
+        //#endif
     }
 
     @JvmStatic
@@ -28,16 +38,6 @@ public object OmniIdentifier {
     @GameSide(Side.CLIENT)
     public fun toShortTranslationKey(identifier: Identifier): String {
         return if (identifier.namespace.equals(MINECRAFT_NAMESPACE)) identifier.path else toTranslationKey(identifier)
-    }
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun create(path: String): Identifier {
-        //#if MC >= 1.19.2
-        return Identifier.tryParse(path) ?: throw IllegalArgumentException("Invalid identifier")
-        //#if MC >= 1.16.5
-        //$$ return Identifier(namespace, path)
-        //#else
     }
 
     @JvmStatic
