@@ -1,5 +1,6 @@
 package dev.deftu.omnicore
 
+
 //#if MC >= 1.16.5
 import net.minecraft.SharedConstants
 //#else
@@ -11,6 +12,9 @@ import dev.deftu.omnicore.annotations.Side
 
 @GameSide(Side.BOTH)
 public object OmniCore {
+
+    @GameSide(Side.BOTH)
+    public const val ID: String = "@MOD_ID@"
 
     /**
      * Represents OmniCore's current version.

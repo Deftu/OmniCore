@@ -9,7 +9,7 @@ package dev.deftu.omnicore.annotations
  * @author Deftu
  */
 @MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.PROPERTY,

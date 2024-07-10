@@ -9,7 +9,7 @@ import dev.deftu.omnicore.common.OmniLoader
  * @author Deftu
  */
 @MustBeDocumented
-@Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.SOURCE)
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.PROPERTY,
@@ -19,4 +19,4 @@ import dev.deftu.omnicore.common.OmniLoader
     AnnotationTarget.PROPERTY_SETTER,
     AnnotationTarget.FILE
 )
-public annotation class IntendedLoader(val loader: OmniLoader.LoaderType)
+public annotation class IntendedLoader(vararg val loaders: OmniLoader.LoaderType)

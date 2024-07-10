@@ -4,9 +4,9 @@ import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.exceptions.UnavailableClientPlayerException
-import dev.deftu.textile.Text
-import dev.deftu.textile.impl.SimpleText
-import dev.deftu.textile.toVanilla
+import dev.deftu.textile.SimpleTextHolder
+import dev.deftu.textile.TextHolder
+import dev.deftu.textile.minecraft.toVanilla
 import kotlin.jvm.Throws
 
 @Incubating
@@ -17,7 +17,7 @@ public object OmniChat {
     @JvmStatic
     @GameSide(Side.CLIENT)
     @Throws(UnavailableClientPlayerException::class)
-    public fun showChatMessage(text: Text) {
+    public fun showChatMessage(text: TextHolder) {
         val player = OmniClient.requirePlayer()
         player
             //#if MC >= 1.19.2
@@ -36,7 +36,7 @@ public object OmniChat {
     @GameSide(Side.CLIENT)
     @Throws(UnavailableClientPlayerException::class)
     public fun showChatMessage(text: String) {
-        showChatMessage(SimpleText(text))
+        showChatMessage(SimpleTextHolder(text))
     }
 
 }

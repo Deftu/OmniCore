@@ -20,16 +20,16 @@ import net.minecraft.client.gui.screen.Screen
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniMatrixStack
-import dev.deftu.textile.Text
-import dev.deftu.textile.impl.TranslatableText as TextileTranslatableText
-import dev.deftu.textile.toVanilla
+import dev.deftu.textile.TextHolder
+import dev.deftu.textile.minecraft.TranslatableTextHolder
+import dev.deftu.textile.minecraft.toVanilla
 
 @GameSide(Side.CLIENT)
 public abstract class OmniScreen(
     public val restorePreviousScreen: Boolean = true,
-    public val screenTitle: Text? = null
+    public val screenTitle: TextHolder? = null
 //#if MC >= 1.15
-) : Screen(screenTitle?.toVanilla() ?: TextileTranslatableText("").toVanilla()) {
+) : Screen(screenTitle?.toVanilla() ?: TranslatableTextHolder("").toVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
@@ -92,12 +92,12 @@ public abstract class OmniScreen(
     public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
-    ) : this(restorePreviousScreen, TextileTranslatableText(titleKey ?: ""))
+    ) : this(restorePreviousScreen, TranslatableTextHolder(titleKey ?: ""))
 
     @JvmOverloads
     public constructor(
         restorePreviousScreen: Boolean = true
-    ) : this(restorePreviousScreen, null as Text?)
+    ) : this(restorePreviousScreen, null as TextHolder?)
 
     private val previousScreen = if (restorePreviousScreen) getCurrentScreen() else null
 

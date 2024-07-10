@@ -172,7 +172,7 @@ public object OmniLoader {
      */
     @JvmStatic
     @GameSide(Side.BOTH)
-    @IntendedLoader(LoaderType.FORGE)
+    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
     public fun hasActiveMod(): Boolean {
         //#if FABRIC
         return false
@@ -188,11 +188,11 @@ public object OmniLoader {
     /**
      * Gets the most basic info of the active mod.
      *
-     * This method is only available on Forge, and will always return [ModInfo.DUMMY]object on Fabric.
+     * This method is only available on Forge, and will always return [ModInfo.DUMMY] object on Fabric.
      */
     @JvmStatic
     @GameSide(Side.BOTH)
-    @IntendedLoader(LoaderType.FORGE)
+    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
     public fun getActiveMod(): ModInfo {
         //#if FABRIC
         return ModInfo.DUMMY
