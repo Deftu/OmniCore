@@ -10,11 +10,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.hud.ChatHud
 import net.minecraft.client.gui.hud.InGameHud
-import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.network.ServerInfo
-import net.minecraft.client.option.GameOptions
 import net.minecraft.client.sound.SoundManager
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.server.integrated.IntegratedServer

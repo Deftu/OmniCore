@@ -14,6 +14,7 @@ com.mojang.blaze3d.platform.GlStateManager _popMatrix() popMatrix()
 com.mojang.blaze3d.platform.GlStateManager _bindTexture() bindTexture()
 com.mojang.blaze3d.platform.GlStateManager _deleteTexture() deleteTexture()
 com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
+com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f

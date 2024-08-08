@@ -52,7 +52,17 @@ public object OmniRenderEnv {
         STACK_OVERFLOW(GL11.GL_STACK_OVERFLOW),
         STACK_UNDERFLOW(GL11.GL_STACK_UNDERFLOW),
         OUT_OF_MEMORY(GL11.GL_OUT_OF_MEMORY),
-        INVALID_FRAMEBUFFER_OPERATION(GL30.GL_INVALID_FRAMEBUFFER_OPERATION)
+        INVALID_FRAMEBUFFER_OPERATION(GL30.GL_INVALID_FRAMEBUFFER_OPERATION);
+
+        public val isPresent: Boolean
+            get() = this != NO_ERROR
+
+        public fun ifPresent(block: (GlError) -> Unit) {
+            if (isPresent && getError() == this) {
+                block(this)
+            }
+        }
+
     }
 
 }

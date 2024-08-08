@@ -13,7 +13,7 @@
     },
     "entrypoints": {
         "client": [
-            "testmod.TestMod"
+            "com.test.TestMod"
         ]
     }
 }

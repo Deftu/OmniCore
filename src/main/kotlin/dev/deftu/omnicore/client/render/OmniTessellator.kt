@@ -66,7 +66,7 @@ public class OmniTessellator(
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getFromBuffer(): OmniTessellator =
-            //#if MC >= 1.20.1
+            //#if MC >= 1.21
             //$$ OmniTessellator(null)
             //#elseif MC >= 1.12
             OmniTessellator(getTessellator().buffer)
@@ -256,11 +256,11 @@ public class OmniTessellator(
 
         //#if MC >= 1.21
         //$$ BufferRenderer.drawWithGlobalProgram(builtBuffer)
-        //#elseif MC >= 1.16
+        //#elseif MC >= 1.16.5
         if (buffer == getTessellator().buffer) {
             getTessellator().draw()
         } else {
-            //#if MC >= 1.19
+            //#if MC >= 1.19.2
             BufferRenderer.drawWithGlobalProgram(buffer!!.end())
             //#else
             //$$ BufferRenderer.draw(buffer)
@@ -341,10 +341,10 @@ public class OmniTessellator(
         blue: Int,
         alpha: Int
     ): OmniTessellator = color(
-        red / 255.0f,
-        green / 255.0f,
-        blue / 255.0f,
-        alpha / 255.0f
+        red.toFloat(),
+        green.toFloat(),
+        blue.toFloat(),
+        alpha.toFloat()
     )
 
     @GameSide(Side.CLIENT)
@@ -361,10 +361,10 @@ public class OmniTessellator(
     public fun color(
         color: Color
     ): OmniTessellator = color(
-        color.red / 255.0f,
-        color.green / 255.0f,
-        color.blue / 255.0f,
-        color.alpha / 255.0f
+        color.red / 255f,
+        color.green / 255f,
+        color.blue / 255f,
+        color.alpha / 255f
     )
 
     @GameSide(Side.CLIENT)

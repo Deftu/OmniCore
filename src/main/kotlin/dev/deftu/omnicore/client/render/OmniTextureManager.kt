@@ -111,6 +111,12 @@ public class OmniTextureManager private constructor(
 
         @JvmStatic
         @GameSide(Side.CLIENT)
+        public fun removeTexture(index: Int) {
+            bindTexture(index, GL11.GL_NONE)
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
         public fun deleteTexture(id: Int) {
             //#if MC >= 1.17
             GlStateManager._deleteTexture(id)

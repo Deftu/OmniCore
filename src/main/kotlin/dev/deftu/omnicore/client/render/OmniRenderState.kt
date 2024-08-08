@@ -1,12 +1,9 @@
 package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.17.1
-import net.minecraft.client.gl.ShaderProgram
-import java.util.function.Supplier
 //#endif
 
 //#if MC >= 1.16.5
-import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 //#if MC <= 1.16.5
@@ -16,10 +13,13 @@ import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
+import java.util.function.Supplier
 
 @GameSide(Side.CLIENT)
 public object OmniRenderState {
@@ -127,6 +127,18 @@ public object OmniRenderState {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
+    public fun setClearDepth(depth: Double) {
+        GlStateManager._clearDepth(depth)
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun setClearStencil(stencil: Int) {
+        GL11.glClearStencil(stencil)
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun clear(mask: Int) {
         //#if MC >= 1.17.1
         RenderSystem.clear(mask, false)
@@ -226,22 +238,46 @@ public object OmniRenderState {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun enableBlend() {
-        //#if MC >= 1.17.1
-        RenderSystem.enableBlend()
+    public fun enableAlpha() {
+        //#if MC < 1.17.1
+        //#if MC >= 1.16.5
+        //$$ RenderSystem.enableAlphaTest();
         //#else
-        //$$ GlStateManager.enableBlend()
+        //$$ GlStateManager.enableAlpha()
+        //#endif
         //#endif
     }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun disableBlend() {
-        //#if MC >= 1.17.1
-        RenderSystem.disableBlend()
+    public fun disableAlpha() {
+        //#if MC < 1.17
+        //#if MC>=1.16.5
+        //$$ RenderSystem.disableAlphaTest();
         //#else
-        //$$ GlStateManager.disableBlend()
+        //$$ GlStateManager.disableAlpha()
         //#endif
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun toggleAlpha(enable: Boolean) {
+        if (enable) {
+            enableAlpha()
+        } else disableAlpha()
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun enableBlend() {
+        GlStateManager._enableBlend()
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun disableBlend() {
+        GlStateManager._disableBlend()
     }
 
     @JvmStatic
@@ -273,8 +309,6 @@ public object OmniRenderState {
     public fun setBlendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
         //#if MC >= 1.17.1
         RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
-        //#elseif MC >= 1.16.5
-        //$$ GlStateManager.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#else
         //$$ GlStateManager.tryBlendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#endif
@@ -289,17 +323,13 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setDefaultBlendFunc() {
-        //#if MC >= 1.17.1
-        RenderSystem.defaultBlendFunc()
-        //#else
-        //$$ setBlendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
-        //#endif
+        setBlendFuncSeparate(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
     }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setBlendEquation(equation: Int) {
-        //#if MC >= 1.17.1
+        //#if MC >= 1.16.5
         RenderSystem.blendEquation(equation)
         //#else
         //$$ GL14.glBlendEquation(equation)
