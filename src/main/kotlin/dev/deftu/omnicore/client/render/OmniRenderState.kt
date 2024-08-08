@@ -1,9 +1,11 @@
 package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.17.1
+import net.minecraft.client.gl.ShaderProgram
 //#endif
 
 //#if MC >= 1.16.5
+import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 //#if MC <= 1.16.5
@@ -13,10 +15,8 @@ package dev.deftu.omnicore.client.render
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
-import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-import net.minecraft.client.gl.ShaderProgram
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
 import java.util.function.Supplier
