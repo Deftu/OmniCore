@@ -2,6 +2,8 @@
 
 Your new favourite Minecraft multi-versioning utility library.
 
+[![wakatime](https://wakatime.com/badge/user/25be8ed5-7461-4fcf-93f7-0d88a7692cca/project/018ee2bc-f359-4238-9e9b-93792be967c6.svg)](https://wakatime.com/badge/user/25be8ed5-7461-4fcf-93f7-0d88a7692cca/project/018ee2bc-f359-4238-9e9b-93792be967c6)
+
 ---
 
 [![Discord Badge](https://raw.githubusercontent.com/intergrav/devins-badges/v2/assets/cozy/social/discord-singular_64h.png)](https://s.deftu.dev/discord)
