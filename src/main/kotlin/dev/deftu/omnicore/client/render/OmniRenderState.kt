@@ -28,7 +28,11 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setShader(supplier: Supplier<ShaderProgram?>) {
+        //#if MC >= 1.21.4
+        //$$ supplier.get()?.let(RenderSystem::setShader)
+        //#else
         RenderSystem.setShader(supplier)
+        //#endif
     }
 
     @JvmStatic
@@ -140,7 +144,9 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun clear(mask: Int) {
-        //#if MC >= 1.17.1
+        //#if MC >= 1.21.4
+        //$$ RenderSystem.clear(mask)
+        //#elseif MC >= 1.17.1
         RenderSystem.clear(mask, false)
         //#elseif MC >= 1.16.5
         //$$ GlStateManager.clear(mask, false)

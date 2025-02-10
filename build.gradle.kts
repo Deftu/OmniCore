@@ -32,12 +32,19 @@ toolkitReleases {
 dependencies {
     implementation(kotlin("reflect"))
 
-    val textileVersion = "0.5.1"
+    val textileVersion = "0.7.0"
     api("dev.deftu:textile:$textileVersion")
     modImplementation("dev.deftu:textile-$mcData:$textileVersion")
 
     if (mcData.isFabric) {
-        modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.dependencies.fabric.fabricApiVersion}")
         modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
+
+        if (mcData.isLegacyFabric) {
+            // 1.8.9 - 1.13
+            modImplementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-api:${mcData.dependencies.legacyFabric.legacyFabricApiVersion}")
+        } else {
+            // 1.16.5+
+            modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.dependencies.fabric.fabricApiVersion}")
+        }
     }
 }

@@ -2,6 +2,11 @@
 
 package dev.deftu.omnicore.client.render
 
+//#if MC >= 1.21.4
+//$$ import net.minecraft.client.gl.ShaderProgramKeys
+//$$ import net.minecraft.client.gl.ShaderProgramKey
+//#endif
+
 //#if MC >= 1.21
 //$$ import net.minecraft.client.render.BuiltBuffer
 //$$ import net.minecraft.client.util.BufferAllocator
@@ -68,10 +73,8 @@ public class OmniTessellator(
         public fun getFromBuffer(): OmniTessellator =
             //#if MC >= 1.21
             //$$ OmniTessellator(null)
-            //#elseif MC >= 1.12
-            OmniTessellator(getTessellator().buffer)
             //#else
-            //$$ OmniTessellator(getTessellator().worldRenderer)
+            OmniTessellator(getTessellator().buffer)
             //#endif
 
         @JvmStatic
@@ -93,6 +96,17 @@ public class OmniTessellator(
         public val defaultShaders: IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>> by lazy {
             val value = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
 
+            //#if MC >= 1.21.4
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION) }
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION_COLOR] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_COLOR) }
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_TEX) }
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_TEX_COLOR) }
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE_COLOR_LIGHT] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_COLOR_TEX_LIGHTMAP) }
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE_LIGHT] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_COLOR_TEX_LIGHTMAP) }
+            //$$ value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_LIGHT] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_COLOR_LIGHTMAP) }
+            //$$ value[net.minecraft.client.render.VertexFormats.LINES] = Supplier { getProgramFromKey(ShaderProgramKeys.RENDERTYPE_LINES) }
+            //$$ value[net.minecraft.client.render.VertexFormats.BLIT_SCREEN] = Supplier { getProgramFromKey(ShaderProgramKeys.BLIT_SCREEN) }
+            //#else
             value[net.minecraft.client.render.VertexFormats.POSITION] = Supplier { GameRenderer.getPositionProgram() }
             value[net.minecraft.client.render.VertexFormats.POSITION_COLOR] = Supplier { GameRenderer.getPositionColorProgram() }
             value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE] = Supplier { GameRenderer.getPositionTexProgram() }
@@ -111,9 +125,16 @@ public class OmniTessellator(
             //#if MC < 1.20.1
             value[net.minecraft.client.render.VertexFormats.POSITION_COLOR_TEXTURE] = Supplier { GameRenderer.getPositionColorTexProgram() }
             //#endif
+            //#endif
 
             value
         }
+
+        //#if MC >= 1.21.4
+        //$$ private fun getProgramFromKey(key: ShaderProgramKey): ShaderProgram? {
+        //$$     return OmniClient.getInstance().shaderLoader.getOrCreateProgram(key)
+        //$$ }
+        //#endif
         //#endif
 
     }

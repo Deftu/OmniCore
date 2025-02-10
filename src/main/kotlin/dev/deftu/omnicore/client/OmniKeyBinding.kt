@@ -5,7 +5,11 @@ import net.minecraft.client.util.InputUtil
 //#endif
 
 //#if FABRIC
+//#if MC >= 1.16.5
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+//#else
+//$$ import net.legacyfabric.fabric.api.client.keybinding.v1.KeyBindingHelper
+//#endif
 //#elseif FORGE && MC >= 1.19.2
 //$$ import net.minecraftforge.client.event.RegisterKeyMappingsEvent
 //#elseif NEOFORGE && MC >= 1.19.2

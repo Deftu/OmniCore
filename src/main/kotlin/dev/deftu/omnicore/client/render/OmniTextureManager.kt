@@ -2,6 +2,10 @@
 
 package dev.deftu.omnicore.client.render
 
+//#if MC >= 1.21.4
+//$$ import dev.deftu.omnicore.common.OmniIdentifier
+//#endif
+
 //#if MC >= 1.15
 import net.minecraft.client.texture.NativeImage
 //#if FORGE
@@ -9,7 +13,11 @@ import net.minecraft.client.texture.NativeImage
 //#else
 //#endif
 //#else
+//#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
+//#else
+//$$ import net.minecraft.client.texture.*
+//#endif
 //#endif
 
 import com.mojang.blaze3d.platform.GlStateManager
@@ -161,7 +169,12 @@ public class OmniTextureManager private constructor(
 
     @GameSide(Side.CLIENT)
     public fun bindTexture(path: Identifier): OmniTextureManager = apply {
+        //#if MC >= 1.21.4
+        //$$ val texture = textureManager.getTexture(path) ?: return@apply
+        //$$ texture.bindTexture()
+        //#else
         textureManager.bindTexture(path)
+        //#endif
     }
 
     @GameSide(Side.CLIENT)
@@ -190,7 +203,11 @@ public class OmniTextureManager private constructor(
 
     @GameSide(Side.CLIENT)
     public fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture): OmniTextureManager = apply {
+        //#if MC >= 1.21.4
+        //$$ textureManager.registerTexture(OmniIdentifier.create(path), texture)
+        //#else
         textureManager.registerDynamicTexture(path, texture)
+        //#endif
     }
 
     @GameSide(Side.CLIENT)
@@ -255,8 +272,10 @@ public class ReleasedDynamicTexture(
     @GameSide(Side.CLIENT)
     public var uploaded: Boolean = false
 
+    //#if MC <= 1.21.1
     override fun load(resourceManager: ResourceManager?) {
     }
+    //#endif
 
     private fun allocGlId() = super.getGlId()
 

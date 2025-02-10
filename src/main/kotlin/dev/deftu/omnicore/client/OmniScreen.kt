@@ -89,6 +89,12 @@ public abstract class OmniScreen(
         }
     }
 
+    public enum class KeyPressTrigger {
+        KEY_CODE_EVENT,
+        CHAR_TYPE_EVENT,
+        AMBIGUOUS
+    }
+
     public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
@@ -159,23 +165,27 @@ public abstract class OmniScreen(
     public open fun handleKeyPress(
         code: Int,
         char: Char,
-        modifiers: OmniKeyboard.KeyboardModifiers
-    ) {
+        modifiers: OmniKeyboard.KeyboardModifiers,
+        trigger: KeyPressTrigger
+    ): Boolean {
         //#if MC >= 1.15
-        if (code != 0) {
-            super.keyPressed(code, 0, modifiers.toInt())
+        if (trigger == KeyPressTrigger.KEY_CODE_EVENT) {
+            return super.keyPressed(code, 0, modifiers.toInt())
         }
 
-        if (char != 0.toChar()) {
-            super.charTyped(char, modifiers.toInt())
+        if (trigger == KeyPressTrigger.CHAR_TYPE_EVENT) {
+            return super.charTyped(char, modifiers.toInt())
         }
         //#else
         //$$ try {
         //$$     super.keyTyped(char, code)
+        //$$     return true // Default to true
         //$$ } catch (e: IOException) {
         //$$     e.printStackTrace()
         //$$ }
         //#endif
+
+        return false
     }
 
     @GameSide(Side.CLIENT)
@@ -183,12 +193,14 @@ public abstract class OmniScreen(
         code: Int,
         char: Char,
         modifiers: Int
-    ) {
+    ): Boolean {
         //#if MC >= 1.15
         if (code != 0) {
-            super.keyReleased(code, 0, modifiers)
+            return super.keyReleased(code, 0, modifiers)
         }
         //#endif
+
+        return false
     }
 
     @GameSide(Side.CLIENT)
@@ -196,15 +208,20 @@ public abstract class OmniScreen(
         x: Double,
         y: Double,
         button: Int
-    ) {
+    ): Boolean {
         //#if MC >= 1.15
-        if (button == 1) lastClick = OmniClient.getTimeSinceStart()
-        super.mouseClicked(x, y, button)
+        if (button == 1) {
+            lastClick = OmniClient.getTimeSinceStart()
+        }
+
+        return super.mouseClicked(x, y, button)
         //#else
         //$$ try {
         //$$     super.mouseClicked(x.toInt(), y.toInt(), button)
+        //$$     return true // Default to true
         //$$ } catch (e: IOException) {
         //$$     e.printStackTrace()
+        //$$     return false
         //$$ }
         //#endif
     }
@@ -214,11 +231,12 @@ public abstract class OmniScreen(
         x: Double,
         y: Double,
         state: Int
-    ) {
+    ): Boolean {
         //#if MC >= 1.15
-        super.mouseReleased(x, y, state)
+        return super.mouseReleased(x, y, state)
         //#else
         //$$ super.mouseReleased(x.toInt(), y.toInt(), state)
+        //$$ return true // Default to true
         //#endif
     }
 
@@ -228,20 +246,21 @@ public abstract class OmniScreen(
         y: Double,
         button: Int,
         clickTime: Long
-    ) {
+    ): Boolean {
         //#if MC >= 1.15
-        super.mouseDragged(x, y, button, dragDx, dragDy)
+        return super.mouseDragged(x, y, button, dragDx, dragDy)
         //#else
         //$$ super.mouseClickMove(x.toInt(), y.toInt(), button, clickTime)
+        //$$ return true // Default to true
         //#endif
     }
 
     @GameSide(Side.CLIENT)
     public open fun handleMouseScrolled(
         delta: Double
-    ) {
+    ): Boolean {
         //#if MC >= 1.15
-        super.mouseScrolled(
+        return super.mouseScrolled(
             scrolledX,
             scrolledY,
             //#if MC >= 1.20.2
@@ -249,6 +268,8 @@ public abstract class OmniScreen(
             //#endif
             delta
         )
+        //#else
+        //$$ return true // Default to true
         //#endif
     }
 
@@ -349,12 +370,12 @@ public abstract class OmniScreen(
     //#endif
 
     final override fun keyPressed(code: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyPress(code, 0.toChar(), modifiers.toKeyboardModifiers())
+        handleKeyPress(code, 0.toChar(), modifiers.toKeyboardModifiers(), KeyPressTrigger.KEY_CODE_EVENT)
         return false
     }
 
     final override fun charTyped(char: Char, modifiers: Int): Boolean {
-        handleKeyPress(0, char, modifiers.toKeyboardModifiers())
+        handleKeyPress(0, char, modifiers.toKeyboardModifiers(), KeyPressTrigger.CHAR_TYPE_EVENT)
         return false
     }
 
@@ -449,7 +470,7 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
-    //$$     handleKeyPress(keyCode, typedChar, OmniKeyboard.getModifiers())
+    //$$     handleKeyPress(keyCode, typedChar, OmniKeyboard.getModifiers(), KeyPressTrigger.AMBIGUOUS)
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, mouseBtn: Int) {

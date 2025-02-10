@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.shaders
 
-//#if MC >= 1.17
+//#if MC >= 1.17 && MC <= 1.21.1
 import net.minecraft.client.gl.GlBlendState
 //#endif
 
@@ -64,7 +64,7 @@ public data class BlendState(
     @GameSide(Side.CLIENT)
     public val separateDst: Boolean = dstRgb != dstAlpha
 
-    //#if MC >= 1.17
+    //#if MC >= 1.17 && MC <= 1.21.1
     @GameSide(Side.CLIENT)
     private inner class VanillaBlendState : GlBlendState {
         constructor() : super()

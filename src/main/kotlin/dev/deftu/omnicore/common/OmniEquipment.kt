@@ -45,7 +45,7 @@ public object OmniEquipment {
             //#if MC >= 1.12.2
             return if (type == EquipmentType.MAIN_HAND) entity.mainHandStack else entity.offHandStack
             //#else
-            //$$ return entity.heldItem
+            //$$ return entity.stackInHand
             //#endif
         }
 
@@ -67,7 +67,7 @@ public object OmniEquipment {
         //#if MC >= 1.12.2
         return entity.getEquippedStack(vanillaValue)
         //#else
-        //$$ return entity.getCurrentArmor(vanillaValue)
+        //$$ return entity.getArmorSlot(vanillaValue)
         //#endif
     }
 
@@ -91,9 +91,9 @@ public object OmniEquipment {
         //$$     EnchantmentInfo(enchantment, level)
         //$$ }
         //#else
-        //$$ val enchantments = EnchantmentHelper.getEnchantments(stack)
+        //$$ val enchantments = EnchantmentHelper.get(stack)
         //$$ return enchantments.map { (id, level) ->
-        //$$     EnchantmentInfo(Enchantment.getEnchantmentById(id), level)
+        //$$     EnchantmentInfo(Enchantment.byRawId(id), level)
         //$$ }
         //#endif
     }
@@ -103,7 +103,7 @@ public object OmniEquipment {
         //#if MC >= 1.12.2
         return stack.count
         //#else
-        //$$ return stack.stackSize
+        //$$ return stack.count
         //#endif
     }
 
@@ -112,8 +112,25 @@ public object OmniEquipment {
         //#if MC >= 1.12.2
         return stack.isEmpty
         //#else
-        //$$ return stack.stackSize == 0
+        //$$ return stack.count == 0
         //#endif
     }
 
 }
+
+@GameSide(Side.BOTH)
+public fun LivingEntity.getEquipment(type: OmniEquipment.EquipmentType): ItemStack {
+    return OmniEquipment.getEquipment(this, type)
+}
+
+@GameSide(Side.BOTH)
+public val ItemStack.enchantmentInfo: List<OmniEquipment.EnchantmentInfo>
+    get() =  OmniEquipment.getStackEnchantments(this)
+
+@GameSide(Side.BOTH)
+public val ItemStack.stackAmount: Int
+    get() =  OmniEquipment.getStackAmount(this)
+
+@GameSide(Side.BOTH)
+public val ItemStack.isActuallyEmpty: Boolean
+    get() = OmniEquipment.isStackEmpty(this)

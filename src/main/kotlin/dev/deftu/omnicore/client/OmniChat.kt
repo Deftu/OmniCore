@@ -20,14 +20,14 @@ public object OmniChat {
     public fun showChatMessage(text: TextHolder) {
         val player = OmniClient.requirePlayer()
         player
-            //#if MC >= 1.19.2
+            //#if MC >= 1.21.4
+            //$$ .sendMessage(text.toVanilla(), false)
+            //#elseif MC >= 1.19.2
             .sendMessage(text.toVanilla())
             //#elseif MC >= 1.16.5
             //$$ .sendMessage(text.toVanilla(), false)
-            //#elseif MC >= 1.12.2
-            //$$ .sendMessage(text.toVanilla())
             //#else
-            //$$ .addChatMessage(text.toVanilla())
+            //$$ .sendMessage(text.toVanilla())
             //#endif
     }
 

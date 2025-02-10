@@ -29,11 +29,10 @@ public object OmniMouse {
 
     @JvmField
     @GameSide(Side.CLIENT)
-
     public val BACK: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_4 }
+
     @JvmField
     @GameSide(Side.CLIENT)
-
     public val FORWARD: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_5 }
 
     @JvmField
@@ -47,7 +46,6 @@ public object OmniMouse {
     @JvmField
     @GameSide(Side.CLIENT)
     public val BUTTON8: Int = noInline { GLFW.GLFW_MOUSE_BUTTON_8 }
-
     //#else
     //$$ @JvmField
     //$$ @GameSide(Side.CLIENT)
@@ -100,7 +98,7 @@ public object OmniMouse {
             //#if MC >= 1.14
             return OmniClient.getInstance().mouse.y
             //#else
-            //$$ return Mouse.getY().toDouble()
+            //$$ return OmniResolution.screenHeight - Mouse.getY().toDouble() - 1
             //#endif
         }
 

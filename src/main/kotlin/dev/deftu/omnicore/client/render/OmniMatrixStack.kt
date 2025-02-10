@@ -264,7 +264,9 @@ public class OmniMatrixStack private constructor(
         //#else
         //$$ RenderSystem.getModelViewStack().method_34425(stack.last.matrix)
         //#endif
+        //#if MC <= 1.21.1
         RenderSystem.applyModelViewMatrix()
+        //#endif
         //#else
         //#if MC < 1.16
         //#if MC >= 1.15
@@ -316,7 +318,9 @@ public class OmniMatrixStack private constructor(
             //#else
             stack.pop()
             //#endif
+            //#if MC <= 1.21.1
             RenderSystem.applyModelViewMatrix()
+            //#endif
             //#else
             //$$ GlStateManager.popMatrix()
             //#endif

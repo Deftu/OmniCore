@@ -36,7 +36,11 @@ internal object DummyResourcePack : ResourcePack {
     //$$     string2: String?,
     //$$     resultConsumer: PackResources.ResourceOutput?
     //$$ ) = throw UnsupportedOperationException()
+    //#if MC >= 1.21.4 && NEOFORGE
+    //$$ override fun <T : Any?> getMetadataSection(arg: MetadataSectionType<T>) = throw UnsupportedOperationException()
+    //#else
     //$$ override fun <T : Any?> getMetadataSection(arg: MetadataSectionSerializer<T>) = throw UnsupportedOperationException()
+    //#endif
     //#endif
     override fun getNamespaces(resourceType: ResourceType?) = throw UnsupportedOperationException()
     //#if MC >= 1.20.5

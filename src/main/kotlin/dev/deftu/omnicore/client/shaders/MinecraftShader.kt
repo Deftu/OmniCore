@@ -1,5 +1,10 @@
 package dev.deftu.omnicore.client.shaders
 
+//#if MC >= 1.21.4
+//$$ import dev.deftu.omnicore.common.OmniIdentifier
+//$$ import net.minecraft.client.gl.CompiledShader
+//#endif
+
 //#if MC >= 1.17
 //#if MC >= 1.19
 import net.minecraft.resource.Resource
@@ -102,6 +107,7 @@ internal class MinecraftShader(
                 logger.info("Generated shader JSON: $jsonString")
             }
 
+            //#if MC <= 1.21.1
             val factory = { id: Identifier ->
                 val content = when (id.path.substringAfter(".")) {
                     "json" -> jsonString
@@ -118,6 +124,7 @@ internal class MinecraftShader(
                 //$$ ResourceImpl("__generated__", id, content.byteInputStream(), null)
                 //#endif
             }
+            //#endif
 
             val vertexFormat = if (vertexFormat != null) {
                 buildVertexFormat(transformer.attributes.withIndex().associate { (index, name) -> name to vertexFormat.vanilla.elements[index] })
@@ -131,8 +138,16 @@ internal class MinecraftShader(
                 })
             }
 
+            //#if MC >= 1.21.4
+            //$$ val vertId = OmniIdentifier.create(DigestUtils.sha1Hex(transformedVert).lowercase())
+            //$$ val vertShader = CompiledShader.compile(vertId, CompiledShader.Type.VERTEX, transformedVert)
+            //$$ val fragId = OmniIdentifier.create(DigestUtils.sha1Hex(transformedFrag).lowercase())
+            //$$ val fragShader = CompiledShader.compile(fragId, CompiledShader.Type.FRAGMENT, transformedFrag)
+            //$$ return MinecraftShader(ShaderProgram.create(vertShader, fragShader, vertexFormat), blend)
+            //#else
             val shaderName = DigestUtils.sha1Hex(jsonString).lowercase()
             return MinecraftShader(ShaderProgram(factory, shaderName, vertexFormat), blend)
+            //#endif
         }
 
         private fun buildVertexFormat(elements: Map<String, VertexFormatElement>): VertexFormat {

@@ -1,9 +1,8 @@
 package dev.deftu.omnicore
 
-
 //#if MC >= 1.16.5
 import net.minecraft.SharedConstants
-//#else
+//#elseif FORGE
 //$$ import net.minecraftforge.common.ForgeVersion
 //#endif
 
@@ -38,7 +37,15 @@ public object OmniCore {
             //#if MC >= 1.16.5
             SharedConstants.getGameVersion().name
             //#else
+            //#if FORGE
             //$$ ForgeVersion.mcVersion
+            //#else
+            //#if MC == 1.12.2
+            //$$ "1.12.2"
+            //#else
+            //$$ "1.8.9"
+            //#endif
+            //#endif
             //#endif
 
 }
