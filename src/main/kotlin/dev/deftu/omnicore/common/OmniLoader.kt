@@ -1,31 +1,45 @@
 package dev.deftu.omnicore.common
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.IntendedLoader
+import dev.deftu.omnicore.annotations.Side
+import java.nio.file.Path
+
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
+import net.fabricmc.api.EnvType
 //#elseif FORGE
 //#if MC >= 1.15.2
 //$$ import net.minecraftforge.fml.ModList
 //$$ import net.minecraftforge.fml.ModLoadingContext
 //$$ import net.minecraftforge.fml.ModContainer
+//$$ import net.minecraftforge.fml.loading.FMLEnvironment
+//$$ import net.minecraftforge.api.distmarker.Dist
 //#else
 //$$ import net.minecraftforge.fml.common.Loader
 //$$ import net.minecraftforge.fml.common.ModContainer
+//$$ import net.minecraftforge.fml.relauncher.Side
 //#endif
 //#else
 //$$ import net.neoforged.fml.ModList
 //$$ import net.neoforged.fml.ModLoadingContext
 //$$ import net.neoforged.fml.ModContainer
+//$$ import net.neoforged.fml.loading.FMLEnvironment
+//$$ import net.neoforged.api.distmarker.Dist
 //#endif
 
 //#if FORGE-LIKE && MC >= 1.15.2
 //$$ import java.util.stream.Collectors
 //#endif
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.IntendedLoader
-import dev.deftu.omnicore.annotations.Side
-import java.nio.file.Path
+//#if FORGE-LIKE && MC >= 1.16.5
+//#if FORGE
+//$$ import net.minecraftforge.eventbus.api.IEventBus
+//#elseif NEOFORGE
+//$$ import net.neoforged.bus.api.IEventBus
+//#endif
+//#endif
 
 @GameSide(Side.BOTH)
 public object OmniLoader {
@@ -38,6 +52,15 @@ public object OmniLoader {
         FABRIC,
         FORGE,
         NEOFORGE
+    }
+
+    /**
+     * An enumeration of physical sides that OmniCore supports, representing a physical side that the current environment is running on.
+     */
+    @GameSide(Side.BOTH)
+    public enum class PhysicalSide {
+        CLIENT,
+        SERVER
     }
 
     /**
@@ -75,40 +98,85 @@ public object OmniLoader {
 
     }
 
+    //#if FORGE-LIKE && MC >= 1.16.5
+    //$$ internal lateinit var modEventBus: IEventBus
+    //#endif
+
     /**
      * Gets the loader type that the current environment is running on.
      */
     @JvmStatic
     @GameSide(Side.BOTH)
-    public fun getLoaderType(): LoaderType =
-        //#if FABRIC
-        LoaderType.FABRIC
-        //#elseif FORGE
-        //$$ LoaderType.FORGE
-        //#else
-        //$$ LoaderType.NEOFORGE
-        //#endif
+    public val loaderType: LoaderType
+        get() {
+            //#if FABRIC
+            return LoaderType.FABRIC
+            //#elseif FORGE
+            //$$ return LoaderType.FORGE
+            //#else
+            //$$ return LoaderType.NEOFORGE
+            //#endif
+        }
 
     /**
      * Checks if the current environment is running on Fabric.
      */
     @JvmStatic
     @GameSide(Side.BOTH)
-    public fun isFabric(): Boolean = getLoaderType() == LoaderType.FABRIC
+    public val isFabric: Boolean
+        get() = loaderType == LoaderType.FABRIC
 
     /**
      * Checks if the current environment is running on Forge.
      */
     @JvmStatic
     @GameSide(Side.BOTH)
-    public fun isForge(): Boolean = getLoaderType() == LoaderType.FORGE
+    public val isForge: Boolean
+        get() = loaderType == LoaderType.FORGE
 
     /**
      * Checks if the current environment is running on NeoForge.
      */
     @JvmStatic
     @GameSide(Side.BOTH)
-    public fun isNeoForge(): Boolean = getLoaderType() == LoaderType.NEOFORGE
+    public val isNeoForge: Boolean
+        get() = loaderType == LoaderType.NEOFORGE
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val physicalSide: PhysicalSide
+        get() {
+            //#if FABRIC
+            return when (FabricLoader.getInstance().environmentType) {
+                EnvType.CLIENT -> PhysicalSide.CLIENT
+                EnvType.SERVER -> PhysicalSide.SERVER
+                else -> throw IllegalStateException("Unknown physical side")
+            }
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return when (FMLEnvironment.dist) {
+            //$$     Dist.CLIENT -> PhysicalSide.CLIENT
+            //$$     Dist.DEDICATED_SERVER -> PhysicalSide.SERVER
+            //$$     else -> throw IllegalStateException("Unknown physical side")
+            //#else
+            //$$ return when (FMLCommonHandler.instance().side) {
+            //$$     Side.CLIENT -> PhysicalSide.CLIENT
+            //$$     Side.SERVER -> PhysicalSide.SERVER
+            //$$     else -> throw IllegalStateException("Unknown physical side")
+            //$$ }
+            //#endif
+            //#endif
+        }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val isPhysicalClient: Boolean
+        get() = physicalSide == PhysicalSide.CLIENT
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val isPhysicalServer: Boolean
+        get() = physicalSide == PhysicalSide.SERVER
 
     /**
      * Checks if a mod is loaded and has the specified version.

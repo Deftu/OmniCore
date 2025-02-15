@@ -35,34 +35,28 @@ public data class OmniKeyBinding @JvmOverloads constructor(
     val type: Type = Type.KEY
 ) {
 
+    //#if FORGE-LIKE && MC >= 1.19.2
+    //$$ internal companion object {
+    //$$     val registeredBindings = mutableListOf<OmniKeyBinding>()
+    //$$
+    //$$     fun initialize() {
+    //$$         OmniLoader.modEventBus.addListener(::registerAll)
+    //$$     }
+    //$$
+    //$$     fun registerAll(event: RegisterKeyMappingsEvent) {
+    //$$         registeredBindings.map(OmniKeyBinding::vanillaKeyBinding).forEach(event::register)
+    //$$     }
+    //$$
+    //$$ }
+    //#endif
+
     public enum class Type {
         KEY,
         MOUSE
     }
 
-    public fun matchesMouse(button: Int): Boolean {
-        return type == Type.MOUSE && (
-                //#if MC >= 1.16.5
-                toVanilla().matchesMouse(button)
-                //#else
-                //$$ button == toVanilla().getKeyCode()
-                //#endif
-        )
-    }
-
-    @JvmOverloads
-    public fun matchesKey(keyCode: Int, scancode: Int = -1): Boolean {
-        return type == Type.KEY && (
-                //#if MC >= 1.16.5
-                toVanilla().matchesKey(keyCode, scancode)
-                //#else
-                //$$ keyCode == toVanilla().getKeyCode()
-                //#endif
-        )
-    }
-
-    public fun toVanilla(): KeyBinding {
-        return KeyBinding(
+    internal val vanillaKeyBinding by lazy {
+        KeyBinding(
             name,
             //#if MC >= 1.16.5
             if (type == Type.KEY) InputUtil.Type.KEYSYM else InputUtil.Type.MOUSE,
@@ -72,20 +66,35 @@ public data class OmniKeyBinding @JvmOverloads constructor(
         )
     }
 
-    public fun attemptRegister() {
+    public fun matchesMouse(button: Int): Boolean {
+        return type == Type.MOUSE && (
+                //#if MC >= 1.16.5
+                this.vanillaKeyBinding.matchesMouse(button)
+                //#else
+                //$$ button == this.vanillaKeyBinding.getKeyCode()
+                //#endif
+        )
+    }
+
+    @JvmOverloads
+    public fun matchesKey(keyCode: Int, scancode: Int = -1): Boolean {
+        return type == Type.KEY && (
+                //#if MC >= 1.16.5
+                this.vanillaKeyBinding.matchesKey(keyCode, scancode)
+                //#else
+                //$$ keyCode == this.vanillaKeyBinding.getKeyCode()
+                //#endif
+        )
+    }
+
+    public fun register(): OmniKeyBinding = apply {
         //#if FABRIC
-        KeyBindingHelper.registerKeyBinding(this.toVanilla())
+        KeyBindingHelper.registerKeyBinding(this.vanillaKeyBinding)
         //#elseif FORGE && MC <= 1.18.2
-        //$$ ClientRegistry.registerKeyBinding(this.toVanilla())
+        //$$ ClientRegistry.registerKeyBinding(this.vanillaKeyBinding)
         //#else
         //$$ println("Attempted to register keybinding using attemptRegister on Forge 1.19.2+. Use register on the relevant event instead.")
         //#endif
     }
-
-    //#if FORGE-LIKE && MC >= 1.19.2
-    //$$ public fun register(event: RegisterKeyMappingsEvent) {
-    //$$     event.register(this.toVanilla())
-    //$$ }
-    //#endif
 
 }
