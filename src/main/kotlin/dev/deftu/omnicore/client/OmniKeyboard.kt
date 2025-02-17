@@ -865,6 +865,30 @@ public object OmniKeyboard {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
+    public val isShiftKeyPressed: Boolean
+        get() = isPressed(KEY_LSHIFT) || isPressed(KEY_RSHIFT)
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val isCtrlKeyPressed: Boolean
+        get() = isPressed(KEY_LCONTROL) || isPressed(KEY_RCONTROL)
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val isAltKeyPressed: Boolean
+        get() = isPressed(KEY_LMENU) || isPressed(KEY_RMENU)
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val modifiers: KeyboardModifiers
+        get() = KeyboardModifiers(
+            shift = isShiftKeyPressed,
+            ctrl = isCtrlKeyPressed,
+            alt = isAltKeyPressed
+        )
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun allowRepeatEvents(@Suppress("UNUSED_PARAMETER") enabled: Boolean) {
         //#if MC >= 1.19.3
         // This function was removed in 1.19.3. Repeat events are permanently enabled.
@@ -904,26 +928,6 @@ public object OmniKeyboard {
         //$$ }
         //#endif
     }
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun isShiftKeyPressed(): Boolean = isPressed(KEY_LSHIFT) || isPressed(KEY_RSHIFT)
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun isCtrlKeyPressed(): Boolean = isPressed(KEY_LCONTROL) || isPressed(KEY_RCONTROL)
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun isAltKeyPressed(): Boolean = isPressed(KEY_LMENU) || isPressed(KEY_RMENU)
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun getModifiers(): KeyboardModifiers = KeyboardModifiers(
-        shift = isShiftKeyPressed(),
-        ctrl = isCtrlKeyPressed(),
-        alt = isAltKeyPressed()
-    )
 
     /**
      * Adapted from EssentialGG UniversalCraft under LGPL-3.0

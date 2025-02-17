@@ -60,7 +60,7 @@ public object OmniRenderState {
         RenderSystem.setShaderTexture(index, texture)
         //#else
         //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
-        //$$ OmniClient.getTextureManager().bindTexture(texture)
+        //$$ OmniClient.textureManager.bindTexture(texture)
         //#endif
     }
 

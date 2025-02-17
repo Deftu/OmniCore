@@ -14,45 +14,49 @@ public enum class GuiScale {
 
     public companion object {
 
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun fromInt(value: Int): GuiScale =
-            values()[value]
+        /**
+         * @since 0.13.0
+         * @author Deftu
+         */
+        public var rawCurrentScale: Int
+            get() {
+                val guiScale =
+                    //#if MC >= 1.19.2
+                    OmniClient.getInstance().options.guiScale.value
+                    //#else
+                    //$$ OmniClient.getInstance().options.guiScale
+                    //#endif
 
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun getCurrentScale(): GuiScale {
-            val guiScale =
+                return guiScale
+            }
+            set(value) {
                 //#if MC >= 1.19.2
-                OmniClient.getInstance().options.guiScale.value
+                OmniClient.getInstance().options.guiScale.value = value
                 //#else
-                //$$ OmniClient.getInstance().options.guiScale
+                //$$ OmniClient.getInstance().options.guiScale = value
                 //#endif
 
-            return fromInt(guiScale)
-        }
+                //#if MC >= 1.15.2 && MC < 1.20.5
+                val client = OmniClient.getInstance()
+                val window = client.window
+                val scaleFactor = window.calculateScaleFactor(value, client.forcesUnicodeFont())
+                window.scaleFactor = scaleFactor.toDouble()
+                //#endif
+            }
+
+        /**
+         * @since 0.13.0
+         * @author Deftu
+         */
+        public var currentScale: GuiScale
+            get() = fromInt(rawCurrentScale)
+            set(value) { rawCurrentScale = value.ordinal }
 
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun setScale(value: Int) {
-            //#if MC >= 1.19.2
-            OmniClient.getInstance().options.guiScale.value = value
-            //#else
-            //$$ OmniClient.getInstance().options.guiScale = value
-            //#endif
-
-            //#if MC >= 1.15.2 && MC < 1.20.5
-            val client = OmniClient.getInstance()
-            val window = client.window
-            val scaleFactor = window.calculateScaleFactor(value, client.forcesUnicodeFont())
-            window.scaleFactor = scaleFactor.toDouble()
-            //#endif
+        public fun fromInt(value: Int): GuiScale {
+            return values()[value]
         }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun setScale(scale: GuiScale): Unit =
-            setScale(scale.ordinal)
 
     }
 }

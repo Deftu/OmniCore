@@ -1,5 +1,12 @@
 package dev.deftu.omnicore.client
 
+import net.minecraft.client.option.KeyBinding
+import org.jetbrains.annotations.ApiStatus
+
+//#if FORGE-LIKE && MC >= 1.19.2
+//$$ import dev.deftu.omnicore.common.OmniLoader
+//#endif
+
 //#if MC >= 1.16.5
 import net.minecraft.client.util.InputUtil
 //#endif
@@ -25,8 +32,6 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 //$$ import net.minecraftforge.client.ClientRegistry
 //#endif
 //#endif
-
-import net.minecraft.client.option.KeyBinding
 
 public data class OmniKeyBinding @JvmOverloads constructor(
     val name: String,
@@ -55,7 +60,8 @@ public data class OmniKeyBinding @JvmOverloads constructor(
         MOUSE
     }
 
-    internal val vanillaKeyBinding by lazy {
+    @get:ApiStatus.Internal
+    public val vanillaKeyBinding: KeyBinding by lazy {
         KeyBinding(
             name,
             //#if MC >= 1.16.5

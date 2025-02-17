@@ -4,10 +4,18 @@
     "name": "${mod_name}",
     "version": "${mod_version}",
     "description": "Universal Minecraft utility.",
-    "environment": "*",
     "icon": "icon.png",
     "authors": [
         "Deftu"
+    ],
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "dev.deftu.omnicore.OmniCoreEntrypoint"
+        ]
+    },
+    "mixins": [
+        "mixins.${mod_id}.json"
     ],
     "depends": {
         "fabricloader": "*"

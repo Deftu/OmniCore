@@ -12,34 +12,54 @@ import org.lwjgl.opengl.GL30
 @GameSide(Side.CLIENT)
 public object OmniRenderEnv {
 
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun getErrorCode(): Int =
-        GL11.glGetError()
+    public val errorCode: Int
+        get() = GL11.glGetError()
 
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun getError(): GlError =
+    public val error: GlError
         @Suppress("EnumValuesSoftDeprecate")
-        GlError.values().firstOrNull { it.value == getErrorCode() } ?: GlError.NO_ERROR
+        get() = GlError.values().firstOrNull { error -> error.value == errorCode } ?: GlError.NO_ERROR
 
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun isGl21Available(): Boolean =
-        //#if MC >= 1.15.2
-        true
-        //#else
-        //$$ OpenGlHelper.openGL21
-        //#endif
+    public val isGl21Available: Boolean
+        get() {
+            //#if MC >= 1.15.2
+            return true
+            //#else
+            //$$ return OpenGlHelper.openGL21
+            //#endif
+        }
 
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun isFramebufferEnabled(): Boolean =
-        //#if MC >= 1.15.2
-        true
-        //#else
-        //$$ OpenGlHelper.isFramebufferEnabled()
-        //#endif
+    public val isFramebufferEnabled: Boolean
+        get() {
+            //#if MC >= 1.15.2
+            return true
+            //#else
+            //$$ return OpenGlHelper.isFramebufferEnabled()
+            //#endif
+        }
 
     @GameSide(Side.CLIENT)
     public enum class GlError(
@@ -58,7 +78,7 @@ public object OmniRenderEnv {
             get() = this != NO_ERROR
 
         public fun ifPresent(block: (GlError) -> Unit) {
-            if (isPresent && getError() == this) {
+            if (isPresent && error == this) {
                 block(this)
             }
         }

@@ -4,7 +4,6 @@ package dev.deftu.omnicore.client
 import net.minecraft.client.util.GlfwUtil
 //#endif
 
-import dev.deftu.omnicore.client.exceptions.UnavailableClientPlayerException
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
@@ -37,12 +36,13 @@ public object OmniClient {
      */
     @JvmStatic
     public val isRunningOnMainThread: Boolean
-        get() =
+        get() {
             //#if MC >= 1.15
-            getInstance().isOnThread
+            return getInstance().isOnThread
             //#else
-            //$$ getInstance().isCallingFromMinecraftThread()
+            //$$ return getInstance().isCallingFromMinecraftThread()
             //#endif
+        }
 
     /**
      * @return The static instance of Minecraft's main class.
@@ -60,7 +60,19 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getWorld(): ClientWorld? = getInstance().world
+    public val world: ClientWorld?
+        get() = getInstance().world
+
+    /**
+     * @return True if the client is aware of an existing world, false otherwise.
+     *
+     * @since 0.13.0
+     * @see world
+     * @author Deftu
+     */
+    @JvmStatic
+    public val hasWorld: Boolean
+        get() = world != null
 
     /**
      * @return The current **integrated** server instance, null if the player is not in a singleplayer world.
@@ -69,7 +81,8 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getIntegratedServer(): IntegratedServer? = getInstance().server
+    public val integratedServer: IntegratedServer?
+        get() = getInstance().server
 
     /**
      * @return The player instance, null if the player is not in a world.
@@ -78,28 +91,19 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getPlayer(): ClientPlayerEntity? = getInstance().player
+    public val player: ClientPlayerEntity?
+        get() = getInstance().player
 
     /**
      * @return True if the player is in a world, false otherwise.
      *
      * @since 0.2.2
-     * @see getPlayer
+     * @see player
      * @author Deftu
      */
     @JvmStatic
-    public fun hasPlayer(): Boolean = getPlayer() != null
-
-    /**
-     * @return The player instance, throws a [UnavailableClientPlayerException] if the player is not in a world.
-     *
-     * @throws UnavailableClientPlayerException If the player is not in a world.
-     * @since 0.2.2
-     * @see getPlayer
-     */
-    @JvmStatic
-    @Throws(UnavailableClientPlayerException::class)
-    public fun requirePlayer(): ClientPlayerEntity = getPlayer() ?: throw UnavailableClientPlayerException()
+    public val hasPlayer: Boolean
+        get() = player != null
 
     /**
      * @return An instance of the [InGameHud], which controls the in-game UI elements, such as the hot bar.
@@ -108,7 +112,8 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getHud(): InGameHud = getInstance().inGameHud
+    public val hud: InGameHud
+        get() = getInstance().inGameHud
 
     /**
      * @return An instance of the [ChatHud], which controls the chat messages.
@@ -117,12 +122,14 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getChat(): ChatHud =
-        //#if MC > 1.15
-        getHud().chatHud
-        //#else
-        //$$ getHud().chatGUI
-        //#endif
+    public val chat: ChatHud
+        get() {
+            //#if MC > 1.15
+            return hud.chatHud
+            //#else
+            //$$ return hud.chatGUI
+            //#endif
+        }
 
     /**
      * @return The current server information, null if the player is not in a server.
@@ -131,7 +138,8 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getCurrentServerInfo(): ServerInfo? = getInstance().currentServerEntry
+    public val currentServerInfo: ServerInfo?
+        get() = getInstance().currentServerEntry
 
     /**
      * @return The current network handler, null if the player is not in a server.
@@ -140,7 +148,8 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getNetworkHandler(): ClientPlayNetworkHandler? = getInstance().networkHandler
+    public val networkHandler: ClientPlayNetworkHandler?
+        get() = getInstance().networkHandler
 
     /**
      * @return The sound manager instance, which controls the game's sound output.
@@ -149,7 +158,8 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getSoundManager(): SoundManager = getInstance().soundManager
+    public val soundManager: SoundManager
+        get() = getInstance().soundManager
 
     /**
      * @return The text renderer instance, which is used to render text on the screen.
@@ -158,7 +168,8 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getFontRenderer(): TextRenderer = getInstance().textRenderer
+    public val fontRenderer: TextRenderer
+        get() = getInstance().textRenderer
 
     /**
      * @return OmniCore's wrapper around Minecraft's texture manager, which is used to load, bind, and manage textures.
@@ -168,7 +179,7 @@ public object OmniClient {
      * @see OmniTextureManager
      */
     @JvmStatic
-    public fun getTextureManager(): OmniTextureManager = OmniTextureManager.INSTANCE
+    public val textureManager: OmniTextureManager = OmniTextureManager.INSTANCE
 
     /**
      * Executes a task on Minecraft's main thread.
@@ -179,7 +190,8 @@ public object OmniClient {
      * @author Deftu
      * @see execute
      */
-    @JvmStatic public fun execute(runnable: () -> Unit) {
+    @JvmStatic
+    public fun execute(runnable: () -> Unit) {
         //#if MC >= 1.15.2
         getInstance().execute(runnable)
         //#else
@@ -196,7 +208,10 @@ public object OmniClient {
      * @author Deftu
      * @see execute
      */
-    @JvmStatic public fun execute(runnable: Runnable): Unit = execute(runnable::run)
+    @JvmStatic
+    public fun execute(runnable: Runnable) {
+        execute(runnable::run)
+    }
 
     /**
      * @return The time since the game started in milliseconds.
@@ -224,12 +239,15 @@ public object OmniClient {
          * @since 0.1.0
          * @author Deftu
          */
-        @JvmStatic public fun getServerBrand(): String? =
-            //#if MC >= 1.20.2
-            getNetworkHandler()?.brand
-            //#else
-            //$$ getPlayer()?.serverBrand
-            //#endif
+        @JvmStatic
+        public val serverBrand: String?
+            get() {
+                //#if MC >= 1.20.2
+                return networkHandler?.brand
+                //#else
+                //$$ return player?.serverBrand
+                //#endif
+            }
 
         /**
          * @return The server address, null if the player is not in a server.
@@ -237,7 +255,19 @@ public object OmniClient {
          * @since 0.1.0
          * @author Deftu
          */
-        @JvmStatic public fun getCurrentServerAddress(): String? = getCurrentServerInfo()?.address
+        @JvmStatic
+        public val currentServerAddress: String?
+            get() = currentServerInfo?.address
+
+        /**
+         * @return Whether the player is in a LAN server.
+         *
+         * @since 0.13.0
+         * @author Deftu
+         */
+        @JvmStatic
+        public val isInLan: Boolean
+            get() = currentServerInfo?.isLocal ?: false
 
         /**
          * @return Whether the player has multiplayer enabled, is allowed to join servers, and is not banned from multiplayer.
@@ -246,12 +276,14 @@ public object OmniClient {
          * @author Deftu
          */
         @JvmStatic
-        public fun isMultiplayerEnabled(): Boolean =
-            //#if MC >= 1.19.2
-            getInstance().isMultiplayerEnabled
-            //#else
-            //$$ true // TODO - Find a way to fetch this value in earlier versions
-            //#endif
+        public val isMultiplayerEnabled: Boolean
+            get() {
+                //#if MC >= 1.19.2
+                return getInstance().isMultiplayerEnabled
+                //#else
+                //$$ return true // TODO - Find a way to fetch this value in earlier versions
+                //#endif
+            }
 
         /**
          * @return Whether the player is banned from multiplayer.
@@ -260,14 +292,26 @@ public object OmniClient {
          * @author Deftu
          */
         @JvmStatic
-        public fun isMultiplayerBanned(): Boolean =
-            //#if MC >= 1.20.2
-            getInstance().multiplayerBanDetails != null
-            //#elseif MC >= 1.19.2
-            //$$ getInstance().isMultiplayerBanned
-            //#else
-            //$$ false // TODO - Find a way to fetch this value in earlier versions
-            //#endif
+        public val isMultiplayerBanned: Boolean
+            get() {
+                //#if MC >= 1.20.2
+                return getInstance().multiplayerBanDetails != null
+                //#elseif MC >= 1.19.2
+                //$$ return getInstance().isMultiplayerBanned
+                //#else
+                //$$ return false // TODO - Find a way to fetch this value in earlier versions
+                //#endif
+            }
+
+        /**
+         * @return Whether the player is in a singleplayer environment.
+         *
+         * @since 0.13.0
+         * @author Deftu
+         */
+        @JvmStatic
+        public val isInSingleplayer: Boolean
+            get() = getInstance().isInSingleplayer
 
         /**
          * @return Whether the player is in a multiplayer environment.
@@ -276,12 +320,8 @@ public object OmniClient {
          * @author Deftu
          */
         @JvmStatic
-        public fun isInMultiplayer(): Boolean = getWorld() != null && getIntegratedServer() != null && isMultiplayerEnabled() && !isMultiplayerBanned() && run {
-            if (getInstance().isInSingleplayer) return@run false
-
-            val serverInfo = getInstance().currentServerEntry
-            serverInfo?.address != null
-        }
+        public val isInMultiplayer: Boolean
+            get() = world != null && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServerInfo != null && currentServerInfo?.address != null
 
     }
 }

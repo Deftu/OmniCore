@@ -75,7 +75,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun validateProgram(program: Int) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glValidateProgram(program)
             } else {
                 ARBShaderObjects.glValidateProgramARB(program)
@@ -85,7 +85,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getProgramInfoLog(program: Int, maxLength: Int): String {
-            return if (OmniRenderEnv.isGl21Available()) {
+            return if (OmniRenderEnv.isGl21Available) {
                 //#if MC >= 1.16.5
                 GlStateManager.glGetProgramInfoLog(program, maxLength)
                 //#else
@@ -99,7 +99,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getProgramValidateStatus(program: Int): Int {
-            return if (OmniRenderEnv.isGl21Available()) {
+            return if (OmniRenderEnv.isGl21Available) {
                 GL20.glGetProgrami(program, GL20.GL_VALIDATE_STATUS)
             } else {
                 ARBShaderObjects.glGetObjectParameteriARB(program, ARBShaderObjects.GL_OBJECT_VALIDATE_STATUS_ARB)
@@ -129,7 +129,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun deleteShader(shader: Int) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 //#if MC >= 1.16.5
                 GlStateManager.glDeleteShader(shader)
                 //#else
@@ -143,7 +143,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun detachShader(program: Int, shader: Int) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glDetachShader(program, shader)
             } else {
                 ARBShaderObjects.glDetachObjectARB(program, shader)
@@ -163,7 +163,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun shaderSource(shader: Int, source: String) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glShaderSource(shader, source)
             } else {
                 ARBShaderObjects.glShaderSourceARB(shader, source)
@@ -203,7 +203,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun getUniformLocation(program: Int, name: String): Int {
-            return if (OmniRenderEnv.isGl21Available()) {
+            return if (OmniRenderEnv.isGl21Available) {
                 GL20.glGetUniformLocation(program, name)
             } else {
                 ARBShaderObjects.glGetUniformLocationARB(program, name)
@@ -213,7 +213,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun uniform1i(location: Int, value: Int) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniform1i(location, value)
             } else {
                 ARBShaderObjects.glUniform1iARB(location, value)
@@ -223,7 +223,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun uniform1f(location: Int, value: Float) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniform1f(location, value)
             } else {
                 ARBShaderObjects.glUniform1fARB(location, value)
@@ -233,7 +233,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun uniform2f(location: Int, a: Float, b: Float) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniform2f(location, a, b)
             } else {
                 ARBShaderObjects.glUniform2fARB(location, a, b)
@@ -243,7 +243,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun uniform3f(location: Int, a: Float, b: Float, c: Float) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniform3f(location, a, b, c)
             } else {
                 ARBShaderObjects.glUniform3fARB(location, a, b, c)
@@ -253,7 +253,7 @@ public interface OmniShader {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun uniform4f(location: Int, a: Float, b: Float, c: Float, d: Float) {
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniform4f(location, a, b, c, d)
             } else {
                 ARBShaderObjects.glUniform4fARB(location, a, b, c, d)
@@ -272,13 +272,13 @@ public interface OmniShader {
             //#endif
         ) {
             //#if MC >= 1.16.5
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniformMatrix2fv(location, transpose, matrix)
             } else {
                 ARBShaderObjects.glUniformMatrix2fvARB(location, transpose, matrix)
             }
             //#else
-            //$$ if (OmniRenderEnv.isGl21Available()) {
+            //$$ if (OmniRenderEnv.isGl21Available) {
             //$$     GL20.glUniformMatrix2(location, transpose, matrix)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix2ARB(location, transpose, matrix)
@@ -298,13 +298,13 @@ public interface OmniShader {
             //#endif
         ) {
             //#if MC >= 1.16.5
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniformMatrix3fv(location, transpose, matrix)
             } else {
                 ARBShaderObjects.glUniformMatrix3fvARB(location, transpose, matrix)
             }
             //#else
-            //$$ if (OmniRenderEnv.isGl21Available()) {
+            //$$ if (OmniRenderEnv.isGl21Available) {
             //$$     GL20.glUniformMatrix3(location, transpose, matrix)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix3ARB(location, transpose, matrix)
@@ -324,13 +324,13 @@ public interface OmniShader {
             //#endif
         ) {
             //#if MC >= 1.16.5
-            if (OmniRenderEnv.isGl21Available()) {
+            if (OmniRenderEnv.isGl21Available) {
                 GL20.glUniformMatrix4fv(location, transpose, matrix)
             } else {
                 ARBShaderObjects.glUniformMatrix4fvARB(location, transpose, matrix)
             }
             //#else
-            //$$ if (OmniRenderEnv.isGl21Available()) {
+            //$$ if (OmniRenderEnv.isGl21Available) {
             //$$     GL20.glUniformMatrix4(location, transpose, matrix)
             //$$ } else {
             //$$     ARBShaderObjects.glUniformMatrix4ARB(location, transpose, matrix)

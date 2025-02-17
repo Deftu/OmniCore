@@ -36,14 +36,14 @@ public abstract class OmniScreen(
     public companion object {
 
         /**
-         * @return The current screen instance, null if the player is not in a screen.
+         * @return The current screen the player is in.
          *
-         * @since 0.1.0
+         * @since 0.13.0
          * @author Deftu
          */
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun getCurrentScreen(): Screen? = OmniClient.getInstance().currentScreen
+        public var currentScreen: Screen?
+            get() = OmniClient.getInstance().currentScreen
+            set(value) { OmniClient.getInstance().setScreen(value) }
 
         /**
          * @return True if the player is in a screen, false otherwise.
@@ -53,39 +53,31 @@ public abstract class OmniScreen(
          */
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun isInScreen(): Boolean = getCurrentScreen() != null
+        public fun isInScreen(): Boolean = currentScreen != null
 
         /**
          * @param screenClz The screen class to check.
          * @return True if the player is in the specified screen, false otherwise.
          *
          * @since 0.2.2
+         * @author Deftu
          */
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun isInScreen(screenClz: Class<out Screen>): Boolean = getCurrentScreen()?.javaClass == screenClz
-
-        /**
-         * @param screen The screen instance to open.
-         *
-         * @since 0.1.0
-         * @see Screen
-         */
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun openScreen(screen: Screen?) {
-            OmniClient.getInstance().setScreen(screen)
+        public fun isInScreen(screenClz: Class<out Screen>): Boolean {
+            return currentScreen?.javaClass == screenClz
         }
 
         /**
          * Closes the current screen.
          *
          * @since 0.2.2
+         * @author Deftu
          */
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun closeScreen() {
-            openScreen(null)
+            currentScreen = null
         }
     }
 
@@ -105,7 +97,7 @@ public abstract class OmniScreen(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as TextHolder?)
 
-    private val previousScreen = if (restorePreviousScreen) getCurrentScreen() else null
+    private val previousScreen = if (restorePreviousScreen) currentScreen else null
 
     //#if MC >= 1.15
     private var lastClick = 0L
@@ -329,7 +321,7 @@ public abstract class OmniScreen(
 
     @GameSide(Side.CLIENT)
     public fun restorePreviousScreen() {
-        openScreen(previousScreen)
+        currentScreen = previousScreen
     }
 
     //#if MC >= 1.20
@@ -470,7 +462,7 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
-    //$$     handleKeyPress(keyCode, typedChar, OmniKeyboard.getModifiers(), KeyPressTrigger.AMBIGUOUS)
+    //$$     handleKeyPress(keyCode, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.AMBIGUOUS)
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, mouseBtn: Int) {

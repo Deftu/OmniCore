@@ -1,4 +1,5 @@
 import dev.deftu.gradle.utils.MinecraftVersion
+import dev.deftu.gradle.utils.includeOrShade
 
 plugins {
     java
@@ -20,6 +21,10 @@ toolkitMultiversion.moveBuildsToRootProject.set(true)
 toolkitMavenPublishing.forceLowercase.set(true)
 if (mcData.isForgeLike && mcData.version >= MinecraftVersion.VERSION_1_16_5) {
     toolkitLoomHelper.useKotlinForForge()
+
+    if (mcData.isForge) {
+        toolkitLoomHelper.useForgeMixin(modData.id)
+    }
 }
 
 toolkitReleases {
@@ -32,9 +37,11 @@ toolkitReleases {
 dependencies {
     implementation(kotlin("reflect"))
 
-    val textileVersion = "0.7.0"
-    api("dev.deftu:textile:$textileVersion")
-    modImplementation("dev.deftu:textile-$mcData:$textileVersion")
+    val textileVersion = "0.8.0"
+    api(includeOrShade("dev.deftu:textile:$textileVersion")!!)
+    modImplementation(includeOrShade("dev.deftu:textile-$mcData:$textileVersion")!!)
+
+    api("com.mojang:brigadier:1.0.18")
 
     if (mcData.isFabric) {
         modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")

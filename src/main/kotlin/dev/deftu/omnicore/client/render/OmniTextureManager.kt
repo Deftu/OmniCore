@@ -339,7 +339,7 @@ public class ReleasedDynamicTexture(
         override fun close() {
             toBeCleanedUp.remove(this)
             if (glId != -1) {
-                OmniClient.getTextureManager().deleteTexture(glId)
+                OmniClient.textureManager.deleteTexture(glId)
                 glId = -1
             }
 

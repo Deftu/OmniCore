@@ -1,0 +1,9 @@
+{
+    "required": true,
+    "package": "dev.deftu.omnicore.mixins",
+    "plugin": "dev.deftu.omnicore.mixins.OmniCoreMixinPlugin",
+    "compatibilityLevel": "${java_version}",
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

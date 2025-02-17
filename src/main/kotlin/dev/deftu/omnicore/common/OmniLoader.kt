@@ -19,7 +19,8 @@ import net.fabricmc.api.EnvType
 //#else
 //$$ import net.minecraftforge.fml.common.Loader
 //$$ import net.minecraftforge.fml.common.ModContainer
-//$$ import net.minecraftforge.fml.relauncher.Side
+//$$ import net.minecraftforge.fml.common.FMLCommonHandler
+//$$ import net.minecraftforge.fml.relauncher.Side as ForgeSide
 //#endif
 //#else
 //$$ import net.neoforged.fml.ModList
@@ -56,6 +57,9 @@ public object OmniLoader {
 
     /**
      * An enumeration of physical sides that OmniCore supports, representing a physical side that the current environment is running on.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @GameSide(Side.BOTH)
     public enum class PhysicalSide {
@@ -86,15 +90,23 @@ public object OmniLoader {
 
         /**
          * Checks if the mod is loaded.
+         *
+         * @since 0.13.0
+         * @author Deftu
          */
         @GameSide(Side.BOTH)
-        public fun isLoaded(): Boolean = isModLoaded(id)
+        public val isLoaded: Boolean
+            get() = isModLoaded(id)
 
         /**
          * Checks if the mod is loaded and has the specified version.
+         *
+         * @since 0.13.0
+         * @author Deftu
          */
         @GameSide(Side.BOTH)
-        public fun isVersionLoaded(): Boolean = isModLoaded(id, version)
+        public val isVersionLoaded: Boolean
+            get() = isModLoaded(id, version)
 
     }
 
@@ -104,6 +116,9 @@ public object OmniLoader {
 
     /**
      * Gets the loader type that the current environment is running on.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -120,6 +135,9 @@ public object OmniLoader {
 
     /**
      * Checks if the current environment is running on Fabric.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -128,6 +146,9 @@ public object OmniLoader {
 
     /**
      * Checks if the current environment is running on Forge.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -136,6 +157,9 @@ public object OmniLoader {
 
     /**
      * Checks if the current environment is running on NeoForge.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -158,28 +182,125 @@ public object OmniLoader {
             //$$     Dist.CLIENT -> PhysicalSide.CLIENT
             //$$     Dist.DEDICATED_SERVER -> PhysicalSide.SERVER
             //$$     else -> throw IllegalStateException("Unknown physical side")
+            //$$ }
             //#else
             //$$ return when (FMLCommonHandler.instance().side) {
-            //$$     Side.CLIENT -> PhysicalSide.CLIENT
-            //$$     Side.SERVER -> PhysicalSide.SERVER
+            //$$     ForgeSide.CLIENT -> PhysicalSide.CLIENT
+            //$$     ForgeSide.SERVER -> PhysicalSide.SERVER
             //$$     else -> throw IllegalStateException("Unknown physical side")
             //$$ }
             //#endif
             //#endif
         }
 
+    /**
+     * Checks if the current environment is running on the client side.
+     *
+     * @since 0.13.0
+     * @see physicalSide
+     * @see isPhysicalServer
+     * @author Deftu
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public val isPhysicalClient: Boolean
         get() = physicalSide == PhysicalSide.CLIENT
 
+    /**
+     * Checks if the current environment is running on the server side.
+     *
+     * @since 0.13.0
+     * @see physicalSide
+     * @see isPhysicalClient
+     * @author Deftu
+     */
     @JvmStatic
     @GameSide(Side.BOTH)
     public val isPhysicalServer: Boolean
         get() = physicalSide == PhysicalSide.SERVER
 
     /**
+     * Gets the most basic info of all loaded mods.
+     *
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val loadedMods: Set<ModInfo>
+        get() {
+            val value = mutableSetOf<ModInfo>()
+
+            //#if FABRIC
+            FabricLoader.getInstance().allMods.map(OmniLoader::createModInfo).forEach(value::add)
+            //#else
+            //#if MC >= 1.15.2
+            //$$ ModList.get().applyForEachModContainer(::createModInfo).collect(Collectors.toSet()).forEach(value::add)
+            //#else
+            //$$ Loader.instance().modList.map(::createModInfo).forEach(value::add)
+            //#endif
+            //#endif
+
+            return value
+        }
+
+    /**
+     * Checks if a mod is currently in the active state.
+     *
+     * This method is only available on Forge, and will always return false on Fabric.
+     *
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
+    public val hasActiveMod: Boolean
+        get() {
+            //#if FABRIC
+            return false
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return ModLoadingContext.get().activeContainer.modId != "minecraft"
+            //#else
+            //$$ return Loader.instance().activeModContainer() != null
+            //#endif
+            //#endif
+        }
+
+    /**
+     * Gets the most basic info of the active mod.
+     *
+     * This method is only available on Forge, and will always return [ModInfo.DUMMY] object on Fabric.
+     *
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
+    public val activeMod: ModInfo
+        get() {
+            //#if FABRIC
+            return ModInfo.DUMMY
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return createModInfo(ModLoadingContext.get().activeContainer)
+            //#else
+            //$$ if (hasActiveMod) {
+            //$$     return createModInfo(Loader.instance().activeModContainer()!!)
+            //$$ }
+            //$$
+            //$$ return ModInfo.DUMMY
+            //#endif
+            //#endif
+        }
+
+    /**
      * Checks if a mod is loaded and has the specified version.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -197,6 +318,9 @@ public object OmniLoader {
 
     /**
      * Checks if a mod is loaded.
+     *
+     * @since 0.13.0
+     * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -208,71 +332,6 @@ public object OmniLoader {
         //$$ return ModList.get().isLoaded(id)
         //#else
         //$$ return Loader.isModLoaded(id)
-        //#endif
-        //#endif
-    }
-
-    /**
-     * Gets the most basic info of all loaded mods.
-     */
-    @JvmStatic
-    @GameSide(Side.BOTH)
-    public fun getLoadedMods(): Set<ModInfo> {
-        val value = mutableSetOf<ModInfo>()
-
-        //#if FABRIC
-        FabricLoader.getInstance().allMods.map(OmniLoader::createModInfo).forEach(value::add)
-        //#else
-        //#if MC >= 1.15.2
-        //$$ ModList.get().applyForEachModContainer(::createModInfo).collect(Collectors.toSet()).forEach(value::add)
-        //#else
-        //$$ Loader.instance().modList.map(::createModInfo).forEach(value::add)
-        //#endif
-        //#endif
-
-        return value
-    }
-
-    /**
-     * Checks if a mod is currently in the active state.
-     *
-     * This method is only available on Forge, and will always return false on Fabric.
-     */
-    @JvmStatic
-    @GameSide(Side.BOTH)
-    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
-    public fun hasActiveMod(): Boolean {
-        //#if FABRIC
-        return false
-        //#else
-        //#if MC >= 1.15.2
-        //$$ return ModLoadingContext.get().activeContainer.modId != "minecraft"
-        //#else
-        //$$ return Loader.instance().activeModContainer() != null
-        //#endif
-        //#endif
-    }
-
-    /**
-     * Gets the most basic info of the active mod.
-     *
-     * This method is only available on Forge, and will always return [ModInfo.DUMMY] object on Fabric.
-     */
-    @JvmStatic
-    @GameSide(Side.BOTH)
-    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
-    public fun getActiveMod(): ModInfo {
-        //#if FABRIC
-        return ModInfo.DUMMY
-        //#else
-        //#if MC >= 1.15.2
-        //$$ return createModInfo(ModLoadingContext.get().activeContainer)
-        //#else
-        //$$ if (hasActiveMod()) {
-        //$$     return createModInfo(Loader.instance().activeModContainer()!!)
-        //$$ }
-        //$$
-        //$$ return ModInfo.DUMMY
         //#endif
         //#endif
     }

@@ -114,7 +114,7 @@ public object OmniMouse {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public val isCursorGrabbed: Boolean
+    public var isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.14
             return OmniClient.getInstance().mouse.isCursorLocked
@@ -122,17 +122,17 @@ public object OmniMouse {
             //$$ return Mouse.isGrabbed()
             //#endif
         }
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun setCursorGrabbed(grabbed: Boolean) {
-        //#if MC >= 1.14
-        if (grabbed) OmniClient.getInstance().mouse.lockCursor()
-        else OmniClient.getInstance().mouse.unlockCursor()
-        //#else
-        //$$ Mouse.setGrabbed(grabbed)
-        //#endif
-    }
+        set(value) {
+            //#if MC >= 1.14
+            if (value) {
+                OmniClient.getInstance().mouse.lockCursor()
+            } else {
+                OmniClient.getInstance().mouse.unlockCursor()
+            }
+            //#else
+            //$$ Mouse.setGrabbed(value)
+            //#endif
+        }
 
     @JvmStatic
     @GameSide(Side.CLIENT)

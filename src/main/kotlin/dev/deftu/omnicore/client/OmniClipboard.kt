@@ -14,22 +14,20 @@ public object OmniClipboard {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun getClipboardString(): String {
-        //#if MC >= 1.16.5
-        return OmniClient.getInstance().keyboard.clipboard
-        //#else
-        //$$ return GuiScreen.getClipboardString()
-        //#endif
-    }
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun setClipboardString(string: String) {
-        //#if MC >= 1.16.5
-        OmniClient.getInstance().keyboard.clipboard = string
-        //#else
-        //$$ GuiScreen.setClipboardString(string)
-        //#endif
-    }
+    public var clipboardString: String
+        get() {
+            //#if MC >= 1.16.5
+            return OmniClient.getInstance().keyboard.clipboard
+            //#else
+            //$$ return GuiScreen.getClipboardString()
+            //#endif
+        }
+        set(value) {
+            //#if MC >= 1.16.5
+            OmniClient.getInstance().keyboard.clipboard = value
+            //#else
+            //$$ GuiScreen.setClipboardString(value)
+            //#endif
+        }
 
 }

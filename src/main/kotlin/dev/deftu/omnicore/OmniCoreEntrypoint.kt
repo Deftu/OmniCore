@@ -1,5 +1,11 @@
 package dev.deftu.omnicore
 
+import dev.deftu.omnicore.client.OmniChat
+import dev.deftu.omnicore.client.OmniClientCommands
+import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.server.OmniServerCommands
+import dev.deftu.textile.SimpleTextHolder
+import dev.deftu.textile.minecraft.MinecraftTextFormat
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
@@ -22,7 +28,6 @@ import net.fabricmc.api.ModInitializer
 
 //#if FORGE-LIKE
 //#if MC >= 1.16.5
-//$$ import dev.deftu.omnicore.common.OmniLoader
 //$$ import dev.deftu.omnicore.client.OmniKeyBinding
 //$$
 //$$ @Mod(OmniCore.ID)
@@ -57,26 +62,29 @@ public class OmniCoreEntrypoint
     //$$ private
     //#endif
     fun onInitialize(
-        //#if FORGE-LIKE
-        //#if MC >= 1.16.5
-        //$$ event: FMLCommonSetupEvent
-        //#else
+        //#if FORGE && MC <= 1.12.2
         //$$ event: FMLInitializationEvent
-        //#endif
         //#endif
     ) {
         logger.info("Initializing OmniCore ${OmniCore.VERSION}")
+
+        if (OmniLoader.isPhysicalClient) {
+            //#if FORGE-LIKE && MC >= 1.19.2
+            //$$ OmniKeyBinding.initialize()
+            //#endif
+
+            OmniClientCommands.initialize()
+        }
+
+        if (OmniLoader.isPhysicalServer) {
+            OmniServerCommands.initialize()
+        }
     }
 
     //#if FORGE-LIKE && MC >= 1.16.5
     //$$ private fun setupForgeEvents(modEventBus: IEventBus) {
-    //$$     modEventBus.addListener(this::onInitialize)
-    //$$
     //$$     OmniLoader.modEventBus = modEventBus
-    //$$
-    //$$     if (OmniLoader.isPhysicalClient) {
-    //$$         OmniKeyBinding.initialize()
-    //$$     }
+    //$$     onInitialize()
     //$$ }
     //#endif
 
