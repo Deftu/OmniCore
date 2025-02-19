@@ -18,6 +18,7 @@ public enum class GuiScale {
          * @since 0.13.0
          * @author Deftu
          */
+        @JvmStatic
         public var rawCurrentScale: Int
             get() {
                 val guiScale =
@@ -48,6 +49,7 @@ public enum class GuiScale {
          * @since 0.13.0
          * @author Deftu
          */
+        @JvmStatic
         public var currentScale: GuiScale
             get() = fromInt(rawCurrentScale)
             set(value) { rawCurrentScale = value.ordinal }

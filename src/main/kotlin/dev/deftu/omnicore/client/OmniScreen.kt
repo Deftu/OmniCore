@@ -41,6 +41,8 @@ public abstract class OmniScreen(
          * @since 0.13.0
          * @author Deftu
          */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
         public var currentScreen: Screen?
             get() = OmniClient.getInstance().currentScreen
             set(value) { OmniClient.getInstance().setScreen(value) }
