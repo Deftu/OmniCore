@@ -44,16 +44,15 @@ maven(url = "https://maven.deftu.dev/releases") {
 <details>
     <summary>Minecraft versions & mod loaders</summary>
 
-- 1.21   NeoForge    (1.21-neoforge)
-- 1.21   Fabric      (1.21-fabric)
+- 1.21.4 NeoForge    (1.21.4-neoforge)
+- 1.21.4 Fabric      (1.21.4-fabric)
+- 1.21.1 NeoForge    (1.21.1-neoforge)
+- 1.21.1 Fabric      (1.21.1-fabric)
 - 1.20.6 NeoForge    (1.20.6-neoforge)
 - 1.20.6 Fabric      (1.20.6-fabric)
 - 1.20.4 NeoForge    (1.20.4-neoforge)
 - 1.20.4 Forge       (1.20.4-forge)
 - 1.20.4 Fabric      (1.20.4-fabric)
-- 1.20.2 NeoForge    (1.20.2-neoforge)
-- 1.20.2 Forge       (1.20.2-forge)
-- 1.20.2 Fabric      (1.20.2-fabric)
 - 1.20.1 Forge       (1.20.1-forge)
 - 1.20.1 Fabric      (1.20.1-fabric)
 - 1.19.4 Forge       (1.19.4-forge)
@@ -75,7 +74,7 @@ maven(url = "https://maven.deftu.dev/releases") {
     <summary>Groovy (.gradle)</summary>
 
 ```gradle
-modImplementation "dev.deftu:omnicore-<MCVERSION>-<MODLOADER>:<VERSION>"
+modImplementation "dev.deftu:omnicore-<minecraft>-<loader>:<version>"
 ```
 
 </details>
@@ -84,7 +83,7 @@ modImplementation "dev.deftu:omnicore-<MCVERSION>-<MODLOADER>:<VERSION>"
     <summary>Kotlin (.gradle.kts)</summary>
 
 ```gradle
-implementation("dev.deftu:omnicore-<MCVERSION>-<MODLOADER>:<VERSION>")
+implementation("dev.deftu:omnicore-<minecraft>-<loader>:<version>")
 ```
 
 </details>
@@ -95,8 +94,6 @@ implementation("dev.deftu:omnicore-<MCVERSION>-<MODLOADER>:<VERSION>")
 
 - [Essential.gg](https://github.com/EssentialGG) ([Website](https://essential.gg))
   - Shader implementations across different versions ([UniversalCraft](https://github.com/EssentialGG/UniversalCraft))
-- [0x150](https://github.com/0x3C50)
-  - Fixes with framebuffer wrapper implementation
 
 ---
 
