@@ -1,10 +1,9 @@
 package com.test
 
-import dev.deftu.omnicore.client.OmniChat
-import dev.deftu.omnicore.client.OmniClientCommands
-import dev.deftu.omnicore.client.OmniKeyBinding
-import dev.deftu.omnicore.client.OmniKeyboard
+import dev.deftu.omnicore.client.*
+import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.common.writeString
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
@@ -80,6 +79,10 @@ class TestMod
             OmniClientCommands.literal("testmod")
                 .executes {
                     OmniChat.showChatMessage("TestMod base command executed!")
+                    OmniClientPackets.send(OmniIdentifier.create("testmod:base_command")) {
+                        writeString("Hello, world!")
+                    }
+
                     1
                 }
         )

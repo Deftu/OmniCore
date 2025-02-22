@@ -15,7 +15,8 @@ package dev.deftu.omnicore.annotations
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.FILE
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FILE,
 )
 public annotation class GameSide(val side: Side)
 

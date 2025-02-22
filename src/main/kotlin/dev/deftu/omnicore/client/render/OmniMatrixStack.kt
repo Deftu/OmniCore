@@ -2,29 +2,25 @@
 
 package dev.deftu.omnicore.client.render
 
-//#if MC >= 1.15
+//#if MC >= 1.16.5
 import net.minecraft.util.math.MathHelper
 import net.minecraft.client.util.math.MatrixStack
 //#endif
 
-//#if MC >= 1.17
+//#if MC >= 1.17.1
 import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 //#if MC >= 1.19.3
 import org.joml.Quaternionf
-//#elseif MC >= 1.14
-//$$ import net.minecraft.util.math.Quaternion
+//#elseif MC >= 1.16.5
+//$$ import com.mojang.math.Quaternion
 //#else
 //$$ import org.lwjgl.util.vector.Vector3f
 //#endif
 
-//#if MC >= 1.8.9 && MC < 1.17
-//#if MC < 1.15
-//$$ import net.minecraft.client.renderer.GLAllocation
-//#else
+//#if MC >= 1.8.9 && MC < 1.17.1
 //$$ import net.minecraft.client.util.GlAllocationUtils
-//#endif
 //$$ import java.nio.FloatBuffer
 //$$ import java.nio.Buffer
 //#endif
@@ -53,11 +49,7 @@ public class OmniMatrixStack private constructor(
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$
         //$$ private fun createFloatBuffer(capacity: Int): FloatBuffer {
-            //#if MC >= 1.15
-            //$$ return GlAllocationUtils.allocateFloatBuffer(capacity)
-            //#else
-            //$$ return GLAllocation.createDirectFloatBuffer(capacity)
-            //#endif
+        //$$     return GlAllocationUtils.allocateFloatBuffer(capacity)
         //$$ }
         //#endif
     }
@@ -98,7 +90,7 @@ public class OmniMatrixStack private constructor(
             //#if MC >= 1.19.3
             matrix.scale(x, y, z)
             //#elseif MC >= 1.15
-            //$$ matrix.multiply(Matrix4f.scale(x, y, z))
+            //$$ matrix.multiply(Matrix4f.createScaleMatrix(x, y, z))
             //#elseif MC >= 1.14
             //$$ matrix.mul(Matrix4f.scale(x, y, z))
             //#else
@@ -110,7 +102,7 @@ public class OmniMatrixStack private constructor(
                     //#if MC >= 1.19.3
                     normal.scale(-1f)
                     //#elseif MC >= 1.14
-                    //$$ normal.multiply(-1f)
+                    //$$ normal.mul(-1f)
                     //#else
                     //$$ Matrix3f.negate(normal, normal)
                     //#endif
@@ -130,7 +122,7 @@ public class OmniMatrixStack private constructor(
                 //#if MC >= 1.19.3
                 normal.scale(rt * ix, rt * iy, rt * iz)
                 //#elseif MC >= 1.14
-                //$$ normal.multiply(Matrix3f.scale(rt * ix, rt * iy, rt * iz))
+                //$$ normal.mul(Matrix3f.createScaleMatrix(rt * ix, rt * iy, rt * iz))
                 //#else
                 //$$ val scale = Matrix3f()
                 //$$ scale.m00 = rt * ix
@@ -164,7 +156,7 @@ public class OmniMatrixStack private constructor(
             //#if MC >= 1.19.3
             matrix.translate(x, y, z)
             //#elseif MC >= 1.14
-            //$$ matrix.multiply(Matrix4f.translate(x, y, z))
+            //$$ matrix.multiply(Matrix4f.createTranslateMatrix(x, y, z))
             //#else
             //$$ Matrix4f.translate(Vector3f(x, y, z), matrix, matrix)
             //#endif
@@ -259,7 +251,7 @@ public class OmniMatrixStack private constructor(
         //#if MC >= 1.17
         //#if MC >= 1.20.5
         //$$ RenderSystem.getModelViewStack().mul(stack.last.matrix)
-        //#elseif MC >= 1.18
+        //#elseif MC >= 1.17.1
         RenderSystem.getModelViewStack().multiplyPositionMatrix(stack.last.matrix)
         //#else
         //$$ RenderSystem.getModelViewStack().method_34425(stack.last.matrix)
@@ -357,8 +349,8 @@ public class OmniMatrixStack private constructor(
             stack.peek().positionMatrix.mul(matrix)
             stack.peek().normalMatrix.mul(normal)
         //#else
-        //$$     stack.peek().positionMatrix.multiply(matrix)
-        //$$     stack.peek().normalMatrix.multiply(normal)
+        //$$     stack.last().pose().multiply(matrix)
+        //$$     stack.last().normal().mul(normal)
         //#endif
         }
         //#endif

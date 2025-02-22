@@ -1,4 +1,4 @@
-//#if MC >= 1.19.3
+//#if MC >= 1.19.3 && MC < 1.21.4
 package dev.deftu.omnicore.client.shaders
 
 //#if MC >= 1.20.5

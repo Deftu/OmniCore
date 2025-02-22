@@ -1,3 +1,7 @@
+net.minecraft.util.thread.BlockableEventLoop net.minecraft.client.Minecraft
+net.minecraft.util.thread.BlockableEventLoop isSameThread() isCallingFromMinecraftThread()
+net.minecraft.util.thread.BlockableEventLoop execute() addScheduledTask()
+
 com.mojang.blaze3d.platform.GlStateManager net.minecraft.client.renderer.GlStateManager
 com.mojang.blaze3d.platform.GlStateManager _viewport() viewport()
 com.mojang.blaze3d.platform.GlStateManager _enableCull() enableCull()
@@ -16,25 +20,72 @@ com.mojang.blaze3d.platform.GlStateManager _bindTexture() bindTexture()
 com.mojang.blaze3d.platform.GlStateManager _deleteTexture() deleteTexture()
 com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
 com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
+
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
+
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
+
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
+
 net.minecraft.client.multiplayer.ClientLevel net.minecraft.client.multiplayer.WorldClient
+
 net.minecraft.client.player.LocalPlayer net.minecraft.client.entity.EntityPlayerSP
+
+net.minecraft.server.level.ServerPlayer net.minecraft.entity.player.EntityPlayerMP
+
 net.minecraft.client.gui.Gui net.minecraft.client.gui.GuiIngame
+
 net.minecraft.client.gui.components.ChatComponent net.minecraft.client.gui.GuiNewChat
+
 net.minecraft.client.multiplayer.ClientPacketListener net.minecraft.client.network.NetHandlerPlayClient
+
 net.minecraft.client.Options net.minecraft.client.settings.GameSettings
+
 net.minecraft.client.renderer.texture.TextureManager register() loadTexture()
 net.minecraft.client.renderer.texture.AbstractTexture load() loadTexture()
 net.minecraft.client.renderer.texture.AbstractTexture getId() getGlTextureId()
 net.minecraft.client.renderer.texture.AbstractTexture releaseId() deleteGlTexture()
+
 net.minecraft.server.packs.resources.ResourceManager net.minecraft.client.resources.IResourceManager
+
 net.minecraft.client.gui.screens.Screen net.minecraft.client.gui.GuiScreen
 net.minecraft.client.gui.screens.Screen isPauseScreen() doesGuiPauseGame()
+
+net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen net.minecraft.client.gui.GuiMultiplayer
+
+net.minecraft.client.gui.screens.ConnectScreen net.minecraft.client.multiplayer.GuiConnecting
+
+net.minecraft.client.gui.screens.ChatScreen net.minecraft.client.gui.GuiChat
+
+net.minecraft.client.resources.sounds.SimpleSoundInstance net.minecraft.client.audio.PositionedSoundRecord
+net.minecraft.client.resources.sounds.SimpleSoundInstance forUI() getRecord()
+
 net.minecraft.client.Minecraft setScreen() displayGuiScreen()
+net.minecraft.server.network.ServerGamePacketListenerImpl net.minecraft.network.NetHandlerPlayServer
+net.minecraft.server.network.ServerGamePacketListenerImpl send() sendPacket()
+
+net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket net.minecraft.network.play.client.CPacketCustomPayload
+net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket net.minecraft.network.play.server.SPacketCustomPayload
+
 net.minecraft.world.entity.LivingEntity net.minecraft.entity.EntityLiving
 net.minecraft.world.entity.LivingEntity getMainHandItem() getHeldItemMainhand()
 net.minecraft.world.entity.LivingEntity getOffhandItem() getHeldItemOffhand()
 net.minecraft.world.entity.LivingEntity getItemBySlot() getItemStackFromSlot()
+
 net.minecraft.world.entity.EquipmentSlot net.minecraft.inventory.EntityEquipmentSlot
+
+net.minecraft.sounds.SoundEvents net.minecraft.init.SoundEvents
+net.minecraft.sounds.SoundEvents EXPERIENCE_ORB_PICKUP ENTITY_EXPERIENCE_ORB_PICKUP
+net.minecraft.sounds.SoundEvents ITEM_PICKUP ENTITY_ITEM_PICKUP
+net.minecraft.sounds.SoundEvents PLAYER_LEVELUP ENTITY_PLAYER_LEVELUP
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_BASEDRUM BLOCK_NOTE_BASEDRUM
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_BASS BLOCK_NOTE_BASS
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_HARP BLOCK_NOTE_HARP
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_HAT BLOCK_NOTE_HAT
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_PLING BLOCK_NOTE_PLING
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_SNARE BLOCK_NOTE_SNARE
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_BELL BLOCK_NOTE_BELL
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_CHIME BLOCK_NOTE_CHIME
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_FLUTE BLOCK_NOTE_FLUTE
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_GUITAR BLOCK_NOTE_GUITAR
+net.minecraft.sounds.SoundEvents NOTE_BLOCK_XYLOPHONE BLOCK_NOTE_XYLOPHONE

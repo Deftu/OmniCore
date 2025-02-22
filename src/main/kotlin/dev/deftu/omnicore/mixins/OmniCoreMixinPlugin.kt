@@ -18,6 +18,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#endif
         }
 
+        //#if MC >= 1.21.1
+        //$$ result.add("common.Mixin_CustomPayload_BypassOmniPackets")
+        //#endif
+
         return result
     }
 

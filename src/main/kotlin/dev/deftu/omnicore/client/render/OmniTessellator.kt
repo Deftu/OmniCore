@@ -7,9 +7,9 @@ package dev.deftu.omnicore.client.render
 //$$ import net.minecraft.client.gl.ShaderProgramKey
 //#endif
 
-//#if MC >= 1.21
-//$$ import net.minecraft.client.render.BuiltBuffer
-//$$ import net.minecraft.client.util.BufferAllocator
+//#if MC >= 1.21.1
+//$$ import com.mojang.blaze3d.vertex.MeshData
+//$$ import com.mojang.blaze3d.vertex.ByteBufferBuilder
 //#endif
 
 //#if MC >= 1.20.5
@@ -26,8 +26,8 @@ import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 //#if MC <= 1.19.2
-//$$ import net.minecraft.util.math.Matrix4f
-//$$ import net.minecraft.util.math.Matrix3f
+//$$ import com.mojang.math.Matrix4f
+//$$ import com.mojang.math.Matrix3f
 //#endif
 
 //#if MC <= 1.12.2
@@ -151,7 +151,7 @@ public class OmniTessellator(
         //$$ buffer = if (size == 0) {
         //$$     getTessellator().begin(mode.vanilla, format)
         //$$ } else {
-        //$$     BufferBuilder(BufferAllocator(size), mode.vanilla, format)
+        //$$     BufferBuilder(ByteBufferBuilder(size), mode.vanilla, format)
         //$$ }
         //#else
         buffer!!.begin(mode.vanilla, format)
@@ -190,7 +190,7 @@ public class OmniTessellator(
         checkBuffer()
 
         //#if MC >= 1.21
-        //$$ val builtBuffer = buffer!!.end()
+        //$$ val builtBuffer = buffer!!.buildOrThrow()
         //#endif
         //#if MC >= 1.16
         if (renderLayer != null) {
@@ -214,7 +214,7 @@ public class OmniTessellator(
 
     private fun handleDraw(
         //#if MC >= 1.21
-        //$$ builtBuffer: BuiltBuffer
+        //$$ builtBuffer: MeshData
         //#endif
     ) {
         checkBuffer()
@@ -270,13 +270,13 @@ public class OmniTessellator(
 
     private fun drawBuffer(
         //#if MC >= 1.21
-        //$$ builtBuffer: BuiltBuffer
+        //$$ builtBuffer: MeshData
         //#endif
     ) {
         checkBuffer()
 
         //#if MC >= 1.21
-        //$$ BufferRenderer.drawWithGlobalProgram(builtBuffer)
+        //$$ BufferUploader.drawWithShader(builtBuffer)
         //#elseif MC >= 1.16.5
         if (buffer == getTessellator().buffer) {
             getTessellator().draw()

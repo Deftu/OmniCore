@@ -1,0 +1,60 @@
+name: Build with Gradle
+
+on:
+  push:
+    branches:
+      - "*"
+    paths-ignore:
+      - "README"
+      - "LICENSE.md"
+      - ".gitignore"
+      - ".gitattributes"
+  pull_request:
+    branches:
+      - "*"
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - "LICENSE.md"
+      - ".gitignore"
+      - ".gitattributes"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build with Gradle
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            **/loom-cache
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: |
+            build/libs/*.jar
+            versions/*/build/libs/*.jar
+          if-no-files-found: "error"

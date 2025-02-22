@@ -1,20 +1,26 @@
 package dev.deftu.omnicore.client
 
-//#if MC >= 1.16.5
-import net.minecraft.client.util.GlfwUtil
-//#endif
-
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.hud.ChatHud
 import net.minecraft.client.gui.hud.InGameHud
+import net.minecraft.client.gui.screen.ConnectScreen
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.network.ServerInfo
 import net.minecraft.client.sound.SoundManager
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.server.integrated.IntegratedServer
+
+//#if MC >= 1.17.1
+import net.minecraft.client.network.ServerAddress
+//#endif
+
+//#if MC >= 1.16.5
+import net.minecraft.client.util.GlfwUtil
+//#endif
 
 public object OmniClient {
 
@@ -36,13 +42,7 @@ public object OmniClient {
      */
     @JvmStatic
     public val isRunningOnMainThread: Boolean
-        get() {
-            //#if MC >= 1.15
-            return getInstance().isOnThread
-            //#else
-            //$$ return getInstance().isCallingFromMinecraftThread()
-            //#endif
-        }
+        get() = getInstance().isOnThread
 
     /**
      * @return The static instance of Minecraft's main class.
@@ -123,13 +123,7 @@ public object OmniClient {
      */
     @JvmStatic
     public val chat: ChatHud
-        get() {
-            //#if MC > 1.15
-            return hud.chatHud
-            //#else
-            //$$ return hud.chatGUI
-            //#endif
-        }
+        get() = hud.chatHud
 
     /**
      * @return The current server information, null if the player is not in a server.
@@ -158,7 +152,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public val soundManager: SoundManager
+    public val soundManager: SoundManager?
         get() = getInstance().soundManager
 
     /**
@@ -192,11 +186,7 @@ public object OmniClient {
      */
     @JvmStatic
     public fun execute(runnable: () -> Unit) {
-        //#if MC >= 1.15.2
         getInstance().execute(runnable)
-        //#else
-        //$$ getInstance().addScheduledTask(runnable::invoke)
-        //#endif
     }
 
     /**
@@ -242,10 +232,10 @@ public object OmniClient {
         @JvmStatic
         public val serverBrand: String?
             get() {
-                //#if MC >= 1.20.2
-                return networkHandler?.brand
+                //#if MC >= 1.20.4
+                //$$ return networkHandler?.serverBrand()
                 //#else
-                //$$ return player?.serverBrand
+                return player?.serverBrand
                 //#endif
             }
 
@@ -294,10 +284,10 @@ public object OmniClient {
         @JvmStatic
         public val isMultiplayerBanned: Boolean
             get() {
-                //#if MC >= 1.20.2
-                return getInstance().multiplayerBanDetails != null
+                //#if MC >= 1.20.4
+                //$$ return getInstance().multiplayerBan() != null
                 //#elseif MC >= 1.19.2
-                //$$ return getInstance().isMultiplayerBanned
+                return getInstance().isMultiplayerBanned
                 //#else
                 //$$ return false // TODO - Find a way to fetch this value in earlier versions
                 //#endif
@@ -322,6 +312,38 @@ public object OmniClient {
         @JvmStatic
         public val isInMultiplayer: Boolean
             get() = world != null && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServerInfo != null && currentServerInfo?.address != null
+
+        @JvmStatic
+        @JvmOverloads
+        public fun connectTo(hostname: String, name: String = hostname) {
+            val serverInfo = ServerInfo(
+                name,
+                hostname,
+                //#if MC >= 1.20.4
+                //$$ ServerData.Type.OTHER,
+                //#else
+                false,
+                //#endif
+            )
+
+            //#if MC >= 1.17.1
+            val serverAddress = ServerAddress.parse(hostname)
+            ConnectScreen.connect(
+                MultiplayerScreen(OmniScreen.currentScreen),
+                getInstance(),
+                serverAddress,
+                serverInfo,
+                //#if MC >= 1.20.1
+                false,
+                //#endif
+                //#if MC >= 1.20.6
+                //$$ null,
+                //#endif
+            )
+            //#else
+            //$$ OmniScreen.currentScreen = ConnectScreen(MultiplayerScreen(OmniScreen.currentScreen), getInstance(), serverInfo)
+            //#endif
+        }
 
     }
 }

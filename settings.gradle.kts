@@ -20,7 +20,7 @@ pluginManagement {
 
     plugins {
         kotlin("jvm") version("2.0.0")
-        id("dev.deftu.gradle.multiversion-root") version("2.24.0")
+        id("dev.deftu.gradle.multiversion-root") version("2.25.0")
     }
 }
 
@@ -51,10 +51,6 @@ listOf(
 
     "1.20.1-forge",
     "1.20.1-fabric",
-
-    "1.20.2-forge",
-    "1.20.2-neoforge",
-    "1.20.2-fabric",
 
     "1.20.4-forge",
     "1.20.4-neoforge",

@@ -1,7 +1,9 @@
 package dev.deftu.omnicore.client
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
 
 //#if FABRIC && MC >= 1.19
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
@@ -14,9 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue
 //#if FORGE && MC >= 1.16.5 && MC <= 1.17.1
 //$$ import com.mojang.brigadier.Command
 //$$ import com.mojang.brigadier.StringReader
-//$$ import com.mojang.brigadier.arguments.ArgumentType
 //$$ import com.mojang.brigadier.builder.ArgumentBuilder
-//$$ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 //$$ import com.mojang.brigadier.suggestion.SuggestionProvider
 //$$ import com.mojang.brigadier.tree.ArgumentCommandNode
 //$$ import com.mojang.brigadier.tree.CommandNode
@@ -34,7 +34,7 @@ import java.util.concurrent.LinkedBlockingQueue
 //$$ import net.minecraftforge.client.ClientCommandHandler
 //#endif
 
-//#if FABRIC && MC <= 1.12.2 || FORGE && MC >= 1.16.5 || FORGE && MC <= 1.17.1
+//#if FABRIC && MC <= 1.12.2
 //$$ import dev.deftu.textile.minecraft.MinecraftTextFormat
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //#endif
@@ -81,7 +81,6 @@ public object OmniClientCommands {
         //#else
         //$$ NeoForge.EVENT_BUS.addListener<RegisterClientCommandsEvent> { event ->
         //#endif
-        //$$     println("Registering commands with $event:\n${commandsToRegister.joinToString("\n")}")
         //$$     for (command in commandsToRegister) {
         //$$         event.dispatcher.register(command)
         //$$     }
@@ -104,6 +103,10 @@ public object OmniClientCommands {
 
     public fun literal(name: String): LiteralArgumentBuilder<ClientCommandSource> {
         return LiteralArgumentBuilder.literal(name)
+    }
+
+    public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<ClientCommandSource, T> {
+        return RequiredArgumentBuilder.argument(name, type)
     }
 
     //#if FABRIC && MC <= 1.12.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1

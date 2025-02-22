@@ -1,2 +1,0 @@
-net.minecraft.client.render.VertexFormatElement$ComponentType net.minecraft.client.render.VertexFormatElement$Type
-net.minecraft.client.render.VertexFormatElement comp_2845() getType()

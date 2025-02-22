@@ -87,7 +87,8 @@ public object OmniEquipment {
             EnchantmentInfo(enchantment, level)
         }
         //#elseif MC >= 1.12.2
-        //$$ return EnchantmentHelper.getEnchantments(stack).map { (enchantment, level) ->
+        //$$ val enchantments = EnchantmentHelper.getEnchantments(stack)
+        //$$ return enchantments.map { (enchantment, level) ->
         //$$     EnchantmentInfo(enchantment, level)
         //$$ }
         //#else

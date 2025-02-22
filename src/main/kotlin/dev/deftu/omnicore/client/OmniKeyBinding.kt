@@ -77,7 +77,7 @@ public data class OmniKeyBinding @JvmOverloads constructor(
                 //#if MC >= 1.16.5
                 this.vanillaKeyBinding.matchesMouse(button)
                 //#else
-                //$$ button == this.vanillaKeyBinding.getKeyCode()
+                //$$ button == this.vanillaKeyBinding.keyCode
                 //#endif
         )
     }
@@ -88,7 +88,7 @@ public data class OmniKeyBinding @JvmOverloads constructor(
                 //#if MC >= 1.16.5
                 this.vanillaKeyBinding.matchesKey(keyCode, scancode)
                 //#else
-                //$$ keyCode == this.vanillaKeyBinding.getKeyCode()
+                //$$ keyCode == this.vanillaKeyBinding.keyCode
                 //#endif
         )
     }

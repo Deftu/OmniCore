@@ -1,11 +1,8 @@
 package dev.deftu.omnicore
 
-import dev.deftu.omnicore.client.OmniChat
 import dev.deftu.omnicore.client.OmniClientCommands
 import dev.deftu.omnicore.common.OmniLoader
 import dev.deftu.omnicore.server.OmniServerCommands
-import dev.deftu.textile.SimpleTextHolder
-import dev.deftu.textile.minecraft.MinecraftTextFormat
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC

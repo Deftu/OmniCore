@@ -1,7 +1,9 @@
 package dev.deftu.omnicore.server
 
 import com.mojang.brigadier.CommandDispatcher
+import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
+import com.mojang.brigadier.builder.RequiredArgumentBuilder
 
 //#if FABRIC && MC >= 1.16.5
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
@@ -92,6 +94,10 @@ public object OmniServerCommands {
 
     public fun literal(name: String): LiteralArgumentBuilder<ServerCommandSource> {
         return LiteralArgumentBuilder.literal(name)
+    }
+
+    public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<ServerCommandSource, T> {
+        return RequiredArgumentBuilder.argument(name, type)
     }
 
 }

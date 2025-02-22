@@ -7,6 +7,9 @@ import net.minecraft.client.render.ChunkBuilderMode
 //#if MC >= 1.16.5
 import net.minecraft.client.option.CloudRenderMode
 import net.minecraft.client.option.GraphicsMode
+import net.minecraft.client.util.InputUtil
+//#else
+//$$ import net.minecraft.client.settings.GameSettings
 //#endif
 
 import dev.deftu.omnicore.annotations.GameSide
@@ -107,12 +110,13 @@ public object OmniGameOptions {
         @GameSide(Side.CLIENT)
         public val smoothLightingMode: SmoothLightingMode
             get() {
-                //#if MC >= 1.19.3
+                //#if MC >= 1.19.4
                 return if (OmniClient.getInstance().options.ao.value) SmoothLightingMode.MAXIMUM else SmoothLightingMode.OFF
                 //#elseif MC >= 1.16.5
-                //$$ val value = OmniClient.getInstance().options.ao
+                //$$ val value = OmniClient.getInstance().options.ambientOcclusion()
                      //#if MC >= 1.19.2
-                     //$$ .value.id
+                     //$$ .get()
+                     //$$ .id
                      //#else
                      //$$ .id
                      //#endif
@@ -631,6 +635,21 @@ public object OmniGameOptions {
                 //$$ return false
                 //#endif
             }
+
+        @JvmStatic
+        @JvmOverloads
+        @GameSide(Side.CLIENT)
+        public fun getDisplayName(code: Int, scanCode: Int = -1): String {
+            val name =
+                //#if MC >= 1.16.5
+                InputUtil.fromKeyCode(code, scanCode).toString()
+                //#else
+                //$$ GameSettings.getKeyDisplayString(code) ?: return "Unknown"
+                //#endif
+
+            return if (name.length == 1) name.first().uppercase() else name
+        }
+
     }
 
     // TODO: Resourcepacks

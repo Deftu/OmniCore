@@ -893,7 +893,7 @@ public object OmniKeyboard {
         //#if MC >= 1.19.3
         // This function was removed in 1.19.3. Repeat events are permanently enabled.
         //#elseif MC >= 1.15.2
-        //$$ OmniClient.getInstance().keyboard.setRepeatEvents(enabled)
+        //$$ OmniClient.getInstance().keyboardHandler.setSendRepeatsToGui(enabled)
         //#else
         //$$ Keyboard.enableRepeatEvents(enabled)
         //#endif
