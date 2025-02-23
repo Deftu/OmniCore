@@ -1,23 +1,50 @@
 package dev.deftu.omnicore.common
 
-//#if MC >= 1.20.6
+//#if MC >= 1.20.4
 //$$ import io.netty.buffer.ByteBuf
-//$$ import net.minecraft.network.packet.CustomPayload
-//$$ import net.minecraft.util.Identifier
+//$$ import net.minecraft.network.protocol.common.custom.CustomPacketPayload
+//$$ import net.minecraft.network.FriendlyByteBuf
+//$$ import net.minecraft.resources.ResourceLocation
 //$$ import java.util.function.Consumer
 //$$
 //$$ internal class OmniCustomPayloadImpl(
-//$$     override val channel: Identifier,
+//$$     override val channel: ResourceLocation,
 //$$     val consumer: Consumer<ByteBuf>
-//$$ ) : OmniCustomPayload, CustomPayload {
+//$$ ) : OmniCustomPayload, OmniCustomPayloadDataHolder, CustomPacketPayload {
 //$$
+//$$     private var data: ByteBuf? = null
+//$$
+//#if MC >= 1.20.6
 //$$     override fun getId(): CustomPayload.Id<out CustomPayload> {
 //$$         return CustomPayload.Id(channel)
 //$$     }
+//#else
+//$$     override fun id(): ResourceLocation {
+//$$         return channel
+//$$     }
+//#endif
 //$$
-//$$     override fun write(buf: ByteBuf) {
+//#if MC <= 1.20.4
+//$$     override fun write(buf: FriendlyByteBuf) {
+//$$         this.data = buf.copy()
 //$$         consumer.accept(buf)
 //$$     }
+//#endif
+//$$
+//$$     override fun write(buf: ByteBuf) {
+//$$         this.data = buf.copy()
+//$$         consumer.accept(buf)
+//$$     }
+//$$
+//$$     override fun `omnicore$getData`(): FriendlyByteBuf? {
+//$$         return data?.let { FriendlyByteBuf(it) }
+//$$     }
+//$$
+//#if MC >= 1.20.6
+//$$     override fun `omnicore$setData`(data: PacketByteBuf) {
+//$$         this.data = data
+//$$     }
+//#endif
 //$$
 //$$ }
 //#endif

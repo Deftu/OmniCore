@@ -12,6 +12,9 @@
         "fabricloader": "*"
     },
     "entrypoints": {
+        "main": [
+            "com.test.TestMod"
+        ],
         "client": [
             "com.test.TestMod"
         ]

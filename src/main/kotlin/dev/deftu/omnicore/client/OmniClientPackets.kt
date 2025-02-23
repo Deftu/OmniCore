@@ -6,14 +6,23 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
+import java.util.function.Predicate
 
-//#if MC >= 1.20.6
+//#if MC >= 1.20.4
 //$$ import dev.deftu.omnicore.common.OmniCustomPayloadImpl
+//#endif
+
+//#if FORGE && MC <= 1.12.2
+//$$ import dev.deftu.omnicore.common.OmniCustomForgeMessage
+//$$ import dev.deftu.omnicore.common.OmniPackets
 //#endif
 
 public object OmniClientPackets {
 
-    public fun send(id: Identifier, consumer: Consumer<ByteBuf>) {
+    private val packetReceivers = mutableMapOf<Identifier, MutableList<Predicate<ByteBuf>>>()
+
+    @JvmStatic
+    public fun sendVanilla(id: Identifier, consumer: Consumer<ByteBuf>) {
         val networkHandler = OmniClient.networkHandler ?: return
 
         val buf = Unpooled.buffer()
@@ -27,7 +36,7 @@ public object OmniClientPackets {
             //$$ id.toString(),
             //#endif
             //#endif
-            //#if MC >= 1.20.6
+            //#if MC >= 1.20.4
             //$$ OmniCustomPayloadImpl(id, consumer)
             //#else
             PacketByteBuf(buf)
@@ -39,12 +48,49 @@ public object OmniClientPackets {
         //#else
         networkHandler.sendPacket(packet)
         //#endif
+
+    }
+
+    public fun sendVanilla(id: Identifier, block: ByteBuf.() -> Unit) {
+        sendVanilla(id) { buf ->
+            block(buf)
+        }
+    }
+
+    public fun send(id: Identifier, consumer: Consumer<ByteBuf>) {
+        //#if FORGE && MC <= 1.12.2
+        //$$ val channel = OmniPackets.getChannel(id)
+        //$$ val buf = Unpooled.buffer()
+        //$$ consumer.accept(buf)
+        //$$ channel.sendToServer(OmniCustomForgeMessage(buf))
+        //#else
+        sendVanilla(id, consumer)
+        //#endif
     }
 
     public fun send(id: Identifier, block: ByteBuf.() -> Unit) {
         send(id) { buf ->
             block(buf)
         }
+    }
+
+    public fun createPacketReceiver(id: Identifier, receiver: Predicate<ByteBuf>): Runnable {
+        val list = packetReceivers.getOrPut(id) { mutableListOf() }
+        list.add(receiver)
+
+        return Runnable {
+            list.remove(receiver)
+        }
+    }
+
+    public fun createPacketReceiver(id: Identifier, block: ByteBuf.() -> Boolean): () -> Unit {
+        val fn = createPacketReceiver(id) { buf -> block(buf) }
+        return { fn.run() }
+    }
+
+    @JvmStatic
+    internal fun getAllPacketReceivers(id: Identifier): List<Predicate<ByteBuf>> {
+        return packetReceivers[id] ?: return emptyList()
     }
 
 }
