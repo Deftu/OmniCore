@@ -27,6 +27,9 @@ com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
 
+net.minecraft.util.profiling.ProfilerFiller net.minecraft.profiler.Profiler
+net.minecraft.util.profiling.ProfilerFiller popPush() endStartSection()
+
 net.minecraft.client.multiplayer.ClientLevel net.minecraft.client.multiplayer.WorldClient
 
 net.minecraft.client.player.LocalPlayer net.minecraft.client.entity.EntityPlayerSP
