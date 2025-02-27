@@ -2,6 +2,10 @@
 
 package dev.deftu.omnicore.client.render
 
+//#if MC >= 1.20.1
+import net.minecraft.client.gui.DrawContext
+//#endif
+
 //#if MC >= 1.16.5
 import net.minecraft.util.math.MathHelper
 import net.minecraft.client.util.math.MatrixStack
@@ -45,6 +49,7 @@ public class OmniMatrixStack private constructor(
     private val stack: Deque<StackEntry>
 ) {
     private companion object {
+
         //#if MC < 1.17
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$
@@ -52,6 +57,31 @@ public class OmniMatrixStack private constructor(
         //$$     return GlAllocationUtils.allocateFloatBuffer(capacity)
         //$$ }
         //#endif
+
+        @JvmStatic
+        public fun vanilla(
+            //#if MC >= 1.20.1
+            ctx: DrawContext
+            //#elseif MC >= 1.16.5
+            //$$ ctx: MatrixStack
+            //#endif
+        ): OmniMatrixStack {
+            //#if MC >= 1.20.1
+            return OmniMatrixStack(ctx.matrices)
+            //#elseif MC >= 1.16.5
+            //$$ return OmniMatrixStack(ctx)
+            //#else
+            //$$ return OmniMatrixStack()
+            //#endif
+        }
+
+        //#if MC >= 1.20.1
+        @JvmStatic
+        public fun vanilla(ctx: MatrixStack): OmniMatrixStack {
+            return OmniMatrixStack(ctx)
+        }
+        //#endif
+
     }
 
     public constructor() : this(ArrayDeque<StackEntry>().apply {
