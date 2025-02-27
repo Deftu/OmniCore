@@ -5,18 +5,13 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.hud.ChatHud
 import net.minecraft.client.gui.hud.InGameHud
-import net.minecraft.client.gui.screen.ConnectScreen
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.network.ServerInfo
+import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.sound.SoundManager
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.server.integrated.IntegratedServer
-
-//#if MC >= 1.17.1
-import net.minecraft.client.network.ServerAddress
-//#endif
 
 //#if MC >= 1.16.5
 import net.minecraft.client.util.GlfwUtil
@@ -104,6 +99,16 @@ public object OmniClient {
     @JvmStatic
     public val hasPlayer: Boolean
         get() = player != null
+
+    /**
+     * @return The player's unformatted username.
+     *
+     * @since 0.16.0
+     * @author Deftu
+     */
+    @JvmStatic
+    public val playerName: String
+        get() = getInstance().session.username
 
     /**
      * @return An instance of the [InGameHud], which controls the in-game UI elements, such as the hot bar.
@@ -219,131 +224,14 @@ public object OmniClient {
     }
 
     /**
-     * A collection of utilities for multiplayer-related tasks.
+     * @return The formatted string using Minecraft's built-in I18n.
+     *
+     * @since 0.16.0
+     * @author Deftu
      */
-    public object Multiplayer {
-
-        /**
-         * @return The server brand, null if the player is not in a server.
-         *
-         * @since 0.1.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val serverBrand: String?
-            get() {
-                //#if MC >= 1.20.4
-                //$$ return networkHandler?.serverBrand()
-                //#else
-                return player?.serverBrand
-                //#endif
-            }
-
-        /**
-         * @return The server address, null if the player is not in a server.
-         *
-         * @since 0.1.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val currentServerAddress: String?
-            get() = currentServerInfo?.address
-
-        /**
-         * @return Whether the player is in a LAN server.
-         *
-         * @since 0.13.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val isInLan: Boolean
-            get() = currentServerInfo?.isLocal ?: false
-
-        /**
-         * @return Whether the player has multiplayer enabled, is allowed to join servers, and is not banned from multiplayer.
-         *
-         * @since 0.1.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val isMultiplayerEnabled: Boolean
-            get() {
-                //#if MC >= 1.19.2
-                return getInstance().isMultiplayerEnabled
-                //#else
-                //$$ return true // TODO - Find a way to fetch this value in earlier versions
-                //#endif
-            }
-
-        /**
-         * @return Whether the player is banned from multiplayer.
-         *
-         * @since 0.1.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val isMultiplayerBanned: Boolean
-            get() {
-                //#if MC >= 1.20.4
-                //$$ return getInstance().multiplayerBan() != null
-                //#elseif MC >= 1.19.2
-                return getInstance().isMultiplayerBanned
-                //#else
-                //$$ return false // TODO - Find a way to fetch this value in earlier versions
-                //#endif
-            }
-
-        /**
-         * @return Whether the player is in a singleplayer environment.
-         *
-         * @since 0.13.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val isInSingleplayer: Boolean
-            get() = getInstance().isInSingleplayer
-
-        /**
-         * @return Whether the player is in a multiplayer environment.
-         *
-         * @since 0.1.0
-         * @author Deftu
-         */
-        @JvmStatic
-        public val isInMultiplayer: Boolean
-            get() = world != null && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServerInfo != null && currentServerInfo?.address != null
-
-        @JvmStatic
-        @JvmOverloads
-        public fun connectTo(hostname: String, name: String = hostname) {
-            val serverInfo = ServerInfo(
-                name,
-                hostname,
-                //#if MC >= 1.20.4
-                //$$ ServerData.Type.OTHER,
-                //#else
-                false,
-                //#endif
-            )
-
-            //#if MC >= 1.17.1
-            val serverAddress = ServerAddress.parse(hostname)
-            ConnectScreen.connect(
-                MultiplayerScreen(OmniScreen.currentScreen),
-                getInstance(),
-                serverAddress,
-                serverInfo,
-                //#if MC >= 1.20.1
-                false,
-                //#endif
-                //#if MC >= 1.20.6
-                //$$ null,
-                //#endif
-            )
-            //#else
-            //$$ OmniScreen.currentScreen = ConnectScreen(MultiplayerScreen(OmniScreen.currentScreen), getInstance(), serverInfo)
-            //#endif
-        }
-
+    @JvmStatic
+    public fun translate(key: String, vararg args: Any): String {
+        return I18n.translate(key, args)
     }
+
 }

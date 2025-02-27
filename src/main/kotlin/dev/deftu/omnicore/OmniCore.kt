@@ -24,6 +24,7 @@ public object OmniCore {
     /**
      * Represents if OmniCore is in debug mode.
      */
+    @JvmStatic
     @GameSide(Side.BOTH)
     public val isDebug: Boolean
         get() = System.getProperty("omnicore.debug")?.toBoolean() ?: false
@@ -31,6 +32,7 @@ public object OmniCore {
     /**
      * Represents the currently running Minecraft version.
      */
+    @JvmStatic
     @GameSide(Side.BOTH)
     public val minecraftVersion: String
         get() =

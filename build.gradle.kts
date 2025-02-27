@@ -1,4 +1,4 @@
-import dev.deftu.gradle.utils.MinecraftVersion
+import dev.deftu.gradle.utils.version.MinecraftVersions
 import dev.deftu.gradle.utils.includeOrShade
 
 plugins {
@@ -19,7 +19,8 @@ kotlin.explicitApi()
 toolkitLoomApi.setupTestClient()
 toolkitMultiversion.moveBuildsToRootProject.set(true)
 toolkitMavenPublishing.forceLowercase.set(true)
-if (mcData.isForgeLike && mcData.version >= MinecraftVersion.VERSION_1_16_5) {
+if (mcData.isForgeLike && mcData.version >= MinecraftVersions.VERSION_1_16_5) {
+    logger.lifecycle("==> Applying Mixin configs and Kotlin For Forge")
     toolkitLoomHelper.useKotlinForForge()
 
     if (mcData.isForge) {

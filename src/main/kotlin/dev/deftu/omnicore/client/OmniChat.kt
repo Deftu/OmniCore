@@ -7,10 +7,18 @@ import dev.deftu.textile.SimpleTextHolder
 import dev.deftu.textile.TextHolder
 import dev.deftu.textile.minecraft.toVanilla
 
+/**
+ * @since 0.2.2
+ * @author Deftu
+ */
 @Incubating
 @GameSide(Side.CLIENT)
 public object OmniChat {
 
+    /**
+     * @since 0.2.2
+     * @author Deftu
+     */
     @Incubating
     @JvmStatic
     @GameSide(Side.CLIENT)
@@ -28,6 +36,10 @@ public object OmniChat {
             //#endif
     }
 
+    /**
+     * @since 0.2.2
+     * @author Deftu
+     */
     @Incubating
     @JvmStatic
     @GameSide(Side.CLIENT)

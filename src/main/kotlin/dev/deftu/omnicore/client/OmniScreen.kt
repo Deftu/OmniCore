@@ -162,22 +162,23 @@ public abstract class OmniScreen(
 
     @GameSide(Side.CLIENT)
     public open fun handleKeyPress(
-        code: Int,
-        char: Char,
+        keyCode: Int,
+        scancode: Int,
+        typedChar: Char,
         modifiers: OmniKeyboard.KeyboardModifiers,
         trigger: KeyPressTrigger
     ): Boolean {
         //#if MC >= 1.15
         if (trigger == KeyPressTrigger.KEY_CODE_EVENT) {
-            return super.keyPressed(code, 0, modifiers.toInt())
+            return super.keyPressed(keyCode, 0, modifiers.toInt())
         }
 
         if (trigger == KeyPressTrigger.CHAR_TYPE_EVENT) {
-            return super.charTyped(char, modifiers.toInt())
+            return super.charTyped(typedChar, modifiers.toInt())
         }
         //#else
         //$$ try {
-        //$$     super.keyTyped(char, code)
+        //$$     super.keyTyped(typedChar, keyCode)
         //$$     return true // Default to true
         //$$ } catch (e: IOException) {
         //$$     e.printStackTrace()
@@ -189,13 +190,14 @@ public abstract class OmniScreen(
 
     @GameSide(Side.CLIENT)
     public open fun handleKeyRelease(
-        code: Int,
-        char: Char,
-        modifiers: Int
+        keyCode: Int,
+        scancode: Int,
+        typedChar: Char,
+        modifiers: OmniKeyboard.KeyboardModifiers
     ): Boolean {
         //#if MC >= 1.15
-        if (code != 0) {
-            return super.keyReleased(code, 0, modifiers)
+        if (keyCode != 0) {
+            return super.keyReleased(keyCode, 0, modifiers.toInt())
         }
         //#endif
 
@@ -368,18 +370,18 @@ public abstract class OmniScreen(
     //$$ }
     //#endif
 
-    final override fun keyPressed(code: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyPress(code, 0.toChar(), modifiers.toKeyboardModifiers(), KeyPressTrigger.KEY_CODE_EVENT)
+    final override fun keyPressed(keyCode: Int, scancode: Int, modifiers: Int): Boolean {
+        handleKeyPress(keyCode, scancode, 0.toChar(), modifiers.toKeyboardModifiers(), KeyPressTrigger.KEY_CODE_EVENT)
         return false
     }
 
-    final override fun charTyped(char: Char, modifiers: Int): Boolean {
-        handleKeyPress(0, char, modifiers.toKeyboardModifiers(), KeyPressTrigger.CHAR_TYPE_EVENT)
+    final override fun charTyped(typedChar: Char, modifiers: Int): Boolean {
+        handleKeyPress(0, 0, typedChar, modifiers.toKeyboardModifiers(), KeyPressTrigger.CHAR_TYPE_EVENT)
         return false
     }
 
-    final override fun keyReleased(code: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyRelease(code, 0.toChar(), modifiers)
+    final override fun keyReleased(keyCode: Int, scancode: Int, modifiers: Int): Boolean {
+        handleKeyRelease(keyCode, scancode, 0.toChar(), modifiers.toKeyboardModifiers())
         return false
     }
 
@@ -469,7 +471,7 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
-    //$$     handleKeyPress(keyCode, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.AMBIGUOUS)
+    //$$     handleKeyPress(keyCode, 0, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.AMBIGUOUS)
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, mouseBtn: Int) {
