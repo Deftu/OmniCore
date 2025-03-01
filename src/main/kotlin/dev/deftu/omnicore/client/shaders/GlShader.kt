@@ -1,14 +1,14 @@
 package dev.deftu.omnicore.client.shaders
 
-//#if MC <= 1.12.2
-//$$ import java.nio.ByteBuffer
-//$$ import java.nio.ByteOrder
-//#endif
-
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL20
+
+//#if MC <= 1.12.2
+//$$ import java.nio.ByteBuffer
+//$$ import java.nio.ByteOrder
+//#endif
 
 internal class GlShader(
     val vert: String,

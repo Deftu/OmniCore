@@ -12,6 +12,7 @@ import net.minecraft.sound.SoundEvent
 
 public object OmniServerSound {
 
+    @JvmStatic
     @ApiStatus.Internal
     public fun play(
         player: ServerPlayerEntity,
@@ -34,6 +35,7 @@ public object OmniServerSound {
         )
     }
 
+    @JvmStatic
     public fun play(player: ServerPlayerEntity, sound: OmniSound, volume: Float, pitch: Float) {
         play(
             player,

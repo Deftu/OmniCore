@@ -1,5 +1,12 @@
 package dev.deftu.omnicore.client.render
 
+import com.mojang.blaze3d.platform.GlStateManager
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import net.minecraft.util.Identifier
+import org.lwjgl.opengl.GL11
+import java.util.function.Supplier
+
 //#if MC >= 1.17.1
 import net.minecraft.client.gl.ShaderProgram
 //#endif
@@ -13,13 +20,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 //$$ import org.lwjgl.opengl.GL14
 //$$ import org.lwjgl.opengl.GL13
 //#endif
-
-import com.mojang.blaze3d.platform.GlStateManager
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import net.minecraft.util.Identifier
-import org.lwjgl.opengl.GL11
-import java.util.function.Supplier
 
 @GameSide(Side.CLIENT)
 public object OmniRenderState {

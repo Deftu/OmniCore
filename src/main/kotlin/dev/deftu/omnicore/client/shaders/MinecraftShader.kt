@@ -1,18 +1,5 @@
 package dev.deftu.omnicore.client.shaders
 
-//#if MC >= 1.21.4
-//$$ import dev.deftu.omnicore.common.OmniIdentifier
-//$$ import net.minecraft.client.gl.CompiledShader
-//#endif
-
-//#if MC >= 1.17
-//#if MC >= 1.19
-import net.minecraft.resource.Resource
-import java.util.Optional
-//#else
-//$$ import net.minecraft.resource.ResourceImpl
-//#endif
-
 import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
@@ -29,6 +16,19 @@ import net.minecraft.util.Identifier
 import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import kotlin.NoSuchElementException
+
+//#if MC >= 1.21.4
+//$$ import dev.deftu.omnicore.common.OmniIdentifier
+//$$ import net.minecraft.client.gl.CompiledShader
+//#endif
+
+//#if MC >= 1.17
+//#if MC >= 1.19
+import net.minecraft.resource.Resource
+import java.util.Optional
+//#else
+//$$ import net.minecraft.resource.ResourceImpl
+//#endif
 
 internal class MinecraftShader(
     private val shader: ShaderProgram,

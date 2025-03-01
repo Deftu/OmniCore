@@ -1,13 +1,13 @@
 package dev.deftu.omnicore
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+
 //#if MC >= 1.16.5
 import net.minecraft.SharedConstants
 //#elseif FORGE
 //$$ import net.minecraftforge.common.ForgeVersion
 //#endif
-
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
 
 @GameSide(Side.BOTH)
 public object OmniCore {

@@ -4,29 +4,24 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
+import com.mojang.brigadier.exceptions.CommandExceptionType
+import com.mojang.brigadier.exceptions.CommandSyntaxException
+import com.mojang.brigadier.tree.LiteralCommandNode
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.common.OmniCommands
+import org.apache.logging.log4j.LogManager
 
 //#if FABRIC && MC >= 1.19
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 //#endif
 
-//#if FABRIC && MC >= 1.19 || FORGE-LIKE && MC >= 1.18.2
-import java.util.concurrent.LinkedBlockingQueue
+//#if FORGE-LIKE && MC >= 1.16.5
+//#if MC <= 1.17.1
+//$$ import net.minecraft.commands.SharedSuggestionProvider;
 //#endif
-
-//#if FORGE && MC >= 1.16.5 && MC <= 1.17.1
-//$$ import com.mojang.brigadier.Command
-//$$ import com.mojang.brigadier.StringReader
-//$$ import com.mojang.brigadier.builder.ArgumentBuilder
-//$$ import com.mojang.brigadier.suggestion.SuggestionProvider
-//$$ import com.mojang.brigadier.tree.ArgumentCommandNode
-//$$ import com.mojang.brigadier.tree.CommandNode
-//$$ import com.mojang.brigadier.tree.LiteralCommandNode
-//$$ import com.mojang.brigadier.tree.RootCommandNode
-//$$ import net.minecraft.commands.SharedSuggestionProvider
-//$$ import net.minecraft.commands.synchronization.SuggestionProviders
-//$$ import net.minecraft.commands.CommandSource
+//$$
 //$$ import net.minecraft.commands.CommandSourceStack
-//$$ import java.util.*
 //#endif
 
 //#if FORGE && MC <= 1.12.2
@@ -49,31 +44,29 @@ import java.util.concurrent.LinkedBlockingQueue
 //#endif
 //#endif
 
-public typealias ClientCommandSource =
-        //#if MC >= 1.16.5
-        //#if FABRIC
-        net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
-        //#else
-        //$$ net.minecraft.commands.CommandSourceStack
-        //#endif
-        //#else
-        //$$ net.minecraft.command.ICommandSender
-        //#endif
-
+@GameSide(Side.CLIENT)
 public object OmniClientCommands {
 
-    private val dispatcher: CommandDispatcher<ClientCommandSource> = CommandDispatcher<ClientCommandSource>()
+    private var isInitialized = false
 
-    //#if FABRIC && MC >= 1.19 || FORGE-LIKE && MC >= 1.18.2
-    private val commandsToRegister = LinkedBlockingQueue<LiteralArgumentBuilder<ClientCommandSource>>()
-    //#endif
+    private val logger = LogManager.getLogger()
 
+    private val dispatcher: CommandDispatcher<OmniClientCommandSource> = CommandDispatcher<OmniClientCommandSource>()
+
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun initialize() {
+        if (isInitialized) {
+            return
+        }
+
         //#if FABRIC && MC >= 1.19
         ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
-            while (commandsToRegister.isNotEmpty()) {
-                dispatcher.register(commandsToRegister.poll())
-            }
+            copyClientCommands(dispatcher)
         }
         //#elseif FORGE-LIKE && MC >= 1.18.2
         //#if FORGE
@@ -81,199 +74,118 @@ public object OmniClientCommands {
         //#else
         //$$ NeoForge.EVENT_BUS.addListener<RegisterClientCommandsEvent> { event ->
         //#endif
-        //$$     for (command in commandsToRegister) {
-        //$$         event.dispatcher.register(command)
-        //$$     }
+        //$$     copyClientCommands(event.dispatcher)
         //$$ }
         //#endif
+
+        isInitialized = true
     }
 
-    public fun register(command: LiteralArgumentBuilder<ClientCommandSource>) {
-        //#if MC <= 1.12.2
-        //$$ val node =
-        //#endif
-        dispatcher.register(command)
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun register(node: LiteralCommandNode<OmniClientCommandSource>) {
+        dispatcher.root.addChild(node)
 
         //#if FORGE && MC <= 1.12.2
         //$$ ClientCommandHandler.instance.registerCommand(OmniCommandBridge(dispatcher, node))
-        //#elseif FABRIC && MC >= 1.19 || FORGE-LIKE && MC >= 1.18.2
-        commandsToRegister.add(command)
         //#endif
     }
 
-    public fun literal(name: String): LiteralArgumentBuilder<ClientCommandSource> {
+    /**
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun register(command: LiteralArgumentBuilder<OmniClientCommandSource>) {
+        register(command.build())
+    }
+
+    /**
+     * Helper function for creating a literal argument builder without the need to specify the type.
+     *
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun literal(name: String): LiteralArgumentBuilder<OmniClientCommandSource> {
         return LiteralArgumentBuilder.literal(name)
     }
 
-    public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<ClientCommandSource, T> {
+    /**
+     * Helper function for creating a required argument builder without the need to specify the type.
+     *
+     * @since 0.13.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<OmniClientCommandSource, T> {
         return RequiredArgumentBuilder.argument(name, type)
     }
 
-    //#if FABRIC && MC <= 1.12.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
-    //#if MC >= 1.16.5
-    //$$ // Adapted from MinecraftForge under LGPL-2.1
-    //$$ // https://github.com/MinecraftForge/MinecraftForge/blob/1.18.x/LICENSE.txt
-    //$$
-    //$$ @JvmStatic
-    //$$ internal fun mergeServerCommands(serverCommands: CommandDispatcher<SharedSuggestionProvider>): CommandDispatcher<SharedSuggestionProvider> {
-    //$$     val customDispatcherCopy = CommandDispatcher<ClientCommandSource>()
-    //$$     dispatcher.root.copyTo(customDispatcherCopy.root)
-    //$$
-    //$$     // Copies the server commands into another RootCommandNode so that redirects can't be used with client commands
-    //$$     val serverCommandsRoot = serverCommands.root
-    //$$     val newServerCommands = CommandDispatcher<SharedSuggestionProvider>()
-    //$$     serverCommandsRoot.copyTo(newServerCommands.root)
-    //$$
-    //$$     // Copies the server side commands into a temporary server side commands root node to be used later without the client commands
-    //$$     val serverCommandsCopy = RootCommandNode<SharedSuggestionProvider>()
-    //$$     mergeCommandNode(
-    //$$         newServerCommands.root, serverCommandsCopy, IdentityHashMap(),
-    //$$         OmniClient.getInstance().connection!!.suggestionsProvider, { 0 }, { null }
-    //$$     )
-    //$$
-    //$$     // Copies the client side commands into the server side commands to be used for suggestions
-    //$$     mergeCommandNode(
-    //$$         customDispatcherCopy.root, newServerCommands.root, IdentityHashMap(), obtainCommandSource(), { 0 }, { suggestions ->
-    //$$             var suggestionProvider = SuggestionProviders.safelySwap(suggestions as SuggestionProvider<SharedSuggestionProvider>?)
-    //$$             if (suggestionProvider == SuggestionProviders.ASK_SERVER) {
-    //$$                 suggestionProvider = SuggestionProvider { context, builder ->
-    //$$                     val source = obtainCommandSource()
-    //$$                     val reader = StringReader(context.input)
-    //$$                     if (reader.canRead() && reader.peek() == '/') {
-    //$$                         reader.skip()
-    //$$                     }
-    //$$                     val parse = dispatcher.parse(reader, source)
-    //$$                     dispatcher.getCompletionSuggestions(parse)
-    //$$                 }
-    //$$             }
-    //$$             suggestionProvider
-    //$$         }
-    //$$     )
-    //$$
-    //$$     // Copies the server side commands into the client side commands so that they can be sent to the server as a chat message
-    //$$     mergeCommandNode(
-    //$$         serverCommandsCopy, dispatcher.root, IdentityHashMap(),
-    //$$         OmniClient.getInstance().connection!!.suggestionsProvider,
-    //$$         { context ->
-    //$$             OmniChat.showChatMessage((if (context.input.startsWith("/")) "" else "/") + context.input)
-    //$$             0
-    //$$         },
-    //$$         { null }
-    //$$     )
-    //$$
-    //$$     return newServerCommands
-    //$$ }
-    //$$
-    //$$ private fun <S> CommandNode<S>.copyTo(destNode: CommandNode<S>) {
-    //$$     val newNodes = IdentityHashMap<CommandNode<S>, CommandNode<S>>()
-    //$$     newNodes[this] = destNode
-    //$$     for (child in this.children) {
-    //$$         val copiedNode = newNodes.computeIfAbsent(child) { innerChild ->
-    //$$             val argBuilder = innerChild.createBuilder()
-    //$$             val innerChildCopy = argBuilder.build()
-    //$$             innerChild.copyTo(innerChildCopy)
-    //$$             innerChildCopy
-    //$$         }
-    //$$
-    //$$         destNode.addChild(copiedNode)
-    //$$     }
-    //$$ }
-    //$$
-    //$$ private fun <S, T> mergeCommandNode(
-    //$$     sourceNode: CommandNode<S>,
-    //$$     resultNode: CommandNode<T>,
-    //$$     sourceToResult: MutableMap<CommandNode<S>, CommandNode<T>>,
-    //$$     canUse: S,
-    //$$     execute: Command<T>,
-    //$$     sourceToResultSuggestion: (SuggestionProvider<S>) -> SuggestionProvider<T>?
-    //$$ ) {
-    //$$     sourceToResult[sourceNode] = resultNode
-    //$$     for (sourceChild in sourceNode.children) {
-    //$$         if (sourceChild.canUse(canUse)) {
-    //$$             resultNode.addChild(toResult<S, T>(sourceChild, sourceToResult, canUse, execute, sourceToResultSuggestion))
-    //$$         }
-    //$$     }
-    //$$ }
-    //$$
-    //$$ private fun <S, T> toResult(
-    //$$     sourceNode: CommandNode<S>,
-    //$$     sourceToResult: MutableMap<CommandNode<S>, CommandNode<T>>,
-    //$$     canUse: S,
-    //$$     execute: Command<T>,
-    //$$     sourceToResultSuggestion: (SuggestionProvider<S>) -> SuggestionProvider<T>?
-    //$$ ): CommandNode<T> {
-    //$$     sourceToResult[sourceNode]?.let { return it }
-    //$$
-    //$$     val resultBuilder: ArgumentBuilder<T, *> = when (sourceNode) {
-    //$$         is ArgumentCommandNode<*, *> -> {
-    //$$             val sourceArgument = sourceNode as ArgumentCommandNode<S, Any>
-    //$$             RequiredArgumentBuilder.argument<T, Any>(sourceArgument.name, sourceArgument.type as ArgumentType<Any>).apply {
-    //$$                 sourceArgument.customSuggestions?.let { suggests(sourceToResultSuggestion(it)) }
-    //$$             }
-    //$$         }
-    //$$         is LiteralCommandNode<*> -> {
-    //$$             val sourceLiteral = sourceNode as LiteralCommandNode<S>
-    //$$             LiteralArgumentBuilder.literal(sourceLiteral.literal)
-    //$$         }
-    //$$         is RootCommandNode<S> -> {
-    //$$             val resultNode = RootCommandNode<T>()
-    //$$             mergeCommandNode<S, T>(sourceNode, resultNode, sourceToResult, canUse, execute, sourceToResultSuggestion)
-    //$$             return resultNode
-    //$$         }
-    //$$         else -> throw IllegalStateException("Node type $sourceNode is not a standard node type")
-    //$$     }
-    //$$
-    //$$     sourceNode.command?.let { resultBuilder.executes(execute) }
-    //$$     sourceNode.redirect?.let { resultBuilder.redirect(toResult(it, sourceToResult, canUse, execute, sourceToResultSuggestion)) }
-    //$$
-    //$$     val resultNode = resultBuilder.build()
-    //$$     mergeCommandNode(sourceNode, resultNode, sourceToResult, canUse, execute, sourceToResultSuggestion)
-    //$$     return resultNode
-    //$$ }
-    //#else
+    /**
+     * !!! NOTE !!!
+     *
+     * This does not actually copy command EXECUTION, only command structuring for auto-completion purposes.
+     *
+     * Please see [execute] usages for actual command execution implementation.
+     */
+    @JvmStatic
+    @Suppress("MemberVisibilityCanBePrivate")
+    internal fun <T> copyClientCommands(targetDispatcher: CommandDispatcher<T>) {
+        OmniCommands.copyCommands(
+            targetDispatcher,
+            this.dispatcher,
+            OmniClientCommandSource.UNIT
+        )
+    }
+
+    @JvmStatic
+    internal fun execute(command: String): Boolean {
+        val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
+
+        OmniProfiler.start("omnicore_command___$command")
+
+        try {
+            dispatcher.execute(results)
+            return true
+        } catch (e: CommandSyntaxException) {
+            val isIgnored = isIgnoredException(e.type)
+            val message = "Syntax exception for client-sided command '$command'"
+
+            if (!isIgnored) {
+                logger.warn(message, e)
+            } else {
+                logger.debug(message, e)
+            }
+
+            return isIgnored
+        } finally {
+            OmniProfiler.end()
+        }
+    }
+
+    private fun isIgnoredException(type: CommandExceptionType): Boolean {
+        val builtIns = CommandSyntaxException.BUILT_IN_EXCEPTIONS
+        return type == builtIns.dispatcherUnknownCommand() || type == builtIns.dispatcherParseException()
+    }
+
+    //#if FABRIC && MC <= 1.12.2
     //$$ @JvmStatic
     //$$ internal fun retrieveAutoComplete(command: String): Set<String> {
-    //$$     val results = dispatcher.parse(command, obtainCommandSource())
+    //$$     val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
     //$$     return dispatcher.getCompletionSuggestions(results)
     //$$         .join()
     //$$         .list
     //$$         .map(Suggestion::getText)
-    //#if MC <= 1.12.2
     //$$         .map { text -> MinecraftTextFormat.GRAY + (if (command.contains(" ")) "" else "/") + text + MinecraftTextFormat.RESET }
-    //#endif
     //$$         .toSet()
-    //$$ }
-    //#endif
-    //$$
-    //$$ @JvmStatic
-    //$$ internal fun execute(command: String): Int {
-    //$$     val results = dispatcher.parse(command, obtainCommandSource())
-    //$$     println(results)
-    //$$     return try {
-    //$$         dispatcher.execute(results)
-    //$$     } catch (e: Exception) {
-    //$$         e.printStackTrace()
-    //$$         0
-    //$$     }
-    //$$ }
-    //$$
-    //$$ private fun obtainCommandSource(): ClientCommandSource {
-    //#if MC >= 1.16.5
-    //$$     val player = OmniClient.player ?: throw IllegalStateException("Player is null")
-    //$$     return CommandSourceStack(
-    //$$         CommandSource.NULL,
-    //$$         player.position(),
-    //$$         player.rotationVector,
-    //$$         null,
-    //$$         2,
-    //$$         player.name.string,
-    //$$         player.name,
-    //$$         null,
-    //$$         player
-    //$$     )
-    //#else
-    //$$     return OmniClient.player ?: throw IllegalStateException("Player is null")
-    //#endif
     //$$ }
     //#endif
 

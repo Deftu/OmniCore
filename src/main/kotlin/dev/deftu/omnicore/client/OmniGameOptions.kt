@@ -1,5 +1,8 @@
 package dev.deftu.omnicore.client
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+
 //#if MC >= 1.18.2
 import net.minecraft.client.render.ChunkBuilderMode
 //#endif
@@ -12,11 +15,6 @@ import net.minecraft.client.util.InputUtil
 //$$ import net.minecraft.client.settings.GameSettings
 //#endif
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Incubating
-import dev.deftu.omnicore.annotations.Side
-
-@Incubating
 @GameSide(Side.CLIENT)
 public object OmniGameOptions {
 

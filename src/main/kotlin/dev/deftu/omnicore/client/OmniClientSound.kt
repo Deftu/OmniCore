@@ -15,6 +15,7 @@ import net.minecraft.sound.SoundEvent
 
 public object OmniClientSound {
 
+    @JvmStatic
     @ApiStatus.Internal
     public fun play(
         //#if MC >= 1.12.2
@@ -29,6 +30,7 @@ public object OmniClientSound {
         createPositionedSoundRecord(event, volume, pitch)?.let(soundManager::play)
     }
 
+    @JvmStatic
     public fun play(sound: OmniSound, volume: Float, pitch: Float) {
         play(
             //#if MC >= 1.12.2

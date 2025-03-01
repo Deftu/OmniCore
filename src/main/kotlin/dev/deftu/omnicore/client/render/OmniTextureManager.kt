@@ -2,24 +2,6 @@
 
 package dev.deftu.omnicore.client.render
 
-//#if MC >= 1.21.4
-//$$ import dev.deftu.omnicore.common.OmniIdentifier
-//#endif
-
-//#if MC >= 1.15
-import net.minecraft.client.texture.NativeImage
-//#if FORGE
-//$$ import net.minecraft.client.renderer.texture.*
-//#else
-//#endif
-//#else
-//#if FORGE
-//$$ import net.minecraft.client.renderer.texture.*
-//#else
-//$$ import net.minecraft.client.texture.*
-//#endif
-//#endif
-
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.platform.TextureUtil
 import dev.deftu.omnicore.annotations.GameSide
@@ -42,6 +24,24 @@ import java.lang.ref.ReferenceQueue
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import javax.imageio.ImageIO
+
+//#if MC >= 1.21.4
+//$$ import dev.deftu.omnicore.common.OmniIdentifier
+//#endif
+
+//#if MC >= 1.15
+import net.minecraft.client.texture.NativeImage
+//#if FORGE
+//$$ import net.minecraft.client.renderer.texture.*
+//#else
+//#endif
+//#else
+//#if FORGE
+//$$ import net.minecraft.client.renderer.texture.*
+//#else
+//$$ import net.minecraft.client.texture.*
+//#endif
+//#endif
 
 @GameSide(Side.CLIENT)
 public class OmniTextureManager private constructor(

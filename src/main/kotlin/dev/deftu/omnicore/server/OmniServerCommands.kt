@@ -4,13 +4,17 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
+import dev.deftu.omnicore.annotations.Incubating
+import dev.deftu.omnicore.common.OmniCommands
+
+//#if MC >= 1.16.5
+import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.command.CommandOutput
+//#endif
 
 //#if FABRIC && MC >= 1.16.5
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-//#endif
 
-//#if FABRIC && MC >= 1.16.5 || FORGE-LIKE && MC >= 1.18.2
-import java.util.concurrent.LinkedBlockingQueue
 //#endif
 
 //#if FORGE-LIKE && MC >= 1.18.2
@@ -34,31 +38,29 @@ import java.util.concurrent.LinkedBlockingQueue
 //#endif
 //#endif
 
-public typealias ServerCommandSource =
-        //#if MC >= 1.16.5
-        net.minecraft.server.command.ServerCommandSource
-        //#else
-        //$$ net.minecraft.command.ICommandSender
-        //#endif
-
+@Incubating
 public object OmniServerCommands {
 
-    private val dispatcher: CommandDispatcher<ServerCommandSource> = CommandDispatcher<ServerCommandSource>()
-    //#if FABRIC && MC >= 1.16.5 || FORGE-LIKE && MC >= 1.18.2
-    private val commandsToRegister = LinkedBlockingQueue<LiteralArgumentBuilder<ServerCommandSource>>()
-    //#endif
+    private var isInitialized = false
 
+    private val dispatcher: CommandDispatcher<OmniServerCommandSource> = CommandDispatcher<OmniServerCommandSource>()
+
+    @JvmStatic
     public fun initialize() {
+        if (isInitialized) {
+            return
+        }
+
         //#if FABRIC && MC >= 1.16.5
         CommandRegistrationCallback.EVENT.register {
                                                     dispatcher,
                                                     _,
                                                     //#if MC >= 1.19.2
-                                                    env
+                                                    _
                                                     //#endif
                                                     ->
-            while (commandsToRegister.isNotEmpty()) {
-                dispatcher.register(commandsToRegister.poll())
+            OmniCommands.copyCommandsWithMapper(dispatcher, this@OmniServerCommands.dispatcher) { src ->
+                OmniServerCommandSource(src.server, src.output, src.world)
             }
         }
         //#elseif FORGE-LIKE && MC >= 1.18.2
@@ -67,14 +69,18 @@ public object OmniServerCommands {
         //#else
         //$$ NeoForge.EVENT_BUS.addListener<RegisterCommandsEvent> { event ->
         //#endif
-        //$$     for (command in commandsToRegister) {
-        //$$         event.dispatcher.register(command)
+        //$$     OmniCommands.copyCommandsWithMapper(event.dispatcher, this.dispatcher) { src ->
+        //$$         OmniServerCommandSource(src.server, src.output, src.level)
         //$$     }
         //$$ }
         //#endif
+
+        isInitialized = true
     }
 
-    public fun register(command: LiteralArgumentBuilder<ServerCommandSource>) {
+    @JvmStatic
+    @Incubating
+    public fun register(command: LiteralArgumentBuilder<OmniServerCommandSource>) {
         //#if MC <= 1.12.2
         //$$ val node =
         //#endif
@@ -87,17 +93,35 @@ public object OmniServerCommands {
         //#else
         //$$ CommandRegistry.INSTANCE.register(OmniCommandBridge(dispatcher, node))
         //#endif
-        //#elseif FABRIC || FORGE-LIKE && MC >= 1.18.2
-        commandsToRegister.add(command)
         //#endif
     }
 
-    public fun literal(name: String): LiteralArgumentBuilder<ServerCommandSource> {
+    @JvmStatic
+    @Incubating
+    public fun literal(name: String): LiteralArgumentBuilder<OmniServerCommandSource> {
         return LiteralArgumentBuilder.literal(name)
     }
 
-    public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<ServerCommandSource, T> {
+    @JvmStatic
+    @Incubating
+    public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<OmniServerCommandSource, T> {
         return RequiredArgumentBuilder.argument(name, type)
     }
+
+    //#if FABRIC && MC >= 1.16.5
+    private val ServerCommandSource.output: CommandOutput
+        get() {
+            val field = ServerCommandSource::class.java.getDeclaredField("output")
+            field.isAccessible = true
+            return field.get(this) as CommandOutput
+        }
+    //#elseif FORGE-LIKE && MC >= 1.18.2
+    //$$ private val CommandSourceStack.output: CommandSource
+    //$$     get() {
+    //$$         val field = CommandSourceStack::class.java.getDeclaredField("source")
+    //$$         field.isAccessible = true
+    //$$         return field.get(this) as CommandSource
+    //$$     }
+    //#endif
 
 }

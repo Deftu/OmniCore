@@ -34,7 +34,11 @@ net.minecraft.client.multiplayer.ClientLevel net.minecraft.client.multiplayer.Wo
 
 net.minecraft.client.player.LocalPlayer net.minecraft.client.entity.EntityPlayerSP
 
+net.minecraft.server.level.ServerLevel net.minecraft.world.WorldServer
+
 net.minecraft.server.level.ServerPlayer net.minecraft.entity.player.EntityPlayerMP
+
+net.minecraft.commands.CommandSource net.minecraft.command.ICommandSender
 
 net.minecraft.client.gui.Gui net.minecraft.client.gui.GuiIngame
 

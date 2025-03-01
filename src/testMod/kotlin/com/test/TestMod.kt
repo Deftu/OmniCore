@@ -1,5 +1,6 @@
 package com.test
 
+import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.common.OmniLoader
@@ -77,14 +78,23 @@ class TestMod
 
         OmniClientCommands.register(
             OmniClientCommands.literal("testmod")
-                .executes {
-                    OmniChat.showChatMessage("TestMod base command executed!")
-                    OmniClientPackets.send(OmniIdentifier.create("testmod:base_command")) {
-                        writeString("Hello, world!")
-                    }
+                .executes { ctx ->
+                    ctx.source.showMessage("TestMod base command executed!")
 
                     1
                 }
+                .then(
+                    OmniClientCommands.literal("subcommand")
+                        .then(
+                            OmniClientCommands.argument("name", StringArgumentType.greedyString())
+                                .executes { ctx ->
+                                    val name = StringArgumentType.getString(ctx, "name")
+                                    ctx.source.showError("TestMod subcommand executed with name: $name")
+
+                                    1
+                                }
+                        )
+                )
         )
     }
 

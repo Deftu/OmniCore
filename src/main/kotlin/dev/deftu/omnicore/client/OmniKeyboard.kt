@@ -1,14 +1,14 @@
 package dev.deftu.omnicore.client
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+
 //#if MC >= 1.15
 import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
 //#else
 //$$ import org.lwjgl.input.Keyboard
 //#endif
-
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
 
 @GameSide(Side.CLIENT)
 public object OmniKeyboard {

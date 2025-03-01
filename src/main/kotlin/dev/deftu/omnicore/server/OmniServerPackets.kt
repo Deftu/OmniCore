@@ -14,6 +14,7 @@ import java.util.function.Consumer
 
 public object OmniServerPackets {
 
+    @JvmStatic
     public fun send(player: ServerPlayerEntity, id: Identifier, consumer: Consumer<ByteBuf>) {
         val networkHandler = player.networkHandler ?: return
 
@@ -42,6 +43,7 @@ public object OmniServerPackets {
         //#endif
     }
 
+    @JvmStatic
     public fun send(player: ServerPlayerEntity, id: Identifier, block: ByteBuf.() -> Unit) {
         send(player, id) { buf ->
             block(buf)

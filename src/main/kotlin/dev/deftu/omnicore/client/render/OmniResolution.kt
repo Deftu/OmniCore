@@ -1,18 +1,27 @@
 package dev.deftu.omnicore.client.render
 
-//#if MC <= 1.12.2
-//$$ import net.minecraft.client.gui.ScaledResolution
-//#endif
-
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 
+//#if MC <= 1.12.2
+//$$ import net.minecraft.client.gui.ScaledResolution
+//#endif
+
+/**
+ * A utility class which provides a means of checking various resolution data points.
+ *
+ * @since 0.1.0
+ * @author Deftu
+ */
 @GameSide(Side.CLIENT)
 public object OmniResolution {
+
     //#if MC <= 1.12.2
     //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val isUnicode: Boolean)
+    //$$
     //$$ private var cachedScaledRes: CachedScaledResolution? = null
+    //$$
     //$$ private var scaledRes: ScaledResolution? = null
     //#endif
 
@@ -111,4 +120,5 @@ public object OmniResolution {
     //$$     return scaledRes!!
     //$$ }
     //#endif
+
 }
