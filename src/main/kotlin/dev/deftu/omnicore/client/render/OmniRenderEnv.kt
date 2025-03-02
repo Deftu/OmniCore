@@ -5,6 +5,12 @@ import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 
+//#if MC >= 1.16.5
+import org.lwjgl.opengl.GL
+//#else
+//$$ import org.lwjgl.opengl.GLContext
+//#endif
+
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
 //#endif
@@ -85,6 +91,23 @@ public object OmniRenderEnv {
             return true
             //#else
             //$$ return OpenGlHelper.openGL21
+            //#endif
+        }
+
+    /**
+     * Returns whether OpenGL 3.0 features are available.
+     *
+     * @since 0.19.1
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val isGl3Available: Boolean
+        get() {
+            //#if MC >= 1.15.2
+            return GL.getCapabilities().OpenGL30
+            //#else
+            //$$ return GLContext.getCapabilities().OpenGL30
             //#endif
         }
 
