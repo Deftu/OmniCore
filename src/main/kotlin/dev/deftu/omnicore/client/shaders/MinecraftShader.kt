@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.client.shaders
 
+//#if MC >= 1.17
 import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
@@ -22,7 +23,6 @@ import kotlin.NoSuchElementException
 //$$ import net.minecraft.client.gl.CompiledShader
 //#endif
 
-//#if MC >= 1.17
 //#if MC >= 1.19
 import net.minecraft.resource.Resource
 import java.util.Optional
