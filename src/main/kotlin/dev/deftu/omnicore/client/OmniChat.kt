@@ -47,4 +47,35 @@ public object OmniChat {
         showChatMessage(SimpleTextHolder(text))
     }
 
+    /**
+     * Sends a chat message to the server on behalf of the client player.
+     *
+     * @since 0.20.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun sendChatMessage(text: String) {
+        val player = OmniClient.player ?: throw IllegalStateException("Player is null")
+        //#if MC >= 1.19.3
+        player.networkHandler?.sendChatMessage(text)
+        //#elseif MC >= 1.19.1
+        //$$ player.sendChatMessage(text, null)
+        //#else
+        //$$ player.sendChatMessage(text)
+        //#endif
+    }
+
+    /**
+     * Sends a chat message to the server on behalf of the client player.
+     *
+     * @since 0.20.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun sendChatMessage(text: TextHolder) {
+        sendChatMessage(text.asString())
+    }
+
 }
