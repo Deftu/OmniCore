@@ -72,6 +72,18 @@ public data class OmniKeyBinding @JvmOverloads constructor(
         )
     }
 
+    public val isUnbound: Boolean
+        get() {
+            //#if MC >= 1.16.5
+            return this.vanillaKeyBinding.isUnbound
+            //#else
+            //$$ return this.vanillaKeyBinding.keyCode == OmniKeyboard.KEY_NONE
+            //#endif
+        }
+
+    public val isPressed: Boolean
+        get() = !isUnbound && this.vanillaKeyBinding.isPressed
+
     public fun matchesMouse(button: Int): Boolean {
         return type == Type.MOUSE && (
                 //#if MC >= 1.16.5
