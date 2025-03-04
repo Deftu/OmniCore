@@ -91,6 +91,17 @@ public object OmniClientPlayer {
             //#endif
         }
 
+    /**
+     * @return The current session's username.
+     *
+     * @since 0.20.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val name: String
+        get() = OmniClient.getInstance().session.username
+
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val gameProfile: GameProfile

@@ -88,7 +88,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    @Deprecated("Use OmniClientPlayer.getInstance instead.", ReplaceWith("OmniClientPlayer.getInstance()"))
+    @Deprecated("Use OmniClientPlayer.getInstance() instead.", ReplaceWith("OmniClientPlayer.getInstance()"))
     public val player: ClientPlayerEntity?
         get() = OmniClientPlayer.getInstance()
 
@@ -111,6 +111,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @Deprecated("Use OmniClientPlayer.name instead.", ReplaceWith("OmniClientPlayer.name"))
     public val playerName: String
         get() = getInstance().session.username
 
