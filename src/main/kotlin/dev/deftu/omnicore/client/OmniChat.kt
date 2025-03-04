@@ -60,7 +60,7 @@ public object OmniChat {
         //#if MC >= 1.19.3
         player.networkHandler?.sendChatMessage(text)
         //#elseif MC >= 1.19.1
-        //$$ player.sendChatMessage(text, null)
+        //$$ player.chatSigned(text, null)
         //#else
         //$$ player.sendChatMessage(text)
         //#endif
