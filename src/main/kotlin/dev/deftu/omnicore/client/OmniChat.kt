@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.textile.SimpleTextHolder
 import dev.deftu.textile.TextHolder
@@ -11,7 +10,6 @@ import dev.deftu.textile.minecraft.toVanilla
  * @since 0.2.2
  * @author Deftu
  */
-@Incubating
 @GameSide(Side.CLIENT)
 public object OmniChat {
 
@@ -19,7 +17,6 @@ public object OmniChat {
      * @since 0.2.2
      * @author Deftu
      */
-    @Incubating
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun showChatMessage(text: TextHolder) {
@@ -40,7 +37,6 @@ public object OmniChat {
      * @since 0.2.2
      * @author Deftu
      */
-    @Incubating
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun showChatMessage(text: String) {
