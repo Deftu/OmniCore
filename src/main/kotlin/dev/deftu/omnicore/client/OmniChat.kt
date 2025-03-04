@@ -14,6 +14,8 @@ import dev.deftu.textile.minecraft.toVanilla
 public object OmniChat {
 
     /**
+     * Displays a chat message to the client player locally, without sending it to the server.
+     *
      * @since 0.2.2
      * @author Deftu
      */
@@ -34,6 +36,8 @@ public object OmniChat {
     }
 
     /**
+     * Displays a chat message to the client player locally, without sending it to the server.
+     *
      * @since 0.2.2
      * @author Deftu
      */
