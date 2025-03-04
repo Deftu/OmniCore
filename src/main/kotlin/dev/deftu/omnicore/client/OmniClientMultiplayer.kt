@@ -19,7 +19,7 @@ public object OmniClientMultiplayer {
             //#if MC >= 1.20.4
             //$$ return OmniClient.networkHandler?.serverBrand()
             //#else
-            return OmniClient.player?.serverBrand
+            return OmniClientPlayer.getInstance()?.serverBrand
             //#endif
         }
 

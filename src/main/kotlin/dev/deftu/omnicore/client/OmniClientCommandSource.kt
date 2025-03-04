@@ -51,7 +51,7 @@ public class OmniClientCommandSource {
      */
     @GameSide(Side.CLIENT)
     public val player: ClientPlayerEntity
-        get() = OmniClient.player ?: throw IllegalAccessException("Player is null when it shouldn't be")
+        get() = OmniClientPlayer.getInstance() ?: throw IllegalAccessException("Player is null when it shouldn't be")
 
     /**
      * @since 0.19.0

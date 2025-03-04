@@ -22,7 +22,7 @@ public object OmniChat {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun showChatMessage(text: TextHolder) {
-        val player = OmniClient.player ?: throw IllegalStateException("Player is null")
+        val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         player
             //#if MC >= 1.21.4
             //$$ .sendMessage(text.toVanilla(), false)
@@ -56,7 +56,7 @@ public object OmniChat {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun sendChatMessage(text: String) {
-        val player = OmniClient.player ?: throw IllegalStateException("Player is null")
+        val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         //#if MC >= 1.19.3
         player.networkHandler?.sendChatMessage(text)
         //#elseif MC >= 1.19.1

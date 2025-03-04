@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.common
 
 import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.annotations.Side
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
@@ -39,7 +38,7 @@ public object OmniEquipment {
     public fun getEquipment(
         entity: LivingEntity,
         type: EquipmentType
-    ): ItemStack {
+    ): ItemStack? {
         if (type.isHand) {
             //#if MC >= 1.12.2
             return if (type == EquipmentType.MAIN_HAND) entity.mainHandStack else entity.offHandStack
@@ -119,7 +118,7 @@ public object OmniEquipment {
 }
 
 @GameSide(Side.BOTH)
-public fun LivingEntity.getEquipment(type: OmniEquipment.EquipmentType): ItemStack {
+public fun LivingEntity.getEquipment(type: OmniEquipment.EquipmentType): ItemStack? {
     return OmniEquipment.getEquipment(this, type)
 }
 

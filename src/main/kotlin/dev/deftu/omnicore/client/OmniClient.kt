@@ -46,7 +46,9 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
-    public fun getInstance(): MinecraftClient = MinecraftClient.getInstance()
+    public fun getInstance(): MinecraftClient {
+        return MinecraftClient.getInstance()
+    }
 
     /**
      * @return The current world instance, null if the player is not in a world.
@@ -86,8 +88,9 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @Deprecated("Use OmniClientPlayer.getInstance instead.", ReplaceWith("OmniClientPlayer.getInstance()"))
     public val player: ClientPlayerEntity?
-        get() = getInstance().player
+        get() = OmniClientPlayer.getInstance()
 
     /**
      * @return True if the player is in a world, false otherwise.
@@ -97,8 +100,9 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @Deprecated("Use OmniClientPlayer.hasPlayer instead.", ReplaceWith("OmniClientPlayer.hasPlayer"))
     public val hasPlayer: Boolean
-        get() = player != null
+        get() = OmniClientPlayer.hasPlayer
 
     /**
      * @return The player's unformatted username.
