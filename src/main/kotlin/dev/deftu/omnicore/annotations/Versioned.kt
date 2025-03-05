@@ -13,7 +13,8 @@ package dev.deftu.omnicore.annotations
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.FILE
+    AnnotationTarget.FILE,
+    AnnotationTarget.VALUE_PARAMETER,
 )
 public annotation class VersionedOn(public val version: String)
 
@@ -30,7 +31,8 @@ public annotation class VersionedOn(public val version: String)
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.FILE
+    AnnotationTarget.FILE,
+    AnnotationTarget.VALUE_PARAMETER,
 )
 public annotation class VersionedAbove(public val version: String)
 
@@ -47,7 +49,8 @@ public annotation class VersionedAbove(public val version: String)
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.FILE
+    AnnotationTarget.FILE,
+    AnnotationTarget.VALUE_PARAMETER,
 )
 public annotation class VersionedBelow(public val version: String)
 
@@ -65,6 +68,7 @@ public annotation class VersionedBelow(public val version: String)
     AnnotationTarget.FUNCTION,
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER,
-    AnnotationTarget.FILE
+    AnnotationTarget.FILE,
+    AnnotationTarget.VALUE_PARAMETER,
 )
 public annotation class VersionedBetween(public val from: String, public val to: String)
