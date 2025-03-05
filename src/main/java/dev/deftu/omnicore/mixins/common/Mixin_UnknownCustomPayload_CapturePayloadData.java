@@ -9,7 +9,12 @@ package dev.deftu.omnicore.mixins.common;
 //$$ import org.spongepowered.asm.mixin.Unique;
 //$$ import org.spongepowered.asm.mixin.injection.At;
 //$$ import org.spongepowered.asm.mixin.injection.Inject;
-//$$ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+//$$
+//#if MC >= 1.20.6
+//$$ import net.minecraft.network.packet.CustomPayload;
+//$$ import net.minecraft.util.Identifier;
+//$$ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+//#endif
 //$$
 //$$ @Mixin(DiscardedPayload.class)
 //$$ public class Mixin_UnknownCustomPayload_CapturePayloadData implements OmniCustomPayloadDataHolder {
@@ -17,24 +22,15 @@ package dev.deftu.omnicore.mixins.common;
 //$$     @Unique
 //$$     private FriendlyByteBuf omnicore$payloadData = null;
 //$$
-//#if MC <= 1.20.4
-//$$     @Inject(method = "write", at = @At("HEAD"))
-//$$     private void omnicore$capturePayloadData(FriendlyByteBuf buf, CallbackInfo ci) {
-//$$         this.omnicore$payloadData = new FriendlyByteBuf(buf.copy());
-//$$     }
-//#endif
-//$$
 //$$     @Override
 //$$     public @Nullable FriendlyByteBuf omnicore$getData() {
 //$$         return omnicore$payloadData;
 //$$     }
 //$$
-//#if MC >= 1.20.6
 //$$     @Override
-//$$     public void omnicore$setData(@Nullable PacketByteBuf data) {
+//$$     public void omnicore$setData(@Nullable FriendlyByteBuf data) {
 //$$         this.omnicore$payloadData = data;
 //$$     }
-//#endif
 //$$
 //$$ }
 //#endif

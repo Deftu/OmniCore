@@ -37,7 +37,7 @@ public object OmniClientPackets {
             //#endif
             //#endif
             //#if MC >= 1.20.4
-            //$$ OmniCustomPayloadImpl(id, consumer)
+            //$$ OmniCustomPayloadImpl(id, consumer).also { it.write(buf) }
             //#else
             PacketByteBuf(buf)
             //#endif

@@ -23,8 +23,13 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         }
 
         //#if MC >= 1.20.6
-        //$$ result.add("common.Mixin_CustomPayload_EncodePayloadDataForCapture")
+        //$$ result.add("common.Mixin_CustomPayload_CaptureCodecBuffer")
         //$$ result.add("common.Mixin_CustomPayload_BypassOmniPackets")
+        //#endif
+
+        //#if MC == 1.20.4
+        //$$ result.add("common.Mixin_CustomPayloadC2SPacket_CapturePayloadData")
+        //$$ result.add("common.Mixin_CustomPayloadS2CPacket_CapturePayloadData")
         //#endif
 
         //#if MC >= 1.20.4

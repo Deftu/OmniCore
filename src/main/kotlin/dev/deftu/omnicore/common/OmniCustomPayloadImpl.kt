@@ -40,11 +40,9 @@ package dev.deftu.omnicore.common
 //$$         return data?.let { FriendlyByteBuf(it) }
 //$$     }
 //$$
-//#if MC >= 1.20.6
-//$$     override fun `omnicore$setData`(data: PacketByteBuf) {
+//$$     override fun `omnicore$setData`(data: FriendlyByteBuf) {
 //$$         this.data = data
 //$$     }
-//#endif
 //$$
 //$$ }
 //#endif

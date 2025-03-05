@@ -8,10 +8,8 @@ package dev.deftu.omnicore.common
 //$$     @Suppress("FunctionName")
 //$$     fun `omnicore$getData`(): FriendlyByteBuf?
 //$$
-//#if MC >= 1.20.6
 //$$     @Suppress("FunctionName")
-//$$     fun `omnicore$setData`(data: PacketByteBuf)
-//#endif
+//$$     fun `omnicore$setData`(data: FriendlyByteBuf)
 //$$
 //$$ }
 //#endif
