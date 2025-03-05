@@ -19,6 +19,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#if FABRIC && MC <= 1.12.2 || MC >= 1.16.5
             result.add("client.Mixin_Screen_CommandExecution")
             //#endif
+
+            //#if FABRIC && MC == 1.8.9
+            //$$ result.add("client.Mixin_MinecraftClient_TimerAccessor")
+            //#endif
         }
 
         //#if MC >= 1.21.1

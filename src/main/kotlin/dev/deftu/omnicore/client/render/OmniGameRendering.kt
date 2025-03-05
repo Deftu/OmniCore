@@ -2,8 +2,18 @@ package dev.deftu.omnicore.client.render
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.annotations.VersionedAbove
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.client.font.TextRenderer
+
+//#if MC == 1.8.9
+//#if FABRIC
+//$$ import dev.deftu.omnicore.mixins.client.Mixin_MinecraftClient_TimerAccessor
+//#endif
+//$$
+//$$ import net.minecraft.client.render.ClientTickTracker
+//$$ import net.minecraft.client.MinecraftClient
+//#endif
 
 /**
  * A utility class which provides several helper functions for rendering game elements which may otherwise be difficult to do without the extensive use of preprocessing.
@@ -13,6 +23,18 @@ import net.minecraft.client.font.TextRenderer
  */
 @GameSide(Side.CLIENT)
 public object OmniGameRendering {
+
+    //#if MC == 1.8.9
+    //$$ private val MinecraftClient.deltaTickTracker: ClientTickTracker by lazy {
+    //#if FABRIC
+    //$$     (this as Mixin_MinecraftClient_TimerAccessor).ticker
+    //#else
+    //$$     val field = this.javaClass.getDeclaredField("timer")
+    //$$     field.isAccessible = true
+    //$$     field.get(this) as Timer
+    //#endif
+    //$$ }
+    //#endif
 
     /**
      * Returns whether the player currently has the "F3"/debug screen open.
@@ -30,6 +52,26 @@ public object OmniGameRendering {
             return OmniClient.getInstance().options.debugEnabled
             //#endif
         }
+
+    /**
+     * Returns the current tick delta, which is the time in seconds since the last frame was rendered.
+     *
+     * @param allowStatic Whether to allow the method to return a static value of 1 if the game tick is paused. Only affects version 1.21.1 and above.
+     *
+     * @since 0.20.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun getTickDelta(@VersionedAbove("1.21.1") allowStatic: Boolean = true): Float {
+        //#if MC >= 1.21.1
+        //$$ return OmniClient.getInstance().timer.getGameTimeDeltaPartialTick(allowStatic)
+        //#elseif MC >= 1.12.2
+        return OmniClient.getInstance().tickDelta
+        //#else
+        //$$ return OmniClient.getInstance().deltaTickTracker.tickDelta
+        //#endif
+    }
 
     /**
      * Draws a string of text to the screen using Minecraft's built-in font and text renderer.
