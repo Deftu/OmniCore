@@ -3,7 +3,7 @@ package dev.deftu.omnicore.server
 //#if FORGE && MC <= 1.12.2
 //$$ import dev.deftu.omnicore.common.OmniIdentifier
 //$$ import dev.deftu.omnicore.common.OmniPacketHandler
-//$$ import io.netty.buffer.ByteBuf
+//$$ import dev.deftu.omnicore.common.OmniPacketReceiverContext
 //$$ import io.netty.channel.ChannelHandlerContext
 //$$ import net.minecraft.entity.player.EntityPlayerMP
 //$$ import java.util.function.BiPredicate
@@ -17,8 +17,8 @@ package dev.deftu.omnicore.server
 //#endif
 //$$
 //$$ public class OmniServerPacketHandler(
-//$$     private val channeledPacketReceiverProvider: () -> Map<ResourceLocation, List<BiPredicate<EntityPlayerMP, ByteBuf>>>,
-//$$     private val globalPacketReceiverProvider: () -> List<BiPredicate<EntityPlayerMP, ByteBuf>>,
+//$$     private val channeledPacketReceiverProvider: () -> Map<ResourceLocation, List<BiPredicate<EntityPlayerMP, OmniPacketReceiverContext>>>,
+//$$     private val globalPacketReceiverProvider: () -> List<BiPredicate<EntityPlayerMP, OmniPacketReceiverContext>>,
 //$$     private val player: EntityPlayerMP
 //$$ ) : OmniPacketHandler() {
 //$$
@@ -37,8 +37,9 @@ package dev.deftu.omnicore.server
 //$$         val channel = OmniIdentifier.create(channelName)
 //$$         val channeledReceivers = channeledPacketReceivers[channel] ?: emptyList()
 //$$         val receivers = channeledReceivers + globalPacketReceivers
+//$$         val context = OmniPacketReceiverContext(channel, buf)
 //$$         for (receiver in channeledReceivers) {
-//$$             if (receiver.test(player, buf)) {
+//$$             if (receiver.test(player, context)) {
 //$$                 return true
 //$$             }
 //$$         }

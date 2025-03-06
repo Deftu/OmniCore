@@ -2,6 +2,7 @@ package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.common.OmniPacketReceiverContext
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketByteBuf
@@ -27,8 +28,8 @@ public object OmniClientPackets {
     //$$ private var isInitialized = false
     //#endif
 
-    private val channeledPacketReceivers = mutableMapOf<Identifier, MutableList<Predicate<ByteBuf>>>()
-    private val globalPacketReceivers = mutableListOf<Predicate<ByteBuf>>()
+    private val channeledPacketReceivers = mutableMapOf<Identifier, MutableList<Predicate<OmniPacketReceiverContext>>>()
+    private val globalPacketReceivers = mutableListOf<Predicate<OmniPacketReceiverContext>>()
 
     @JvmStatic
     @GameSide(Side.CLIENT)
@@ -75,7 +76,7 @@ public object OmniClientPackets {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun createChanneledPacketReceiver(id: Identifier, receiver: Predicate<ByteBuf>): Runnable {
+    public fun createChanneledPacketReceiver(id: Identifier, receiver: Predicate<OmniPacketReceiverContext>): Runnable {
         val list = channeledPacketReceivers.getOrPut(id) { mutableListOf() }
         list.add(receiver)
 
@@ -90,14 +91,14 @@ public object OmniClientPackets {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun createChanneledPacketReceiver(id: Identifier, block: ByteBuf.() -> Boolean): () -> Unit {
+    public fun createChanneledPacketReceiver(id: Identifier, block: OmniPacketReceiverContext.() -> Boolean): () -> Unit {
         val fn = createChanneledPacketReceiver(id) { buf -> block(buf) }
         return { fn.run() }
     }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun createGlobalPacketReceiver(receiver: Predicate<ByteBuf>): Runnable {
+    public fun createGlobalPacketReceiver(receiver: Predicate<OmniPacketReceiverContext>): Runnable {
         globalPacketReceivers.add(receiver)
 
         //#if FORGE && MC <= 1.12.2
@@ -111,7 +112,7 @@ public object OmniClientPackets {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun createGlobalPacketReceiver(block: ByteBuf.() -> Boolean): () -> Unit {
+    public fun createGlobalPacketReceiver(block: OmniPacketReceiverContext.() -> Boolean): () -> Unit {
         val fn = createGlobalPacketReceiver { buf -> block(buf) }
         return { fn.run() }
     }
@@ -140,7 +141,7 @@ public object OmniClientPackets {
     //#endif
 
     @JvmStatic
-    internal fun getAllPacketReceivers(id: Identifier): List<Predicate<ByteBuf>> {
+    internal fun getAllPacketReceivers(id: Identifier): List<Predicate<OmniPacketReceiverContext>> {
         return (channeledPacketReceivers[id] ?: return emptyList()) + globalPacketReceivers
     }
 

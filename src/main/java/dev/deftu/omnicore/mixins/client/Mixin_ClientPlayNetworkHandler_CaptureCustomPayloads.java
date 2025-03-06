@@ -6,7 +6,7 @@ package dev.deftu.omnicore.mixins.client;
 
 //#if FABRIC || MC >= 1.16.5
 import dev.deftu.omnicore.client.OmniClientPackets;
-import io.netty.buffer.ByteBuf;
+import dev.deftu.omnicore.common.OmniPacketReceiverContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -89,8 +89,9 @@ public class Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads {
         //$$ Identifier channel = OmniIdentifier.create(packet.getChannel());
         //$$ PacketByteBuf buf = packet.getPayload();
         //#endif
-        List<Predicate<ByteBuf>> receivers = OmniClientPackets.getAllPacketReceivers$OmniCore(channel);
-        boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(buf));
+        List<Predicate<OmniPacketReceiverContext>> receivers = OmniClientPackets.getAllPacketReceivers$OmniCore(channel);
+        OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
+        boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(context));
         if (anyHandled) {
             ci.cancel();
         }

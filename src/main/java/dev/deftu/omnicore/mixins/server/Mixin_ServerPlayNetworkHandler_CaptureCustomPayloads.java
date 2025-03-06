@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.mixins.server;
 
 //#if FABRIC || MC >= 1.16.5
+import dev.deftu.omnicore.common.OmniPacketReceiverContext;
 import dev.deftu.omnicore.server.OmniServerPackets;
-import io.netty.buffer.ByteBuf;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -95,7 +95,7 @@ public class Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads {
         //$$     return;
         //$$ }
         //$$
-        //$$ List<BiPredicate<ServerPlayer, ByteBuf>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+        //$$ List<BiPredicate<ServerPlayer, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
         //#elseif MC >= 1.16.5
         ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).player;
         //#if MC >= 1.17.1
@@ -106,14 +106,15 @@ public class Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads {
         //$$ Identifier channel = accessor.getChannel();
         //$$ PacketByteBuf buf = accessor.getData();
         //#endif
-        List<BiPredicate<ServerPlayerEntity, ByteBuf>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+        List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
         //#else
         //$$ ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).player;
         //$$ Identifier channel = OmniIdentifier.create(packet.getChannel());
         //$$ PacketByteBuf buf = packet.getPayload();
-        //$$ List<BiPredicate<ServerPlayerEntity, ByteBuf>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+        //$$ List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
         //#endif
-        boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(player, buf));
+        OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
+        boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(player, context));
         if (anyHandled) {
             ci.cancel();
         }

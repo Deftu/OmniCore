@@ -2,8 +2,8 @@ package dev.deftu.omnicore.mixins.server;
 
 //#if MC >= 1.20.6
 //$$ import dev.deftu.omnicore.common.OmniCustomPayloadDataHolder;
+//$$ import dev.deftu.omnicore.common.OmniPacketReceiverContext;
 //$$ import dev.deftu.omnicore.server.OmniServerPackets;
-//$$ import io.netty.buffer.ByteBuf;
 //$$ import net.minecraft.network.PacketByteBuf;
 //$$ import net.minecraft.network.packet.CustomPayload;
 //$$ import net.minecraft.network.packet.UnknownCustomPayload;
@@ -45,8 +45,9 @@ package dev.deftu.omnicore.mixins.server;
 //$$
 //$$         Identifier channel = discardedPayload.comp_1678();
 //$$         PacketByteBuf buf = holder.omnicore$getData();
-//$$         List<BiPredicate<ServerPlayerEntity, ByteBuf>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
-//$$         boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(this.player, buf));
+//$$         List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+//$$         OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
+//$$         boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(this.player, context));
 //$$         if (anyHandled) {
 //$$             ci.cancel();
 //$$         }
