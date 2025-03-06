@@ -4,11 +4,14 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.common.readString
 import dev.deftu.omnicore.common.writeString
+import dev.deftu.omnicore.server.OmniServerPackets
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.api.ModInitializer
 //#elseif FORGE
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.fml.common.Mod
@@ -33,7 +36,7 @@ const val VERSION = "1.0.0"
 //#endif
 class TestMod
 //#if FABRIC
-    : ClientModInitializer
+    : ModInitializer, ClientModInitializer
 //#endif
 {
 
@@ -44,7 +47,7 @@ class TestMod
         category = "Example Mod",
         defaultValue = OmniKeyboard.KEY_M,
         type = OmniKeyBinding.Type.KEY
-    ).register()
+    )
 
     //#if FORGE && MC >= 1.16.5
     //$$ init {
@@ -63,6 +66,20 @@ class TestMod
     //#if FABRIC
     override
     //#endif
+    fun onInitialize() {
+        //#if FABRIC && MC >= 1.16.5
+        println("Hello Fabric world!")
+        OmniServerPackets.createChanneledPacketReceiver(OmniIdentifier.create("testmod:base_command")) { player, buf ->
+            val message = buf.readString()
+            logger.info("Received message: $message")
+            true
+        }
+        //#endif
+    }
+
+    //#if FABRIC
+    override
+    //#endif
     fun onInitializeClient(
         //#if FORGE && MC <= 1.12.2
         //$$ event: FMLInitializationEvent
@@ -74,12 +91,17 @@ class TestMod
         //$$ }
         //#endif
 
+        exampleKeyBinding.register()
+
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
 
         OmniClientCommands.register(
             OmniClientCommands.literal("testmod")
-                .executes { ctx ->
-                    ctx.source.showMessage("TestMod base command executed!")
+                .executes {
+                    OmniChat.showChatMessage("TestMod base command executed!")
+                    OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
+                        writeString("Hello, world!")
+                    })
 
                     1
                 }
@@ -96,6 +118,15 @@ class TestMod
                         )
                 )
         )
+
+        //#if FABRIC && MC >= 1.16.5
+        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
+            println("Joined server!")
+            OmniClientPackets.send(OmniIdentifier.create("testmod:base_command")) {
+                writeString("Hello, world!")
+            }
+        }
+        //#endif
     }
 
 }

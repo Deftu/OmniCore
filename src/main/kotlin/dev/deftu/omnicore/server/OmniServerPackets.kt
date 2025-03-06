@@ -1,22 +1,52 @@
 package dev.deftu.omnicore.server
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
+import java.util.function.BiPredicate
 import java.util.function.Consumer
+import java.util.function.Predicate
 
-//#if MC >= 1.20.6
+//#if MC >= 1.20.4
 //$$ import dev.deftu.omnicore.common.OmniCustomPayloadImpl
+//#endif
+
+//#if FORGE && MC <= 1.12.2
+//$$ import dev.deftu.omnicore.common.OmniPackets
+//$$ import net.minecraftforge.common.MinecraftForge
+//$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+//$$ import net.minecraftforge.fml.common.gameevent.PlayerEvent
 //#endif
 
 public object OmniServerPackets {
 
+    //#if FORGE && MC <= 1.12.2
+    //$$ private var isInitialized = false
+    //#endif
+
+    private val channeledPacketReceivers = mutableMapOf<Identifier, MutableList<BiPredicate<ServerPlayerEntity, ByteBuf>>>()
+    private val globalPacketReceivers = mutableListOf<BiPredicate<ServerPlayerEntity, ByteBuf>>()
+
     @JvmStatic
+    @GameSide(Side.SERVER)
     public fun send(player: ServerPlayerEntity, id: Identifier, consumer: Consumer<ByteBuf>) {
         val networkHandler = player.networkHandler ?: return
+
+        //#if FORGE && MC <= 1.12.2
+        //$$ OmniPackets.setupCustomPacketHandler(
+        //$$     networkHandler.networkManager,
+        //$$     OmniServerPacketHandler(
+        //$$         channeledPacketReceiverProvider = { channeledPacketReceivers },
+        //$$         globalPacketReceiverProvider = { globalPacketReceivers },
+        //$$         player = player
+        //$$     )
+        //$$ )
+        //#endif
 
         val buf = Unpooled.buffer()
         consumer.accept(buf)
@@ -29,8 +59,8 @@ public object OmniServerPackets {
             //$$ id.toString(),
             //#endif
             //#endif
-            //#if MC >= 1.20.6
-            //$$ OmniCustomPayloadImpl(id, consumer)
+            //#if MC >= 1.20.4
+            //$$ OmniCustomPayloadImpl(id, consumer).also { it.write(buf) }
             //#else
             PacketByteBuf(buf)
             //#endif
@@ -44,10 +74,87 @@ public object OmniServerPackets {
     }
 
     @JvmStatic
+    @GameSide(Side.SERVER)
     public fun send(player: ServerPlayerEntity, id: Identifier, block: ByteBuf.() -> Unit) {
         send(player, id) { buf ->
             block(buf)
         }
+    }
+
+    @JvmStatic
+    @GameSide(Side.SERVER)
+    public fun createChanneledPacketReceiver(id: Identifier, receiver: BiPredicate<ServerPlayerEntity, ByteBuf>): Runnable {
+        val list = channeledPacketReceivers.getOrPut(id) { mutableListOf() }
+        list.add(receiver)
+
+        //#if FORGE && MC <= 1.12.2
+        //$$ setupForgeListener()
+        //#endif
+
+        return Runnable {
+            list.remove(receiver)
+        }
+    }
+
+    @JvmStatic
+    @GameSide(Side.SERVER)
+    public fun createChanneledPacketReceiver(id: Identifier, block: (ServerPlayerEntity, ByteBuf) -> Boolean): () -> Unit {
+        val fn = createChanneledPacketReceiver(id, receiver = { player, buf -> block(player, buf) })
+        return { fn.run() }
+    }
+
+    @JvmStatic
+    @GameSide(Side.SERVER)
+    public fun createGlobalPacketReceiver(receiver: BiPredicate<ServerPlayerEntity, ByteBuf>): Runnable {
+        globalPacketReceivers.add(receiver)
+
+        //#if FORGE && MC <= 1.12.2
+        //$$ setupForgeListener()
+        //#endif
+
+        return Runnable {
+            globalPacketReceivers.remove(receiver)
+        }
+    }
+
+    @JvmStatic
+    @GameSide(Side.SERVER)
+    public fun createGlobalPacketReceiver(block: (ServerPlayerEntity, ByteBuf) -> Boolean): () -> Unit {
+        val fn = createGlobalPacketReceiver(BiPredicate { player, buf -> block(player, buf) })
+        return { fn.run() }
+    }
+
+    //#if FORGE && MC <= 1.12.2
+    //$$ private fun setupForgeListener() {
+    //$$     if (isInitialized) {
+    //$$         return
+    //$$     }
+    //$$
+    //$$     MinecraftForge.EVENT_BUS.register(this)
+    //$$     isInitialized = true
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onPlayerJoinedServer(event: PlayerEvent.PlayerLoggedInEvent) {
+    //$$     val player = event.player as? EntityPlayerMP ?: return
+    //$$     OmniPackets.setupCustomPacketHandler(
+    //#if MC >= 1.12.2
+    //$$         player.connection.networkManager,
+    //#else
+    //$$         player.playerNetServerHandler.networkManager,
+    //#endif
+    //$$         OmniServerPacketHandler(
+    //$$             channeledPacketReceiverProvider = { channeledPacketReceivers },
+    //$$             globalPacketReceiverProvider = { globalPacketReceivers },
+    //$$             player = player
+    //$$         )
+    //$$     )
+    //$$ }
+    //#endif
+
+    @JvmStatic
+    internal fun getAllPacketReceivers(id: Identifier): List<BiPredicate<ServerPlayerEntity, ByteBuf>> {
+        return (channeledPacketReceivers[id] ?: return emptyList()) + globalPacketReceivers
     }
 
 }

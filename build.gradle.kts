@@ -36,6 +36,7 @@ toolkitReleases {
 }
 
 dependencies {
+    implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
     val textileVersion = "0.8.0"
@@ -43,6 +44,11 @@ dependencies {
     modImplementation(includeOrShade("dev.deftu:textile-$mcData:$textileVersion")!!)
 
     api("com.mojang:brigadier:1.0.18")
+
+    if (mcData.isForge && mcData.version <= MinecraftVersions.VERSION_1_12_2) {
+        includeOrShade(kotlin("stdlib-jdk8"))
+        includeOrShade("com.mojang:brigadier:1.0.18")
+    }
 
     if (mcData.isFabric) {
         modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")

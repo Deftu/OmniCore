@@ -12,6 +12,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         val result = mutableListOf<String>()
 
         if (OmniLoader.isPhysicalClient) {
+            //#if FABRIC || MC >= 1.16.5
+            //$$ result.add("client.Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads")
+            //#endif
+
             //#if FABRIC && MC <= 1.12.2 || FABRIC && MC >= 1.16.5 && MC <= 1.18.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
             //$$ result.add("client.Mixin_ChatScreen_CommandAutoComplete")
             //#endif
@@ -25,8 +29,30 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#endif
         }
 
-        //#if MC >= 1.21.1
+        //#if MC >= 1.20.6
+        //$$ result.add("common.Mixin_CustomPayload_CaptureCodecBuffer")
         //$$ result.add("common.Mixin_CustomPayload_BypassOmniPackets")
+        //#endif
+
+        //#if MC == 1.20.4
+        //$$ result.add("common.Mixin_CustomPayloadC2SPacket_CapturePayloadData")
+        //$$ result.add("common.Mixin_CustomPayloadS2CPacket_CapturePayloadData")
+        //#endif
+
+        //#if MC >= 1.20.4
+        //$$ result.add("common.Mixin_UnknownCustomPayload_CapturePayloadData")
+        //#endif
+
+        //#if FABRIC || MC >= 1.16.5
+        //#if MC == 1.16.5
+        //$$ result.add("server.Mixin_CustomPayloadC2SPacket_FieldAccessor")
+        //#endif
+        //$$
+        //#if MC >= 1.20.6
+        //$$ result.add("server.Mixin_ServerPlayNetworkHandler_CaptureOverridenCustomPayloads")
+        //#endif
+        //$$
+        //$$ result.add("server.Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads")
         //#endif
 
         return result
