@@ -68,7 +68,7 @@ class TestMod
     fun onInitialize() {
         //#if FABRIC && MC >= 1.16.5
         println("Hello Fabric world!")
-        OmniServerPackets.createPacketReceiver(OmniIdentifier.create("testmod:base_command")) { player, buf ->
+        OmniServerPackets.createChanneledPacketReceiver(OmniIdentifier.create("testmod:base_command")) { player, buf ->
             val message = buf.readString()
             logger.info("Received message: $message")
             true

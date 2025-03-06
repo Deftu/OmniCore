@@ -8,20 +8,12 @@ import java.util.function.Function
 import kotlin.experimental.and
 
 //#if FORGE && MC <= 1.12.2
-//$$ import net.minecraftforge.fml.common.network.NetworkRegistry
-//$$ import net.minecraftforge.fml.common.network.simpleimpl.IMessage
-//$$ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler
-//$$ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext
-//$$ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper
-//$$ import net.minecraftforge.fml.relauncher.Side
+//$$ import net.minecraft.network.NetworkManager
 //$$ import net.minecraft.util.ResourceLocation
+//$$ import java.util.function.Predicate
 //#endif
 
 public object OmniPackets {
-
-    //#if FORGE && MC <= 1.12.2
-    //$$ private val channels = mutableMapOf<ResourceLocation, SimpleNetworkWrapper>()
-    //#endif
 
     @JvmStatic
     @GameSide(Side.BOTH)
@@ -101,16 +93,17 @@ public object OmniPackets {
     }
 
     //#if FORGE && MC <= 1.12.2
-    //$$ public fun getChannel(id: ResourceLocation): SimpleNetworkWrapper {
-    //$$     return channels.computeIfAbsent(id) {
-    //$$         val value = NetworkRegistry.INSTANCE.newSimpleChannel(id.toString())
-    //$$
-    //$$         var discriminator = 0
-    //$$         value.registerMessage(OmniCustomForgeMessage.Handler(id), OmniCustomForgeMessage::class.java, discriminator++, Side.CLIENT)
-    //$$         value.registerMessage(OmniCustomForgeMessage.Handler(id), OmniCustomForgeMessage::class.java, discriminator, Side.SERVER)
-    //$$
-    //$$         value
+    //$$ @JvmStatic
+    //$$ internal fun setupCustomPacketHandler(
+    //$$     networkManager: NetworkManager,
+    //$$     packetHandler: OmniPacketHandler
+    //$$ ) {
+    //$$     val pipeline = networkManager.channel().pipeline()
+    //$$     if (pipeline.any { (_, handler) -> handler is OmniPacketHandler }) {
+    //$$         return
     //$$     }
+    //$$
+    //$$     pipeline.addFirst(packetHandler)
     //$$ }
     //#endif
 
