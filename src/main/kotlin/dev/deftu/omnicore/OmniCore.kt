@@ -1,13 +1,13 @@
 package dev.deftu.omnicore
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+
 //#if MC >= 1.16.5
 import net.minecraft.SharedConstants
 //#elseif FORGE
 //$$ import net.minecraftforge.common.ForgeVersion
 //#endif
-
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
 
 @GameSide(Side.BOTH)
 public object OmniCore {
@@ -24,6 +24,7 @@ public object OmniCore {
     /**
      * Represents if OmniCore is in debug mode.
      */
+    @JvmStatic
     @GameSide(Side.BOTH)
     public val isDebug: Boolean
         get() = System.getProperty("omnicore.debug")?.toBoolean() ?: false
@@ -31,6 +32,7 @@ public object OmniCore {
     /**
      * Represents the currently running Minecraft version.
      */
+    @JvmStatic
     @GameSide(Side.BOTH)
     public val minecraftVersion: String
         get() =

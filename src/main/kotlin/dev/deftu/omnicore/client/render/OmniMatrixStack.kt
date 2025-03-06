@@ -2,6 +2,16 @@
 
 package dev.deftu.omnicore.client.render
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import java.util.*
+import org.joml.Matrix4f
+import org.joml.Matrix3f
+
+//#if MC >= 1.20.1
+import net.minecraft.client.gui.DrawContext
+//#endif
+
 //#if MC >= 1.16.5
 import net.minecraft.util.math.MathHelper
 import net.minecraft.client.util.math.MatrixStack
@@ -34,17 +44,19 @@ import org.joml.Quaternionf
 //$$ import kotlin.math.*
 //#endif
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import java.util.*
-import org.joml.Matrix4f
-import org.joml.Matrix3f
-
+/**
+ * Provides a way to manipulate the current rendering state in a way that is compatible with both the vanilla matrix stack in modern versions and the legacy OpenGL global matrix stack.
+ *
+ * @since 0.1.0
+ * @author Deftu
+ */
 @GameSide(Side.CLIENT)
 public class OmniMatrixStack private constructor(
     private val stack: Deque<StackEntry>
 ) {
-    private companion object {
+
+    public companion object {
+
         //#if MC < 1.17
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$
@@ -52,8 +64,111 @@ public class OmniMatrixStack private constructor(
         //$$     return GlAllocationUtils.allocateFloatBuffer(capacity)
         //$$ }
         //#endif
+
+        /**
+         * Creates a new [OmniMatrixStack] instance which uses whatever is the most appropriate current-version matrix holder.
+         *
+         * @since 0.18.0
+         * @author Deftu
+         */
+        @JvmStatic
+        public fun vanilla(
+            //#if MC >= 1.20.1
+            ctx: DrawContext
+            //#elseif MC >= 1.16.5
+            //$$ ctx: MatrixStack
+            //#endif
+        ): OmniMatrixStack {
+            //#if MC >= 1.20.1
+            return OmniMatrixStack(ctx.matrices)
+            //#elseif MC >= 1.16.5
+            //$$ return OmniMatrixStack(ctx)
+            //#else
+            //$$ return OmniMatrixStack()
+            //#endif
+        }
+
+        //#if MC >= 1.20.1
+        /**
+         * Creates a new [OmniMatrixStack] instance using the provided [MatrixStack] specifically.
+         *
+         * @since 0.18.0
+         * @author Deftu
+         */
+        @JvmStatic
+        public fun vanilla(ctx: MatrixStack): OmniMatrixStack {
+            return OmniMatrixStack(ctx)
+        }
+        //#endif
+
     }
 
+    /**
+     * Represents a single entry in a matrix stack.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public data class StackEntry(
+        val matrix: Matrix4f,
+        val normal: Matrix3f
+    ) {
+
+        //#if MC >= 1.16
+        /**
+         * Converts this [StackEntry] to a vanilla [MatrixStack] instance.
+         *
+         * @since 0.1.0
+         * @author Deftu
+         */
+        @GameSide(Side.CLIENT)
+        public fun toVanillaStack(): MatrixStack = MatrixStack().also { stack ->
+            //#if MC >= 1.19.3
+            stack.peek().positionMatrix.mul(matrix)
+            stack.peek().normalMatrix.mul(normal)
+            //#else
+            //$$     stack.last().pose().multiply(matrix)
+            //$$     stack.last().normal().mul(normal)
+            //#endif
+        }
+        //#endif
+
+        /**
+         * Creates a deep copy of this [StackEntry].
+         *
+         * @since 0.1.0
+         * @author Deftu
+         */
+        @GameSide(Side.CLIENT)
+        public fun deepCopy(): StackEntry {
+            //#if MC >= 1.19.3
+            return StackEntry(Matrix4f(matrix), Matrix3f(normal))
+            //#elseif MC >= 1.15
+            //$$ return StackEntry(matrix.copy(), normal.copy())
+            //#else
+            //$$ return StackEntry(Matrix4f.load(matrix, null), Matrix3f.load(normal, null))
+            //#endif
+        }
+
+    }
+
+    /**
+     * Returns whether the stack is empty.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public val isEmpty: Boolean
+        get() = stack.size == 1
+
+    /**
+     * Creates a new [OmniMatrixStack] instance with an empty stack.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     public constructor() : this(ArrayDeque<StackEntry>().apply {
         add(StackEntry(
             Matrix4f(),
@@ -61,7 +176,13 @@ public class OmniMatrixStack private constructor(
         ))
     })
 
-    //#if MC >= 1.16
+    //#if MC >= 1.16.5
+    /**
+     * Creates a new [OmniMatrixStack] instance with the values contained within the provided vanilla [MatrixStack.Entry].
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     public constructor(entry: MatrixStack.Entry) : this(ArrayDeque<StackEntry>().apply {
         add(StackEntry(
             entry.positionMatrix,
@@ -69,12 +190,32 @@ public class OmniMatrixStack private constructor(
         ))
     })
 
+    /**
+     * Creates a new [OmniMatrixStack] instance with the values contained within the provided vanilla [MatrixStack].
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     public constructor(stack: MatrixStack) : this(stack.peek())
 
+    /**
+     * Converts the [OmniMatrixStack] to a vanilla [MatrixStack] instance.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
-    public fun toVanillaStack(): MatrixStack = peek().toVanillaStack()
+    public fun toVanillaStack(): MatrixStack {
+        return peek().toVanillaStack()
+    }
     //#endif
 
+    /**
+     * Scales the current matrix by the provided values.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
     public fun scale(
         x: Float,
@@ -85,8 +226,11 @@ public class OmniMatrixStack private constructor(
             x == 1f &&
             y == 1f &&
             z == 1f
-        ) return
-        stack.last.run {
+        ) {
+            return
+        }
+
+        return stack.last.run {
             //#if MC >= 1.19.3
             matrix.scale(x, y, z)
             //#elseif MC >= 1.15
@@ -106,7 +250,6 @@ public class OmniMatrixStack private constructor(
                     //#else
                     //$$ Matrix3f.negate(normal, normal)
                     //#endif
-                } else {
                 }
             } else {
                 val ix = 1f / x
@@ -134,13 +277,27 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    /**
+     * Scales the current matrix by the provided values.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
     public fun scale(
         x: Double,
         y: Double,
         z: Double
-    ): Unit = scale(x.toFloat(), y.toFloat(), z.toFloat())
+    ) {
+        scale(x.toFloat(), y.toFloat(), z.toFloat())
+    }
 
+    /**
+     * Translates the current matrix by the provided values.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
     public fun translate(
         x: Float,
@@ -151,7 +308,10 @@ public class OmniMatrixStack private constructor(
             x == 0f &&
             y == 0f &&
             z == 0f
-        ) return
+        ) {
+            return
+        }
+
         stack.last.run {
             //#if MC >= 1.19.3
             matrix.translate(x, y, z)
@@ -163,13 +323,27 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    /**
+     * Translates the current matrix by the provided values.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
     public fun translate(
         x: Double,
         y: Double,
         z: Double
-    ): Unit = translate(x.toFloat(), y.toFloat(), z.toFloat())
+    ) {
+        translate(x.toFloat(), y.toFloat(), z.toFloat())
+    }
 
+    /**
+     * Rotates the current matrix by the provided values.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @JvmOverloads
     @GameSide(Side.CLIENT)
     public fun rotate(
@@ -179,7 +353,10 @@ public class OmniMatrixStack private constructor(
         z: Float,
         degrees: Boolean = true
     ) {
-        if (angle == 0f) return
+        if (angle == 0f) {
+            return
+        }
+
         stack.last.run {
             val radians = if (degrees) Math.toRadians(angle.toDouble()).toFloat() else angle
             //#if MC >= 1.19.3
@@ -192,7 +369,7 @@ public class OmniMatrixStack private constructor(
             //$$ val axis = Vector3f(x, y, z)
             //$$ Matrix4f.rotate(radians, axis, matrix, matrix)
             //$$
-            //$$ fun makeRotationMatrix(angle: Float, axis: Vector3f) = Matrix3f().apply {
+            //$$ fun createRotationMatrix(angle: Float, axis: Vector3f) = Matrix3f().apply {
             //$$     val c = cos(angle)
             //$$     val s = sin(angle)
             //$$     val oneMinusC = 1 - c
@@ -216,11 +393,19 @@ public class OmniMatrixStack private constructor(
             //$$     m21 = yz * oneMinusC - xs
             //$$     m22 = zz * oneMinusC + c
             //$$ }
-            //$$ Matrix3f.mul(normal, makeRotationMatrix(radians, axis), normal)
+            //$$
+            //$$ Matrix3f.mul(normal, createRotationMatrix(radians, axis), normal)
             //#endif
         }
     }
 
+
+    /**
+     * Rotates the current matrix by the provided values.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @JvmOverloads
     @GameSide(Side.CLIENT)
     public fun rotate(
@@ -229,23 +414,65 @@ public class OmniMatrixStack private constructor(
         y: Double,
         z: Double,
         degrees: Boolean = true
-    ): Unit = rotate(angle.toFloat(), x.toFloat(), y.toFloat(), z.toFloat(), degrees)
+    ) {
+        rotate(angle.toFloat(), x.toFloat(), y.toFloat(), z.toFloat(), degrees)
+    }
 
+    /**
+     * Pushes a new matrix onto the stack, copying the current matrix.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
-    public fun push(): Unit = stack.addLast(stack.last.deepCopy())
+    public fun push() {
+        stack.addLast(stack.last.deepCopy())
+    }
 
+    /**
+     * Pops the current matrix from the stack.
+     *
+     * @throws IllegalStateException if the stack is empty.
+     * @return The popped matrix.
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
-    public fun pop(): StackEntry = stack.removeLast()
+    public fun pop(): StackEntry {
+        return stack.removeLast()
+    }
 
+    /**
+     * Peeks at the current matrix on the stack.
+     *
+     * @throws IllegalStateException if the stack is empty.
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
-    public fun peek(): StackEntry = stack.last
+    public fun peek(): StackEntry {
+        return stack.last
+    }
 
+    /**
+     * Creates an identical, independent copy of this [OmniMatrixStack].
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
-    public fun isEmpty(): Boolean = stack.size == 1
+    public fun copy(): OmniMatrixStack {
+        return OmniMatrixStack(stack.map { entry ->
+            entry.deepCopy()
+        }.toCollection(ArrayDeque()))
+    }
 
-    @GameSide(Side.CLIENT)
-    public fun copy(): OmniMatrixStack = OmniMatrixStack(stack.map { it.deepCopy() }.toCollection(ArrayDeque()))
-
+    /**
+     * Applies the current matrix to the global rendering state.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
     public fun applyToGlobalState() {
         //#if MC >= 1.17
@@ -279,6 +506,12 @@ public class OmniMatrixStack private constructor(
         //#endif
     }
 
+    /**
+     * Replaces the global rendering state with the current matrix.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
     public fun replaceGlobalState() {
         //#if MC >= 1.20.5
@@ -291,7 +524,6 @@ public class OmniMatrixStack private constructor(
         applyToGlobalState()
     }
 
-    @GameSide(Side.CLIENT)
     private inline fun <R> withGlobalStackPushed(block: () -> R) : R {
         //#if MC >= 1.17
         val stack = RenderSystem.getModelViewStack()
@@ -319,51 +551,58 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    /**
+     * Runs the provided block with the current matrix applied to the global rendering state.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
     @GameSide(Side.CLIENT)
-    public fun <R> runWithGlobalState(block: () -> R): R  = withGlobalStackPushed {
-        applyToGlobalState()
-        block()
-    }
-
-    @GameSide(Side.CLIENT)
-    public fun runWithGlobalState(block: Runnable): Unit = runWithGlobalState { block.run() }
-
-    @GameSide(Side.CLIENT)
-    public fun <R> runReplacingGlobalState(block: () -> R): R = withGlobalStackPushed {
-        replaceGlobalState()
-        block()
-    }
-
-    @GameSide(Side.CLIENT)
-    public fun runReplacingGlobalState(block: Runnable): Unit = runReplacingGlobalState { block.run() }
-
-    @GameSide(Side.CLIENT)
-    public data class StackEntry(
-        val matrix: Matrix4f,
-        val normal: Matrix3f
-    ) {
-        //#if MC >= 1.16
-        @GameSide(Side.CLIENT)
-        public fun toVanillaStack(): MatrixStack = MatrixStack().also { stack ->
-        //#if MC >= 1.19.3
-            stack.peek().positionMatrix.mul(matrix)
-            stack.peek().normalMatrix.mul(normal)
-        //#else
-        //$$     stack.last().pose().multiply(matrix)
-        //$$     stack.last().normal().mul(normal)
-        //#endif
-        }
-        //#endif
-
-        @GameSide(Side.CLIENT)
-        public fun deepCopy(): StackEntry {
-            //#if MC >= 1.19.3
-            return StackEntry(Matrix4f(matrix), Matrix3f(normal))
-            //#elseif MC >= 1.15
-            //$$ return StackEntry(matrix.copy(), normal.copy())
-            //#else
-            //$$ return StackEntry(Matrix4f.load(matrix, null), Matrix3f.load(normal, null))
-            //#endif
+    public fun <R> runWithGlobalState(block: () -> R): R {
+        return withGlobalStackPushed {
+            applyToGlobalState()
+            block()
         }
     }
+
+    /**
+     * Runs the provided block with the current matrix applied to the global rendering state.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public fun runWithGlobalState(block: Runnable) {
+        runWithGlobalState {
+            block.run()
+        }
+    }
+
+    /**
+     * Runs the provided block with the current matrix replacing the global rendering state.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public fun <R> runReplacingGlobalState(block: () -> R): R {
+        return withGlobalStackPushed {
+            replaceGlobalState()
+            block()
+        }
+    }
+
+    /**
+     * Runs the provided block with the current matrix replacing the global rendering state.
+     *
+     * @since 0.1.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public fun runReplacingGlobalState(block: Runnable) {
+        runReplacingGlobalState {
+            block.run()
+        }
+    }
+
 }

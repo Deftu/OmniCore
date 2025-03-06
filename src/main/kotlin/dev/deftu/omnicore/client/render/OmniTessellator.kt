@@ -2,6 +2,13 @@
 
 package dev.deftu.omnicore.client.render
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import org.lwjgl.opengl.GL11
+import java.awt.Color
+import java.util.*
+import java.util.function.Supplier
+
 //#if MC >= 1.21.4
 //$$ import net.minecraft.client.gl.ShaderProgramKeys
 //$$ import net.minecraft.client.gl.ShaderProgramKey
@@ -47,13 +54,6 @@ import net.minecraft.client.render.*
 //$$ import net.minecraft.client.renderer.vertex.VertexFormatElement
 //#endif
 //#endif
-
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import org.lwjgl.opengl.GL11
-import java.awt.Color
-import java.util.*
-import java.util.function.Supplier
 
 @GameSide(Side.CLIENT)
 public class OmniTessellator(

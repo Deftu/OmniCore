@@ -42,6 +42,7 @@ public data class OmniKeyBinding @JvmOverloads constructor(
 
     //#if FORGE-LIKE && MC >= 1.19.2
     //$$ internal companion object {
+    //$$
     //$$     val registeredBindings = mutableListOf<OmniKeyBinding>()
     //$$
     //$$     fun initialize() {
@@ -72,6 +73,18 @@ public data class OmniKeyBinding @JvmOverloads constructor(
         )
     }
 
+    public val isUnbound: Boolean
+        get() {
+            //#if MC >= 1.16.5
+            return this.vanillaKeyBinding.isUnbound
+            //#else
+            //$$ return this.vanillaKeyBinding.keyCode == OmniKeyboard.KEY_NONE
+            //#endif
+        }
+
+    public val isPressed: Boolean
+        get() = !isUnbound && this.vanillaKeyBinding.isPressed
+
     public fun matchesMouse(button: Int): Boolean {
         return type == Type.MOUSE && (
                 //#if MC >= 1.16.5
@@ -99,7 +112,7 @@ public data class OmniKeyBinding @JvmOverloads constructor(
         //#elseif FORGE && MC <= 1.18.2
         //$$ ClientRegistry.registerKeyBinding(this.vanillaKeyBinding)
         //#else
-        //$$ println("Attempted to register keybinding using attemptRegister on Forge 1.19.2+. Use register on the relevant event instead.")
+        //$$ registeredBindings.add(this)
         //#endif
     }
 

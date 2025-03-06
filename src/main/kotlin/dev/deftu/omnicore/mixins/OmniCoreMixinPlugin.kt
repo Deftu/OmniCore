@@ -16,9 +16,16 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //$$ result.add("client.Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads")
             //#endif
 
-            //#if FABRIC && MC <= 1.12.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
+            //#if FABRIC && MC <= 1.12.2 || FABRIC && MC >= 1.16.5 && MC <= 1.18.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
             //$$ result.add("client.Mixin_ChatScreen_CommandAutoComplete")
-            //$$ result.add("client.Mixin_Screen_CommandExecution")
+            //#endif
+
+            //#if FABRIC && MC <= 1.12.2 || MC >= 1.16.5
+            result.add("client.Mixin_Screen_CommandExecution")
+            //#endif
+
+            //#if FABRIC && MC == 1.8.9
+            //$$ result.add("client.Mixin_MinecraftClient_TimerAccessor")
             //#endif
         }
 

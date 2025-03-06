@@ -1,5 +1,6 @@
 package com.test
 
+import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.common.OmniLoader
@@ -104,6 +105,18 @@ class TestMod
 
                     1
                 }
+                .then(
+                    OmniClientCommands.literal("subcommand")
+                        .then(
+                            OmniClientCommands.argument("name", StringArgumentType.greedyString())
+                                .executes { ctx ->
+                                    val name = StringArgumentType.getString(ctx, "name")
+                                    ctx.source.showError("TestMod subcommand executed with name: $name")
+
+                                    1
+                                }
+                        )
+                )
         )
 
         //#if FABRIC && MC >= 1.16.5

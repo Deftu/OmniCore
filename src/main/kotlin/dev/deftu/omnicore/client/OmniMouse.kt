@@ -1,15 +1,15 @@
 package dev.deftu.omnicore.client
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.client.render.OmniResolution
+import kotlin.math.max
+
 //#if MC >= 1.15
 import org.lwjgl.glfw.GLFW
 //#elseif MC <= 1.12.2
 //$$ import org.lwjgl.input.Mouse
 //#endif
-
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.client.render.OmniResolution
-import kotlin.math.max
 
 @GameSide(Side.CLIENT)
 public object OmniMouse {

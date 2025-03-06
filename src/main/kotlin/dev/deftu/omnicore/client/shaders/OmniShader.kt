@@ -1,11 +1,5 @@
 package dev.deftu.omnicore.client.shaders
 
-//#if MC <= 1.12.2
-//$$ import net.minecraft.client.renderer.OpenGlHelper
-//$$ import java.nio.ByteBuffer
-//$$ import java.nio.FloatBuffer
-//#endif
-
 import com.mojang.blaze3d.platform.GlStateManager
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
@@ -14,6 +8,12 @@ import dev.deftu.omnicore.client.render.OmniTessellator
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
+
+//#if MC <= 1.12.2
+//$$ import net.minecraft.client.renderer.OpenGlHelper
+//$$ import java.nio.ByteBuffer
+//$$ import java.nio.FloatBuffer
+//#endif
 
 @GameSide(Side.CLIENT)
 public interface OmniShader {

@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.annotations.Side
 import org.apache.logging.log4j.LogManager
 import java.awt.Desktop
@@ -9,7 +8,6 @@ import java.io.File
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
-@Incubating
 @GameSide(Side.CLIENT)
 public object OmniDesktop {
 

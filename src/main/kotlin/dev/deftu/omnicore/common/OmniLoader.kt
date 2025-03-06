@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.common
 
+import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.IntendedLoader
 import dev.deftu.omnicore.annotations.Side
@@ -15,18 +16,21 @@ import net.fabricmc.api.EnvType
 //$$ import net.minecraftforge.fml.ModLoadingContext
 //$$ import net.minecraftforge.fml.ModContainer
 //$$ import net.minecraftforge.fml.loading.FMLEnvironment
+//$$ import net.minecraftforge.fml.loading.FMLLoader
 //$$ import net.minecraftforge.api.distmarker.Dist
 //#else
 //$$ import net.minecraftforge.fml.common.Loader
 //$$ import net.minecraftforge.fml.common.ModContainer
 //$$ import net.minecraftforge.fml.common.FMLCommonHandler
 //$$ import net.minecraftforge.fml.relauncher.Side as ForgeSide
+//$$ import net.minecraft.launchwrapper.Launch
 //#endif
 //#else
 //$$ import net.neoforged.fml.ModList
 //$$ import net.neoforged.fml.ModLoadingContext
 //$$ import net.neoforged.fml.ModContainer
 //$$ import net.neoforged.fml.loading.FMLEnvironment
+//$$ import net.neoforged.fml.loading.FMLLoader
 //$$ import net.neoforged.api.distmarker.Dist
 //#endif
 
@@ -110,9 +114,55 @@ public object OmniLoader {
 
     }
 
+    internal val versionRegex = "(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?".toRegex()
+
     //#if FORGE-LIKE && MC >= 1.16.5
     //$$ internal lateinit var modEventBus: IEventBus
     //#endif
+
+    /**
+     * Checks if the current environment is running in a development environment.
+     *
+     * @since 0.16.1
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val isDevelopment: Boolean
+        get() {
+            //#if FABRIC
+            return FabricLoader.getInstance().isDevelopmentEnvironment
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return !FMLLoader.isProduction()
+            //#else
+            //$$ return Launch.blackboard["fml.deobfuscatedEnvironment"] as Boolean
+            //#endif
+            //#endif
+        }
+
+    /**
+     * Gets the current Minecraft version in the standard which Preprocessor uses for comparing versions at compile-time.
+     *
+     * The version is padded to 6 digits, where the first 2 digits are the major version, the next 2 digits are the minor version, and the last 2 digits are the patch version. Any empty version parts are padded with 0.
+     *
+     * @since 0.17.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val paddedMinecraftVersion: Int
+        get() {
+            val version = OmniCore.minecraftVersion
+            val match = versionRegex.find(version) ?: throw IllegalArgumentException("Invalid version format, could not match to regex: $version")
+            val groups = match.groups
+
+            val major = groups["major"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version forma, missing major version: $version")
+            val minor = groups["minor"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing minor version: $version")
+            val patch = groups["patch"]?.value?.toInt() ?: 0
+
+            return major * 10000 + minor * 100 + patch
+        }
 
     /**
      * Gets the loader type that the current environment is running on.
@@ -332,6 +382,23 @@ public object OmniLoader {
         //$$ return ModList.get().isLoaded(id)
         //#else
         //$$ return Loader.isModLoaded(id)
+        //#endif
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun getModInfo(id: String): ModInfo? {
+        //#if FABRIC
+        val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
+        return if (container != null) createModInfo(container) else null
+        //#else
+        //#if MC >= 1.15.2
+        //$$ val container = ModList.get().getModContainerById(id).orElse(null)
+        //$$ return if (container != null) createModInfo(container) else null
+        //#else
+        //$$ val container = Loader.instance().getIndexedModList()[id]
+        //$$ return if (container != null) createModInfo(container) else null
         //#endif
         //#endif
     }

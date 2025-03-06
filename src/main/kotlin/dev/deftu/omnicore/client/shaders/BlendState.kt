@@ -1,5 +1,11 @@
 package dev.deftu.omnicore.client.shaders
 
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL14
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.client.render.OmniRenderState
+
 //#if MC >= 1.17 && MC <= 1.21.1
 import net.minecraft.client.gl.GlBlendState
 //#endif
@@ -7,12 +13,6 @@ import net.minecraft.client.gl.GlBlendState
 //#if MC >= 1.15
 import org.lwjgl.opengl.GL20
 //#endif
-
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL14
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.client.render.OmniRenderState
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0

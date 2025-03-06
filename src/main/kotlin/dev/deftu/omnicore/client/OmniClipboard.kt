@@ -1,14 +1,12 @@
 package dev.deftu.omnicore.client
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
+
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.gui.GuiScreen
 //#endif
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Incubating
-import dev.deftu.omnicore.annotations.Side
-
-@Incubating
 @GameSide(Side.CLIENT)
 public object OmniClipboard {
 

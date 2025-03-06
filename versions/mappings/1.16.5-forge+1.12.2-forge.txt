@@ -27,11 +27,25 @@ com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
 
+net.minecraft.util.profiling.ProfilerFiller net.minecraft.profiler.Profiler
+net.minecraft.util.profiling.ProfilerFiller popPush() endStartSection()
+
 net.minecraft.client.multiplayer.ClientLevel net.minecraft.client.multiplayer.WorldClient
 
 net.minecraft.client.player.LocalPlayer net.minecraft.client.entity.EntityPlayerSP
+net.minecraft.client.player.LocalPlayer getX() posX
+net.minecraft.client.player.LocalPlayer getPrevX() getPrevPosX()
+net.minecraft.client.player.LocalPlayer getY() getPosY()
+net.minecraft.client.player.LocalPlayer getZ() getPosZ()
+
+net.minecraft.server.level.ServerLevel net.minecraft.world.WorldServer
 
 net.minecraft.server.level.ServerPlayer net.minecraft.entity.player.EntityPlayerMP
+
+net.minecraft.world.entity.player.Player net.minecraft.entity.player.EntityPlayer
+net.minecraft.world.entity.player.Player getMainArm() getPrimaryHand()
+
+net.minecraft.commands.CommandSource net.minecraft.command.ICommandSender
 
 net.minecraft.client.gui.Gui net.minecraft.client.gui.GuiIngame
 
@@ -60,6 +74,10 @@ net.minecraft.client.gui.screens.ChatScreen net.minecraft.client.gui.GuiChat
 net.minecraft.client.resources.sounds.SimpleSoundInstance net.minecraft.client.audio.PositionedSoundRecord
 net.minecraft.client.resources.sounds.SimpleSoundInstance forUI() getRecord()
 
+net.minecraft.world.level.block.state.BlockState net.minecraft.block.state.IBlockState
+
+net.minecraft.world.level.block.FenceGateBlock net.minecraft.block.BlockFenceGate
+
 net.minecraft.client.Minecraft setScreen() displayGuiScreen()
 net.minecraft.server.network.ServerGamePacketListenerImpl net.minecraft.network.NetHandlerPlayServer
 net.minecraft.server.network.ServerGamePacketListenerImpl send() sendPacket()
@@ -67,12 +85,28 @@ net.minecraft.server.network.ServerGamePacketListenerImpl send() sendPacket()
 net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket net.minecraft.network.play.client.CPacketCustomPayload
 net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket net.minecraft.network.play.server.SPacketCustomPayload
 
-net.minecraft.world.entity.LivingEntity net.minecraft.entity.EntityLiving
+net.minecraft.world.entity.Entity net.minecraft.entity.Entity
+net.minecraft.world.entity.Entity setPosRaw() setPosition()
+
+net.minecraft.world.entity.LivingEntity net.minecraft.entity.EntityLivingBase
 net.minecraft.world.entity.LivingEntity getMainHandItem() getHeldItemMainhand()
 net.minecraft.world.entity.LivingEntity getOffhandItem() getHeldItemOffhand()
 net.minecraft.world.entity.LivingEntity getItemBySlot() getItemStackFromSlot()
 
 net.minecraft.world.entity.EquipmentSlot net.minecraft.inventory.EntityEquipmentSlot
+
+net.minecraft.world.entity.HumanoidArm net.minecraft.util.EnumHandSide
+
+net.minecraft.core.BlockPos net.minecraft.util.math.BlockPos
+net.minecraft.core.BlockPos asLong() toLong()
+net.minecraft.core.BlockPos of() fromLong()
+
+net.minecraft.world.phys.Vec2 net.minecraft.util.math.Vec2f
+
+net.minecraft.world.phys.Vec3 net.minecraft.util.math.Vec3d
+
+net.minecraft.client.multiplayer.PlayerInfo net.minecraft.client.network.NetworkPlayerInfo
+net.minecraft.client.multiplayer.PlayerInfo getGameType() getGameMode()
 
 net.minecraft.sounds.SoundEvents net.minecraft.init.SoundEvents
 net.minecraft.sounds.SoundEvents EXPERIENCE_ORB_PICKUP ENTITY_EXPERIENCE_ORB_PICKUP

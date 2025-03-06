@@ -4,6 +4,12 @@ import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 
+/**
+ * Represents the GUI scales Minecraft provides, which force render operations to be scaled by a certain factor.
+ *
+ * @since 0.2.1
+ * @author Deftu
+ */
 @GameSide(Side.CLIENT)
 public enum class GuiScale {
     AUTO,
@@ -12,13 +18,27 @@ public enum class GuiScale {
     LARGE,
     VERY_LARGE;
 
+    /**
+     * Sets the current GUI scale to this.
+     *
+     * @since 0.19.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public fun apply() {
+        rawCurrentScale = ordinal
+    }
+
     public companion object {
 
         /**
+         * The raw integer value of the current GUI scale as provided by the Minecraft client.
+         *
          * @since 0.13.0
          * @author Deftu
          */
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public var rawCurrentScale: Int
             get() {
                 val guiScale =
@@ -46,14 +66,23 @@ public enum class GuiScale {
             }
 
         /**
+         * The current GUI scale.
+         *
          * @since 0.13.0
          * @author Deftu
          */
         @JvmStatic
+        @GameSide(Side.CLIENT)
         public var currentScale: GuiScale
             get() = fromInt(rawCurrentScale)
             set(value) { rawCurrentScale = value.ordinal }
 
+        /**
+         * Gets the GUI scale from an integer value.
+         *
+         * @since 0.2.1
+         * @param value The integer value to get the GUI scale from.
+         */
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun fromInt(value: Int): GuiScale {
