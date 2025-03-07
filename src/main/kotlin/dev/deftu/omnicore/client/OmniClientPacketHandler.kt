@@ -16,8 +16,8 @@ package dev.deftu.omnicore.client
 //#endif
 //$$
 //$$ public class OmniClientPacketHandler(
-//$$     private val channeledPacketReceiverProvider: () -> Map<ResourceLocation, List<Predicate<OmniPacketReceiverContext>>>,
-//$$     private val globalPacketReceiverProvider: () -> List<Predicate<OmniPacketReceiverContext>>,
+//$$     private val channeledPacketReceiverProvider: () -> Map<ResourceLocation, Set<Predicate<OmniPacketReceiverContext>>>,
+//$$     private val globalPacketReceiverProvider: () -> Set<Predicate<OmniPacketReceiverContext>>,
 //$$ ) : OmniPacketHandler() {
 //$$
 //$$     override fun handleRead(ctx: ChannelHandlerContext, packet: Packet<*>?): Boolean {

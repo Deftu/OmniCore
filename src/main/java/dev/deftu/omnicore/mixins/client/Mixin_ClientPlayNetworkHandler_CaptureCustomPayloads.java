@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 //#if MC >= 1.16.5
@@ -89,8 +89,14 @@ public class Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads {
         //$$ Identifier channel = OmniIdentifier.create(packet.getChannel());
         //$$ PacketByteBuf buf = packet.getPayload();
         //#endif
-        List<Predicate<OmniPacketReceiverContext>> receivers = OmniClientPackets.getAllPacketReceivers$OmniCore(channel);
+        Set<Predicate<OmniPacketReceiverContext>> receivers = OmniClientPackets.getAllPacketReceivers$OmniCore(channel);
         OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
+        System.out.println("----- RECEIVED PACKET: " + channel + " -----");
+        System.out.println(channel);
+        System.out.println(buf);
+        System.out.println(receivers);
+        System.out.println(context);
+        System.out.println("----- RECEIVED PACKET: " + channel + " -----");
         boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(context));
         if (anyHandled) {
             ci.cancel();

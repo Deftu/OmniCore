@@ -17,7 +17,7 @@ package dev.deftu.omnicore.mixins.server;
 //$$ import org.spongepowered.asm.mixin.injection.Inject;
 //$$ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //$$
-//$$ import java.util.List;
+//$$ import java.util.Set;
 //$$ import java.util.function.BiPredicate;
 //$$
 //$$ @Mixin(ServerPlayNetworkHandler.class)
@@ -45,7 +45,7 @@ package dev.deftu.omnicore.mixins.server;
 //$$
 //$$         Identifier channel = discardedPayload.comp_1678();
 //$$         PacketByteBuf buf = holder.omnicore$getData();
-//$$         List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+//$$         Set<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
 //$$         OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
 //$$         boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(this.player, context));
 //$$         if (anyHandled) {

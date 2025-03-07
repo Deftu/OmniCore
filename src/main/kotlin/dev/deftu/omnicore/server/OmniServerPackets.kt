@@ -9,9 +9,10 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArraySet
 import java.util.function.BiPredicate
 import java.util.function.Consumer
-import java.util.function.Predicate
 
 //#if MC >= 1.20.4
 //$$ import dev.deftu.omnicore.common.OmniCustomPayloadImpl
@@ -30,8 +31,8 @@ public object OmniServerPackets {
     //$$ private var isInitialized = false
     //#endif
 
-    private val channeledPacketReceivers = mutableMapOf<Identifier, MutableList<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>>>()
-    private val globalPacketReceivers = mutableListOf<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>>()
+    private val channeledPacketReceivers = ConcurrentHashMap<Identifier, CopyOnWriteArraySet<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>>>()
+    private val globalPacketReceivers = CopyOnWriteArraySet<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>>()
 
     @JvmStatic
     @GameSide(Side.SERVER)
@@ -84,45 +85,33 @@ public object OmniServerPackets {
 
     @JvmStatic
     @GameSide(Side.SERVER)
-    public fun createChanneledPacketReceiver(id: Identifier, receiver: BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>): Runnable {
-        val list = channeledPacketReceivers.getOrPut(id) { mutableListOf() }
+    public fun createChanneledPacketReceiver(id: Identifier, block: (ServerPlayerEntity, OmniPacketReceiverContext) -> Boolean): () -> Unit {
+        val list = channeledPacketReceivers.getOrPut(id) { CopyOnWriteArraySet() }
+        val receiver = BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext> { player, buf -> block(player, buf) }
         list.add(receiver)
 
         //#if FORGE && MC <= 1.12.2
         //$$ setupForgeListener()
         //#endif
 
-        return Runnable {
+        return {
             list.remove(receiver)
         }
     }
 
     @JvmStatic
     @GameSide(Side.SERVER)
-    public fun createChanneledPacketReceiver(id: Identifier, block: (ServerPlayerEntity, OmniPacketReceiverContext) -> Boolean): () -> Unit {
-        val fn = createChanneledPacketReceiver(id, receiver = { player, buf -> block(player, buf) })
-        return { fn.run() }
-    }
-
-    @JvmStatic
-    @GameSide(Side.SERVER)
-    public fun createGlobalPacketReceiver(receiver: BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>): Runnable {
+    public fun createGlobalPacketReceiver(block: (ServerPlayerEntity, OmniPacketReceiverContext) -> Boolean): () -> Unit {
+        val receiver = BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext> { player, buf -> block(player, buf) }
         globalPacketReceivers.add(receiver)
 
         //#if FORGE && MC <= 1.12.2
         //$$ setupForgeListener()
         //#endif
 
-        return Runnable {
+        return {
             globalPacketReceivers.remove(receiver)
         }
-    }
-
-    @JvmStatic
-    @GameSide(Side.SERVER)
-    public fun createGlobalPacketReceiver(block: (ServerPlayerEntity, OmniPacketReceiverContext) -> Boolean): () -> Unit {
-        val fn = createGlobalPacketReceiver(BiPredicate { player, buf -> block(player, buf) })
-        return { fn.run() }
     }
 
     //#if FORGE && MC <= 1.12.2
@@ -154,8 +143,9 @@ public object OmniServerPackets {
     //#endif
 
     @JvmStatic
-    internal fun getAllPacketReceivers(id: Identifier): List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> {
-        return (channeledPacketReceivers[id] ?: return emptyList()) + globalPacketReceivers
+    internal fun getAllPacketReceivers(id: Identifier): Set<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> {
+        val channeled = channeledPacketReceivers[id] ?: emptySet()
+        return channeled + globalPacketReceivers
     }
 
 }

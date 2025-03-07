@@ -17,8 +17,8 @@ package dev.deftu.omnicore.server
 //#endif
 //$$
 //$$ public class OmniServerPacketHandler(
-//$$     private val channeledPacketReceiverProvider: () -> Map<ResourceLocation, List<BiPredicate<EntityPlayerMP, OmniPacketReceiverContext>>>,
-//$$     private val globalPacketReceiverProvider: () -> List<BiPredicate<EntityPlayerMP, OmniPacketReceiverContext>>,
+//$$     private val channeledPacketReceiverProvider: () -> Map<ResourceLocation, Set<BiPredicate<EntityPlayerMP, OmniPacketReceiverContext>>>,
+//$$     private val globalPacketReceiverProvider: () -> Set<BiPredicate<EntityPlayerMP, OmniPacketReceiverContext>>,
 //$$     private val player: EntityPlayerMP
 //$$ ) : OmniPacketHandler() {
 //$$

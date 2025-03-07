@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import java.util.Set;
 import java.util.function.BiPredicate;
 
 //#if MC >= 1.16.5
@@ -95,7 +95,7 @@ public class Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads {
         //$$     return;
         //$$ }
         //$$
-        //$$ List<BiPredicate<ServerPlayer, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+        //$$ Set<BiPredicate<ServerPlayer, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
         //#elseif MC >= 1.16.5
         ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).player;
         //#if MC >= 1.17.1
@@ -106,12 +106,12 @@ public class Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads {
         //$$ Identifier channel = accessor.getChannel();
         //$$ PacketByteBuf buf = accessor.getData();
         //#endif
-        List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+        Set<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
         //#else
         //$$ ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).player;
         //$$ Identifier channel = OmniIdentifier.create(packet.getChannel());
         //$$ PacketByteBuf buf = packet.getPayload();
-        //$$ List<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
+        //$$ Set<BiPredicate<ServerPlayerEntity, OmniPacketReceiverContext>> receivers = OmniServerPackets.getAllPacketReceivers$OmniCore(channel);
         //#endif
         OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
         boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(player, context));

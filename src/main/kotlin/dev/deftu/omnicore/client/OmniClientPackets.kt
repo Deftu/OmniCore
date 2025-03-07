@@ -8,6 +8,9 @@ import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket
 import net.minecraft.util.Identifier
+import org.apache.logging.log4j.LogManager
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArraySet
 import java.util.function.Consumer
 import java.util.function.Predicate
 
@@ -28,8 +31,10 @@ public object OmniClientPackets {
     //$$ private var isInitialized = false
     //#endif
 
-    private val channeledPacketReceivers = mutableMapOf<Identifier, MutableList<Predicate<OmniPacketReceiverContext>>>()
-    private val globalPacketReceivers = mutableListOf<Predicate<OmniPacketReceiverContext>>()
+    private val logger = LogManager.getLogger(OmniClientPackets::class.java)
+
+    private val channeledPacketReceivers = ConcurrentHashMap<Identifier, CopyOnWriteArraySet<Predicate<OmniPacketReceiverContext>>>()
+    private val globalPacketReceivers = CopyOnWriteArraySet<Predicate<OmniPacketReceiverContext>>()
 
     @JvmStatic
     @GameSide(Side.CLIENT)
@@ -63,7 +68,6 @@ public object OmniClientPackets {
         //#else
         networkHandler.sendPacket(packet)
         //#endif
-
     }
 
     @JvmStatic
@@ -76,45 +80,39 @@ public object OmniClientPackets {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun createChanneledPacketReceiver(id: Identifier, receiver: Predicate<OmniPacketReceiverContext>): Runnable {
-        val list = channeledPacketReceivers.getOrPut(id) { mutableListOf() }
+    public fun createChanneledPacketReceiver(id: Identifier, block: OmniPacketReceiverContext.() -> Boolean): () -> Unit {
+        val list = channeledPacketReceivers.getOrPut(id) { CopyOnWriteArraySet() }
+        val receiver = Predicate<OmniPacketReceiverContext> { buf -> block(buf) }
         list.add(receiver)
 
         //#if FORGE && MC <= 1.12.2
         //$$ setupForgeListener()
         //#endif
 
-        return Runnable {
+        logger.debug("Registered channeled packet receiver under '{}' at {} ({})", id, list.size - 1, receiver)
+
+        return {
+            logger.debug("Consumer removed channeled packet receiver under '{}' at {} ({})", id, list.indexOf(receiver), receiver)
             list.remove(receiver)
         }
     }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun createChanneledPacketReceiver(id: Identifier, block: OmniPacketReceiverContext.() -> Boolean): () -> Unit {
-        val fn = createChanneledPacketReceiver(id) { buf -> block(buf) }
-        return { fn.run() }
-    }
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun createGlobalPacketReceiver(receiver: Predicate<OmniPacketReceiverContext>): Runnable {
+    public fun createGlobalPacketReceiver(block: OmniPacketReceiverContext.() -> Boolean): () -> Unit {
+        val receiver = Predicate<OmniPacketReceiverContext> { buf -> block(buf) }
         globalPacketReceivers.add(receiver)
 
         //#if FORGE && MC <= 1.12.2
         //$$ setupForgeListener()
         //#endif
 
-        return Runnable {
+        logger.debug("Registered global packet receiver at {} ({})", globalPacketReceivers.size - 1, receiver)
+
+        return {
+            logger.debug("Consumer removed global packet receiver at {} ({})", globalPacketReceivers.indexOf(receiver), receiver)
             globalPacketReceivers.remove(receiver)
         }
-    }
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun createGlobalPacketReceiver(block: OmniPacketReceiverContext.() -> Boolean): () -> Unit {
-        val fn = createGlobalPacketReceiver { buf -> block(buf) }
-        return { fn.run() }
     }
 
     //#if FORGE && MC <= 1.12.2
@@ -141,8 +139,9 @@ public object OmniClientPackets {
     //#endif
 
     @JvmStatic
-    internal fun getAllPacketReceivers(id: Identifier): List<Predicate<OmniPacketReceiverContext>> {
-        return (channeledPacketReceivers[id] ?: return emptyList()) + globalPacketReceivers
+    internal fun getAllPacketReceivers(id: Identifier): Set<Predicate<OmniPacketReceiverContext>> {
+        val channeled = channeledPacketReceivers[id] ?: emptySet()
+        return channeled + globalPacketReceivers
     }
 
 }
