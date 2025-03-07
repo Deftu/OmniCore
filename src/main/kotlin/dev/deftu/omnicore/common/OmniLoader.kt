@@ -17,6 +17,7 @@ import net.fabricmc.api.EnvType
 //$$ import net.minecraftforge.fml.ModContainer
 //$$ import net.minecraftforge.fml.loading.FMLEnvironment
 //$$ import net.minecraftforge.fml.loading.FMLLoader
+//$$ import net.minecraftforge.fml.loading.FMLPaths
 //$$ import net.minecraftforge.api.distmarker.Dist
 //#else
 //$$ import net.minecraftforge.fml.common.Loader
@@ -31,6 +32,7 @@ import net.fabricmc.api.EnvType
 //$$ import net.neoforged.fml.ModContainer
 //$$ import net.neoforged.fml.loading.FMLEnvironment
 //$$ import net.neoforged.fml.loading.FMLLoader
+//$$ import net.neoforged.fml.loading.FMLPaths
 //$$ import net.neoforged.api.distmarker.Dist
 //#endif
 
@@ -162,6 +164,21 @@ public object OmniLoader {
             val patch = groups["patch"]?.value?.toInt() ?: 0
 
             return major * 10000 + minor * 100 + patch
+        }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val configDir: Path
+        get() {
+            //#if FABRIC
+            return FabricLoader.getInstance().configDir
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return FMLPaths.CONFIGDIR.get()
+            //#else
+            //$$ return Loader.instance().configDir.toPath()
+            //#endif
+            //#endif
         }
 
     /**
