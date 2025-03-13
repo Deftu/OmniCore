@@ -52,7 +52,7 @@ toolkitReleases {
 
     curseforge {
         projectId.set("1215299")
-        relations.add(CurseRelation("1215303", CurseRelationType.REQUIRED))
+        relations.add(CurseRelation("textile", CurseRelationType.REQUIRED))
 
         if (mcData.version >= MinecraftVersions.VERSION_1_16_5) {
             val kotlinWrapperId = if (mcData.isForgeLike) "kotlin-for-forge" else "fabric-language-kotlin"
