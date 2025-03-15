@@ -33,7 +33,7 @@ public object OmniGameRendering {
     //#else
     //$$     val field = Minecraft::class.java.getDeclaredField(FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(Minecraft::class.java.name, "timer", "Lnet/minecraft/util/Timer;"))
     //$$     field.isAccessible = true
-    //$$     field.get(this) as Timer
+    //$$     field.get(OmniClient.getInstance()) as Timer
     //#endif
     //$$ }
     //#endif
