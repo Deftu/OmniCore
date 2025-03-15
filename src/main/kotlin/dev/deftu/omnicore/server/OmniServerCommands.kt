@@ -29,12 +29,14 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 
 //#if MC <= 1.12.2
 //$$ import dev.deftu.omnicore.common.OmniCommandBridge
+//$$ import net.minecraft.world.WorldServer
 //#if FORGE
 //$$ import net.minecraftforge.client.ClientCommandHandler
 //$$ import net.minecraft.command.ServerCommandManager
 //$$ import net.minecraftforge.fml.server.FMLServerHandler
 //#else
-//$$ import net.legacyfabric.fabric.api.registry.CommandRegistry
+//$$ import net.legacyfabric.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+//$$ import net.minecraft.server.command.CommandManager
 //#endif
 //#endif
 
@@ -51,7 +53,8 @@ public object OmniServerCommands {
             return
         }
 
-        //#if FABRIC && MC >= 1.16.5
+        //#if FABRIC
+        //#if MC >= 1.16.5
         CommandRegistrationCallback.EVENT.register {
                                                     dispatcher,
                                                     _,
@@ -63,6 +66,14 @@ public object OmniServerCommands {
                 OmniServerCommandSource(src.server, src.output, src.world)
             }
         }
+        //#else
+        //$$ ServerLifecycleEvents.SERVER_STARTING.register { server ->
+        //$$     val commandManager = server.commandManager as CommandManager
+        //$$     for (child in dispatcher.root.children) {
+        //$$         commandManager.registerCommand(OmniCommandBridge(dispatcher, child) { sender -> OmniServerCommandSource(server, sender, sender.world as ServerWorld) })
+        //$$     }
+        //$$ }
+        //#endif
         //#elseif FORGE-LIKE && MC >= 1.18.2
         //#if FORGE
         //$$ MinecraftForge.EVENT_BUS.addListener<RegisterCommandsEvent> { event ->
@@ -86,13 +97,10 @@ public object OmniServerCommands {
         //#endif
         dispatcher.register(command)
 
-        //#if MC <= 1.12.2
-        //#if FORGE
-        //$$ val commandManager = FMLServerHandler.instance().server.commandManager as ServerCommandManager
-        //$$ commandManager.registerCommand(OmniCommandBridge(dispatcher, node))
-        //#else
-        //$$ CommandRegistry.INSTANCE.register(OmniCommandBridge(dispatcher, node))
-        //#endif
+        //#if FORGE && MC <= 1.12.2
+        //$$ val server = FMLServerHandler.instance().server
+        //$$ val commandManager = server.commandManager as ServerCommandManager
+        //$$ commandManager.registerCommand(OmniCommandBridge(dispatcher, node) { sender -> OmniServerCommandSource(server, sender, sender.entityWorld as WorldServer) })
         //#endif
     }
 
