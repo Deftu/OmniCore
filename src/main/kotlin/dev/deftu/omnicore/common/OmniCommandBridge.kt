@@ -13,7 +13,8 @@ package dev.deftu.omnicore.common
 //$$
 //$$ internal class OmniCommandBridge<S>(
 //$$     private val dispatcher: CommandDispatcher<S>,
-//$$     private val node: CommandNode<S>
+//$$     private val node: CommandNode<S>,
+//$$     private val contextFactory: (ICommandSender) -> S
 //$$ ) : CommandBase() {
 //$$
 //$$     override fun getName(): String = node.name
@@ -30,7 +31,7 @@ package dev.deftu.omnicore.common
 //$$         args: Array<out String>
 //$$     ) {
 //$$         val text = args.getText()
-//$$         val results = dispatcher.parse(text, sender as S)
+//$$         val results = dispatcher.parse(text, contextFactory(sender))
 //$$
 //$$         try {
 //$$             dispatcher.execute(results)
@@ -48,7 +49,7 @@ package dev.deftu.omnicore.common
 //$$         targetPos: BlockPos?
 //$$     ): MutableList<String> {
 //$$         val text = args.getText()
-//$$         val results = dispatcher.parse(text, sender as S)
+//$$         val results = dispatcher.parse(text, contextFactory(sender))
 //$$
 //$$         return dispatcher.getCompletionSuggestions(results)
 //$$             .join()

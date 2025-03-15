@@ -91,7 +91,7 @@ public object OmniClientCommands {
         dispatcher.root.addChild(node)
 
         //#if FORGE && MC <= 1.12.2
-        //$$ ClientCommandHandler.instance.registerCommand(OmniCommandBridge(dispatcher, node))
+        //$$ ClientCommandHandler.instance.registerCommand(OmniCommandBridge(dispatcher, node) { _ -> OmniClientCommandSource.UNIT })
         //#endif
     }
 
