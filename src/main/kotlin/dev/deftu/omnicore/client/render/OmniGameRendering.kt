@@ -9,6 +9,8 @@ import net.minecraft.client.font.TextRenderer
 //#if MC == 1.8.9
 //#if FABRIC
 //$$ import dev.deftu.omnicore.mixins.client.Mixin_MinecraftClient_TimerAccessor
+//#else
+//$$ import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper
 //#endif
 //$$
 //$$ import net.minecraft.client.render.ClientTickTracker
@@ -29,7 +31,7 @@ public object OmniGameRendering {
     //#if FABRIC
     //$$     (this as Mixin_MinecraftClient_TimerAccessor).ticker
     //#else
-    //$$     val field = this.javaClass.getDeclaredField("timer")
+    //$$     val field = Minecraft::class.java.getDeclaredField(FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(Minecraft::class.java.name, "timer", "Lnet/minecraft/util/Timer;"))
     //$$     field.isAccessible = true
     //$$     field.get(this) as Timer
     //#endif
