@@ -55,6 +55,13 @@ public object OmniGameRendering {
             //#endif
         }
 
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val textLineHeight: Int
+        get() {
+            return OmniClient.fontRenderer.fontHeight
+        }
+
     /**
      * Returns the current tick delta, which is the time in seconds since the last frame was rendered.
      *
