@@ -9,8 +9,6 @@ import net.minecraft.client.font.TextRenderer
 //#if MC == 1.8.9
 //#if FABRIC
 //$$ import dev.deftu.omnicore.mixins.client.Mixin_MinecraftClient_TimerAccessor
-//#else
-//$$ import net.minecraftforge.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper
 //#endif
 //$$
 //$$ import net.minecraft.client.render.ClientTickTracker
@@ -27,13 +25,25 @@ import net.minecraft.client.font.TextRenderer
 public object OmniGameRendering {
 
     //#if MC == 1.8.9
+    //#if FORGE
+    //$$ private val timerFieldNames = arrayOf("field_71428_T", "timer") // We have the SRG name first so that it's resolved slightly faster in prod
+    //$$
+    //#endif
     //$$ private val MinecraftClient.deltaTickTracker: ClientTickTracker by lazy {
     //#if FABRIC
     //$$     (this as Mixin_MinecraftClient_TimerAccessor).ticker
     //#else
-    //$$     val field = Minecraft::class.java.getDeclaredField(FMLDeobfuscatingRemapper.INSTANCE.mapFieldName(Minecraft::class.java.name, "timer", "Lnet/minecraft/util/Timer;"))
-    //$$     field.isAccessible = true
-    //$$     field.get(OmniClient.getInstance()) as Timer
+    //$$     for (fieldName in timerFieldNames) {
+    //$$         try {
+    //$$             val field = Minecraft::class.java.getDeclaredField(fieldName)
+    //$$             field.isAccessible = true
+    //$$             return@lazy field.get(OmniClient.getInstance()) as Timer
+    //$$         } catch (ignored: NoSuchFieldException) {
+    //$$             // no-op
+    //$$         }
+    //$$     }
+    //$$
+    //$$     throw IllegalStateException("Failed to find the delta tick tracker field in MinecraftClient")
     //#endif
     //$$ }
     //#endif
