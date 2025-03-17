@@ -5,7 +5,7 @@ package dev.deftu.omnicore.common
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import com.mojang.brigadier.tree.CommandNode
 //$$ import dev.deftu.omnicore.client.OmniChat
-//$$ import dev.deftu.textile.minecraft.MinecraftTextFormat
+//$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import net.minecraft.command.CommandBase
 //$$ import net.minecraft.command.ICommandSender
 //$$ import net.minecraft.server.MinecraftServer
@@ -36,7 +36,7 @@ package dev.deftu.omnicore.common
 //$$         try {
 //$$             dispatcher.execute(results)
 //$$         } catch (e: Exception) {
-//$$             OmniChat.showChatMessage("${MinecraftTextFormat.RED}${e.message}")
+//$$             OmniChat.displayClientMessage("${MCTextFormat.RED}${e.message}")
 //$$         }
 //$$     }
 //$$

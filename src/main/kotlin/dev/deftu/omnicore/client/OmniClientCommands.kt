@@ -10,6 +10,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.common.OmniCommands
+import dev.deftu.omnicore.common.OmniProfiler
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC && MC >= 1.19
@@ -30,7 +31,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 //#endif
 
 //#if FABRIC && MC <= 1.12.2
-//$$ import dev.deftu.textile.minecraft.MinecraftTextFormat
+//$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //#endif
 
@@ -184,7 +185,7 @@ public object OmniClientCommands {
     //$$         .join()
     //$$         .list
     //$$         .map(Suggestion::getText)
-    //$$         .map { text -> MinecraftTextFormat.GRAY + (if (command.contains(" ")) "" else "/") + text + MinecraftTextFormat.RESET }
+    //$$         .map { text -> MCTextFormat.GRAY + (if (command.contains(" ")) "" else "/") + text + MCTextFormat.RESET }
     //$$         .toSet()
     //$$ }
     //#endif

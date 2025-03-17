@@ -2,11 +2,7 @@ package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-import dev.deftu.textile.MutableTextHolder
-import dev.deftu.textile.SimpleMutableTextHolder
-import dev.deftu.textile.SimpleTextHolder
-import dev.deftu.textile.TextHolder
-import dev.deftu.textile.minecraft.MinecraftTextFormat
+import dev.deftu.textile.minecraft.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.world.ClientWorld
@@ -68,8 +64,8 @@ public class OmniClientCommandSource {
      * @author Deftu
      */
     @GameSide(Side.CLIENT)
-    public fun showMessage(text: TextHolder) {
-        OmniChat.showChatMessage(text)
+    public fun displayMessage(text: MCTextHolder<*>) {
+        OmniChat.displayClientMessage(text)
     }
 
     /**
@@ -79,8 +75,8 @@ public class OmniClientCommandSource {
      * @author Deftu
      */
     @GameSide(Side.CLIENT)
-    public fun showMessage(text: String) {
-        OmniChat.showChatMessage(text)
+    public fun displayMessage(text: String) {
+        OmniChat.displayClientMessage(text)
     }
 
     /**
@@ -91,11 +87,17 @@ public class OmniClientCommandSource {
      * @author Deftu
      */
     @GameSide(Side.CLIENT)
-    public fun showError(error: Throwable, block: Consumer<MutableTextHolder> = Consumer {  }) {
-        val text = SimpleMutableTextHolder(error.message ?: "An error occurred")
-            .format(MinecraftTextFormat.RED)
+    public fun displayError(error: Throwable, block: Consumer<MCMutableTextHolder<*>> = Consumer {  }) {
+        val stackTrace = error.stackTraceToString()
+            // Replace Windows line endings as they don't render properly
+            .replace("\r\n", "\n")
+            // Also replace horizontal tabs with 4 spaces
+            .replace("\t", " ".repeat(4))
+        val text = MCSimpleMutableTextHolder(error.message ?: "An error occurred")
+            .addFormatting(MCTextFormat.RED)
+            .setHoverEvent(MCHoverEvent.ShowText(stackTrace))
         block.accept(text)
-        showMessage(text)
+        displayMessage(text)
     }
 
     /**
@@ -105,8 +107,8 @@ public class OmniClientCommandSource {
      * @author Deftu
      */
     @GameSide(Side.CLIENT)
-    public fun showError(text: TextHolder) {
-        showMessage(text.formatted(MinecraftTextFormat.RED))
+    public fun displayError(text: MCTextHolder<*>) {
+        displayMessage(text.withFormatting(MCTextFormat.RED))
     }
 
     /**
@@ -116,8 +118,8 @@ public class OmniClientCommandSource {
      * @author Deftu
      */
     @GameSide(Side.CLIENT)
-    public fun showError(text: String) {
-        showError(SimpleTextHolder(text))
+    public fun displayError(text: String) {
+        displayError(MCSimpleTextHolder(text))
     }
 
 }

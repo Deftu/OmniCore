@@ -9,7 +9,7 @@ import java.awt.Color
 import java.util.*
 import java.util.function.Supplier
 
-//#if MC >= 1.21.4
+//#if MC >= 1.21.2
 //$$ import net.minecraft.client.gl.ShaderProgramKeys
 //$$ import net.minecraft.client.gl.ShaderProgramKey
 //#endif
@@ -96,7 +96,7 @@ public class OmniTessellator(
         public val defaultShaders: IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>> by lazy {
             val value = IdentityHashMap<VertexFormat, Supplier<ShaderProgram?>>()
 
-            //#if MC >= 1.21.4
+            //#if MC >= 1.21.2
             //$$ value[net.minecraft.client.render.VertexFormats.POSITION] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION) }
             //$$ value[net.minecraft.client.render.VertexFormats.POSITION_COLOR] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_COLOR) }
             //$$ value[net.minecraft.client.render.VertexFormats.POSITION_TEXTURE] = Supplier { getProgramFromKey(ShaderProgramKeys.POSITION_TEX) }
@@ -130,7 +130,7 @@ public class OmniTessellator(
             value
         }
 
-        //#if MC >= 1.21.4
+        //#if MC >= 1.21.2
         //$$ private fun getProgramFromKey(key: ShaderProgramKey): ShaderProgram? {
         //$$     return OmniClient.getInstance().shaderLoader.getOrCreateProgram(key)
         //$$ }

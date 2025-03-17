@@ -18,7 +18,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.slf4j.LoggerFactory
 import kotlin.NoSuchElementException
 
-//#if MC >= 1.21.4
+//#if MC >= 1.21.2
 //$$ import dev.deftu.omnicore.common.OmniIdentifier
 //$$ import net.minecraft.client.gl.CompiledShader
 //#endif
@@ -138,7 +138,7 @@ internal class MinecraftShader(
                 })
             }
 
-            //#if MC >= 1.21.4
+            //#if MC >= 1.21.2
             //$$ val vertId = OmniIdentifier.create(DigestUtils.sha1Hex(transformedVert).lowercase())
             //$$ val vertShader = CompiledShader.compile(vertId, CompiledShader.Type.VERTEX, transformedVert)
             //$$ val fragId = OmniIdentifier.create(DigestUtils.sha1Hex(transformedFrag).lowercase())

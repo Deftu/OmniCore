@@ -98,7 +98,10 @@ class TestMod
         OmniClientCommands.register(
             OmniClientCommands.literal("testmod")
                 .executes {
-                    OmniChat.showChatMessage("TestMod base command executed!")
+                    val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
+                    it.source.displayError(testError)
+
+                    OmniChat.displayClientMessage("TestMod base command executed!")
                     OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
                         writeString("Hello, world!")
                     })
@@ -111,7 +114,7 @@ class TestMod
                             OmniClientCommands.argument("name", StringArgumentType.greedyString())
                                 .executes { ctx ->
                                     val name = StringArgumentType.getString(ctx, "name")
-                                    ctx.source.showError("TestMod subcommand executed with name: $name")
+                                    ctx.source.displayError("TestMod subcommand executed with name: $name")
 
                                     1
                                 }

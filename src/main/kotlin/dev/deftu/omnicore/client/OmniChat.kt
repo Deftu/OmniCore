@@ -2,9 +2,9 @@ package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-import dev.deftu.textile.SimpleTextHolder
 import dev.deftu.textile.TextHolder
-import dev.deftu.textile.minecraft.toVanilla
+import dev.deftu.textile.minecraft.MCSimpleTextHolder
+import dev.deftu.textile.minecraft.MCTextHolder
 
 /**
  * @since 0.2.2
@@ -21,17 +21,17 @@ public object OmniChat {
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun showChatMessage(text: TextHolder) {
+    public fun displayClientMessage(text: MCTextHolder<*>) {
         val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         player
-            //#if MC >= 1.21.4
-            //$$ .sendMessage(text.toVanilla(), false)
+            //#if MC >= 1.21.2
+            //$$ .sendMessage(text.asVanilla(), false)
             //#elseif MC >= 1.19.2
-            .sendMessage(text.toVanilla())
+            .sendMessage(text.asVanilla())
             //#elseif MC >= 1.16.5
-            //$$ .sendMessage(text.toVanilla(), false)
+            //$$ .sendMessage(text.asVanilla(), false)
             //#else
-            //$$ .sendMessage(text.toVanilla())
+            //$$ .sendMessage(text.asVanilla())
             //#endif
     }
 
@@ -43,8 +43,8 @@ public object OmniChat {
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun showChatMessage(text: String) {
-        showChatMessage(SimpleTextHolder(text))
+    public fun displayClientMessage(text: String) {
+        displayClientMessage(MCSimpleTextHolder(text))
     }
 
     /**
@@ -55,7 +55,7 @@ public object OmniChat {
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun sendChatMessage(text: String) {
+    public fun sendPlayerMessage(text: String) {
         val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         //#if MC >= 1.19.3
         player.networkHandler?.sendChatMessage(text)
@@ -74,8 +74,8 @@ public object OmniChat {
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public fun sendChatMessage(text: TextHolder) {
-        sendChatMessage(text.asString())
+    public fun sendPlayerMessage(text: TextHolder<*, *>) {
+        sendPlayerMessage(text.asString())
     }
 
 }

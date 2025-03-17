@@ -169,7 +169,7 @@ public class OmniTextureManager private constructor(
 
     @GameSide(Side.CLIENT)
     public fun bindTexture(path: Identifier): OmniTextureManager = apply {
-        //#if MC >= 1.21.4
+        //#if MC >= 1.21.2
         //$$ val texture = textureManager.getTexture(path) ?: return@apply
         //$$ texture.bindTexture()
         //#else
@@ -272,7 +272,7 @@ public class ReleasedDynamicTexture(
     @GameSide(Side.CLIENT)
     public var uploaded: Boolean = false
 
-    //#if MC <= 1.21.1
+    //#if MC <= 1.21.3
     override fun load(resourceManager: ResourceManager?) {
     }
     //#endif

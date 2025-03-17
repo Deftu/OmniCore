@@ -6,12 +6,11 @@ import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniMatrixStack
 import dev.deftu.textile.TextHolder
-import dev.deftu.textile.minecraft.TranslatableTextHolder
+import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.minecraft.MCTranslatableTextHolder
 import net.minecraft.client.gui.screen.ChatScreen
 
-//#if MC >= 1.16.5
-import dev.deftu.textile.minecraft.toVanilla
-//#else
+//#if MC <= 1.12.2
 //$$ import java.io.IOException
 //$$ import org.lwjgl.input.Mouse
 //#endif
@@ -25,9 +24,9 @@ import net.minecraft.client.gui.DrawContext
 @GameSide(Side.CLIENT)
 public abstract class OmniScreen(
     public val restorePreviousScreen: Boolean = true,
-    public val screenTitle: TextHolder? = null
+    public val screenTitle: MCTextHolder<*>? = null
 //#if MC >= 1.16.5
-) : Screen(screenTitle?.toVanilla() ?: TranslatableTextHolder("").toVanilla()) {
+) : Screen(screenTitle?.asVanilla() ?: MCTranslatableTextHolder("").asVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
@@ -97,12 +96,12 @@ public abstract class OmniScreen(
     public constructor(
         restorePreviousScreen: Boolean = true,
         titleKey: String? = null
-    ) : this(restorePreviousScreen, TranslatableTextHolder(titleKey ?: ""))
+    ) : this(restorePreviousScreen, MCTranslatableTextHolder(titleKey ?: ""))
 
     @JvmOverloads
     public constructor(
         restorePreviousScreen: Boolean = true
-    ) : this(restorePreviousScreen, null as TextHolder?)
+    ) : this(restorePreviousScreen, null as MCTextHolder<*>?)
 
     private val previousScreen = if (restorePreviousScreen) currentScreen else null
 

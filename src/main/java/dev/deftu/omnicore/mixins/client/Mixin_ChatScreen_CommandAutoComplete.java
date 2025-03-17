@@ -3,7 +3,7 @@ package dev.deftu.omnicore.mixins.client;
 //#if FABRIC && MC <= 1.12.2
 //$$ import com.google.common.collect.ObjectArrays;
 //$$ import dev.deftu.omnicore.client.OmniClientCommands;
-//$$ import dev.deftu.textile.minecraft.MinecraftTextFormat;
+//$$ import dev.deftu.textile.minecraft.MCTextFormat;
 //$$ import net.minecraft.client.gui.widget.TextFieldWidget;
 //$$ import net.minecraft.entity.ai.pathing.PathNodeMaker;
 //$$ import org.spongepowered.asm.mixin.Mixin;
@@ -75,7 +75,7 @@ package dev.deftu.omnicore.mixins.client;
 //$$             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;write(Ljava/lang/String;)V")
 //$$     )
 //$$     private void omnicore$removeSuggestionFormatting(TextFieldWidget textField, String text) {
-//$$         String stripped = MinecraftTextFormat.strip(text);
+//$$         String stripped = MCTextFormat.strip(text);
 //$$         textField.write(stripped);
 //$$     }
 //$$

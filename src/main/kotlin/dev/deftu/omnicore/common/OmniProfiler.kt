@@ -1,10 +1,11 @@
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.common
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.util.profiler.Profiler
 
-//#if MC >= 1.21.4
+//#if MC >= 1.21.2
 //$$ import net.minecraft.util.profiler.Profilers;
 //#endif
 
@@ -22,7 +23,7 @@ public object OmniProfiler {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun getInstance(): Profiler {
-        //#if MC >= 1.21.4
+        //#if MC >= 1.21.2
         //$$ return Profilers.get()
         //#else
         return OmniClient.getInstance().profiler
