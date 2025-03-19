@@ -1,11 +1,12 @@
 package dev.deftu.omnicore.client
 
+import dev.deftu.omnicore.OmniCore
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniMatrixStack
-import dev.deftu.textile.TextHolder
+import dev.deftu.omnicore.common.events.TickEvent
 import dev.deftu.textile.minecraft.MCTextHolder
 import dev.deftu.textile.minecraft.MCTranslatableTextHolder
 import net.minecraft.client.gui.screen.ChatScreen
@@ -73,7 +74,29 @@ public abstract class OmniScreen(
             currentScreen = null
         }
 
-        /**
+    /**
+     * Opens a screen after the given amount of ticks.
+     *
+     * @since 0.24.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun openAfter(tickCount: Int, screen: Screen?) {
+        var ticks = 0
+        var callback: Runnable? = null
+        val listener: (TickEvent.Client.Pre) -> Unit = {
+            ticks++
+            if (ticks >= tickCount) {
+                currentScreen = screen
+                callback?.let(Runnable::run)
+            }
+        }
+
+        callback = OmniCore.eventBus.on(TickEvent.Client.Pre::class.java, listener)
+    }
+
+    /**
          * @param screenClz The screen class to check.
          * @return True if the player is in the specified screen, false otherwise.
          *
