@@ -1,9 +1,12 @@
 package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
+import dev.deftu.eventbus.on
+import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.common.events.TickEvent
 import dev.deftu.omnicore.common.readString
 import dev.deftu.omnicore.common.writeString
 import dev.deftu.omnicore.server.OmniServerPackets
@@ -115,6 +118,11 @@ class TestMod
                                 .executes { ctx ->
                                     val name = StringArgumentType.getString(ctx, "name")
                                     ctx.source.displayError("TestMod subcommand executed with name: $name")
+                                    OmniScreen.openAfter(100, object : OmniScreen() {
+                                        override fun handleInitialize(width: Int, height: Int) {
+                                            println("Initialized screen with width $width and height $height")
+                                        }
+                                    })
 
                                     1
                                 }
@@ -126,6 +134,7 @@ class TestMod
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
             println("Joined server!")
             OmniClientPackets.send(OmniIdentifier.create("testmod:base_command")) {
+                writeString(OmniIdentifier.create("testmod:base_command").toString())
                 writeString("Hello, world!")
             }
         }
