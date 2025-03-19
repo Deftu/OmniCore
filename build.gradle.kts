@@ -70,7 +70,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
-    val textileVersion = "0.11.0"
+    val textileVersion = "0.11.1"
     api(includeOrShade("dev.deftu:textile:$textileVersion")!!)
     modImplementation(includeOrShade("dev.deftu:textile-$mcData:$textileVersion")!!)
 
