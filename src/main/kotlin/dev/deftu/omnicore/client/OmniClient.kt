@@ -1,5 +1,7 @@
 package dev.deftu.omnicore.client
 
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
@@ -26,6 +28,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val isRunningOnMac: Boolean
         get() = MinecraftClient.IS_SYSTEM_MAC
 
@@ -36,6 +39,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val isRunningOnMainThread: Boolean
         get() = getInstance().isOnThread
 
@@ -46,6 +50,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun getInstance(): MinecraftClient {
         return MinecraftClient.getInstance()
     }
@@ -57,6 +62,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val world: ClientWorld?
         get() = getInstance().world
 
@@ -68,6 +74,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val hasWorld: Boolean
         get() = world != null
 
@@ -78,6 +85,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val integratedServer: IntegratedServer?
         get() = getInstance().server
 
@@ -88,6 +96,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     @Deprecated("Use OmniClientPlayer.getInstance() instead.", ReplaceWith("OmniClientPlayer.getInstance()"))
     public val player: ClientPlayerEntity?
         get() = OmniClientPlayer.getInstance()
@@ -100,6 +109,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     @Deprecated("Use OmniClientPlayer.hasPlayer instead.", ReplaceWith("OmniClientPlayer.hasPlayer"))
     public val hasPlayer: Boolean
         get() = OmniClientPlayer.hasPlayer
@@ -111,6 +121,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     @Deprecated("Use OmniClientPlayer.name instead.", ReplaceWith("OmniClientPlayer.name"))
     public val playerName: String
         get() = getInstance().session.username
@@ -122,6 +133,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val hud: InGameHud
         get() = getInstance().inGameHud
 
@@ -132,6 +144,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val chat: ChatHud
         get() = hud.chatHud
 
@@ -142,6 +155,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val currentServerInfo: ServerInfo?
         get() = getInstance().currentServerEntry
 
@@ -152,6 +166,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val networkHandler: ClientPlayNetworkHandler?
         get() = getInstance().networkHandler
 
@@ -162,6 +177,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val soundManager: SoundManager?
         get() = getInstance().soundManager
 
@@ -172,6 +188,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val fontRenderer: TextRenderer
         get() = getInstance().textRenderer
 
@@ -183,6 +200,7 @@ public object OmniClient {
      * @see OmniTextureManager
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public val textureManager: OmniTextureManager = OmniTextureManager.INSTANCE
 
     /**
@@ -195,6 +213,7 @@ public object OmniClient {
      * @see execute
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun execute(runnable: () -> Unit) {
         getInstance().execute(runnable)
     }
@@ -209,6 +228,7 @@ public object OmniClient {
      * @see execute
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun execute(runnable: Runnable) {
         execute(runnable::run)
     }
@@ -220,6 +240,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun getTimeSinceStart(): Long {
         //#if MC >= 1.14
         return (GlfwUtil.getTime() * 1000).toLong()
@@ -235,6 +256,7 @@ public object OmniClient {
      * @author Deftu
      */
     @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun translate(key: String, vararg args: Any): String {
         return I18n.translate(key, args)
     }
