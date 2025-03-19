@@ -1,7 +1,10 @@
 package dev.deftu.omnicore
 
 import dev.deftu.omnicore.client.OmniClientCommands
+import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
 import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.common.events.OmniCommonEventPassthrough
+import dev.deftu.omnicore.server.OmniServer
 import dev.deftu.omnicore.server.OmniServerCommands
 import org.apache.logging.log4j.LogManager
 
@@ -24,6 +27,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 //$$ import net.minecraftforge.fmlserverevents.FMLServerStartingEvent
 //#else
 //$$ import net.minecraftforge.fml.event.server.FMLServerStartingEvent
+//#endif
 //#else
 //$$ import net.minecraftforge.fml.common.Mod
 //$$ import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -99,11 +103,14 @@ public class OmniCoreEntrypoint
         //$$     }
         //#endif
 
+        OmniCommonEventPassthrough.initialize()
+
         if (OmniLoader.isPhysicalClient) {
             //#if FORGE-LIKE && MC >= 1.19.2
             //$$ OmniKeyBinding.initialize()
             //#endif
 
+            OmniClientEventPassthrough.initialize()
             OmniClientCommands.initialize()
         }
 

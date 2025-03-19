@@ -1,5 +1,8 @@
 package dev.deftu.omnicore
 
+import dev.deftu.eventbus.EventBus
+import dev.deftu.eventbus.bus
+import dev.deftu.eventbus.invokers.LMFInvoker
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 
@@ -49,5 +52,12 @@ public object OmniCore {
             //#endif
             //#endif
             //#endif
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public val eventBus: EventBus = bus {
+        invoker = LMFInvoker()
+        threadSafety = true // Slightly decreases performance, but ensures stability
+    }
 
 }

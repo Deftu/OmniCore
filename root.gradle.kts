@@ -15,7 +15,7 @@ preprocess {
                                         "1.20.6-fabric"(1_20_06, "yarn") {
                                             "1.20.4-fabric"(1_20_04, "yarn") {
                                                 "1.20.4-neoforge"(1_20_04, "srg") {
-                                                    "1.20.4-forge"(1_20_04, "srg") {
+                                                    "1.20.4-forge"(1_20_04, "srg", file("versions/mappings/1.20.4-neoforge+1.20.4-forge.txt")) {
                                                         "1.20.1-forge"(1_20_01, "srg", file("versions/mappings/1.20.4-forge+1.20.1-forge.txt")) {
                                                             "1.20.1-fabric"(1_20_01, "yarn") {
                                                                 "1.19.4-fabric"(1_19_04, "yarn") {
