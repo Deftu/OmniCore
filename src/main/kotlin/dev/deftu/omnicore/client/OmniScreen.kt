@@ -13,6 +13,7 @@ import net.minecraft.client.gui.screen.ChatScreen
 //#if MC <= 1.12.2
 //$$ import java.io.IOException
 //$$ import org.lwjgl.input.Mouse
+//$$ import org.lwjgl.input.Keyboard
 //#endif
 
 //#if MC >= 1.20
@@ -470,7 +471,20 @@ public abstract class OmniScreen(
     //$$ }
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
-    //$$     handleKeyPress(keyCode, 0, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.AMBIGUOUS)
+    //$$     if (keyCode != 0) {
+    //$$         handleKeyPress(keyCode, 0, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.KEY_CODE_EVENT)
+    //$$     }
+    //$$
+    //$$     if (typedChar.toInt() != 0) {
+    //$$         handleKeyPress(0, 0, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.CHAR_TYPE_EVENT)
+    //$$     }
+    //$$ }
+    //$$
+    //$$ final override fun handleKeyboardInput() {
+    //$$     super.handleKeyboardInput()
+    //$$     if (!Keyboard.getEventKeyState()) {
+    //$$         handleKeyRelease(Keyboard.getEventKey(), 0, 0.toChar(), OmniKeyboard.modifiers)
+    //$$     }
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, mouseBtn: Int) {
