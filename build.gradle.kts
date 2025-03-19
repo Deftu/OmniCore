@@ -75,6 +75,7 @@ dependencies {
     modImplementation(includeOrShade("dev.deftu:textile-$mcData:$textileVersion")!!)
 
     api("com.mojang:brigadier:1.0.18")
+    api(includeOrShade("dev.deftu:enhancedeventbus:2.0.0")!!)
 
     if (mcData.isForge && mcData.version <= MinecraftVersions.VERSION_1_12_2) {
         includeOrShade(kotlin("stdlib-jdk8"))
