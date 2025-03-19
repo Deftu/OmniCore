@@ -7,12 +7,23 @@ import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
 import net.fabricmc.api.ModInitializer
+//#if MC >= 1.16.5
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+//#else
+//$$ import net.legacyfabric.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+//#endif
 //#elseif FORGE
+//$$ import net.minecraftforge.common.MinecraftForge
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.eventbus.api.IEventBus
 //$$ import net.minecraftforge.fml.common.Mod
-//$$ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 //$$ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
+//#if MC >= 1.18.2
+//$$ import net.minecraftforge.event.server.ServerStartingEvent
+//#elseif MC >= 1.17.1
+//$$ import net.minecraftforge.fmlserverevents.FMLServerStartingEvent
+//#else
+//$$ import net.minecraftforge.fml.event.server.FMLServerStartingEvent
 //#else
 //$$ import net.minecraftforge.fml.common.Mod
 //$$ import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -20,7 +31,8 @@ import net.fabricmc.api.ModInitializer
 //#elseif NEOFORGE
 //$$ import net.neoforged.bus.api.IEventBus
 //$$ import net.neoforged.fml.common.Mod
-//$$ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent
+//$$ import net.neoforged.neoforge.common.NeoForge
+//$$ import net.neoforged.neoforge.event.server.ServerStartingEvent
 //#endif
 
 //#if FORGE-LIKE
@@ -64,6 +76,28 @@ public class OmniCoreEntrypoint
         //#endif
     ) {
         logger.info("Initializing OmniCore ${OmniCore.VERSION}")
+
+        //#if FABRIC
+        ServerLifecycleEvents.SERVER_STARTING.register { server ->
+            OmniServer.server = server
+        }
+        //#elseif FORGE-LIKE && MC >= 1.16.5
+        //#if FORGE
+        //$$ MinecraftForge
+        //#else
+        //$$ NeoForge
+        //#endif
+        //$$     .EVENT_BUS
+        //$$     .addListener<
+        //#if MC >= 1.18.2
+        //$$         ServerStartingEvent
+        //#else
+        //$$         FMLServerStartingEvent
+        //#endif
+        //$$     > { event ->
+        //$$         OmniServer.server = event.server
+        //$$     }
+        //#endif
 
         if (OmniLoader.isPhysicalClient) {
             //#if FORGE-LIKE && MC >= 1.19.2
