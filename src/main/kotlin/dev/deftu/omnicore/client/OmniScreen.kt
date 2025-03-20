@@ -212,10 +212,20 @@ public abstract class OmniScreen(
     }
 
     @GameSide(Side.CLIENT)
+    @Deprecated("typedChar was mostly unused and was substituted with 0.toChar() most of the time.", replaceWith = ReplaceWith("handleKeyRelease(keyCode, scancode, modifiers)"))
     public open fun handleKeyRelease(
         keyCode: Int,
         scancode: Int,
         typedChar: Char,
+        modifiers: OmniKeyboard.KeyboardModifiers
+    ): Boolean {
+        return handleKeyRelease(keyCode, scancode, modifiers)
+    }
+
+    @GameSide(Side.CLIENT)
+    public open fun handleKeyRelease(
+        keyCode: Int,
+        scancode: Int,
         modifiers: OmniKeyboard.KeyboardModifiers
     ): Boolean {
         //#if MC >= 1.15
@@ -404,7 +414,7 @@ public abstract class OmniScreen(
     }
 
     final override fun keyReleased(keyCode: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyRelease(keyCode, scancode, 0.toChar(), modifiers.toKeyboardModifiers())
+        handleKeyRelease(keyCode, scancode, modifiers.toKeyboardModifiers())
         return false
     }
 
@@ -495,10 +505,10 @@ public abstract class OmniScreen(
     //$$
     //$$ final override fun keyTyped(typedChar: Char, keyCode: Int) {
     //$$     if (keyCode != 0) {
-    //$$         handleKeyPress(keyCode, 0, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.KEY_CODE_EVENT)
+    //$$         handleKeyPress(keyCode, 0, 0.toChar(), OmniKeyboard.modifiers, KeyPressTrigger.KEY_CODE_EVENT)
     //$$     }
     //$$
-    //$$     if (typedChar.toInt() != 0) {
+    //$$     if (typedChar != 0.toChar()) {
     //$$         handleKeyPress(0, 0, typedChar, OmniKeyboard.modifiers, KeyPressTrigger.CHAR_TYPE_EVENT)
     //$$     }
     //$$ }
@@ -506,7 +516,7 @@ public abstract class OmniScreen(
     //$$ final override fun handleKeyboardInput() {
     //$$     super.handleKeyboardInput()
     //$$     if (!Keyboard.getEventKeyState()) {
-    //$$         handleKeyRelease(Keyboard.getEventKey(), 0, 0.toChar(), OmniKeyboard.modifiers)
+    //$$         handleKeyRelease(Keyboard.getEventKey(), 0, OmniKeyboard.modifiers)
     //$$     }
     //$$ }
     //$$
