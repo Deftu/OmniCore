@@ -33,7 +33,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 
 public object OmniClientEventPassthrough {
 
+    private var isInitialized = false
+
     public fun initialize() {
+        if (isInitialized) {
+            return
+        }
+
         //#if FABRIC
         ClientTickEvents.START_CLIENT_TICK.register { _ ->
             OmniCore.eventBus.post(TickEvent.Client.Pre)
@@ -97,10 +103,12 @@ public object OmniClientEventPassthrough {
         //$$     val matrixStack = OmniMatrixStack.vanilla(event.matrixStack)
         //$$     OmniCore.eventBus.post(HudRenderEvent(matrixStack, event.partialTicks))
         //$$ }
+        //#endif
         //#else
         //$$ MinecraftForge.EVENT_BUS.register(this)
         //#endif
-        //#endif
+
+        isInitialized = true
     }
 
     //#if FORGE && MC <= 1.12.2

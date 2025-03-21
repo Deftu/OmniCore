@@ -23,7 +23,13 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
 
 public object OmniCommonEventPassthrough {
 
+    private var isInitialized = false
+
     public fun initialize() {
+        if (isInitialized) {
+            return
+        }
+
         //#if FABRIC
         ServerTickEvents.START_SERVER_TICK.register { server ->
             OmniCore.eventBus.post(TickEvent.Server.Pre(server))
@@ -58,6 +64,8 @@ public object OmniCommonEventPassthrough {
         //#else
         //$$ MinecraftForge.EVENT_BUS.register(this)
         //#endif
+
+        isInitialized = true
     }
 
     //#if FORGE && MC <= 1.12.2
