@@ -112,6 +112,14 @@ public class OmniFramebuffer {
             //#endif
         }
 
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun createFrom(other: OmniFramebuffer): OmniFramebuffer {
+            val result = OmniFramebuffer(other.width, other.height)
+            result.copyFrom(other)
+            return result
+        }
+
     }
 
     public var width: Int = 0
@@ -127,6 +135,56 @@ public class OmniFramebuffer {
     public var clearDepth: Double = 1.0
     public var clearStencil: Int = 0
 
+    public constructor() : this(OmniResolution.viewportWidth, OmniResolution.viewportHeight)
+
+    public constructor(
+        width: Int,
+        height: Int
+    ) {
+        resize(width, height)
+    }
+
+    public fun initialize(
+        width: Int,
+        height: Int
+    ) {
+        this.width = width
+        this.height = height
+
+        // Set up color attachment
+        this.colorAttachment = OmniTextureManager.generateTexture()
+        OmniTextureManager.configureTexture(this.colorAttachment) {
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        }
+
+        OmniRenderEnv.error.ifPresent { error("Failed to set up color attachment: $it") }
+
+        // Set up depth attachment
+        this.depthStencilAttachment = OmniTextureManager.generateTexture()
+        OmniTextureManager.configureTexture(this.depthStencilAttachment) {
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL11.GL_NONE)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
+            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_DEPTH24_STENCIL8, width, height, 0, GL30.GL_DEPTH_STENCIL, GL30.GL_UNSIGNED_INT_24_8, null as ByteBuffer?)
+        }
+
+        OmniRenderEnv.error.ifPresent { error("Failed to set up depth attachment: $it") }
+
+        // Set up the framebuffer
+        this.fbo = genFramebuffer()
+        withFramebuffer(fbo) {
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colorAttachment, 0)
+            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_STENCIL_ATTACHMENT, GL11.GL_TEXTURE_2D, depthStencilAttachment, 0)
+        }
+
+        checkStatus()
+        OmniRenderEnv.error.ifPresent { error("Failed to set up framebuffer: $it") }
+    }
+
     @GameSide(Side.CLIENT)
     public fun resize(
         width: Int,
@@ -136,6 +194,7 @@ public class OmniFramebuffer {
             this.width == width &&
             this.height == height
         ) return
+
         delete()
         initialize(width, height)
     }
@@ -186,7 +245,7 @@ public class OmniFramebuffer {
         stack.scale(1f, 1f, 50f)
 
         val blendState = BlendState.active()
-        val depthState = GL11.glGetBoolean(GL11.GL_DEPTH_TEST)
+        val depthState = OmniRenderState.isDepthEnabled
 
         OmniRenderState.enableBlend()
         OmniRenderState.setBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA)
@@ -246,6 +305,7 @@ public class OmniFramebuffer {
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun clearDepth() {
         withBound {
             OmniRenderState.setClearDepth(clearDepth)
@@ -255,6 +315,7 @@ public class OmniFramebuffer {
         }
     }
 
+    @GameSide(Side.CLIENT)
     public fun clearStencil() {
         withBound {
             OmniRenderState.setClearStencil(clearStencil)
@@ -265,7 +326,7 @@ public class OmniFramebuffer {
     }
 
     @GameSide(Side.CLIENT)
-    public fun copyFrom(width: Int, height: Int, otherFbo: Int){
+    public fun copyFrom(width: Int, height: Int, otherFbo: Int) {
         if (
             this.width != width ||
             this.height != height
@@ -337,47 +398,6 @@ public class OmniFramebuffer {
         //$$ ImageIO.write(image, "png", file)
         //#endif
         OmniTextureManager.bindTexture(0)
-    }
-
-    private fun initialize(
-        width: Int,
-        height: Int
-    ) {
-        this.width = width
-        this.height = height
-
-        // Set up color attachment
-        this.colorAttachment = OmniTextureManager.generateTexture()
-        OmniTextureManager.configureTexture(this.colorAttachment) {
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA8, width, height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, null as ByteBuffer?)
-        }
-
-        OmniRenderEnv.error.ifPresent { error("Failed to set up color attachment: $it") }
-
-        // Set up depth attachment
-        this.depthStencilAttachment = OmniTextureManager.generateTexture()
-        OmniTextureManager.configureTexture(this.depthStencilAttachment) {
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL14.GL_TEXTURE_COMPARE_MODE, GL11.GL_NONE)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
-            GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL30.GL_DEPTH24_STENCIL8, width, height, 0, GL30.GL_DEPTH_STENCIL, GL30.GL_UNSIGNED_INT_24_8, null as ByteBuffer?)
-        }
-
-        OmniRenderEnv.error.ifPresent { error("Failed to set up depth attachment: $it") }
-
-        // Set up the framebuffer
-        this.fbo = genFramebuffer()
-        withFramebuffer(fbo) {
-            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, colorAttachment, 0)
-            GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_DEPTH_STENCIL_ATTACHMENT, GL11.GL_TEXTURE_2D, depthStencilAttachment, 0)
-        }
-
-        checkStatus()
-        OmniRenderEnv.error.ifPresent { error("Failed to set up framebuffer: $it") }
     }
 
     private fun checkStatus() {
