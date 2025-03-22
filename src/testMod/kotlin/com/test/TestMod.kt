@@ -1,14 +1,8 @@
 package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
-import dev.deftu.eventbus.on
-import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.client.*
-import dev.deftu.omnicore.common.OmniIdentifier
-import dev.deftu.omnicore.common.OmniLoader
-import dev.deftu.omnicore.common.events.TickEvent
-import dev.deftu.omnicore.common.readString
-import dev.deftu.omnicore.common.writeString
+import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import org.apache.logging.log4j.LogManager
 
@@ -103,6 +97,8 @@ class TestMod
                 .executes {
                     val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
                     it.source.displayError(testError)
+
+                    OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
 
                     OmniChat.displayClientMessage("TestMod base command executed!")
                     OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
