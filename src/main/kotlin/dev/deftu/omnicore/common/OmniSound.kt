@@ -63,4 +63,23 @@ public class OmniSound {
         OmniServerSound.play(player, this, volume, pitch)
     }
 
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            other is Identifier -> identifier == other
+            //#if MC >= 1.12.2
+            other is SoundEvent -> event == other
+            //#endif
+            other is OmniSound -> identifier == other.identifier
+            else -> false
+        }
+    }
+
+    /**
+     * Returns the hash code of this sound's identifier. We can't consider the sound event's hash code because it's only available in 1.12.2 and above.
+     */
+    override fun hashCode(): Int {
+        return identifier.hashCode()
+    }
+
 }
