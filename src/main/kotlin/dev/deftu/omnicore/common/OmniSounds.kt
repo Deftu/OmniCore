@@ -65,6 +65,18 @@ public object OmniSounds {
 
     @JvmField
     @GameSide(Side.CLIENT)
+    public val ITEM_BREAK: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_ITEM_BREAK
+            //#else
+            //$$ OmniIdentifier.create("random.break")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_BASEDRUM: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
