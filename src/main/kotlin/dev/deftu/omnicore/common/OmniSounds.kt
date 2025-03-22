@@ -77,6 +77,114 @@ public object OmniSounds {
 
     @JvmField
     @GameSide(Side.CLIENT)
+    public val WOLF_AMBIENT: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_AMBIENT
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.ambient")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_DEATH: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_DEATH
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.death")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_GROWL: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_GROWL
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.growl")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_HOWL: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_HOWL
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.howl")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_HURT: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_HURT
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.hurt")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_PANT: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_PANT
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.pant")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_SHAKE: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_SHAKE
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.shake")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_STEP: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_STEP
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.step")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
+    public val WOLF_WHINE: OmniSound = noInline {
+        OmniSound(
+            //#if MC >= 1.12.2
+            SoundEvents.ENTITY_WOLF_WHINE
+            //#else
+            //$$ OmniIdentifier.create("entity.wolf.whine")
+            //#endif
+        )
+    }
+
+    @JvmField
+    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_BASEDRUM: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
