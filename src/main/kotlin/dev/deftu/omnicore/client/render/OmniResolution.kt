@@ -27,7 +27,19 @@ public object OmniResolution {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
+    @Deprecated("Use windowWidth instead", ReplaceWith("windowWidth"))
     public val screenWidth: Int
+        get() = windowWidth
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    @Deprecated("Use windowHeight instead", ReplaceWith("windowHeight"))
+    public val screenHeight: Int
+        get() = windowHeight
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val windowWidth: Int
         get() {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.width
@@ -38,7 +50,7 @@ public object OmniResolution {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public val screenHeight: Int
+    public val windowHeight: Int
         get() {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.height

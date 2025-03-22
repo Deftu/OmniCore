@@ -105,12 +105,12 @@ public object OmniMouse {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val scaledX: Double
-        get() = rawX * OmniResolution.scaledWidth / max(1, OmniResolution.screenWidth)
+        get() = rawX * OmniResolution.scaledWidth / max(1, OmniResolution.windowWidth)
 
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val scaledY: Double
-        get() = rawY * OmniResolution.scaledHeight / max(1, OmniResolution.screenHeight)
+        get() = rawY * OmniResolution.scaledHeight / max(1, OmniResolution.windowHeight)
 
     @JvmStatic
     @GameSide(Side.CLIENT)
