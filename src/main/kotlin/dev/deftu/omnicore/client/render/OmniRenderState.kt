@@ -24,6 +24,18 @@ import com.mojang.blaze3d.systems.RenderSystem
 @GameSide(Side.CLIENT)
 public object OmniRenderState {
 
+    public val isCullingEnabled: Boolean
+        get() = GL11.glIsEnabled(GL11.GL_CULL_FACE)
+
+    public val isBlendEnabled: Boolean
+        get() = GL11.glIsEnabled(GL11.GL_BLEND)
+
+    public val isDepthEnabled: Boolean
+        get() = GL11.glIsEnabled(GL11.GL_DEPTH_TEST)
+
+    public val depthState: DepthState
+        get() = DepthState.values().first { it.value == GL11.glGetInteger(GL11.GL_DEPTH_FUNC) }
+
     //#if MC >= 1.17.1
     @JvmStatic
     @GameSide(Side.CLIENT)
@@ -211,7 +223,9 @@ public object OmniRenderState {
     public fun toggleTexture2D(enable: Boolean) {
         if (enable) {
             enableTexture2D()
-        } else disableTexture2D()
+        } else {
+            disableTexture2D()
+        }
     }
 
     @JvmStatic
@@ -271,7 +285,9 @@ public object OmniRenderState {
     public fun toggleAlpha(enable: Boolean) {
         if (enable) {
             enableAlpha()
-        } else disableAlpha()
+        } else {
+            disableAlpha()
+        }
     }
 
     @JvmStatic
@@ -291,7 +307,9 @@ public object OmniRenderState {
     public fun toggleBlend(enable: Boolean) {
         if (enable) {
             enableBlend()
-        } else disableBlend()
+        } else {
+            disableBlend()
+        }
     }
 
     @JvmStatic
@@ -371,7 +389,9 @@ public object OmniRenderState {
     public fun toggleDepth(enable: Boolean) {
         if (enable) {
             enableDepth()
-        } else disableDepth()
+        } else {
+            disableDepth()
+        }
     }
 
     @JvmStatic
