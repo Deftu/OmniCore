@@ -38,10 +38,10 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 //$$ import dev.deftu.omnicore.common.OmniIdentifier;
 //$$ import net.minecraft.util.Identifier;
 //$$ import net.minecraft.util.PacketByteBuf;
-//$$ import net.minecraft.network.listener.ClientPlayPacketListener;
+//$$ import net.minecraft.client.network.ClientPlayNetworkHandler;
 //$$ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 //$$
-//$$ @Mixin(ClientPlayPacketListener.class)
+//$$ @Mixin(ClientPlayNetworkHandler.class)
 //#endif
 public class Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads {
 
@@ -91,12 +91,6 @@ public class Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads {
         //#endif
         Set<Predicate<OmniPacketReceiverContext>> receivers = OmniClientPackets.getAllPacketReceivers$OmniCore(channel);
         OmniPacketReceiverContext context = new OmniPacketReceiverContext(channel, buf);
-        System.out.println("----- RECEIVED PACKET: " + channel + " -----");
-        System.out.println(channel);
-        System.out.println(buf);
-        System.out.println(receivers);
-        System.out.println(context);
-        System.out.println("----- RECEIVED PACKET: " + channel + " -----");
         boolean anyHandled = receivers.stream().anyMatch(receiver -> receiver.test(context));
         if (anyHandled) {
             ci.cancel();
