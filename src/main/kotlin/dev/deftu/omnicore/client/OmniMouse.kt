@@ -98,7 +98,7 @@ public object OmniMouse {
             //#if MC >= 1.14
             return OmniClient.getInstance().mouse.y
             //#else
-            //$$ return OmniResolution.screenHeight - Mouse.getY().toDouble() - 1
+            //$$ return OmniResolution.windowHeight - Mouse.getY().toDouble() - 1
             //#endif
         }
 
