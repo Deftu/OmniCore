@@ -3,8 +3,7 @@ package dev.deftu.omnicore.client
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.textile.TextHolder
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.minecraft.*
 
 /**
  * @since 0.2.2
@@ -45,6 +44,38 @@ public object OmniChat {
     @GameSide(Side.CLIENT)
     public fun displayClientMessage(text: String) {
         displayClientMessage(MCSimpleTextHolder(text))
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    @GameSide(Side.CLIENT)
+    public fun displayErrorMessage(throwable: Throwable, isDetailed: Boolean = true) {
+        val text = MCSimpleMutableTextHolder(throwable.message ?: "An error occurred")
+            .addFormatting(MCTextFormat.RED)
+        if (isDetailed) {
+            val stackTraceText = throwable.stackTraceToString()
+                .replace("\r\n", "\n")
+                .replace("\t", " ".repeat(4))
+            text.setHoverEvent(MCHoverEvent.ShowText(stackTraceText))
+        }
+
+        displayClientMessage(text)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    @GameSide(Side.CLIENT)
+    public fun displayErrorMessage(text: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true) {
+        val text = MCSimpleMutableTextHolder("")
+            .append(text)
+        if (isDetailed) {
+            val stackTraceText = throwable.stackTraceToString()
+                .replace("\r\n", "\n")
+                .replace("\t", " ".repeat(4))
+            text.setHoverEvent(MCHoverEvent.ShowText(stackTraceText))
+        }
+
+        displayClientMessage(text)
     }
 
     /**
