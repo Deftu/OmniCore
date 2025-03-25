@@ -6,6 +6,9 @@ import dev.deftu.omnicore.annotations.Side
 //#if MC >= 1.15
 import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
+import java.awt.Toolkit
+import java.awt.event.KeyEvent
+
 //#else
 //$$ import org.lwjgl.input.Keyboard
 //#endif
@@ -15,10 +18,25 @@ public object OmniKeyboard {
 
     @GameSide(Side.CLIENT)
     public data class KeyboardModifiers(
-        val shift: Boolean,
-        val ctrl: Boolean,
-        val alt: Boolean
-    )
+        public val isShift: Boolean,
+        public val isCtrl: Boolean,
+        public val isAlt: Boolean,
+        public val isSuper: Boolean,
+        public val isCapsLock: Boolean,
+        public val isNumLock: Boolean
+    ) {
+
+
+        @Deprecated("Use isShift instead", ReplaceWith("isShift"))
+        val shift: Boolean = isShift
+
+        @Deprecated("Use isCtrl instead", ReplaceWith("isCtrl"))
+        val ctrl: Boolean = isCtrl
+
+        @Deprecated("Use isAlt instead", ReplaceWith("isAlt"))
+        val alt: Boolean = isAlt
+
+    }
 
     //#if MC >= 1.15
     @JvmField
@@ -880,11 +898,29 @@ public object OmniKeyboard {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
+    public val isSuperKeyPressed: Boolean
+        get() = isPressed(KEY_LMETA) || isPressed(KEY_RMETA)
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val isCapsLockEnabled: Boolean
+        get() = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK)
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val isNumLockEnabled: Boolean
+        get() = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_NUM_LOCK)
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
     public val modifiers: KeyboardModifiers
         get() = KeyboardModifiers(
-            shift = isShiftKeyPressed,
-            ctrl = isCtrlKeyPressed,
-            alt = isAltKeyPressed
+            isShift = isShiftKeyPressed,
+            isCtrl = isCtrlKeyPressed,
+            isAlt = isAltKeyPressed,
+            isSuper = isSuperKeyPressed,
+            isCapsLock = isCapsLockEnabled,
+            isNumLock = isNumLockEnabled
         )
 
     @JvmStatic
@@ -939,17 +975,26 @@ public object OmniKeyboard {
 //#if MC >= 1.16.5
 @GameSide(Side.CLIENT)
 public fun OmniKeyboard.KeyboardModifiers?.toInt(): Int = listOf(
-    this?.shift to GLFW.GLFW_MOD_SHIFT,
-    this?.ctrl to GLFW.GLFW_MOD_CONTROL,
-    this?.alt to GLFW.GLFW_MOD_ALT
+    this?.isShift to GLFW.GLFW_MOD_SHIFT,
+    this?.isCtrl to GLFW.GLFW_MOD_CONTROL,
+    this?.isAlt to GLFW.GLFW_MOD_ALT,
+    this?.isSuper to GLFW.GLFW_MOD_SUPER,
+    this?.isCapsLock to GLFW.GLFW_MOD_CAPS_LOCK,
+    this?.isNumLock to GLFW.GLFW_MOD_NUM_LOCK
 ).sumOf { (mod, glfw) ->
     if (mod == true) glfw else 0
 }
 
 @GameSide(Side.CLIENT)
 public fun Int.toKeyboardModifiers(): OmniKeyboard.KeyboardModifiers = OmniKeyboard.KeyboardModifiers(
-    shift = (this and GLFW.GLFW_MOD_SHIFT) != 0,
-    ctrl = (this and GLFW.GLFW_MOD_CONTROL) != 0,
-    alt = (this and GLFW.GLFW_MOD_ALT) != 0
+    isShift = (this and GLFW.GLFW_MOD_SHIFT) != 0,
+    isCtrl = (this and GLFW.GLFW_MOD_CONTROL) != 0,
+    isAlt = (this and GLFW.GLFW_MOD_ALT) != 0,
+    isSuper = (this and GLFW.GLFW_MOD_SUPER) != 0,
+
+    // We can't check for caps/num lock via the mods mask because GLFW's GLFW_LOCK_KEY_MODS input mode is likely not enabled
+    // thus, we'll fall back to checking the state of those keys with AWT. We still check the mods mask for caps/num lock in case
+    isCapsLock = (this and GLFW.GLFW_MOD_CAPS_LOCK) != 0 || OmniKeyboard.isCapsLockEnabled,
+    isNumLock = (this and GLFW.GLFW_MOD_NUM_LOCK) != 0 || OmniKeyboard.isNumLockEnabled
 )
 //#endif
