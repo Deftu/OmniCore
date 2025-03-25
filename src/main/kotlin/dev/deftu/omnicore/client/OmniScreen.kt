@@ -29,7 +29,7 @@ public abstract class OmniScreen(
     public val restorePreviousScreen: Boolean = true,
     public val screenTitle: MCTextHolder<*>? = null
 //#if MC >= 1.16.5
-) : Screen(screenTitle?.asVanilla() ?: MCTranslatableTextHolder("").asVanilla()) {
+) : Screen((screenTitle ?: MCTranslatableTextHolder("")).asVanilla()) {
 //#else
 //$$ ) : GuiScreen() {
 //#endif
