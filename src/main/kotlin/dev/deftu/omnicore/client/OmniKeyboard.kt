@@ -2,13 +2,12 @@ package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import java.awt.Toolkit
+import java.awt.event.KeyEvent
 
 //#if MC >= 1.15
 import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
-import java.awt.Toolkit
-import java.awt.event.KeyEvent
-
 //#else
 //$$ import org.lwjgl.input.Keyboard
 //#endif
