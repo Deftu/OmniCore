@@ -2,6 +2,7 @@ package dev.deftu.omnicore
 
 import dev.deftu.omnicore.client.OmniClientCommands
 import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
+import dev.deftu.omnicore.common.OmniDimension
 import dev.deftu.omnicore.common.OmniLoader
 import dev.deftu.omnicore.common.events.OmniCommonEventPassthrough
 import dev.deftu.omnicore.server.OmniServer
@@ -112,6 +113,18 @@ public class OmniCoreEntrypoint
 
             OmniClientEventPassthrough.initialize()
             OmniClientCommands.initialize()
+
+            OmniClientCommands.register(
+                OmniClientCommands.literal("omnicore")
+                    .then(
+                        OmniClientCommands.literal("dimension")
+                            .executes { ctx ->
+                                ctx.source.displayMessage(OmniDimension.current.toString())
+
+                                1
+                            }
+                    )
+            )
         }
 
         if (OmniLoader.isPhysicalServer) {

@@ -2,3 +2,5 @@ net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource net.fabricmc
 net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback
 
 net.minecraft.server.command.CommandOutput sendMessage() sendSystemMessage()
+
+net.minecraft.world.dimension.DimensionTypes net.minecraft.world.dimension.DimensionType
