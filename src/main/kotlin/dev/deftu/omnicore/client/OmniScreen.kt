@@ -572,4 +572,13 @@ public abstract class OmniScreen(
     //#endif
 
 }
+
+public val Class<out Screen>.isInScreen: Boolean
+    get() = OmniScreen.isInScreen(this)
+
+public val CreativeInventoryScreen.isInInventoryTab: Boolean
+    get() = OmniScreen.isInInventoryTab(this)
+
+public fun Screen.openAfter(tickCount: Int) {
+    OmniScreen.openAfter(tickCount, this)
 }
