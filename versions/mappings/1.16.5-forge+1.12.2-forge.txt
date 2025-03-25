@@ -51,6 +51,11 @@ net.minecraft.client.gui.Gui net.minecraft.client.gui.GuiIngame
 
 net.minecraft.client.gui.components.ChatComponent net.minecraft.client.gui.GuiNewChat
 
+net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen net.minecraft.client.gui.inventory.GuiContainerCreative
+
+net.minecraft.world.item.CreativeModeTab net.minecraft.creativetab.CreativeTabs
+net.minecraft.world.item.CreativeModeTab getId() getIndex()
+
 net.minecraft.client.multiplayer.ClientPacketListener net.minecraft.client.network.NetHandlerPlayClient
 
 net.minecraft.client.Options net.minecraft.client.settings.GameSettings

@@ -18,6 +18,10 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
 //$$ import org.lwjgl.input.Keyboard
 //#endif
 
+//#if MC <= 1.19.2
+//$$ import net.minecraft.world.item.CreativeModeTab
+//#endif
+
 //#if MC >= 1.20
 import net.minecraft.client.gui.DrawContext
 //#elseif MC >= 1.16.5
@@ -117,7 +121,7 @@ public abstract class OmniScreen(
             //#if MC >= 1.19.4
             return screen.isInventoryTabSelected
             //#else
-            //$$ return screen.selectedTab == ItemGroup.INVENTORY.index
+            //$$ return screen.selectedTab == CreativeModeTab.TAB_INVENTORY.id
             //#endif
         }
 
