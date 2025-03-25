@@ -25,7 +25,6 @@ public object OmniKeyboard {
         public val isNumLock: Boolean
     ) {
 
-
         @Deprecated("Use isShift instead", ReplaceWith("isShift"))
         val shift: Boolean = isShift
 

@@ -10,6 +10,7 @@ import dev.deftu.omnicore.common.events.TickEvent
 import dev.deftu.textile.minecraft.MCTextHolder
 import dev.deftu.textile.minecraft.MCTranslatableTextHolder
 import net.minecraft.client.gui.screen.ChatScreen
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
 
 //#if MC <= 1.12.2
 //$$ import java.io.IOException
@@ -32,6 +33,7 @@ public abstract class OmniScreen(
 //#else
 //$$ ) : GuiScreen() {
 //#endif
+
     public companion object {
 
         /**
@@ -74,29 +76,29 @@ public abstract class OmniScreen(
             currentScreen = null
         }
 
-    /**
-     * Opens a screen after the given amount of ticks.
-     *
-     * @since 0.24.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun openAfter(tickCount: Int, screen: Screen?) {
-        var ticks = 0
-        var callback: Runnable? = null
-        val listener: (TickEvent.Client.Pre) -> Unit = {
-            ticks++
-            if (ticks >= tickCount) {
-                currentScreen = screen
-                callback?.let(Runnable::run)
+        /**
+         * Opens a screen after the given amount of ticks.
+         *
+         * @since 0.24.0
+         * @author Deftu
+         */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun openAfter(tickCount: Int, screen: Screen?) {
+            var ticks = 0
+            var callback: Runnable? = null
+            val listener: (TickEvent.Client.Pre) -> Unit = {
+                ticks++
+                if (ticks >= tickCount) {
+                    currentScreen = screen
+                    callback?.let(Runnable::run)
+                }
             }
+
+            callback = OmniCore.eventBus.on(TickEvent.Client.Pre::class.java, listener)
         }
 
-        callback = OmniCore.eventBus.on(TickEvent.Client.Pre::class.java, listener)
-    }
-
-    /**
+        /**
          * @param screenClz The screen class to check.
          * @return True if the player is in the specified screen, false otherwise.
          *
@@ -107,6 +109,16 @@ public abstract class OmniScreen(
         @GameSide(Side.CLIENT)
         public fun isInScreen(screenClz: Class<out Screen>): Boolean {
             return currentScreen?.javaClass == screenClz
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun isInInventoryTab(screen: CreativeInventoryScreen): Boolean {
+            //#if MC >= 1.19.4
+            return screen.isInventoryTabSelected
+            //#else
+            //$$ return screen.selectedTab == ItemGroup.INVENTORY.index
+            //#endif
         }
 
     }
@@ -558,4 +570,6 @@ public abstract class OmniScreen(
     //$$
     //$$ final override fun doesGuiPauseGame(): Boolean = doesPauseGame()
     //#endif
+
+}
 }
