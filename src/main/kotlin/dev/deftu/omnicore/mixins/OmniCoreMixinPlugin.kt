@@ -24,6 +24,13 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             result.add("client.Mixin_Screen_CommandExecution")
             //#endif
 
+            //#if FABRIC && MC <= 1.12.2
+            //$$ result.add("client.Mixin_Screen_InitScreenEvent")
+            //$$ result.add("client.Mixin_GameRenderer_RenderScreenEvent")
+            //$$ result.add("client.Mixin_Screen_KeyboardScreenEvent")
+            //$$ result.add("client.Mixin_Screen_MouseScreenEvent")
+            //#endif
+
             //#if FABRIC && MC == 1.8.9
             //$$ result.add("client.Mixin_MinecraftClient_TimerAccessor")
             //#endif

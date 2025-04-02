@@ -1,1 +1,2 @@
 net.neoforged.neoforge.event.TickEvent net.minecraftforge.event.TickEvent
+net.neoforged.neoforge.client.event.ScreenEvent net.minecraftforge.client.event.ScreenEvent
