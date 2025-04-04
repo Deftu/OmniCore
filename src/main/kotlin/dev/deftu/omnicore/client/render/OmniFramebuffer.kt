@@ -19,6 +19,7 @@ import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.client.shaders.BlendState
+import dev.deftu.omnicore.common.OmniImage
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL14
@@ -374,29 +375,13 @@ public class OmniFramebuffer {
     @GameSide(Side.CLIENT)
     public fun writeToFile(file: File) {
         OmniTextureManager.bindTexture(colorAttachment)
-        //#if MC >= 1.16.5
-        val image = NativeImage(width, height, false)
-        image.loadFromTextureImage(0, true)
-        image.mirrorVertically()
-        image.writeTo(file)
-        //#else
-        //$$ val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        //$$ val buffer = BufferUtils.createByteBuffer(width * height * 4)
-        //$$ GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
-        //$$ for (y in 0..<height) {
-        //$$     for (x in 0..<width) {
-        //$$         val i = (x + y * width) * 4
-        //$$         val r = buffer.get(i).toInt() and 0xFF
-        //$$         val g = buffer.get(i + 1).toInt() and 0xFF
-        //$$         val b = buffer.get(i + 2).toInt() and 0xFF
-        //$$         val a = buffer.get(i + 3).toInt() and 0xFF
-        //$$         val argb = (a shl 24) or (r shl 16) or (g shl 8) or b
-        //$$         image.setRGB(x, height - y - 1, argb)
-        //$$     }
-        //$$ }
-        //$$
-        //$$ ImageIO.write(image, "png", file)
-        //#endif
+
+        OmniImage(width, height).use { image ->
+            image.loadFromBoundTexture()
+            image.flipY()
+            image.saveTo(file)
+        }
+
         OmniTextureManager.bindTexture(0)
     }
 
