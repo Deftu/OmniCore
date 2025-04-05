@@ -19,7 +19,6 @@ import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
 import dev.deftu.omnicore.client.shaders.BlendState
-import dev.deftu.omnicore.common.OmniImage
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL14
