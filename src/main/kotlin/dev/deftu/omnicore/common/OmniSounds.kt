@@ -3,6 +3,12 @@ package dev.deftu.omnicore.common
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.VersionedAbove
+import dev.deftu.omnicore.annotations.VersionedBelow
+
+//#if MC >= 1.21.5
+//$$ import net.minecraft.world.entity.animal.wolf.WolfSoundVariant
+//$$ import net.minecraft.world.entity.animal.wolf.WolfSoundVariants
+//#endif
 
 //#if MC >= 1.12.2
 import net.minecraft.sound.SoundEvents
@@ -11,6 +17,12 @@ import net.minecraft.sound.SoundEvents
 //#endif
 
 public object OmniSounds {
+
+    //#if MC >= 1.21.5
+    //$$ private val classicWolfSounds: WolfSoundVariant by lazy {
+    //$$     SoundEvents.WOLF_SOUNDS[WolfSoundVariants.SoundSet.CLASSIC]!!
+    //$$ }
+    //#endif
 
     @JvmField
     @GameSide(Side.CLIENT)
@@ -69,6 +81,9 @@ public object OmniSounds {
         OmniSound(
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_ITEM_BREAK
+                //#if MC >= 1.21.5
+                //$$ .value()
+                //#endif
             //#else
             //$$ OmniIdentifier.create("random.break")
             //#endif
@@ -79,7 +94,9 @@ public object OmniSounds {
     @GameSide(Side.CLIENT)
     public val WOLF_AMBIENT: OmniSound = noInline {
         OmniSound(
-            //#if MC >= 1.12.2
+            //#if MC >= 1.21.5
+            //$$ classicWolfSounds.ambientSound.value()
+            //#elseif MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_AMBIENT
             //#else
             //$$ OmniIdentifier.create("entity.wolf.ambient")
@@ -91,7 +108,9 @@ public object OmniSounds {
     @GameSide(Side.CLIENT)
     public val WOLF_DEATH: OmniSound = noInline {
         OmniSound(
-            //#if MC >= 1.12.2
+            //#if MC >= 1.21.5
+            //$$ classicWolfSounds.deathSound.value()
+            //#elseif MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_DEATH
             //#else
             //$$ OmniIdentifier.create("entity.wolf.death")
@@ -103,7 +122,9 @@ public object OmniSounds {
     @GameSide(Side.CLIENT)
     public val WOLF_GROWL: OmniSound = noInline {
         OmniSound(
-            //#if MC >= 1.12.2
+            //#if MC >= 1.21.5
+            //$$ classicWolfSounds.growlSound.value()
+            //#elseif MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_GROWL
             //#else
             //$$ OmniIdentifier.create("entity.wolf.growl")
@@ -113,7 +134,11 @@ public object OmniSounds {
 
     @JvmField
     @GameSide(Side.CLIENT)
+    @VersionedBelow("1.21.5")
     public val WOLF_HOWL: OmniSound = noInline {
+        //#if MC >= 1.21.5
+        //$$ OmniSound.invalid()
+        //#else
         OmniSound(
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_HOWL
@@ -121,13 +146,16 @@ public object OmniSounds {
             //$$ OmniIdentifier.create("entity.wolf.howl")
             //#endif
         )
+        //#endif
     }
 
     @JvmField
     @GameSide(Side.CLIENT)
     public val WOLF_HURT: OmniSound = noInline {
         OmniSound(
-            //#if MC >= 1.12.2
+            //#if MC >= 1.21.5
+            //$$ classicWolfSounds.hurtSound.value()
+            //#elseif MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_HURT
             //#else
             //$$ OmniIdentifier.create("entity.wolf.hurt")
@@ -139,7 +167,9 @@ public object OmniSounds {
     @GameSide(Side.CLIENT)
     public val WOLF_PANT: OmniSound = noInline {
         OmniSound(
-            //#if MC >= 1.12.2
+            //#if MC >= 1.21.5
+            //$$ classicWolfSounds.pantSound.value()
+            //#elseif MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_PANT
             //#else
             //$$ OmniIdentifier.create("entity.wolf.pant")
@@ -175,7 +205,9 @@ public object OmniSounds {
     @GameSide(Side.CLIENT)
     public val WOLF_WHINE: OmniSound = noInline {
         OmniSound(
-            //#if MC >= 1.12.2
+            //#if MC >= 1.21.5
+            //$$ classicWolfSounds.whineSound.value()
+            //#elseif MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_WHINE
             //#else
             //$$ OmniIdentifier.create("entity.wolf.whine")
