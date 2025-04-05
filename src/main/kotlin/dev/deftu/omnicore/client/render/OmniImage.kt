@@ -14,6 +14,7 @@ import org.lwjgl.system.MemoryUtil
 //$$ import javax.imageio.ImageIO
 //#endif
 
+import com.mojang.blaze3d.platform.TextureUtil
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.file.Files
@@ -124,6 +125,27 @@ public class OmniImage(
         //$$         setPixel(x, y, (a shl 24) or (r shl 16) or (g shl 8) or b)
         //$$     }
         //$$ }
+        //#endif
+    }
+
+    public fun prepareTexture(id: Int) {
+        //#if MC >= 1.17.1
+        TextureUtil.prepareImage(id, width, height)
+        //#elseif MC >= 1.16.5
+        //$$ TextureUtil.allocate(id, width, height)
+        //#else
+        //$$ TextureUtil.allocateTexture(id, width, height)
+        //#endif
+    }
+
+    public fun uploadTexture(id: Int) {
+        //#if MC >= 1.16.5
+        OmniTextureManager.configureTexture(id) {
+            native.upload(0, 0, 0, false)
+        }
+        //#else
+        //$$ val data = native.getRGB(0, 0, width, height, null, 0, width)
+        //$$ TextureUtil.uploadTexture(id, data, width, height)
         //#endif
     }
 
