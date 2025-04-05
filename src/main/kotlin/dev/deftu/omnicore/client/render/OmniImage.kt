@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.client.render
 
 //#if MC >= 1.16.5
 //#if MC < 1.21.5
