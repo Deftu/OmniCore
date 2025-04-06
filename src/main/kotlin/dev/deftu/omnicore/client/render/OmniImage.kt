@@ -1,9 +1,12 @@
 package dev.deftu.omnicore.client.render
 
-//#if MC >= 1.21.2
+//#if MC >= 1.21.5
 //$$ import com.mojang.blaze3d.opengl.GlStateManager
-//$$ import dev.deftu.omnicore.common.OmniColor
 //$$ import org.lwjgl.opengl.GL11
+//#endif
+
+//#if MC >= 1.21.2
+//$$ import dev.deftu.omnicore.common.OmniColor
 //#endif
 
 //#if MC >= 1.16.5
