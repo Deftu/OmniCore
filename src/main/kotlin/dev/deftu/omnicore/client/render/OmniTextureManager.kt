@@ -155,7 +155,7 @@ public class OmniTextureManager private constructor(
             //#else
             //$$ val image = ImageIO.read(stream)
             //#endif
-            return ReleasedDynamicTexture(image)
+            return ReleasedDynamicTexture(OmniImage.from(image))
         } catch (e: Exception) {
             throw RuntimeException(e)
         }
