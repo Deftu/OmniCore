@@ -3,6 +3,7 @@ package dev.deftu.omnicore.client.shaders
 import com.mojang.blaze3d.platform.GlStateManager
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.client.render.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniRenderEnv
 import dev.deftu.omnicore.client.render.OmniTessellator
 import org.lwjgl.opengl.ARBShaderObjects
@@ -24,7 +25,7 @@ public interface OmniShader {
         public fun fromLegacyShader(
             vert: String,
             frag: String,
-            blend: BlendState,
+            blend: OmniManagedBlendState,
             vertexFormat: OmniTessellator.VertexFormats?
         ): OmniShader {
             //#if MC >= 1.17
