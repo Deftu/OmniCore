@@ -2,11 +2,10 @@ package dev.deftu.omnicore.client.render
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.16.5
 import net.minecraft.client.render.VertexConsumer
-import org.jetbrains.annotations.ApiStatus
-
 //#else
 //$$ import net.minecraft.client.renderer.BufferBuilder
 //$$ import org.lwjgl.util.vector.Matrix4f
