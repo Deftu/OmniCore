@@ -28,7 +28,7 @@ public data class ColorMask(
                 //#if MC >= 1.16.5
                 GL11.glGetBooleanv(param, buffer)
                 //#else
-                //$$ GL11.glGetBooleanv(param, buffer)
+                //$$ GL11.glGetBoolean(param, buffer)
                 //#endif
             }.let { buffer ->
                 List(count) { i ->
