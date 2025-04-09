@@ -1,10 +1,9 @@
-package dev.deftu.omnicore.client.shaders
+package dev.deftu.omnicore.client.render
 
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL14
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.client.render.OmniRenderState
 
 //#if MC >= 1.17 && MC <= 1.21.1
 import net.minecraft.client.gl.GlBlendState
@@ -19,7 +18,7 @@ import org.lwjgl.opengl.GL20
  * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
  */
 @GameSide(Side.CLIENT)
-public data class BlendState(
+public data class OmniManagedBlendState(
     public val equation: BlendEquation,
     public val srcRgb: BlendFactor,
     public val dstRgb: BlendFactor,
@@ -32,15 +31,15 @@ public data class BlendState(
 
         @JvmField
         @GameSide(Side.CLIENT)
-        public val DISABLED: BlendState = BlendState(BlendEquation.ADD, BlendFactor.ONE, BlendFactor.ZERO, enabled = false)
+        public val DISABLED: OmniManagedBlendState = OmniManagedBlendState(BlendEquation.ADD, BlendFactor.ONE, BlendFactor.ZERO, enabled = false)
 
         @JvmField
         @GameSide(Side.CLIENT)
-        public val NORMAL: BlendState = BlendState(BlendEquation.ADD, BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
+        public val NORMAL: OmniManagedBlendState = OmniManagedBlendState(BlendEquation.ADD, BlendFactor.SRC_ALPHA, BlendFactor.ONE_MINUS_SRC_ALPHA)
 
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun active(): BlendState = BlendState(
+        public fun active(): OmniManagedBlendState = OmniManagedBlendState(
             //#if MC >= 1.15
             BlendEquation.fromId(GL11.glGetInteger(GL20.GL_BLEND_EQUATION_RGB)) ?: BlendEquation.ADD,
             //#else
@@ -83,7 +82,7 @@ public data class BlendState(
 
         override fun enable() {
             super.enable()
-            this@BlendState.apply()
+            this@OmniManagedBlendState.apply()
         }
     }
 

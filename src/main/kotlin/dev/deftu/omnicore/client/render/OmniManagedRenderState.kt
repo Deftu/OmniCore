@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.client.render
 
 import com.mojang.blaze3d.platform.GlStateManager
-import dev.deftu.omnicore.client.shaders.BlendState
 import org.lwjgl.opengl.GL11
 
 public class OmniManagedRenderState(
@@ -9,7 +8,7 @@ public class OmniManagedRenderState(
     depthFunc: Int,
     isDepthMask: Boolean,
     isCullFace: Boolean,
-    blendState: BlendState,
+    blendState: OmniManagedBlendState,
     colorMask: ColorMask,
     colorLogicOp: Boolean,
     colorLogicOpMode: Int,
@@ -56,7 +55,7 @@ public class OmniManagedRenderState(
             field = value
         }
 
-    public var blendState: BlendState = blendState
+    public var blendState: OmniManagedBlendState = blendState
         set(value) {
             value.activate()
             field = value
@@ -253,7 +252,7 @@ public class OmniManagedRenderState(
                 depthFunc = GL11.glGetInteger(GL11.GL_DEPTH_FUNC),
                 isDepthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK),
                 isCullFace = GL11.glGetBoolean(GL11.GL_CULL_FACE),
-                blendState = BlendState.active(),
+                blendState = OmniManagedBlendState.active(),
                 colorMask = ColorMask.active(),
                 colorLogicOp = GL11.glGetBoolean(GL11.GL_COLOR_LOGIC_OP),
                 colorLogicOpMode = GL11.glGetInteger(GL11.GL_LOGIC_OP_MODE),

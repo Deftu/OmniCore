@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import dev.deftu.omnicore.OmniCore
+import dev.deftu.omnicore.client.render.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniTessellator
 import dev.deftu.omnicore.client.render.OmniRenderState
 import net.minecraft.client.gl.GlUniform
@@ -32,7 +33,7 @@ import java.util.Optional
 
 internal class MinecraftShader(
     private val shader: ShaderProgram,
-    private val blend: BlendState
+    private val blend: OmniManagedBlendState
 ) : OmniShader {
 
     companion object {
@@ -54,7 +55,7 @@ internal class MinecraftShader(
         internal fun fromLegacyShader(
             vert: String,
             frag: String,
-            blend: BlendState,
+            blend: OmniManagedBlendState,
             vertexFormat: OmniTessellator.VertexFormats?
         ): MinecraftShader {
             val transformer = Transformer(vertexFormat)

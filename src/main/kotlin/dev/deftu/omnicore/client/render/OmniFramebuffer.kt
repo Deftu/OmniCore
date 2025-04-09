@@ -7,7 +7,6 @@ package dev.deftu.omnicore.client.render
 //$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
-import net.minecraft.client.texture.NativeImage
 //#else
 //$$ import net.minecraft.client.renderer.OpenGlHelper
 //$$ import org.lwjgl.BufferUtils
@@ -18,7 +17,6 @@ import net.minecraft.client.texture.NativeImage
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
-import dev.deftu.omnicore.client.shaders.BlendState
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL14
@@ -244,7 +242,7 @@ public class OmniFramebuffer {
         stack.push()
         stack.scale(1f, 1f, 50f)
 
-        val blendState = BlendState.active()
+        val blendState = OmniManagedBlendState.active()
         val depthState = OmniRenderState.isDepthEnabled
 
         OmniRenderState.enableBlend()
