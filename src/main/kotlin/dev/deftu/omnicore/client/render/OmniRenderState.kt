@@ -13,6 +13,9 @@ import net.minecraft.client.gl.ShaderProgram
 
 //#if MC >= 1.16.5
 import com.mojang.blaze3d.systems.RenderSystem
+import dev.deftu.omnicore.annotations.VersionedAbove
+import org.jetbrains.annotations.ApiStatus
+
 //#endif
 
 //#if MC <= 1.16.5
@@ -36,22 +39,30 @@ public object OmniRenderState {
     public val isDepthEnabled: Boolean
         get() = GL11.glIsEnabled(GL11.GL_DEPTH_TEST)
 
+    @Suppress("EnumValuesSoftDeprecate")
     public val depthState: DepthState
         get() = DepthState.values().first { it.value == GL11.glGetInteger(GL11.GL_DEPTH_FUNC) }
 
     //#if MC >= 1.17.1
     @JvmStatic
+    @ApiStatus.Internal
     @GameSide(Side.CLIENT)
+    @VersionedAbove("1.17.1")
     public fun setShader(supplier: Supplier<ShaderProgram?>) {
+        //#if MC < 1.21.5
         //#if MC >= 1.21.2
-        //$$ supplier.get()?.let(RenderSystem::setShader)
+        //$$ @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        //$$ RenderSystem.setShader(supplier.get())
         //#else
         RenderSystem.setShader(supplier)
+        //#endif
         //#endif
     }
 
     @JvmStatic
+    @ApiStatus.Internal
     @GameSide(Side.CLIENT)
+    @VersionedAbove("1.17.1")
     public fun removeShader() {
         setShader { null }
     }
@@ -60,22 +71,26 @@ public object OmniRenderState {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setTexture(index: Int, texture: Int) {
+        //#if MC < 1.21.5
         //#if MC >= 1.17.1
         RenderSystem.setShaderTexture(index, texture)
         //#else
         //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
         //$$ OmniTextureManager.bindTexture(texture)
         //#endif
+        //#endif
     }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun setTexture(index: Int, texture: Identifier) {
+        //#if MC < 1.21.5
         //#if MC >= 1.17.1
         RenderSystem.setShaderTexture(index, texture)
         //#else
         //$$ OmniTextureManager.setActiveTexture(GL13.GL_TEXTURE0 + index)
         //$$ OmniClient.textureManager.bindTexture(texture)
+        //#endif
         //#endif
     }
 
