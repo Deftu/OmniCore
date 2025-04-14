@@ -1,4 +1,4 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter")
+@file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter", "DEPRECATION")
 
 package dev.deftu.omnicore.client.render
 
