@@ -1,16 +1,20 @@
 package dev.deftu.omnicore.client.render.state
 
+import com.mojang.blaze3d.platform.GlStateManager
 import org.lwjgl.opengl.GL11
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.client.render.OmniRenderState
 
 //#if MC >= 1.17 && MC <= 1.21.1
 import net.minecraft.client.gl.GlBlendState
 //#endif
 
-//#if MC >= 1.15
-import org.lwjgl.opengl.GL20
+//#if MC <= 1.16.5 || MC >= 1.21.5
+//$$ import org.lwjgl.opengl.GL14
+//#endif
+
+//#if MC >= 1.16.5 && MC < 1.21.5
+import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 /**
@@ -72,9 +76,13 @@ public data class OmniManagedBlendState(
     }
 
     private fun applyGlobally() {
-        OmniRenderState.toggleBlend(isEnabled)
-        OmniRenderState.setBlendEquation(equation.value)
-        OmniRenderState.setBlendFuncSeparate(function.srcColor.value, function.dstColor.value, function.srcAlpha.value, function.dstAlpha.value)
+        if (isEnabled) {
+            enableBlend()
+            blendEquation(equation.value)
+            blendFuncSeparate(function.srcColor, function.dstColor, function.srcAlpha, function.dstAlpha)
+        } else {
+            disableBlend()
+        }
     }
 
     public companion object {
@@ -120,6 +128,66 @@ public data class OmniManagedBlendState(
         @JvmStatic
         public fun disable(): OmniManagedBlendState {
             return DISABLED.also(OmniManagedBlendState::activate)
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun enableBlend() {
+            GlStateManager._enableBlend()
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun disableBlend() {
+            GlStateManager._disableBlend()
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun blendEquation(equation: Int) {
+            //#if MC >= 1.21.5
+            //$$ GL14.glBlendEquation(equation)
+            //#elseif MC >= 1.16.5
+            RenderSystem.blendEquation(equation)
+            //#else
+            //$$ GL14.glBlendEquation(equation)
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun blendFunc(srcFactor: Int, dstFactor: Int) {
+            //#if MC >= 1.21.5
+            //$$ GL11.glBlendFunc(srcFactor, dstFactor)
+            //#elseif MC >= 1.17.1
+            RenderSystem.blendFunc(srcFactor, dstFactor)
+            //#else
+            //$$ GlStateManager.blendFunc(srcFactor, dstFactor)
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun blendFunc(srcFactor: SrcFactor, dstFactorAlpha: DstFactor) {
+            blendFunc(srcFactor.value, dstFactorAlpha.value)
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
+            //#if MC >= 1.21.5
+            //$$ GlStateManager._blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
+            //#elseif MC >= 1.17.1
+            RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
+            //#else
+            //$$ GlStateManager.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun blendFuncSeparate(srcFactor: SrcFactor, dstFactor: DstFactor, srcFactorAlpha: SrcFactor, dstFactorAlpha: DstFactor) {
+            blendFuncSeparate(srcFactor.value, dstFactor.value, srcFactorAlpha.value, dstFactorAlpha.value)
         }
 
     }
