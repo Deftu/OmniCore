@@ -1,8 +1,14 @@
-package dev.deftu.omnicore.client.render
+package dev.deftu.omnicore.client.render.vertex
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.client.render.OmniMatrixStack
 import org.jetbrains.annotations.ApiStatus
+import java.awt.Color
+
+//#if MC >= 1.20.6
+//$$ import org.joml.Vector3f
+//#endif
 
 //#if MC >= 1.16.5
 import net.minecraft.client.render.VertexConsumer
@@ -25,6 +31,9 @@ public interface OmniVertexConsumer {
 
     @GameSide(Side.CLIENT)
     public fun color(red: Float, green: Float, blue: Float, alpha: Float): OmniVertexConsumer
+
+    @GameSide(Side.CLIENT)
+    public fun color(color: Color): OmniVertexConsumer
 
     @GameSide(Side.CLIENT)
     public fun texture(u: Double, v: Double): OmniVertexConsumer
@@ -72,7 +81,7 @@ public open class MCVertexConsumer(
     override fun vertex(stack: OmniMatrixStack, x: Double, y: Double, z: Double): OmniVertexConsumer {
         if (stack == OmniMatrixStack.EMPTY) {
             //#if MC >= 1.21.1
-            //$$ value.vertex(x.toFloat(), y.toFloat(), z.toFloat())
+            //$$ value.addVertex(x.toFloat(), y.toFloat(), z.toFloat())
             //#elseif MC >= 1.16.5
             value.vertex(x, y, z)
             //#else
@@ -98,6 +107,15 @@ public open class MCVertexConsumer(
 
     override fun color(red: Float, green: Float, blue: Float, alpha: Float): OmniVertexConsumer {
         value.color(red, green, blue, alpha)
+        return this
+    }
+
+    override fun color(color: Color): OmniVertexConsumer {
+        //#if MC >= 1.16.5
+        value.color(color.red, color.green, color.blue, color.alpha)
+        //#else
+        //$$ value.color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
+        //#endif
         return this
     }
 

@@ -28,6 +28,7 @@ import org.jetbrains.annotations.ApiStatus
 //#endif
 
 @GameSide(Side.CLIENT)
+@Deprecated("Use OmniRenderPipeline instead.")
 public object OmniRenderState {
 
     public val isCullingEnabled: Boolean

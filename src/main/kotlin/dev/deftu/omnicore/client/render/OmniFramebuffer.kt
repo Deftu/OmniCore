@@ -2,6 +2,23 @@
 
 package dev.deftu.omnicore.client.render
 
+import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.annotations.GameSide
+import dev.deftu.omnicore.annotations.Incubating
+import dev.deftu.omnicore.client.render.pipeline.DrawModes
+import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.client.render.pipeline.VertexFormats
+import dev.deftu.omnicore.client.render.state.*
+import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
+import dev.deftu.omnicore.common.OmniIdentifier
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL12
+import org.lwjgl.opengl.GL14
+import org.lwjgl.opengl.GL30
+import java.awt.Color
+import java.io.File
+import java.nio.ByteBuffer
+
 //#if MC >= 1.16.5
 //#if MC <= 1.16.5
 //$$ import com.mojang.blaze3d.platform.GlStateManager
@@ -14,22 +31,22 @@ package dev.deftu.omnicore.client.render
 //$$ import javax.imageio.ImageIO
 //#endif
 
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Incubating
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL12
-import org.lwjgl.opengl.GL14
-import org.lwjgl.opengl.GL30
-import java.awt.Color
-import java.io.File
-import java.nio.ByteBuffer
-
 @Incubating
 @GameSide(Side.CLIENT)
 public class OmniFramebuffer {
 
     public companion object {
+
+        private val PIPELINE by lazy {
+            OmniRenderPipeline.builderWithDefaultShader(
+                identifier = OmniIdentifier.create("omnicore", "omniframebuffer"),
+                vertexFormat = VertexFormats.POSITION_TEXTURE_COLOR,
+                mode = DrawModes.QUADS,
+            ).apply {
+                blendState = OmniManagedBlendState.asEnabled(BlendEquation.active(), BlendFunction.LIGHTMAP)
+                depthState = OmniManagedDepthState.DISABLED
+            }.build()
+        }
 
         @JvmStatic
         @GameSide(Side.CLIENT)
@@ -242,42 +259,31 @@ public class OmniFramebuffer {
         stack.push()
         stack.scale(1f, 1f, 50f)
 
-        val blendState = OmniManagedBlendState.active()
-        val depthState = OmniRenderState.isDepthEnabled
-
-        OmniRenderState.enableBlend()
-        OmniRenderState.setBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        OmniRenderState.disableDepth()
-
-        OmniTextureManager.bindTexture(0, colorAttachment)
-        val tessellator = OmniTessellator.getFromBuffer()
-        tessellator.beginWithDefaultShader(OmniTessellator.DrawModes.QUADS, OmniTessellator.VertexFormats.POSITION_TEXTURE_COLOR)
-        tessellator
-            .vertex(stack, x, y + height, 0f)
-            .texture(0f, 0f)
+        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
+        buffer
+            .vertex(stack, x.toDouble(), (y + height).toDouble(), 0.0)
+            .texture(0.0, 0.0)
             .color(color)
             .next()
-        tessellator
-            .vertex(stack, x + width, y + height, 0f)
-            .texture(1f, 0f)
+        buffer
+            .vertex(stack, (x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .texture(1.0, 0.0)
             .color(color)
             .next()
-        tessellator
-            .vertex(stack, x + width, y, 0f)
-            .texture(1f, 1f)
+        buffer
+            .vertex(stack, (x + width).toDouble(), y.toDouble(), 0.0)
+            .texture(1.0, 1.0)
             .color(color)
             .next()
-        tessellator
-            .vertex(stack, x, y, 0f)
-            .texture(0f, 1f)
+        buffer
+            .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
+            .texture(0.0, 1.0)
             .color(color)
             .next()
-        tessellator.draw()
+        buffer.build()?.drawWithCleanup(PIPELINE) {
+            texture(0, colorAttachment)
+        }
 
-        blendState.activate()
-        OmniRenderState.toggleDepth(depthState)
-
-        OmniTextureManager.removeTexture(0)
         stack.pop()
     }
 

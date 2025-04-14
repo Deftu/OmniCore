@@ -123,10 +123,13 @@ public class ReleasedDynamicTexture(
         resources.glId = -1
     }
 
+    //#if MC >= 1.16.5
     override fun close() {
-        // TODO: delete texture
+        super.close()
+        clearGlId()
         resources.close()
     }
+    //#endif
     //#endif
 
     private class Resources(

@@ -131,6 +131,14 @@ class TestMod
                                 }
                         )
                 )
+                .then(
+                    OmniClientCommands.literal("screen")
+                        .executes { ctx ->
+                            OmniScreen.openAfter(1, TestScreen())
+
+                            1
+                        }
+                )
         )
 
         //#if FABRIC && MC >= 1.16.5

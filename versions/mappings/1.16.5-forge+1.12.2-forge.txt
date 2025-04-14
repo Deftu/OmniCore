@@ -3,9 +3,21 @@ net.minecraft.util.thread.BlockableEventLoop isSameThread() isCallingFromMinecra
 net.minecraft.util.thread.BlockableEventLoop execute() addScheduledTask()
 
 com.mojang.blaze3d.platform.GlStateManager net.minecraft.client.renderer.GlStateManager
+com.mojang.blaze3d.platform.GlStateManager _enableDepthTest() enableDepth()
+com.mojang.blaze3d.platform.GlStateManager _disableDepthTest() disableDepth()
 com.mojang.blaze3d.platform.GlStateManager _viewport() viewport()
+com.mojang.blaze3d.platform.GlStateManager _colorMask() colorMask()
+com.mojang.blaze3d.platform.GlStateManager _enableColorLogicOp() enableColorLogic()
+com.mojang.blaze3d.platform.GlStateManager _disableColorLogicOp() disableColorLogic()
+com.mojang.blaze3d.platform.GlStateManager _logicOp() colorLogicOp()
+com.mojang.blaze3d.platform.GlStateManager _enablePolygonOffset() enablePolygonOffset()
+com.mojang.blaze3d.platform.GlStateManager _disablePolygonOffset() disablePolygonOffset()
+com.mojang.blaze3d.platform.GlStateManager _polygonOffset() doPolygonOffset()
 com.mojang.blaze3d.platform.GlStateManager _enableCull() enableCull()
 com.mojang.blaze3d.platform.GlStateManager _disableCull() disableCull()
+com.mojang.blaze3d.platform.GlStateManager _enableAlphaTest() enableAlpha()
+com.mojang.blaze3d.platform.GlStateManager _disableAlphaTest() disableAlpha()
+com.mojang.blaze3d.platform.GlStateManager _alphaFunc() alphaFunc()
 com.mojang.blaze3d.platform.GlStateManager _enableBlend() enableBlend()
 com.mojang.blaze3d.platform.GlStateManager _disableBlend() disableBlend()
 com.mojang.blaze3d.platform.GlStateManager _blendFuncSeparate() tryBlendFuncSeparate()
@@ -20,12 +32,18 @@ com.mojang.blaze3d.platform.GlStateManager _bindTexture() bindTexture()
 com.mojang.blaze3d.platform.GlStateManager _deleteTexture() deleteTexture()
 com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
 com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
+com.mojang.blaze3d.platform.GlStateManager _enableTexture() enableTexture2D()
+com.mojang.blaze3d.platform.GlStateManager _disableTexture() disableTexture2D()
 
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
 
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
+
+com.mojang.blaze3d.vertex.BufferBuilder net.minecraft.client.renderer.BufferBuilder
+com.mojang.blaze3d.vertex.BufferBuilder end() finishDrawing()
+com.mojang.blaze3d.vertex.BufferBuilder discard() reset()
 
 net.minecraft.util.profiling.ProfilerFiller net.minecraft.profiler.Profiler
 net.minecraft.util.profiling.ProfilerFiller popPush() endStartSection()

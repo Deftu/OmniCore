@@ -1,20 +1,46 @@
-package dev.deftu.omnicore.client.render
+package dev.deftu.omnicore.client.render.state
 
 import org.lwjgl.opengl.GL11
 import java.nio.ByteBuffer
 
-public data class ColorMask(
+//#if MC >= 1.21.5
+//$$ import com.mojang.blaze3d.opengl.GlStateManager
+//#elseif MC >= 1.16.5
+import com.mojang.blaze3d.systems.RenderSystem
+//#else
+//$$ import net.minecraft.client.renderer.GlStateManager
+//#endif
+
+public data class OmniManagedColorMask(
     val red: Boolean,
     val green: Boolean,
     val blue: Boolean,
     val alpha: Boolean
 ) {
 
+    public fun activate() {
+        //#if MC >= 1.21.5
+        //$$ GlStateManager._colorMask(red, green, blue, alpha)
+        //#elseif MC >= 1.16.5
+        RenderSystem.colorMask(red, green, blue, alpha)
+        //#else
+        //$$ GlStateManager.colorMask(red, green, blue, alpha)
+        //#endif
+    }
+
     public companion object {
 
-        public fun active(): ColorMask {
+        @JvmField
+        public val DEFAULT: OmniManagedColorMask = OmniManagedColorMask(
+            red = true,
+            green = true,
+            blue = true,
+            alpha = true
+        )
+
+        public fun active(): OmniManagedColorMask {
             val values = booleans(GL11.GL_COLOR_WRITEMASK, 4)
-            return ColorMask(
+            return OmniManagedColorMask(
                 red = values[0],
                 green = values[1],
                 blue = values[2],

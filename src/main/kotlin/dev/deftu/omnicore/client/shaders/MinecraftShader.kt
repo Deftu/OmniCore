@@ -1,13 +1,12 @@
 package dev.deftu.omnicore.client.shaders
 
-//#if MC >= 1.17
+//#if MC >= 1.17.1 && MC < 1.21.5
 import com.google.common.collect.ImmutableMap
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.client.render.OmniManagedBlendState
-import dev.deftu.omnicore.client.render.OmniTessellator
+import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniRenderState
 import net.minecraft.client.gl.GlUniform
 import net.minecraft.client.gl.ShaderProgram
@@ -32,7 +31,7 @@ import java.util.Optional
 //#endif
 
 internal class MinecraftShader(
-    private val shader: ShaderProgram,
+    internal val shader: ShaderProgram,
     private val blend: OmniManagedBlendState
 ) : OmniShader {
 
@@ -56,20 +55,26 @@ internal class MinecraftShader(
             vert: String,
             frag: String,
             blend: OmniManagedBlendState,
-            vertexFormat: OmniTessellator.VertexFormats?
+            vertexFormat: VertexFormat?
         ): MinecraftShader {
-            val transformer = Transformer(vertexFormat)
+            val transformer = ShaderProcessor(vertexFormat, 150)
 
             val transformedVert = transformer.transform(vert)
             val transformedFrag = transformer.transform(frag)
 
             val json = JsonObject().apply {
                 add("blend", JsonObject().apply {
-                    addProperty("func", blend.equation.mcStr)
-                    addProperty("srcrgb", blend.srcRgb.mcStr)
-                    addProperty("dstrgb", blend.dstRgb.mcStr)
-                    if (blend.separateSrc) addProperty("srcalpha", blend.srcAlpha.mcStr)
-                    if (blend.separateDst) addProperty("dstalpha", blend.dstAlpha.mcStr)
+                    addProperty("func", blend.equation.equationName)
+                    addProperty("srcrgb", blend.function.srcColor.shaderName)
+                    addProperty("dstrgb", blend.function.dstColor.shaderName)
+
+                    if (blend.function.isSeparateSrc) {
+                        addProperty("srcalpha", blend.function.srcAlpha.shaderName)
+                    }
+
+                    if (blend.function.isSeparateDst) {
+                        addProperty("dstalpha", blend.function.dstAlpha.shaderName)
+                    }
                 })
 
                 addProperty("vertex", DigestUtils.sha1Hex(transformedVert).lowercase())
@@ -128,7 +133,7 @@ internal class MinecraftShader(
             //#endif
 
             val vertexFormat = if (vertexFormat != null) {
-                buildVertexFormat(transformer.attributes.withIndex().associate { (index, name) -> name to vertexFormat.vanilla.elements[index] })
+                buildVertexFormat(transformer.attributes.withIndex().associate { (index, name) -> name to vertexFormat.elements[index] })
             } else {
                 buildVertexFormat(transformer.attributes.associateWith {
                     //#if MC >= 1.21
@@ -182,143 +187,6 @@ internal class MinecraftShader(
     override fun getVec4UniformOrNull(name: String) = getUniformOrNull(name) as? Vec4Uniform
     override fun getMatrixUniformOrNull(name: String) = getUniformOrNull(name) as? MatrixUniform
     override fun getSamplerUniformOrNull(name: String) = VanillaSamplerUniform(shader, name)
-
-    internal class Transformer(
-        private val vertexFormat: OmniTessellator.VertexFormats?
-    ) {
-        val attributes = mutableListOf<String>()
-        val samplers = mutableSetOf<String>()
-        val uniforms = mutableMapOf<String, UniformType>()
-
-        fun transform(value: String): String {
-            var source = value
-
-            source = source.replace("gl_ModelViewProjectionMatrix", "gl_ProjectionMatrix * gl_ModelViewMatrix")
-            source = source.replace("texture2D", "texture")
-
-            val replacements = mutableMapOf<String, String>()
-            val transformed = mutableListOf<String>()
-            transformed.add("#version 150")
-
-            val isFrag = "gl_FragColor" in value
-            val isVert = !isFrag
-
-            if (isFrag) {
-                transformed.add("out vec4 oc_FragColor;")
-                replacements["gl_FragColor"] = "oc_FragColor"
-            }
-
-            if (
-                isVert &&
-                "gl_FrontColor" in value
-            ) {
-                transformed.add("out vec4 oc_FrontColor;")
-                replacements["gl_FrontColor"] = "oc_FrontColor"
-            }
-
-            if (
-                isFrag &&
-                "gl_Color" in value
-            ) {
-                transformed.add("in vec4 oc_FrontColor;")
-                replacements["gl_Color"] = "oc_FrontColor"
-            }
-
-            if (isVert) {
-                fun replaceAttrib(
-                    value: MutableList<Pair<String, String>>,
-                    needle: String,
-                    type: String,
-                    replacementName: String = "oc_${needle.substringAfter("_")}",
-                    replacement: String = replacementName
-                ) {
-                    if (needle in source) {
-                        replacements[needle] = replacement
-                        value.add(replacementName to "in $type $replacementName;")
-                    }
-                }
-
-                val newAttributes = mutableListOf<Pair<String, String>>()
-                replaceAttrib(newAttributes, "gl_Vertex", "vec3", "oc_Position", replacement = "vec4(oc_Position, 1.0)")
-                replaceAttrib(newAttributes, "gl_Color", "vec4")
-                replaceAttrib(newAttributes, "gl_MultiTexCoord0.st", "vec2", "oc_UV0")
-                replaceAttrib(newAttributes, "gl_MultiTexCoord1.st", "vec2", "oc_UV1")
-                replaceAttrib(newAttributes, "gl_MultiTexCoord2.st", "vec2", "oc_UV2")
-
-                if (vertexFormat != null) {
-                    newAttributes.sortedBy {  (name, type) ->
-                        vertexFormat.vanilla.attributeNames.indexOf(name.removePrefix("oc_"))
-                    }.forEach { (name, type) ->
-                        attributes.add(name)
-                        transformed.add(type)
-                    }
-                } else {
-                    newAttributes.forEach { (name, type) ->
-                        attributes.add(name)
-                        transformed.add(type)
-                    }
-                }
-            }
-
-            fun replaceUniform(
-                needle: String,
-                type: UniformType,
-                replacementName: String,
-                replacement: String = replacementName
-            ) {
-                if (needle in source) {
-                    replacements[needle] = replacement
-                    if (replacementName !in uniforms) {
-                        uniforms[replacementName] = type
-                        transformed.add("uniform ${type.glslName} $replacementName;")
-                    }
-                }
-            }
-
-            replaceUniform("gl_ModelViewMatrix", UniformType.Mat4, "ModelViewMat")
-            replaceUniform("gl_ProjectionMatrix", UniformType.Mat4, "ProjMat")
-
-            for (line in source.lines()) {
-                transformed.add(when {
-                    line.startsWith("#version") -> continue
-                    line.startsWith("varying ") -> (if (isFrag) "in " else "out ") + line.substringAfter("varying ")
-                    line.startsWith("uniform ") -> {
-                        val (_, typeName, name) = line.trimEnd(';').split(" ")
-                        if (typeName == "sampler2D") {
-                            samplers.add(name)
-                        } else uniforms[name] = UniformType.fromGlsl(typeName)
-                        line
-                    }
-
-                    else -> replacements.entries.fold(line) { acc, (needle, replacement) -> acc.replace(needle, replacement) }
-                })
-            }
-
-            return transformed.joinToString("\n")
-        }
-
-    }
-
-    internal enum class UniformType(
-        val typeName: String,
-        val glslName: String,
-        val default: IntArray
-    ) {
-        Int1("int", "int", intArrayOf(0)),
-        Float1("float", "float", intArrayOf(0)),
-        Float2("float", "vec2", intArrayOf(0, 0)),
-        Float3("float", "vec3", intArrayOf(0, 0, 0)),
-        Float4("float", "vec4", intArrayOf(0, 0, 0, 0)),
-        Mat2("matrix2x2", "mat2", intArrayOf(1, 0, 0, 1)),
-        Mat3("matrix3x3", "mat3", intArrayOf(1, 0, 0, 0, 1, 0, 0, 0, 1)),
-        Mat4("matrix4x4", "mat4", intArrayOf(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)),
-        ;
-
-        companion object {
-            fun fromGlsl(glslName: String): UniformType =
-                values().find { it.glslName == glslName } ?: throw NoSuchElementException(glslName)
-        }
-    }
 }
 
 internal class VanillaShaderUniform(

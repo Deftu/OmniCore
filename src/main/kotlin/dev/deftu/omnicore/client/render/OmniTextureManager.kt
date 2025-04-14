@@ -9,7 +9,6 @@ import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.client.texture.ResourceTexture
 import net.minecraft.client.texture.TextureManager
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
@@ -28,7 +27,11 @@ import javax.imageio.ImageIO
 //$$ import dev.deftu.omnicore.common.OmniIdentifier
 //#endif
 
-//#if MC >= 1.15
+//#if MC <= 1.16.5
+//$$ import net.minecraft.client.texture.ResourceTexture
+//#endif
+
+//#if MC >= 1.16.5
 import net.minecraft.client.texture.NativeImage
 //#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
@@ -154,8 +157,15 @@ public class OmniTextureManager private constructor(
 
     }
 
+
     @GameSide(Side.CLIENT)
-    public fun getTexture(path: Identifier): AbstractTexture? {
+    public fun getTexture(path: Identifier):
+            //#if MC >= 1.16.5
+            AbstractTexture?
+            //#else
+            //$$ ITextureObject?
+            //#endif
+    {
         return textureManager.getTexture(path)
     }
 
@@ -174,11 +184,19 @@ public class OmniTextureManager private constructor(
     }
 
     @GameSide(Side.CLIENT)
-    public fun bindTexture(texture: AbstractTexture): OmniTextureManager = apply {
+    public fun bindTexture(
+        //#if MC >= 1.16.5
+        texture: AbstractTexture
+        //#else
+        //$$ texture: ITextureObject
+        //#endif
+    ): OmniTextureManager = apply {
         //#if MC >= 1.21.5
         //$$ RenderSystem.getDevice().createCommandEncoder().presentTexture(texture.texture)
-        //#else
+        //#elseif MC >= 1.16.5
         texture.bindTexture()
+        //#else
+        //$$ bindTexture(texture.glTextureId)
         //#endif
     }
 
@@ -239,11 +257,11 @@ public class OmniTextureManager private constructor(
         return texture.glId
         //#else
         //$$ return if (texture != null) {
-        //$$     texture.id
+        //$$     texture.glId
         //$$ } else {
-        //$$     val newTexture = SimpleTexture(identifier)
+        //$$     val newTexture = ResourceTexture(identifier)
         //$$     textureManager.registerTexture(identifier, newTexture)
-        //$$     newTexture.id
+        //$$     newTexture.glId
         //$$ }
         //#endif
     }

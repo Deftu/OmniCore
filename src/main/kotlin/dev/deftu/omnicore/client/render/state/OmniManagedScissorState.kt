@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.client.render
+package dev.deftu.omnicore.client.render.state
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
@@ -6,6 +6,7 @@ import org.lwjgl.opengl.GL11
 import java.nio.ByteBuffer
 
 //#if MC >= 1.21.5
+//$$ import com.mojang.blaze3d.systems.RenderPass
 //$$ import com.mojang.blaze3d.systems.RenderSystem
 //#else
 import com.mojang.blaze3d.platform.GlStateManager
@@ -24,21 +25,39 @@ public data class OmniManagedScissorState(
         if (isEnabled) {
             //#if MC >= 1.21.5
             //$$ RenderSystem.SCISSOR_STATE.enable(x, y, width, height)
-            //#else
+            //#elseif MC >= 1.17.1
             GlStateManager._enableScissorTest()
+            //#else
+            //$$ GL11.glEnable(GL11.GL_SCISSOR_TEST)
             //#endif
         } else {
             //#if MC >= 1.21.5
             //$$ RenderSystem.SCISSOR_STATE.disable()
-            //#else
+            //#elseif MC >= 1.17.1
             GlStateManager._disableScissorTest()
+            //#else
+            //$$ GL11.glDisable(GL11.GL_SCISSOR_TEST)
             //#endif
         }
 
         //#if MC <= 1.21.4
+        //#if MC >= 1.17.1
         GlStateManager._scissorBox(x, y, width, height)
+        //#else
+        //$$ GL11.glScissor(x, y, width, height)
+        //#endif
         //#endif
     }
+
+    //#if MC >= 1.21.5
+    //$$ public fun applyTo(renderPass: RenderPass) {
+    //$$     if (isEnabled) {
+    //$$         renderPass.enableScissor(x, y, width, height)
+    //$$     } else {
+    //$$         renderPass.disableScissor()
+    //$$     }
+    //$$ }
+    //#endif
 
     public companion object {
 
@@ -72,20 +91,31 @@ public data class OmniManagedScissorState(
 
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun enable(x: Int, y: Int, width: Int, height: Int) {
-            OmniManagedScissorState(
+        public fun asEnabled(
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int
+        ): OmniManagedScissorState {
+            return OmniManagedScissorState(
                 isEnabled = true,
                 x = x,
                 y = y,
                 width = width,
                 height = height
-            ).activate()
+            )
         }
 
         @JvmStatic
         @GameSide(Side.CLIENT)
-        public fun disable() {
-            DISABLED.activate()
+        public fun enable(x: Int, y: Int, width: Int, height: Int): OmniManagedScissorState {
+            return asEnabled(x, y, width, height).also(OmniManagedScissorState::activate)
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun disable(): OmniManagedScissorState {
+            return DISABLED.also(OmniManagedScissorState::activate)
         }
 
         //#if MC <= 1.21.4

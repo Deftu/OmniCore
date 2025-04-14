@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.shaders
 
-import dev.deftu.omnicore.client.render.OmniManagedBlendState
+import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
