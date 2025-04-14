@@ -902,12 +902,12 @@ public object OmniKeyboard {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val isCapsLockEnabled: Boolean
-        get() = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK)
+        get() = false // Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_CAPS_LOCK)
 
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val isNumLockEnabled: Boolean
-        get() = Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_NUM_LOCK)
+        get() = false // Toolkit.getDefaultToolkit().getLockingKeyState(KeyEvent.VK_NUM_LOCK)
 
     @JvmStatic
     @GameSide(Side.CLIENT)

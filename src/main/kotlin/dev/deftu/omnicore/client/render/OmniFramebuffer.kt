@@ -1,24 +1,16 @@
-@file:Suppress("MemberVisibilityCanBePrivate")
+@file:Suppress("MemberVisibilityCanBePrivate", "DEPRECATION")
 
 package dev.deftu.omnicore.client.render
-
-//#if MC >= 1.16.5
-//#if MC <= 1.16.5
-//$$ import com.mojang.blaze3d.platform.GlStateManager
-//#endif
-
-import net.minecraft.client.texture.NativeImage
-//#else
-//$$ import net.minecraft.client.renderer.OpenGlHelper
-//$$ import org.lwjgl.BufferUtils
-//$$ import java.awt.image.BufferedImage
-//$$ import javax.imageio.ImageIO
-//#endif
 
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
-import dev.deftu.omnicore.client.shaders.BlendState
+import dev.deftu.omnicore.client.render.pipeline.DrawModes
+import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.client.render.pipeline.VertexFormats
+import dev.deftu.omnicore.client.render.state.*
+import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
+import dev.deftu.omnicore.common.OmniIdentifier
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL12
 import org.lwjgl.opengl.GL14
@@ -27,11 +19,34 @@ import java.awt.Color
 import java.io.File
 import java.nio.ByteBuffer
 
+//#if MC >= 1.16.5
+//#if MC <= 1.16.5
+//$$ import com.mojang.blaze3d.platform.GlStateManager
+//#endif
+
+//#else
+//$$ import net.minecraft.client.renderer.OpenGlHelper
+//$$ import org.lwjgl.BufferUtils
+//$$ import java.awt.image.BufferedImage
+//$$ import javax.imageio.ImageIO
+//#endif
+
 @Incubating
 @GameSide(Side.CLIENT)
 public class OmniFramebuffer {
 
     public companion object {
+
+        private val PIPELINE by lazy {
+            OmniRenderPipeline.builderWithDefaultShader(
+                identifier = OmniIdentifier.create("omnicore", "omniframebuffer"),
+                vertexFormat = VertexFormats.POSITION_TEXTURE_COLOR,
+                mode = DrawModes.QUADS,
+            ).apply {
+                blendState = OmniManagedBlendState.asEnabled(BlendEquation.active(), BlendFunction.LIGHTMAP)
+                depthState = OmniManagedDepthState.DISABLED
+            }.build()
+        }
 
         @JvmStatic
         @GameSide(Side.CLIENT)
@@ -244,42 +259,31 @@ public class OmniFramebuffer {
         stack.push()
         stack.scale(1f, 1f, 50f)
 
-        val blendState = BlendState.active()
-        val depthState = OmniRenderState.isDepthEnabled
-
-        OmniRenderState.enableBlend()
-        OmniRenderState.setBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA)
-        OmniRenderState.disableDepth()
-
-        OmniTextureManager.bindTexture(0, colorAttachment)
-        val tessellator = OmniTessellator.getFromBuffer()
-        tessellator.beginWithDefaultShader(OmniTessellator.DrawModes.QUADS, OmniTessellator.VertexFormats.POSITION_TEXTURE_COLOR)
-        tessellator
-            .vertex(stack, x, y + height, 0f)
-            .texture(0f, 0f)
+        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
+        buffer
+            .vertex(stack, x.toDouble(), (y + height).toDouble(), 0.0)
+            .texture(0.0, 0.0)
             .color(color)
             .next()
-        tessellator
-            .vertex(stack, x + width, y + height, 0f)
-            .texture(1f, 0f)
+        buffer
+            .vertex(stack, (x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .texture(1.0, 0.0)
             .color(color)
             .next()
-        tessellator
-            .vertex(stack, x + width, y, 0f)
-            .texture(1f, 1f)
+        buffer
+            .vertex(stack, (x + width).toDouble(), y.toDouble(), 0.0)
+            .texture(1.0, 1.0)
             .color(color)
             .next()
-        tessellator
-            .vertex(stack, x, y, 0f)
-            .texture(0f, 1f)
+        buffer
+            .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
+            .texture(0.0, 1.0)
             .color(color)
             .next()
-        tessellator.draw()
+        buffer.build()?.drawWithCleanup(PIPELINE) {
+            texture(0, colorAttachment)
+        }
 
-        blendState.activate()
-        OmniRenderState.toggleDepth(depthState)
-
-        OmniTextureManager.removeTexture(0)
         stack.pop()
     }
 
@@ -374,29 +378,13 @@ public class OmniFramebuffer {
     @GameSide(Side.CLIENT)
     public fun writeToFile(file: File) {
         OmniTextureManager.bindTexture(colorAttachment)
-        //#if MC >= 1.16.5
-        val image = NativeImage(width, height, false)
-        image.loadFromTextureImage(0, true)
-        image.mirrorVertically()
-        image.writeTo(file)
-        //#else
-        //$$ val image = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
-        //$$ val buffer = BufferUtils.createByteBuffer(width * height * 4)
-        //$$ GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
-        //$$ for (y in 0..<height) {
-        //$$     for (x in 0..<width) {
-        //$$         val i = (x + y * width) * 4
-        //$$         val r = buffer.get(i).toInt() and 0xFF
-        //$$         val g = buffer.get(i + 1).toInt() and 0xFF
-        //$$         val b = buffer.get(i + 2).toInt() and 0xFF
-        //$$         val a = buffer.get(i + 3).toInt() and 0xFF
-        //$$         val argb = (a shl 24) or (r shl 16) or (g shl 8) or b
-        //$$         image.setRGB(x, height - y - 1, argb)
-        //$$     }
-        //$$ }
-        //$$
-        //$$ ImageIO.write(image, "png", file)
-        //#endif
+
+        OmniImage(width, height).use { image ->
+            image.loadFromBoundTexture()
+            image.flipY()
+            image.saveTo(file)
+        }
+
         OmniTextureManager.bindTexture(0)
     }
 

@@ -1,7 +1,8 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter")
+@file:Suppress("MemberVisibilityCanBePrivate", "JoinDeclarationAndAssignment", "unused", "CanBeParameter", "DEPRECATION")
 
 package dev.deftu.omnicore.client.render
 
+//#if MC < 1.21.5
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
@@ -56,6 +57,7 @@ import net.minecraft.client.render.*
 //#endif
 
 @GameSide(Side.CLIENT)
+@Deprecated("Replace with OmniBufferBuilder.")
 public class OmniTessellator(
     private var buffer: BufferBuilder?,
     //#if MC >= 1.21
@@ -572,3 +574,4 @@ public class OmniTessellator(
         }
     }
 }
+//#endif

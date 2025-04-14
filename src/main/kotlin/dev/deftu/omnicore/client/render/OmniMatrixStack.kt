@@ -57,6 +57,10 @@ public class OmniMatrixStack private constructor(
 
     public companion object {
 
+        @JvmField
+        @GameSide(Side.CLIENT)
+        public val EMPTY: OmniMatrixStack = OmniMatrixStack()
+
         //#if MC < 1.17
         //$$ private val MATRIX_BUFFER: FloatBuffer = createFloatBuffer(16)
         //$$

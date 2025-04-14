@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.client.shaders
 
+import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -13,7 +14,7 @@ import org.lwjgl.opengl.GL20
 internal class GlShader(
     val vert: String,
     val frag: String,
-    val blend: BlendState
+    val blend: OmniManagedBlendState
 ) : OmniShader {
     private var program = OmniShader.createProgram()
     private var vertShader = OmniShader.createShader(GL20.GL_VERTEX_SHADER)
@@ -26,7 +27,7 @@ internal class GlShader(
 
     private var prevActiveTexture = GL11.GL_NONE
     private var prevTextureBindings = mutableMapOf<Int, Int>()
-    private var prevBlendState: BlendState? = null
+    private var prevBlendState: OmniManagedBlendState? = null
 
     init {
         setupShader()
@@ -35,7 +36,7 @@ internal class GlShader(
     override fun bind() {
         prevActiveTexture = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
         for (sampler in samplers.values) bindTexture(sampler.textureUnit, sampler.texture)
-        prevBlendState = BlendState.active()
+        prevBlendState = OmniManagedBlendState.active()
         blend.activate()
         OmniShader.useProgram(program)
         bound = true
