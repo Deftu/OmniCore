@@ -45,8 +45,9 @@ public data class OmniManagedDepthState(
         }
 
         @JvmStatic
+        @JvmOverloads
         @GameSide(Side.CLIENT)
-        public fun asEnabled(function: DepthFunction, isMask: Boolean): OmniManagedDepthState {
+        public fun asEnabled(function: DepthFunction, isMask: Boolean = true): OmniManagedDepthState {
             return OmniManagedDepthState(
                 isEnabled = true,
                 function = function,
@@ -55,8 +56,9 @@ public data class OmniManagedDepthState(
         }
 
         @JvmStatic
+        @JvmOverloads
         @GameSide(Side.CLIENT)
-        public fun enable(function: DepthFunction, isMask: Boolean): OmniManagedDepthState {
+        public fun enable(function: DepthFunction, isMask: Boolean = true): OmniManagedDepthState {
             return asEnabled(function, isMask).also(OmniManagedDepthState::activate)
         }
 
