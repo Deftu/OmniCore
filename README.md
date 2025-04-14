@@ -88,6 +88,12 @@ implementation("dev.deftu:omnicore-<minecraft>-<loader>:<version>")
 
 ---
 
+## Migrations
+
+- [Migrating from 0.25.0 to 0.26.0](./migrations/0.25.0-to-0-26.0.md)
+
+---
+
 ## Credits
 
 - [Essential.gg](https://github.com/EssentialGG) ([Website](https://essential.gg))
