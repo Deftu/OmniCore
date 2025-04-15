@@ -6,6 +6,7 @@ public enum class ColorLogicMode(
     public val value: Int
 ) {
 
+    NONE(GL11.GL_NONE),
     CLEAR(GL11.GL_CLEAR),
     SET(GL11.GL_SET),
     COPY(GL11.GL_COPY),
