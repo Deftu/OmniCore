@@ -3,6 +3,8 @@ plugins {
 }
 
 preprocess {
+    strictExtraMappings.set(false)
+
     "1.21.5-fabric"(1_21_05, "yarn") {
         "1.21.5-neoforge"(1_21_05, "srg") {
             "1.21.4-neoforge"(1_21_04, "srg", file("versions/mappings/1.21.5-neoforge+1.21.4-neoforge.txt")) {

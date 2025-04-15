@@ -24,7 +24,6 @@ toolkitLoomApi.setupTestClient()
 toolkitMultiversion.moveBuildsToRootProject.set(true)
 toolkitMavenPublishing.forceLowercase.set(true)
 if (mcData.isForgeLike && mcData.version >= MinecraftVersions.VERSION_1_16_5) {
-    logger.lifecycle("==> Applying Mixin configs and Kotlin For Forge")
     toolkitLoomHelper.useKotlinForForge()
 
     if (mcData.isForge) {
