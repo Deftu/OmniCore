@@ -16,7 +16,7 @@ package dev.deftu.omnicore.mixins.client;
 //$$     private void omnicore$onMouseClick(Screen instance, int mouseX, int mouseY, int button) {
 //$$         ScreenEvent.MouseClick.Pre event = new ScreenEvent.MouseClick.Pre(instance, button, mouseX, mouseY);
 //$$         OmniCore.getEventBus().post(event);
-//$$         if (event.isCancelled()) {
+//$$         if (!event.isCancelled()) {
 //$$             mouseClicked(mouseX, mouseY, button);
 //$$             OmniCore.getEventBus().post(new ScreenEvent.MouseClick.Post(instance, button, mouseX, mouseY));
 //$$         }
@@ -26,7 +26,7 @@ package dev.deftu.omnicore.mixins.client;
 //$$     private void omnicore$onMouseRelease(Screen instance, int mouseX, int mouseY, int button) {
 //$$         ScreenEvent.MouseRelease.Pre event = new ScreenEvent.MouseRelease.Pre(instance, button, mouseX, mouseY);
 //$$         OmniCore.getEventBus().post(event);
-//$$         if (event.isCancelled()) {
+//$$         if (!event.isCancelled()) {
 //$$             mouseReleased(mouseX, mouseY, button);
 //$$             OmniCore.getEventBus().post(new ScreenEvent.MouseRelease.Post(instance, button, mouseX, mouseY));
 //$$         }
