@@ -111,12 +111,7 @@ public open class MCVertexConsumer(
     }
 
     override fun color(color: Color): OmniVertexConsumer {
-        //#if MC >= 1.16.5
-        value.color(color.red, color.green, color.blue, color.alpha)
-        //#else
-        //$$ value.color(color.red.toFloat(), color.green.toFloat(), color.blue.toFloat(), color.alpha.toFloat())
-        //#endif
-        return this
+        return color(color.red, color.green, color.blue, color.alpha)
     }
 
     override fun texture(u: Double, v: Double): OmniVertexConsumer {
