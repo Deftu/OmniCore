@@ -1,7 +1,4 @@
-import com.modrinth.minotaur.dependencies.DependencyType
-import com.modrinth.minotaur.dependencies.ModDependency
-import dev.deftu.gradle.tools.minecraft.CurseRelation
-import dev.deftu.gradle.tools.minecraft.CurseRelationType
+import dev.deftu.gradle.utils.DependencyType
 import dev.deftu.gradle.utils.version.MinecraftVersions
 import dev.deftu.gradle.utils.includeOrShade
 
@@ -16,7 +13,7 @@ plugins {
     id("dev.deftu.gradle.tools.publishing.maven")
     id("dev.deftu.gradle.tools.minecraft.loom")
     id("dev.deftu.gradle.tools.minecraft.api")
-    id("dev.deftu.gradle.tools.minecraft.releases")
+    id("dev.deftu.gradle.tools.minecraft.releases-v2")
 }
 
 kotlin.explicitApi()
@@ -31,36 +28,28 @@ if (mcData.isForgeLike && mcData.version >= MinecraftVersions.VERSION_1_16_5) {
     }
 }
 
-toolkitReleases {
+toolkitReleasesV2 {
     detectVersionType.set(true)
 
-    modrinth {
-        projectId.set("MaDESStl")
-        dependencies.add(ModDependency("textile-lib", DependencyType.REQUIRED))
+    projectIds {
+        modrinth.set("MaDESStl")
+        curseforge.set("1215299")
+    }
 
-        if (mcData.version >= MinecraftVersions.VERSION_1_16_5) {
-            val kotlinWrapperId = if (mcData.isForgeLike) "kotlin-for-forge" else "fabric-language-kotlin"
-            dependencies.add(ModDependency(kotlinWrapperId, DependencyType.REQUIRED))
-        }
+    mod("textile", DependencyType.REQUIRED) {
+        projectId.set("textile")
+        modrinth.projectId.set("textile-lib") // Override
+    }
 
-        if (mcData.isFabric) {
-            val fapiId = if (mcData.isLegacyFabric) "legacy-fabric-api" else "fabric-api"
-            dependencies.add(ModDependency(fapiId, DependencyType.REQUIRED))
+    if (mcData.isFabric) {
+        mod("fabric-api", DependencyType.REQUIRED) {
+            projectId.set(if (mcData.isLegacyFabric) "legacy-fabric-api" else "fabric-api")
         }
     }
 
-    curseforge {
-        projectId.set("1215299")
-        relations.add(CurseRelation("textile", CurseRelationType.REQUIRED))
-
-        if (mcData.version >= MinecraftVersions.VERSION_1_16_5) {
-            val kotlinWrapperId = if (mcData.isForgeLike) "kotlin-for-forge" else "fabric-language-kotlin"
-            relations.add(CurseRelation(kotlinWrapperId, CurseRelationType.REQUIRED))
-        }
-
-        if (mcData.isFabric) {
-            val fapiId = if (mcData.isLegacyFabric) "legacy-fabric-api" else "fabric-api"
-            relations.add(CurseRelation(fapiId, CurseRelationType.REQUIRED))
+    if (mcData.version >= MinecraftVersions.VERSION_1_16_5) {
+        mod("kotlin", DependencyType.REQUIRED) {
+            projectId.set(if (mcData.isForgeLike) "kotlin-for-forge" else "fabric-language-kotlin")
         }
     }
 }
