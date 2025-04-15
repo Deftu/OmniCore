@@ -57,7 +57,7 @@ public class OmniRenderPipeline(
     internal fun draw(builtBuffer: OmniBuiltBuffer) {
         val vanillaBuiltBuffer = builtBuffer.vanilla
         //#if MC >= 1.19.2
-        BufferRenderer.draw(vanillaBuiltBuffer)
+        BufferRenderer.drawWithGlobalProgram(vanillaBuiltBuffer)
         //#elseif MC >= 1.18.2
         //$$ BufferRenderer.draw(vanillaBuiltBuffer)
         //#elseif MC >= 1.16.5
