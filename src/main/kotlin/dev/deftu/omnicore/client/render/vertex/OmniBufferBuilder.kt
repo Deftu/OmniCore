@@ -39,7 +39,7 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
     public companion object {
 
         //#if MC < 1.19.2
-        //$$ private val bufferPool = mutableListOf<BufferBuilder>()
+        //$$ internal val bufferPool = mutableListOf<BufferBuilder>()
         //#endif
 
         @JvmStatic

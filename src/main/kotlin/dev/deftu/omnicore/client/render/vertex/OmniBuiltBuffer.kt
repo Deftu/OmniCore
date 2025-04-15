@@ -66,6 +66,7 @@ internal class VanillaWrappingBuiltBuffer(override val vanilla: VanillaBuiltBuff
         vanilla.release()
         //#else
         //$$ vanilla.reset()
+        //$$ OmniBufferBuilder.bufferPool.add(vanilla)
         //#endif
 
         isClosed = true
@@ -73,6 +74,9 @@ internal class VanillaWrappingBuiltBuffer(override val vanilla: VanillaBuiltBuff
 
     override fun forceClose() {
         isClosed = true
+        //#if MC < 1.19.2
+        //$$ OmniBufferBuilder.bufferPool.add(vanilla)
+        //#endif
     }
 
 }
