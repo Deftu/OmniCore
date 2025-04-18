@@ -168,6 +168,21 @@ public object OmniLoader {
 
     @JvmStatic
     @GameSide(Side.BOTH)
+    public val gameDir: Path
+        get() {
+            //#if FABRIC
+            return FabricLoader.getInstance().gameDir
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return FMLPaths.GAMEDIR.get()
+            //#else
+            //$$ return Launch.minecraftHome.toPath()
+            //#endif
+            //#endif
+        }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
     public val configDir: Path
         get() {
             //#if FABRIC
