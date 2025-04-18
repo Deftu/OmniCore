@@ -54,6 +54,10 @@ toolkitReleasesV2 {
     }
 }
 
+java {
+    withSourcesJar()
+}
+
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
