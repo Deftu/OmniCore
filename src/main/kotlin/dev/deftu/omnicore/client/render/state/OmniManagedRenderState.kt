@@ -132,6 +132,7 @@ public class OmniManagedRenderState(
 
     public companion object {
 
+        @JvmStatic
         public fun active(): OmniManagedRenderState {
             return OmniManagedRenderState(
                 blendState = OmniManagedBlendState.active(),

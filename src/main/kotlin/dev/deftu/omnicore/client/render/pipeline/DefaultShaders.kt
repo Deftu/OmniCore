@@ -75,6 +75,7 @@ public object DefaultShaders {
     }
     //#endif
 
+    @JvmStatic
     public operator fun get(format: VertexFormat):
             //#if MC >= 1.21.5
             //$$ ResourceLocation?

@@ -38,6 +38,7 @@ public data class OmniManagedColorMask(
             alpha = true
         )
 
+        @JvmStatic
         public fun active(): OmniManagedColorMask {
             val values = booleans(GL11.GL_COLOR_WRITEMASK, 4)
             return OmniManagedColorMask(
