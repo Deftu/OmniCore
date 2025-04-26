@@ -166,7 +166,7 @@ public object OmniClientCommands {
                 logger.debug(message, e)
             }
 
-            return isIgnored
+            return !isIgnored
         } finally {
             OmniProfiler.end()
         }
