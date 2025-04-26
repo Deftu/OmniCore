@@ -36,6 +36,9 @@ public interface OmniVertexConsumer {
     public fun color(color: Color): OmniVertexConsumer
 
     @GameSide(Side.CLIENT)
+    public fun color(color: Int): OmniVertexConsumer
+
+    @GameSide(Side.CLIENT)
     public fun texture(u: Double, v: Double): OmniVertexConsumer
 
     @GameSide(Side.CLIENT)
@@ -112,6 +115,14 @@ public open class MCVertexConsumer(
 
     override fun color(color: Color): OmniVertexConsumer {
         return color(color.red, color.green, color.blue, color.alpha)
+    }
+
+    override fun color(color: Int): OmniVertexConsumer {
+        val red = (color shr 16 and 0xFF) / 255f
+        val green = (color shr 8 and 0xFF) / 255f
+        val blue = (color and 0xFF) / 255f
+        val alpha = (color shr 24 and 0xFF) / 255f
+        return color(red, green, blue, alpha)
     }
 
     override fun texture(u: Double, v: Double): OmniVertexConsumer {
