@@ -130,6 +130,33 @@ public class OmniManagedRenderState(
         //#endif
     }
 
+    public fun activate() {
+        this.blendState.activate()
+        this.depthState.activate()
+        this.alphaState.activate()
+        this.colorLogic.activate()
+        this.colorMask.activate()
+        this.polygonOffset.activate()
+
+        if (this.isCullFace) {
+            GlStateManager._enableCull()
+        } else {
+            GlStateManager._disableCull()
+        }
+
+        //#if MC <= 1.16.5
+        //$$ for ((index, requestedState) in textureStates.withIndex()) {
+        //$$     OmniTextureManager.configureTextureUnit(index) {
+        //$$         if (requestedState) {
+        //$$             GlStateManager.enableTexture()
+        //$$         } else {
+        //$$             GlStateManager.disableTexture()
+        //$$         }
+        //$$     }
+        //$$ }
+        //#endif
+    }
+
     public companion object {
 
         @JvmStatic
