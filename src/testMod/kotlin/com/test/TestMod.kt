@@ -109,7 +109,7 @@ class TestMod
 
                     OmniChat.displayClientMessage("TestMod base command executed!")
                     OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
-                        writeString("Hello, world!")
+                        OmniPackets.writeString(this, "Hello, world!")
                     })
 
                     1
