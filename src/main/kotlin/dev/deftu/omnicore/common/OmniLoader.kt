@@ -4,12 +4,15 @@ import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.IntendedLoader
 import dev.deftu.omnicore.annotations.Side
+import java.io.InputStream
+import java.nio.file.Files
 import java.nio.file.Path
 
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.api.EnvType
+import kotlin.jvm.optionals.getOrNull
 //#elseif FORGE
 //#if MC >= 1.15.2
 //$$ import net.minecraftforge.fml.ModList
@@ -46,6 +49,10 @@ import net.fabricmc.api.EnvType
 //#elseif NEOFORGE
 //$$ import net.neoforged.bus.api.IEventBus
 //#endif
+//#endif
+
+//#if FORGE-LIKE
+//$$ import kotlin.io.path.inputStream
 //#endif
 
 @GameSide(Side.BOTH)
@@ -431,6 +438,73 @@ public object OmniLoader {
         //#else
         //$$ val container = Loader.instance().getIndexedModList()[id]
         //$$ return if (container != null) createModInfo(container) else null
+        //#endif
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun getResourcePath(id: String, path: String): Path? {
+        //#if FABRIC
+        val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
+        return container?.rootPaths?.firstOrNull()?.resolve(path)
+        //#else
+        //#if MC >= 1.15.2
+        //$$ return ModList.get().getModFileById(id).file.findResource(path)
+        //#else
+        //$$ val container = Loader.instance().getIndexedModList()[id]
+        //$$ if (container != null) {
+        //$$     val source = container.source
+        //$$     if (source.isDirectory) {
+        //$$         return source.toPath().resolve(path)
+        //$$     } else {
+        //$$         try {
+        //$$             val zip = java.util.zip.ZipFile(source)
+        //$$             val entry = zip.getEntry(path)
+        //$$             if (entry != null) {
+        //$$                 // Save to temp file or extract InputStream from zip
+        //$$                 // Return null here; path doesn't map directly
+        //$$                 zip.close()
+        //$$                 return null // You cannot return a Path inside a zip cleanly
+        //$$             }
+        //$$         } catch (e: Exception) {
+        //$$             e.printStackTrace()
+        //$$         }
+        //$$     }
+        //$$ }
+        //$$ return null
+        //#endif
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun getResourceStream(id: String, path: String): InputStream? {
+        //#if FABRIC
+        val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
+        return container?.findPath(path)?.getOrNull()?.takeIf(Files::exists)?.let(Files::newInputStream)
+        //#else
+        //#if MC >= 1.15.2
+        //$$ return ModList.get().getModFileById(id).file.findResource(path)?.inputStream()
+        //#else
+        //$$ val container = Loader.instance().getIndexedModList()[id]
+        //$$ if (container != null) {
+        //$$     val source = container.source
+        //$$     if (source.isDirectory) {
+        //$$         return source.toPath().resolve(path).toFile().inputStream()
+        //$$     } else {
+        //$$         try {
+        //$$             val zip = java.util.zip.ZipFile(source)
+        //$$             val entry = zip.getEntry(path)
+        //$$             if (entry != null) {
+        //$$                 return zip.getInputStream(entry)
+        //$$             }
+        //$$         } catch (e: Exception) {
+        //$$             e.printStackTrace()
+        //$$         }
+        //$$     }
+        //$$ }
+        //$$ return null
         //#endif
         //#endif
     }
