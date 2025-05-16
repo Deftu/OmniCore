@@ -62,27 +62,28 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
 
-    val textileVersion = "0.14.3"
-    api(includeOrShade("dev.deftu:textile:$textileVersion")!!)
-    modImplementation(includeOrShade("dev.deftu:textile-$mcData:$textileVersion")!!)
+    with(libs.textile.get()) {
+        api(includeOrShade(this)!!)
+        modImplementation(includeOrShade("${module.group}:${module.name}-$mcData:${versionConstraint.requiredVersion}")!!)
+    }
 
-    api("com.mojang:brigadier:1.0.18")
-    api(includeOrShade("dev.deftu:enhancedeventbus:2.0.0")!!)
+    api(libs.brigadier)
+    api(includeOrShade(libs.enhancedeventbus.get())!!)
 
     if (mcData.isForge && mcData.version <= MinecraftVersions.VERSION_1_12_2) {
         includeOrShade(kotlin("stdlib-jdk8"))
-        includeOrShade("com.mojang:brigadier:1.0.18")
+        includeOrShade(libs.brigadier)
     }
 
     if (mcData.isFabric) {
-        modImplementation("net.fabricmc:fabric-language-kotlin:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}")
+        modImplementation(libs.flk.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}" })
 
         if (mcData.isLegacyFabric) {
             // 1.8.9 - 1.13
-            modImplementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-api:${mcData.dependencies.legacyFabric.legacyFabricApiVersion}")
+            modImplementation(libs.lfapi.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.legacyFabric.legacyFabricApiVersion}" })
         } else {
             // 1.16.5+
-            modImplementation("net.fabricmc.fabric-api:fabric-api:${mcData.dependencies.fabric.fabricApiVersion}")
+            modImplementation(libs.fapi.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricApiVersion}" })
         }
     }
 }
