@@ -131,6 +131,12 @@ net.minecraft.world.phys.Vec3 net.minecraft.util.math.Vec3d
 net.minecraft.client.multiplayer.PlayerInfo net.minecraft.client.network.NetworkPlayerInfo
 net.minecraft.client.multiplayer.PlayerInfo getGameType() getGameMode()
 
+net.minecraft.nbt.Tag net.minecraft.nbt.NBTBase
+net.minecraft.nbt.CompoundTag net.minecraft.nbt.NBTTagCompound
+net.minecraft.nbt.CompoundTag put() setTag()
+net.minecraft.nbt.ListTag net.minecraft.nbt.NBTTagList
+net.minecraft.nbt.ListTag size() tagCount()
+
 net.minecraft.sounds.SoundEvents net.minecraft.init.SoundEvents
 net.minecraft.sounds.SoundEvents EXPERIENCE_ORB_PICKUP ENTITY_EXPERIENCE_ORB_PICKUP
 net.minecraft.sounds.SoundEvents ITEM_PICKUP ENTITY_ITEM_PICKUP
