@@ -21,7 +21,14 @@ public data class OmniManagedScissorState(
     public val height: Int
 ) {
 
-    public fun activate() {
+    private var previousState: OmniManagedScissorState? = null
+
+    @JvmOverloads
+    public fun activate(withPrevious: Boolean = true) {
+        if (withPrevious) {
+            this.previousState = active()
+        }
+
         if (isEnabled) {
             //#if MC >= 1.21.5
             //$$ RenderSystem.SCISSOR_STATE.enable(x, y, width, height)
@@ -47,6 +54,10 @@ public data class OmniManagedScissorState(
         //$$ GL11.glScissor(x, y, width, height)
         //#endif
         //#endif
+    }
+
+    public fun restore() {
+        this.previousState?.activate(withPrevious = false)
     }
 
     //#if MC >= 1.21.5
