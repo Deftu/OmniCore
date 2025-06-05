@@ -17,11 +17,11 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#endif
 
             //#if FABRIC || MC >= 1.16.5
-            //$$ result.add("client.Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads")
+            result.add("client.Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads")
             //#endif
 
             //#if MC >= 1.16.5
-            //$$ result.add("client.Mixin_NativeImage_Accessor")
+            result.add("client.Mixin_NativeImage_Accessor")
             //#endif
 
             //#if FABRIC && MC <= 1.12.2 || FABRIC && MC >= 1.16.5 && MC <= 1.18.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
@@ -62,12 +62,12 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         //#if MC == 1.16.5
         //$$ result.add("server.Mixin_CustomPayloadC2SPacket_FieldAccessor")
         //#endif
-        //$$
+
         //#if MC >= 1.20.6
         //$$ result.add("server.Mixin_ServerPlayNetworkHandler_CaptureOverridenCustomPayloads")
         //#endif
-        //$$
-        //$$ result.add("server.Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads")
+
+        result.add("server.Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads")
         //#endif
 
         return result
