@@ -12,6 +12,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         val result = mutableListOf<String>()
 
         if (OmniLoader.isPhysicalClient) {
+            //#if FABRIC
+            result.add("client.Mixin_MinecraftClient_RenderTickEvent")
+            //#endif
+
             //#if FABRIC || MC >= 1.16.5
             //$$ result.add("client.Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads")
             //#endif

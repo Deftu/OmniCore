@@ -247,7 +247,8 @@ public object OmniClientEventPassthrough {
             }
         }
         //#endif
-        //#elseif MC >= 1.20.6
+        //#elseif MC >= 1.16.5
+        //#if MC >= 1.20.6
         //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.client.event.ClientTickEvent.Pre> { event ->
         //$$     OmniCore.eventBus.post(TickEvent.Client.Pre)
         //$$ }
@@ -262,6 +263,7 @@ public object OmniClientEventPassthrough {
         //$$             net.minecraftforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Client.Post)
         //$$         }
         //$$     }
+        //#endif
         //$$
         //#if MC >= 1.19.2
         //$$ EventHolder.EVENT_BUS.addListener<RenderGuiEvent.Post> { event ->
@@ -273,7 +275,12 @@ public object OmniClientEventPassthrough {
         //#endif
         //$$          )
         //$$
-        //$$          OmniCore.eventBus.post(HudRenderEvent(matrixStack, event.partialTick))
+        //#if MC >= 1.21.1
+        //$$         val tickDelta = OmniGameRendering.getTickDelta(false)
+        //#else
+        //$$         val tickDelta = event.partialTick
+        //#endif
+        //$$          OmniCore.eventBus.post(HudRenderEvent(matrixStack, tickDelta))
         //$$     }
         //#elseif MC >= 1.16.5
         //$$ EventHolder.EVENT_BUS.addListener<RenderGameOverlayEvent> { event ->
@@ -447,8 +454,26 @@ public object OmniClientEventPassthrough {
         //$$     val y = event.mouseY
         //$$     OmniCore.eventBus.post(ScreenEvent.MouseRelease.Post(screen, button, x, y))
         //$$ }
+        //$$
+        //#if MC >= 1.20.6
+        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.client.event.RenderFrameEvent.Pre> { event ->
+        //$$     OmniCore.eventBus.post(RenderTickEvent.Pre)
+        //$$ }
+        //$$
+        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.client.event.RenderFrameEvent.Post> { event ->
+        //$$     OmniCore.eventBus.post(RenderTickEvent.Post)
+        //$$ }
         //#else
-        //$$ MinecraftForge.EVENT_BUS.register(this)
+        //$$ EventHolder.EVENT_BUS.addListener<net.minecraftforge.event.TickEvent.RenderTickEvent> { event ->
+        //$$     when (event.phase) {
+        //$$         net.minecraftforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(RenderTickEvent.Pre)
+        //$$         net.minecraftforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(RenderTickEvent.Post)
+        //$$         else -> {  } // no-op
+        //$$     }
+        //$$ }
+        //#endif
+        //#else
+        //$$ EventHolder.EVENT_BUS.register(this)
         //#endif
 
         isInitialized = true
@@ -537,6 +562,15 @@ public object OmniClientEventPassthrough {
     //$$     when (action) {
     //$$         1 -> OmniCore.eventBus.post(ScreenEvent.MouseClick.Post(event.gui, button, x, y))
     //$$         0 -> OmniCore.eventBus.post(ScreenEvent.MouseRelease.Post(event.gui, button, x, y))
+    //$$     }
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onRenderTick(event: net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent) {
+    //$$     when (event.phase) {
+    //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.START -> OmniCore.eventBus.post(RenderTickEvent.Pre)
+    //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END -> OmniCore.eventBus.post(RenderTickEvent.Post)
+    //$$         else -> {  } // no-op
     //$$     }
     //$$ }
     //#endif
