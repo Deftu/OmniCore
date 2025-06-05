@@ -129,6 +129,25 @@ public data class OmniManagedScissorState(
             return DISABLED.also(OmniManagedScissorState::activate)
         }
 
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun with(
+            x: Int,
+            y: Int,
+            width: Int,
+            height: Int,
+            block: OmniManagedScissorState.() -> Unit
+        ) {
+            val state = asEnabled(x, y, width, height)
+            state.activate()
+
+            try {
+                state.block()
+            } finally {
+                state.restore()
+            }
+        }
+
         //#if MC <= 1.21.4
         private fun ints(param: Int, count: Int): List<Int> {
             val buffer = ByteBuffer.allocateDirect(16 * Int.SIZE_BYTES).asIntBuffer()
