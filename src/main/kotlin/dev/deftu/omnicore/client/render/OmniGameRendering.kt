@@ -193,6 +193,18 @@ public object OmniGameRendering {
         //#endif
     }
 
+    public fun drawCenteredText(
+        stack: OmniMatrixStack,
+        text: String,
+        x: Float,
+        y: Float,
+        color: Int,
+        shadow: Boolean = true
+    ) {
+        val width = getTextWidth(text)
+        drawText(stack, text, x - width / 2f, y, color, shadow)
+    }
+
     /**
      * @return The width of the specified text in pixels if it were to be rendered using Minecraft's built-in font and text renderer.
      * @param text The text to measure.
