@@ -217,4 +217,16 @@ public object OmniGameRendering {
         return OmniClient.fontRenderer.getWidth(text)
     }
 
+    /**
+     * @return The height of the specified text in pixels if it were to be rendered using Minecraft's built-in font and text renderer.
+     * @param text The text to measure.
+     * @since 0.14.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun getWrappedTextHeight(text: String, maxWidth: Int): Int {
+        return OmniClient.fontRenderer.getWrappedLinesHeight(text, maxWidth)
+    }
+
 }
