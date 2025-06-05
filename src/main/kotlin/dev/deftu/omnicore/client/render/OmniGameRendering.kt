@@ -31,7 +31,7 @@ public object OmniGameRendering {
     //#endif
     //$$ private val MinecraftClient.deltaTickTracker: ClientTickTracker by lazy {
     //#if FABRIC
-    //$$     (this as Mixin_MinecraftClient_TimerAccessor).ticker
+    //$$     (OmniClient.getInstance() as Mixin_MinecraftClient_TimerAccessor).ticker
     //#else
     //$$     for (fieldName in timerFieldNames) {
     //$$         try {
