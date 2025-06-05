@@ -82,13 +82,14 @@ public class ManagedFramebuffer(
         this.depthStencilTexture = ManagedTexture(width, height, depthFormat)
         this.using {
             GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL11.GL_TEXTURE_2D, this.colorTexture.id, 0)
+            this.checkStatus()
+
             GL30.glFramebufferTexture2D(GL30.GL_FRAMEBUFFER, when (this.depthFormat) {
                 GpuTexture.TextureFormat.RGBA8 -> throw UnsupportedOperationException("RGBA8 is not a valid depth format")
                 GpuTexture.TextureFormat.DEPTH24_STENCIL8 -> GL30.GL_DEPTH_STENCIL_ATTACHMENT
                 GpuTexture.TextureFormat.DEPTH32 -> GL30.GL_DEPTH_ATTACHMENT
             }, GL11.GL_TEXTURE_2D, this.depthStencilTexture.id, 0)
-
-            checkStatus()
+            this.checkStatus()
         }
     }
 
