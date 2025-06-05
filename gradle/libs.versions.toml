@@ -1,5 +1,5 @@
 [versions]
-textile = "0.15.0"
+textile = "0.18.0"
 enhancedeventbus = "2.0.0"
 brigadier = "1.0.18"
 
