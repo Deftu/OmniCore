@@ -1,9 +1,12 @@
 package dev.deftu.omnicore.client.render
 
+import dev.deftu.eventbus.on
+import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.VersionedAbove
 import dev.deftu.omnicore.client.OmniClient
+import dev.deftu.omnicore.client.events.RenderTickEvent
 import net.minecraft.client.font.TextRenderer
 
 //#if MC == 1.8.9
@@ -48,6 +51,11 @@ public object OmniGameRendering {
     //$$ }
     //#endif
 
+    private var lastFrameTimeNanos: Long = System.nanoTime()
+    private var lastFrameDurationNanos: Long = 0L
+
+    private val frameDurations = ArrayDeque<Long>(100)
+
     /**
      * Returns whether the player currently has the "F3"/debug screen open.
      *
@@ -71,6 +79,43 @@ public object OmniGameRendering {
         get() {
             return OmniClient.fontRenderer.fontHeight
         }
+
+    /**
+     * Returns the most recent frame duration in milliseconds.
+     * May be inaccurate if not running in the render loop.
+     */
+    @JvmStatic
+    public val lastFrameTimeMillis: Double
+        get() = lastFrameDurationNanos / 1_000_000.0
+
+    /**
+     * Returns the average frame duration over the last 100 frames in milliseconds.
+     */
+    @JvmStatic
+    public val averageFrameTimeMillis: Double
+        get() = if (frameDurations.isEmpty()) 0.0 else frameDurations.average() / 1_000_000.0
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun initialize() {
+        // Reset the frame time tracking
+        lastFrameTimeNanos = System.nanoTime()
+        lastFrameDurationNanos = 0L
+        frameDurations.clear()
+
+        OmniCore.eventBus.on<RenderTickEvent.Pre> {
+            // Calculate the time since the last frame
+            val currentTimeNanos = System.nanoTime()
+            lastFrameDurationNanos = currentTimeNanos - lastFrameTimeNanos
+            lastFrameTimeNanos = currentTimeNanos
+
+            // Add the frame duration to the deque
+            frameDurations.addLast(lastFrameDurationNanos)
+            if (frameDurations.size > 100) {
+                frameDurations.removeFirst()
+            }
+        }
+    }
 
     /**
      * Returns the current tick delta, which is the time in seconds since the last frame was rendered.
