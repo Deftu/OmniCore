@@ -13,7 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class Mixin_MinecraftClient_RenderTickEvent {
 
     @Inject(
+            //#if MC >= 1.16.5
             method = "render",
+            //#else
+            //$$ method = "runGameLoop",
+            //#endif
             at = @At("HEAD")
     )
     public void onRenderTick(
