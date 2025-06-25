@@ -34,7 +34,7 @@ public interface Framebuffer : AutoCloseable {
                 vertexFormat = VertexFormats.POSITION_TEXTURE_COLOR,
                 mode = DrawModes.QUADS,
             ).apply {
-                blendState = OmniManagedBlendState.NORMAL
+                blendState = OmniManagedBlendState.ALPHA
             }.build()
         }
 

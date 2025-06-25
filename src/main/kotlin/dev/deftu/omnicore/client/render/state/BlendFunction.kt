@@ -56,6 +56,12 @@ public data class BlendFunction(
         @JvmField
         public val LIGHTMAP: BlendFunction = BlendFunction(SrcFactor.SRC_ALPHA, DstFactor.ONE, SrcFactor.ONE, DstFactor.ONE_MINUS_SRC_ALPHA)
 
+        @JvmField
+        public val ALPHA: BlendFunction = BlendFunction(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ONE_MINUS_SRC_ALPHA)
+
+        @JvmField
+        public val PREMULTIPLIED: BlendFunction = of(SrcFactor.ONE, DstFactor.ONE_MINUS_SRC_ALPHA)
+
         @JvmStatic
         public fun active(): BlendFunction {
             return BlendFunction(

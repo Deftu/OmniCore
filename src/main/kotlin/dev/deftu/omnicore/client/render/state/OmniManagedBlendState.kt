@@ -95,6 +95,14 @@ public data class OmniManagedBlendState(
         @GameSide(Side.CLIENT)
         public val NORMAL: OmniManagedBlendState = OmniManagedBlendState(true, BlendEquation.ADD, BlendFunction.DEFAULT)
 
+        @JvmField
+        @GameSide(Side.CLIENT)
+        public val ALPHA: OmniManagedBlendState = OmniManagedBlendState(true, BlendEquation.ADD, BlendFunction.ALPHA)
+
+        @JvmField
+        @GameSide(Side.CLIENT)
+        public val PREMULTIPLIED: OmniManagedBlendState = OmniManagedBlendState(true, BlendEquation.ADD, BlendFunction.PREMULTIPLIED)
+
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun active(): OmniManagedBlendState {
