@@ -21,8 +21,8 @@ public class WrappedFramebuffer(
 
     override fun clearColor(red: Float, green: Float, blue: Float, alpha: Float) {
         this.using {
-            GL11.glClearColor(red, green, blue, alpha)
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT)
+            Framebuffer.apiClearColor(red, green, blue, alpha)
+            Framebuffer.apiClear(GL11.GL_COLOR_BUFFER_BIT)
         }
     }
 

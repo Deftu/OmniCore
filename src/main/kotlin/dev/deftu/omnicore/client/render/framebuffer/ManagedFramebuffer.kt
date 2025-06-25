@@ -34,9 +34,9 @@ public class ManagedFramebuffer(
 
     public fun clearDepthStencil(depth: Double, stencil: Int) {
         this.using {
-            GL11.glClearDepth(depth)
-            GL11.glClearStencil(stencil)
-            GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT)
+            Framebuffer.apiClearDepth(depth)
+            Framebuffer.apiClearStencil(stencil)
+            Framebuffer.apiClear(GL11.GL_DEPTH_BUFFER_BIT)
         }
     }
 
@@ -56,8 +56,8 @@ public class ManagedFramebuffer(
 
     override fun clearColor(red: Float, green: Float, blue: Float, alpha: Float) {
         this.using {
-            GL11.glClearColor(red, green, blue, alpha)
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT)
+            Framebuffer.apiClearColor(red, green, blue, alpha)
+            Framebuffer.apiClear(GL11.GL_COLOR_BUFFER_BIT)
         }
     }
 
