@@ -1,5 +1,8 @@
 com.mojang.blaze3d.platform.TextureUtil net.minecraft.client.texture.TextureUtil
 com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
+com.mojang.blaze3d.platform.GlStateManager _clearStencil() clearStencil()
+com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
+com.mojang.blaze3d.platform.GlStateManager _clear() clear()
 com.mojang.blaze3d.platform.GlStateManager _enableDepthTest() enableDepthTest()
 com.mojang.blaze3d.platform.GlStateManager _disableDepthTest() disableDepthTest()
 com.mojang.blaze3d.platform.GlStateManager _depthFunc() depthFunc()

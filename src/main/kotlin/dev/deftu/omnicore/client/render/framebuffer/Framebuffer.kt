@@ -18,10 +18,12 @@ import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 import java.io.File
 
-//#if MC == 1.16.5
-//$$ import com.mojang.blaze3d.platform.GlStateManager
-//#elseif MC <= 1.12.2
+//#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
+//#endif
+
+//#if MC < 1.21.5
+import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
 public interface Framebuffer : AutoCloseable {
@@ -114,6 +116,51 @@ public interface Framebuffer : AutoCloseable {
             //$$ GlStateManager.deleteFramebuffers(fbo)
             //#else
             //$$ OpenGlHelper.glDeleteFramebuffers(fbo)
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun apiClear(mask: Int) {
+            //#if MC >= 1.21.5
+            //$$ GL11.glClear(mask)
+            //#else
+            GlStateManager._clear(
+                mask,
+                //#if MC >= 1.16.5 && MC < 1.21.2
+                false,
+                //#endif
+            )
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun apiClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
+            //#if MC >= 1.21.5
+            //$$ GL11.glClearColor(red, green, blue, alpha)
+            //#else
+            GlStateManager._clearColor(red, green, blue, alpha)
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun apiClearDepth(depth: Double) {
+            //#if MC >= 1.21.5
+            //$$ GL11.glClearDepth(depth)
+            //#else
+            GlStateManager._clearDepth(depth)
+            //#endif
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun apiClearStencil(stencil: Int) {
+            //#if MC >= 1.21.5 || MC <= 1.12.2
+            //$$ GL11.glClearStencil(stencil)
+            //#else
+            GlStateManager._clearStencil(stencil)
             //#endif
         }
 

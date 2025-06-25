@@ -3,6 +3,7 @@ net.minecraft.util.thread.BlockableEventLoop isSameThread() isCallingFromMinecra
 net.minecraft.util.thread.BlockableEventLoop execute() addScheduledTask()
 
 com.mojang.blaze3d.platform.GlStateManager net.minecraft.client.renderer.GlStateManager
+com.mojang.blaze3d.platform.GlStateManager _clear() clear()
 com.mojang.blaze3d.platform.GlStateManager _enableDepthTest() enableDepth()
 com.mojang.blaze3d.platform.GlStateManager _disableDepthTest() disableDepth()
 com.mojang.blaze3d.platform.GlStateManager _viewport() viewport()
