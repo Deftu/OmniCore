@@ -63,8 +63,11 @@ dependencies {
     implementation(kotlin("reflect"))
 
     with(libs.textile.get()) {
-        api(includeOrShade(this)!!)
-        modImplementation(includeOrShade("${module.group}:${module.name}-$mcData:${versionConstraint.requiredVersion}")!!)
+        // The intention here is for the Textile API to be used as a dependency, but not to be included in the final artifact.
+        // This is so that the user can install it of their own accord.
+
+        api(this)
+        modImplementation("${module.group}:${module.name}-$mcData:${versionConstraint.requiredVersion}")
     }
 
     api(libs.brigadier)
