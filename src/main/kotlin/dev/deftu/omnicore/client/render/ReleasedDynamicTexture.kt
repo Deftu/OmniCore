@@ -9,6 +9,10 @@ import java.lang.ref.ReferenceQueue
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+//#if MC >= 1.21.6
+//$$ import com.mojang.blaze3d.textures.GpuTextureView
+//#endif
+
 //#if MC >= 1.21.5
 //$$ import com.mojang.blaze3d.opengl.GlTexture
 //$$ import com.mojang.blaze3d.systems.RenderSystem
@@ -71,11 +75,21 @@ public class ReleasedDynamicTexture(
             //#if MC >= 1.21.5
             //$$ val data = this.data ?: return
             //$$ val renderDevice = RenderSystem.getDevice()
+            //#if MC >= 1.21.6
+            //$$ val usage = GpuTexture.USAGE_TEXTURE_BINDING or GpuTexture.USAGE_COPY_SRC or GpuTexture.USAGE_COPY_DST
+            //$$ val glTexture = renderDevice.createTexture(null as String?, usage, TextureFormat.RGBA8, width, height, 1, 1)
+            //#else
             //$$ val glTexture = renderDevice.createTexture(null as String?, TextureFormat.RGBA8, width, height, 1)
+            //#endif
             //$$ glTexture.setTextureFilter(FilterMode.NEAREST, true)
             //$$ renderDevice.createCommandEncoder().writeToTexture(glTexture, data.native)
             //$$ this.resources.glTexture = glTexture
             //$$ this.texture = glTexture
+            //#if MC >= 1.21.6
+            //$$ val view = renderDevice.createTextureView(glTexture)
+            //$$ this.glTextureView = view
+            //$$ resources.glTextureView = view
+            //#endif
             //#else
             this.data?.prepareTexture(allocGlId())
             this.data?.uploadTexture(allocGlId())
@@ -89,6 +103,18 @@ public class ReleasedDynamicTexture(
     }
 
     //#if MC >= 1.21.5
+    //#if MC >= 1.21.6
+    //$$ override fun getGlTextureView(): GpuTextureView {
+    //$$     upload()
+    //$$     return super.getGlTextureView()
+    //$$ }
+    //$$
+    //$$ override fun setUseMipmaps(mipmaps: Boolean) {
+    //$$     upload()
+    //$$     super.setUseMipmaps(mipmaps)
+    //$$ }
+    //#endif
+    //$$
     //$$ override fun setClamp(clamp: Boolean) {
     //$$     upload()
     //$$     super.setClamp(clamp)
@@ -142,6 +168,14 @@ public class ReleasedDynamicTexture(
         //$$         field?.close()
         //$$         field = value
         //$$     }
+        //$$
+        //#if MC >= 1.21.6
+        //$$ var glTextureView: GpuTextureView? = null
+        //$$     set(value) {
+        //$$         field?.close()
+        //$$         field = value
+        //$$     }
+        //#endif
         //#else
         var glId: Int = -1
         //#endif
@@ -161,6 +195,9 @@ public class ReleasedDynamicTexture(
 
             //#if MC >= 1.21.5
             //$$ glTexture = null
+            //#if MC >= 1.21.6
+            //$$ glTextureView = null
+            //#endif
             //#else
             if (glId != -1) {
                 OmniClient.textureManager.deleteTexture(glId)

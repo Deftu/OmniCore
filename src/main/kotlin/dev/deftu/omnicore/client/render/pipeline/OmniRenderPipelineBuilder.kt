@@ -122,7 +122,6 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$ return OmniRenderPipeline(
         //$$     identifier = identifier,
         //$$     vertexFormat = vertexFormat,
-        //$$     mode = mode,
         //$$     vanilla = vanillaPipeline,
         //$$     shaderSourcesFunction = shaderSourcesFunction
         //$$ )
@@ -130,7 +129,6 @@ public class OmniRenderPipelineBuilder internal constructor(
         return OmniRenderPipeline(
             identifier = identifier,
             vertexFormat = vertexFormat,
-            mode = mode,
             shaderSource = shaderSource,
             activeRenderState = OmniManagedRenderState(
                 blendState = blendState,

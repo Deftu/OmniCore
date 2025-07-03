@@ -34,7 +34,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 public class OmniRenderPipeline(
     public val identifier: Identifier,
     public val vertexFormat: VertexFormat,
-    public val mode: DrawModes,
     //#if MC >= 1.21.5
     //$$ public val vanilla: RenderPipeline,
     //$$ private val shaderSourcesFunction: ((ResourceLocation, ShaderType) -> String?)?
@@ -51,7 +50,11 @@ public class OmniRenderPipeline(
     //$$     }
     //$$
     //$$     renderPass.setPipeline(vanilla)
+    //#if MC >= 1.21.6
+    //$$     renderPass.drawIndexed(0, 0, builtBuffer.drawParameters.comp_751(), 1)
+    //#else
     //$$     renderPass.drawIndexed(0, builtBuffer.drawState().indexCount)
+    //#endif
     //$$ }
     //#else
     internal fun draw(builtBuffer: OmniBuiltBuffer) {
@@ -149,6 +152,16 @@ public class OmniRenderPipeline(
 
         //#if MC >= 1.21.5
         //$$ @JvmStatic
+        //$$ public fun wrap(vanillaPipeline: RenderPipeline): OmniRenderPipeline {
+        //$$     return OmniRenderPipeline(
+        //$$         identifier = vanillaPipeline.location,
+        //$$         vertexFormat = vanillaPipeline.vertexFormat,
+        //$$         vanilla = vanillaPipeline,
+        //$$         shaderSourcesFunction = null
+        //$$     )
+        //$$ }
+        //$$
+        //$$ @JvmStatic
         //$$ public fun builder(
         //$$     identifier: ResourceLocation,
         //$$     vertexFormat: VertexFormat,
@@ -221,9 +234,13 @@ public class OmniRenderPipeline(
             //$$ shader ?: throw IllegalArgumentException("No default shader found for vertex format: $vertexFormat")
             //$$ val samplers = List(vertexFormat.elements.count { it.usage == VertexFormatElement.Usage.UV }) { i -> "Sampler$i" }
             //$$ val uniforms = mapOf(
+            //#if MC >= 1.21.6
+            //$$     "DynamicTransforms" to UniformType.UNIFORM_BUFFER,
+            //#else
             //$$     "ModelViewMat" to UniformType.MATRIX4X4,
             //$$     "ProjMat" to UniformType.MATRIX4X4,
             //$$     "ColorModulator" to UniformType.VEC4,
+            //#endif
             //$$ )
             //$$
             //$$ return builder(identifier, vertexFormat, mode, shader, shader, samplers, uniforms)
