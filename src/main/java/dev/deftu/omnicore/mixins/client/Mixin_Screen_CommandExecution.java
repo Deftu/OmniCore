@@ -74,15 +74,28 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+//#if MC >= 1.21.6
+//$$ import net.minecraft.client.gui.screen.Screen;
+//#endif
+
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 999)
 public class Mixin_Screen_CommandExecution {
 
+    //#if MC >= 1.21.6
+    //$$ @Inject(method = "runClickEventCommand", at = @At("HEAD"), cancellable = true)
+    //$$ private void omnicore$overwriteCommandSend(String command, Screen screen, CallbackInfo ci) {
+    //$$     if (OmniClientCommands.execute$OmniCore(command)) {
+    //$$         ci.cancel();
+    //$$     }
+    //$$ }
+    //#else
     @Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
     private void omnicore$overwriteCommandSend(String command, CallbackInfoReturnable<Boolean> cir) {
         if (OmniClientCommands.execute$OmniCore(command)) {
             cir.setReturnValue(true);
         }
     }
+    //#endif
 
     @Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
     private void omnicore$overwriteCommandSend(String command, CallbackInfo ci) {
