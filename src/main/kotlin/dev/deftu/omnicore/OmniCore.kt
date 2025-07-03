@@ -10,6 +10,8 @@ import dev.deftu.omnicore.annotations.Side
 import net.minecraft.SharedConstants
 //#elseif FORGE
 //$$ import net.minecraftforge.common.ForgeVersion
+//#elseif FABRIC
+//$$ import net.fabricmc.loader.api.FabricLoader
 //#endif
 
 @GameSide(Side.BOTH)
@@ -54,11 +56,9 @@ public object OmniCore {
             //#if FORGE
             //$$ ForgeVersion.mcVersion
             //#else
-            //#if MC == 1.12.2
-            //$$ "1.12.2"
-            //#else
-            //$$ "1.8.9"
-            //#endif
+            //$$ FabricLoader.getInstance().getModContainer("minecraft").orElseThrow {
+            //$$     RuntimeException("Minecraft mod container not found")
+            //$$ }.metadata.version.friendlyString
             //#endif
             //#endif
 
