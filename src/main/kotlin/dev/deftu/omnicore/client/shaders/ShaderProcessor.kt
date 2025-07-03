@@ -41,17 +41,17 @@ internal class ShaderProcessor(
         val varyingOut = if (targetVersion >= 130) "out" else "varying"
 
         if (isFrag && targetVersion >= 130) {
-            transformed.add("out vec4 oc_FragColor;")
+            transformed.add("$varyingOut vec4 oc_FragColor;")
             replacements["gl_FragColor"] = "oc_FragColor"
         }
 
         if (isVert && "gl_FrontColor" in source) {
-            transformed.add("out vec4 oc_FrontColor;")
+            transformed.add("$varyingOut vec4 oc_FrontColor;")
             replacements["gl_FrontColor"] = "oc_FrontColor"
         }
 
         if (isFrag && "gl_Color" in source) {
-            transformed.add("in vec4 oc_FrontColor;")
+            transformed.add("$varyingIn vec4 oc_FrontColor;")
             replacements["gl_Color"] = "oc_FrontColor"
         }
 
