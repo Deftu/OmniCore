@@ -9,6 +9,7 @@ import dev.deftu.omnicore.server.OmniServer
 import dev.deftu.omnicore.server.OmniServerCommands
 import dev.deftu.textile.TextHolder
 import dev.deftu.textile.minecraft.*
+import java.net.URI
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
@@ -122,7 +123,7 @@ public class OmniCoreEntrypoint
                     .then(
                         OmniClientCommands.literal("version")
                             .executes { ctx ->
-                                val clickEvent = MCClickEvent.openUrl(OmniCore.GIT_URL)
+                                val clickEvent = MCClickEvent.OpenUrl(URI.create(OmniCore.GIT_URL))
                                 val hoverEvent = MCHoverEvent.ShowText(OmniCore.GIT_URL)
 
                                 val lines = listOf(
