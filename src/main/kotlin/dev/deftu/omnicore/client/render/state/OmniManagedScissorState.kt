@@ -29,6 +29,9 @@ public data class OmniManagedScissorState(
             this.previousState = active()
         }
 
+        //#if MC >= 1.21.6
+        //$$ globalScissorState.set(this)
+        //#else
         if (isEnabled) {
             //#if MC >= 1.21.5
             //$$ RenderSystem.SCISSOR_STATE.enable(x, y, width, height)
@@ -46,6 +49,7 @@ public data class OmniManagedScissorState(
             //$$ GL11.glDisable(GL11.GL_SCISSOR_TEST)
             //#endif
         }
+        //#endif
 
         //#if MC <= 1.21.4
         //#if MC >= 1.17.1
@@ -76,10 +80,21 @@ public data class OmniManagedScissorState(
         @GameSide(Side.CLIENT)
         public val DISABLED: OmniManagedScissorState = OmniManagedScissorState(false, 0, 0, 0, 0)
 
+        //#if MC >= 1.21.6
+        //$$ // Minecraft no longer has a global scissor state, rather using a context-based stack when
+        //$$ // drawing into screens. This means we'll need to store our own to maintain compatibility
+        //$$ // with older versions.
+        //$$ private val globalScissorState: ThreadLocal<OmniManagedScissorState> = ThreadLocal.withInitial {
+        //$$     DISABLED
+        //$$ }
+        //#endif
+
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun active(): OmniManagedScissorState {
-            //#if MC >= 1.21.5
+            //#if MC >= 1.21.6
+            //$$ return globalScissorState.get()
+            //#elseif MC >= 1.21.5
             //$$ val vanillaState = RenderSystem.SCISSOR_STATE
             //$$ return OmniManagedScissorState(
             //$$     isEnabled = vanillaState.isEnabled,
