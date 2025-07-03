@@ -103,7 +103,9 @@ public object OmniRenderState {
         blue: Float,
         alpha: Float
     ) {
-        //#if MC >= 1.17.1
+        //#if MC >= 1.21.6
+        //$$ throw UnsupportedOperationException("setColor4f is not supported in MC 1.21.6 and above.")
+        //#elseif MC >= 1.17.1
         RenderSystem.setShaderColor(red, green, blue, alpha)
         //#elseif MC >= 1.16.5
         //$$ RenderSystem.color4f(red, green, blue, alpha)
