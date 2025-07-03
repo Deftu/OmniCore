@@ -98,6 +98,25 @@ internal class ShaderProcessor(
             //#endif
         }
 
+        //#if MC >= 1.21.6
+        //$$ transformed.add("""
+        //$$     layout(std140) uniform Projection {
+        //$$         mat4 ProjMat;
+        //$$     };
+        //$$
+        //$$     layout(std140) uniform DynamicTransforms {
+        //$$         mat4 ModelViewMat;
+        //$$         vec4 ColorModulator;
+        //$$         vec3 ModelOffset;
+        //$$         mat4 TextureMat;
+        //$$         float LineWidth;
+        //$$     };
+        //$$ """.trimIndent())
+        //$$ uniforms["Projection"] = UniformType.Mat4
+        //$$ uniforms["DynamicTransforms"] = UniformType.Mat4
+        //$$ replacements["gl_ModelViewMatrix"] = "ModelViewMat"
+        //$$ replacements["gl_ProjectionMatrix"] = "ProjMat"
+        //#else
         fun replaceUniform(
             needle: String,
             type: UniformType,
@@ -115,6 +134,7 @@ internal class ShaderProcessor(
 
         replaceUniform("gl_ModelViewMatrix", UniformType.Mat4, "ModelViewMat")
         replaceUniform("gl_ProjectionMatrix", UniformType.Mat4, "ProjMat")
+        //#endif
 
         for (line in source.lines()) {
             transformed.add(when {
@@ -124,11 +144,17 @@ internal class ShaderProcessor(
                     val (_, typeName, name) = line.trimEnd(';').split(" ")
                     if (typeName == "sampler2D") {
                         samplers.add(name)
+                        line
                     } else {
                         uniforms[name] = UniformType.fromGlsl(typeName)
-                    }
 
-                    line
+                        //#if MC >= 1.21.6
+                        //$$ replacements[name] = "oc_$name"
+                        //$$ "layout(std140) uniform $name { typeName oc_$name; };"
+                        //#else
+                        line
+                        //#endif
+                    }
                 }
 
                 else -> replacements.entries.fold(line) { acc, (needle, replacement) -> acc.replace(needle, replacement) }
@@ -157,6 +183,9 @@ internal enum class UniformType(
     //#if MC >= 1.21.5
     //$$ public val vanilla: com.mojang.blaze3d.shaders.UniformType
     //$$     get() {
+    //#if MC >= 1.21.6
+    //$$         return net.minecraft.client.gl.UniformType.UNIFORM_BUFFER
+    //#else
     //$$         return when (this) {
     //$$             Int1 -> com.mojang.blaze3d.shaders.UniformType.INT
     //$$             Float1 -> com.mojang.blaze3d.shaders.UniformType.FLOAT
@@ -167,6 +196,7 @@ internal enum class UniformType(
     //$$             Mat3 -> throw IllegalStateException("Mat3 is not supported in Minecraft 1.21.5+")
     //$$             Mat4 -> com.mojang.blaze3d.shaders.UniformType.MATRIX4X4
     //$$         }
+    //#endif
     //$$     }
     //#endif
 
