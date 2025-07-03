@@ -639,4 +639,15 @@ public class OmniMatrixStack private constructor(
         }
     }
 
+    @GameSide(Side.CLIENT)
+    public fun using(block: OmniMatrixStack.() -> Unit) {
+        push()
+
+        try {
+            block()
+        } finally {
+            pop()
+        }
+    }
+
 }
