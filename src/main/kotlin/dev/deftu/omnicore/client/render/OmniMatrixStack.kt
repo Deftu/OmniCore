@@ -229,6 +229,19 @@ public class OmniMatrixStack private constructor(
     public fun toVanillaStack(): MatrixStack {
         return peek().toVanillaStack()
     }
+
+    //#if MC >= 1.21.6
+    //$$ public fun to3x2fJoml(dest: Matrix3x2f = Matrix3x2f()): Matrix3x2f {
+    //$$     return dest.apply {
+    //$$         val ours = peek().matrix
+    //$$         set(
+    //$$             ours.m00(), ours.m01(),
+    //$$             ours.m10(), ours.m11(),
+    //$$             ours.m30(), ours.m31()
+    //$$         )
+    //$$     }
+    //$$ }
+    //#endif
     //#endif
 
     /**
