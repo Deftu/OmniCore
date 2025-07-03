@@ -192,7 +192,13 @@ public class OmniTextureManager private constructor(
         //#endif
     ): OmniTextureManager = apply {
         //#if MC >= 1.21.5
-        //$$ RenderSystem.getDevice().createCommandEncoder().presentTexture(texture.texture)
+        //$$ val presentedTexture =
+            //#if MC >= 1.21.6
+            //$$ RenderSystem.getDevice().createTextureView(texture.glTexture)
+            //#else
+            //$$ texture.texture
+            //#endif
+        //$$ RenderSystem.getDevice().createCommandEncoder().presentTexture(presentedTexture)
         //#elseif MC >= 1.16.5
         texture.bindTexture()
         //#else
