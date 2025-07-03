@@ -22,7 +22,7 @@ import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
 //$$ import net.minecraft.world.item.CreativeModeTab
 //#endif
 
-//#if MC >= 1.20
+//#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
 //#elseif MC >= 1.16.5
 //$$ import net.minecraft.client.util.math.MatrixStack
@@ -145,7 +145,7 @@ public abstract class OmniScreen(
 
     private val previousScreen = if (restorePreviousScreen) currentScreen else null
 
-    //#if MC >= 1.15
+    //#if MC >= 1.16.5
     private var lastClick = 0L
     private var dragDx = -1.0
     private var dragDy = -1.0
@@ -180,14 +180,14 @@ public abstract class OmniScreen(
         mouseY: Int,
         tickDelta: Float
     ) {
-        //#if MC >= 1.20
-        //#if MC >= 1.20.4
+        //#if MC >= 1.20.1
+        //#if MC >= 1.20.4 && MC < 1.21.6
         //$$ isCancellingBackground = true
         //#endif
         withDrawContext(stack) { ctx ->
             super.render(ctx, mouseX, mouseY, tickDelta)
         }
-        //#if MC >= 1.20.4
+        //#if MC >= 1.20.4 && MC < 1.21.6
         //$$ isCancellingBackground = false
         //#endif
         //#elseif MC >= 1.16
@@ -384,6 +384,13 @@ public abstract class OmniScreen(
 
     //#if MC >= 1.20
     private inline fun <R> withDrawContext(stack: OmniMatrixStack, block: (DrawContext) -> R) {
+        //#if MC >= 1.21.6
+        //$$ val context = contexts.last()
+        //$$ context.matrices.pushMatrix()
+        //$$ stack.to3x2fJoml(context.matrices)
+        //$$ block(context)
+        //$$ context.matrices.popMatrix()
+        //#else
         val client = this.client!!
         val context = contexts.lastOrNull() ?: DrawContext(client, client.bufferBuilders.entityVertexConsumers)
         context.matrices.push()
@@ -393,6 +400,7 @@ public abstract class OmniScreen(
         vanilla.normalMatrix.set(self.normal)
         block(context)
         context.matrices.pop()
+        //#endif
     }
     //#endif
 
