@@ -8,6 +8,10 @@ import java.util.*
 import org.joml.Matrix4f
 import org.joml.Matrix3f
 
+//#if MC >= 1.21.6
+//$$ import org.joml.Matrix3x2f
+//#endif
+
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
 //#endif
@@ -201,6 +205,19 @@ public class OmniMatrixStack private constructor(
      * @author Deftu
      */
     public constructor(stack: MatrixStack) : this(stack.peek())
+
+    //#if MC >= 1.21.6
+    //$$ public constructor(stack: Matrix3x2f) : this() {
+    //$$     with(peek().matrix) {
+    //$$         m00(stack.m00)
+    //$$         m01(stack.m01)
+    //$$         m10(stack.m10)
+    //$$         m11(stack.m11)
+    //$$         m30(stack.m20)
+    //$$         m31(stack.m21)
+    //$$     }
+    //$$ }
+    //#endif
 
     /**
      * Converts the [OmniMatrixStack] to a vanilla [MatrixStack] instance.
