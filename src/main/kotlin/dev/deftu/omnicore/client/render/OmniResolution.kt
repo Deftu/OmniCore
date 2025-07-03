@@ -109,6 +109,9 @@ public object OmniResolution {
         get() {
             //#if MC >= 1.14
             return OmniClient.getInstance().window.scaleFactor
+                //#if MC >= 1.21.6
+                //$$ .toDouble()
+                //#endif
             //#else
             //$$ return getScaledRes().scaleFactor.toDouble()
             //#endif
