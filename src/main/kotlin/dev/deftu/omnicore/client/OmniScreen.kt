@@ -5,6 +5,7 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.client.render.OmniMatrixStack
 import dev.deftu.omnicore.common.events.TickEvent
 import dev.deftu.textile.minecraft.MCTextHolder
@@ -143,6 +144,8 @@ public abstract class OmniScreen(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as MCTextHolder<*>?)
 
+    private val screenRenderer = ImmediateScreenRenderer()
+
     private val previousScreen = if (restorePreviousScreen) currentScreen else null
 
     //#if MC >= 1.16.5
@@ -152,7 +155,12 @@ public abstract class OmniScreen(
     private var scrolledX = -1.0
     private var scrolledY = -1.0
     //#if MC >= 1.20.4
-    //$$ private var isCancellingBackground = false
+    //$$ private var isCancellingBackground =
+        //#if MC >= 1.21.6
+        //$$ true
+        //#else
+        //$$ false
+        //#endif
     //$$ private var scrolledDX = 0.0
     //$$ private var backgroundMouseX = 0
     //$$ private var backgroundMouseY = 0
@@ -356,6 +364,10 @@ public abstract class OmniScreen(
     ) {
         //#if MC >= 1.20
         withDrawContext(stack) { ctx ->
+            //#if MC >= 1.21.6
+            //$$ ctx.createNewRootLayer()
+            //#endif
+
             super.renderBackground(
                 ctx,
                 //#if MC >= 1.20.4
@@ -364,6 +376,10 @@ public abstract class OmniScreen(
                 //$$ backgroundDelta
                 //#endif
             )
+
+            //#if MC >= 1.21.6
+            //$$ ctx.createNewRootLayer()
+            //#endif
         }
         //#elseif MC >= 1.16
         //$$ super.renderBackground(stack.toVanillaStack())
@@ -414,16 +430,32 @@ public abstract class OmniScreen(
     //#if MC >= 1.20
     final override fun render(ctx: DrawContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
         contexts.add(ctx)
-        handleRender(OmniMatrixStack(ctx.matrices), mouseX, mouseY, tickDelta)
+        screenRenderer.tick()
+        screenRenderer.render(ctx) { stack ->
+            //#if MC >= 1.21.6
+            //$$ isCancellingBackground = false
+            //#endif
+            handleRender(stack, mouseX, mouseY, tickDelta)
+            //#if MC >= 1.21.6
+            //$$ isCancellingBackground = true
+            //#endif
+        }
+
         contexts.removeLast()
     }
     //#elseif MC >= 1.16
-    //$$ final override fun render(stack: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     handleRender(OmniMatrixStack(stack), mouseX, mouseY, tickDelta)
+    //$$ final override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
+    //$$     screenRenderer.tick()
+    //$$     screenRenderer.render(matrices) { stack ->
+    //$$         handleRender(stack, mouseX, mouseY, tickDelta)
+    //$$     }
     //$$ }
     //#else
     //$$ final override fun render(mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     handleRender(OmniMatrixStack(), mouseX, mouseY, tickDelta)
+    //$$     screenRenderer.tick()
+    //$$     screenRenderer.render { stack ->
+    //$$         handleRender(stack, mouseX, mouseY, tickDelta)
+    //$$     }
     //$$ }
     //#endif
 
@@ -485,6 +517,7 @@ public abstract class OmniScreen(
     }
 
     final override fun close() {
+        screenRenderer.close()
         handleClose()
     }
 
