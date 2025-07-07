@@ -1,7 +1,15 @@
 package dev.deftu.omnicore.client.render
 
+import com.mojang.blaze3d.platform.TextureUtil
+import dev.deftu.omnicore.client.render.texture.GpuTexture
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+
 //#if MC >= 1.21.5
 //$$ import com.mojang.blaze3d.opengl.GlStateManager
+//$$ import dev.deftu.omnicore.client.render.texture.WrappedTexture
 //$$ import org.lwjgl.opengl.GL11
 //#endif
 
@@ -20,12 +28,6 @@ import org.lwjgl.system.MemoryUtil
 //$$ import java.awt.image.BufferedImage
 //$$ import javax.imageio.ImageIO
 //#endif
-
-import com.mojang.blaze3d.platform.TextureUtil
-import java.io.ByteArrayInputStream
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
 
 public class OmniImage(
     public val width: Int,
@@ -52,6 +54,30 @@ public class OmniImage(
                 //#endif
             }
         }
+
+        @JvmStatic
+        public fun from(texture: GpuTexture): OmniImage {
+            val image = OmniImage(texture.width, texture.height)
+            OmniTextureManager.configureTexture(texture.id) {
+                image.loadFromBoundTexture(0)
+            }
+
+            return image
+        }
+
+        //#if MC >= 1.21.5
+        //$$ @JvmStatic
+        //$$ public fun from(vanillaTexture: com.mojang.blaze3d.opengl.GlTexture): OmniImage {
+        //$$     return from(WrappedTexture.from(vanillaTexture))
+        //$$ }
+        //#endif
+
+        //#if MC >= 1.21.6
+        //$$ @JvmStatic
+        //$$ public fun from(vanillaTexture: net.minecraft.client.texture.GlTextureView): OmniImage {
+        //$$     return from(WrappedTexture.from(vanillaTexture))
+        //$$ }
+        //#endif
 
         @JvmStatic
         public fun read(path: Path): OmniImage {
