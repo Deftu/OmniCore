@@ -4,13 +4,24 @@ import com.mojang.blaze3d.systems.ProjectionType
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.OmniCore
+import dev.deftu.omnicore.client.OmniScreen
 import dev.deftu.omnicore.client.events.RenderTickEvent
+import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniIdentifier
 import net.minecraft.client.gl.RenderPipelines
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.ProjectionMatrix2
 import net.minecraft.client.texture.AbstractTexture
 
+/**
+ * Provides you with a means of bypassing Minecraft's new render layering system as of Minecraft 1.21.6.
+ * Done by overriding the current render target's output color and depth buffers with our own texture(s), drawing your content,
+ * to it/them, restoring the original buffers, and then submitting those overriden texture(s) to the renderer to be drawn.
+ *
+ * It should be noted that this is a very low-level renderer, and as such, it is not recommended to use it unless you know what you are doing,
+ * and that it is automatically used to wrap the rendering of [OmniScreen]s, allowing you to use the [OmniBufferBuilder] API to render whatever
+ * you please. Use it as you wish elsewhere should you need to.
+ */
 public object ImmediateScreenRenderer {
 
     private var isInitialized = false
