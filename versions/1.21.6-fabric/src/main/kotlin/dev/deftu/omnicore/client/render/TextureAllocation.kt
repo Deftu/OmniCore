@@ -13,7 +13,7 @@ public class TextureAllocation(
 
     private val device = RenderSystem.getDevice()
 
-    public var colorTexture: GpuTexture = device.createTexture(
+    public val colorTexture: GpuTexture = device.createTexture(
         { "Pre-rendered texture" },
         GpuTexture.USAGE_RENDER_ATTACHMENT or GpuTexture.USAGE_TEXTURE_BINDING,
         TextureFormat.RGBA8,
@@ -21,9 +21,9 @@ public class TextureAllocation(
         1, 1
     ).apply { setTextureFilter(FilterMode.NEAREST, false) }
 
-    public var colorTextureView: GpuTextureView = device.createTextureView(colorTexture)
+    public val colorTextureView: GpuTextureView = device.createTextureView(colorTexture)
 
-    public var depthTexture: GpuTexture = device.createTexture(
+    public val depthTexture: GpuTexture = device.createTexture(
         { "Pre-rendered depth texture" },
         GpuTexture.USAGE_RENDER_ATTACHMENT,
         TextureFormat.DEPTH32,
@@ -31,7 +31,7 @@ public class TextureAllocation(
         1, 1
     )
 
-    public var depthTextureView: GpuTextureView = device.createTextureView(depthTexture)
+    public val depthTextureView: GpuTextureView = device.createTextureView(depthTexture)
 
     override fun close() {
         depthTextureView.close()
