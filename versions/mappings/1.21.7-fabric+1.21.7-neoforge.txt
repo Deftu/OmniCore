@@ -1,0 +1,4 @@
+net.minecraft.client.gui.render.SpecialGuiElementRenderer net.minecraft.client.gui.render.pip.PictureInPictureRenderer
+net.minecraft.client.gui.render.SpecialGuiElementRenderer render() renderToTexture()
+net.minecraft.client.gui.render.SpecialGuiElementRenderer getElementClass() getRenderStateClass()
+net.minecraft.client.gui.render.SpecialGuiElementRenderer getName() getTextureLabel()

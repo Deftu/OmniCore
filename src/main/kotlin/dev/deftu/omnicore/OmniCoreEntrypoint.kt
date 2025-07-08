@@ -2,6 +2,7 @@ package dev.deftu.omnicore
 
 import dev.deftu.omnicore.client.OmniClientCommands
 import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
+import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.client.render.OmniGameRendering
 import dev.deftu.omnicore.common.OmniLoader
 import dev.deftu.omnicore.common.events.OmniCommonEventPassthrough
@@ -115,6 +116,7 @@ public class OmniCoreEntrypoint
             //#endif
 
             OmniClientEventPassthrough.initialize()
+            ImmediateScreenRenderer.initialize()
             OmniGameRendering.initialize()
             OmniClientCommands.initialize()
 

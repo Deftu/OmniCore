@@ -144,8 +144,6 @@ public abstract class OmniScreen(
         restorePreviousScreen: Boolean = true
     ) : this(restorePreviousScreen, null as MCTextHolder<*>?)
 
-    private val screenRenderer = ImmediateScreenRenderer()
-
     private val previousScreen = if (restorePreviousScreen) currentScreen else null
 
     //#if MC >= 1.16.5
@@ -430,8 +428,7 @@ public abstract class OmniScreen(
     //#if MC >= 1.20
     final override fun render(ctx: DrawContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
         contexts.add(ctx)
-        screenRenderer.tick()
-        screenRenderer.render(ctx) { stack ->
+        ImmediateScreenRenderer.render(ctx) { stack ->
             //#if MC >= 1.21.6
             //$$ isCancellingBackground = false
             //#endif
@@ -445,15 +442,13 @@ public abstract class OmniScreen(
     }
     //#elseif MC >= 1.16
     //$$ final override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     screenRenderer.tick()
-    //$$     screenRenderer.render(matrices) { stack ->
+    //$$     ImmediateScreenRenderer.render(matrices) { stack ->
     //$$         handleRender(stack, mouseX, mouseY, tickDelta)
     //$$     }
     //$$ }
     //#else
     //$$ final override fun render(mouseX: Int, mouseY: Int, tickDelta: Float) {
-    //$$     screenRenderer.tick()
-    //$$     screenRenderer.render { stack ->
+    //$$     ImmediateScreenRenderer.render { stack ->
     //$$         handleRender(stack, mouseX, mouseY, tickDelta)
     //$$     }
     //$$ }
@@ -517,7 +512,6 @@ public abstract class OmniScreen(
     }
 
     final override fun close() {
-        screenRenderer.close()
         handleClose()
     }
 
