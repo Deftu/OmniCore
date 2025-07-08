@@ -10,21 +10,21 @@ internal class TemporaryTextureAllocator(
     private val reusableAllocations = mutableListOf<TextureAllocation>()
 
     fun allocate(width: Int, height: Int): TextureAllocation {
-        var texture = reusableAllocations.removeLastOrNull()
+        var lastTexture = reusableAllocations.removeLastOrNull()
 
-        if (texture != null && (texture.width != width || texture.height != height)) {
-            texture.close()
-            texture = null
+        if (lastTexture != null && (lastTexture.width != width || lastTexture.height != height)) {
+            lastTexture.close()
+            lastTexture = null
         }
 
-        if (texture == null) {
-            texture = TextureAllocation(width, height)
+        if (lastTexture == null) {
+            lastTexture = TextureAllocation(width, height)
         }
 
         val device = RenderSystem.getDevice()
-        device.createCommandEncoder().clearColorAndDepthTextures(texture.colorTexture, 0, texture.depthTexture, 1.0)
-        usedAllocations.add(texture)
-        return texture
+        device.createCommandEncoder().clearColorAndDepthTextures(lastTexture.colorTexture, 0, lastTexture.depthTexture, 1.0)
+        usedAllocations.add(lastTexture)
+        return lastTexture
     }
 
     fun tick() {
