@@ -4,28 +4,14 @@ issueTrackerURL="https://github.com/Deftu/${mod_name}/issues"
 license="LGPL-3.0-or-later"
 
 [[mods]]
-    modId="test-mod"
+    modId="testmod"
     version="0.1.0"
     displayName="Test Mod"
     authors="Deftu"
 
-[[dependencies.${mod_id}]]
-    modId="neoforge"
-    mandatory=true
-    versionRange="[20.2,)"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[${minor_mc_version}]"
-    ordering="NONE"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
+[[dependencies.testmod]]
     modId="omnicore"
     mandatory=true
-    versionRange="[0.8.0]"
+    versionRange="[0.35.0,)"
     ordering="AFTER"
     side="BOTH"
