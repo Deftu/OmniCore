@@ -36,7 +36,7 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
     private val renderHeight = 100.0
 
     override fun handleRender(stack: OmniMatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-//        super.handleRender(stack, mouseX, mouseY, tickDelta) // Render vanilla screen
+        super.handleRender(stack, mouseX, mouseY, tickDelta) // Render vanilla screen
 
         render(stack)
         //#if MC <= 1.12.2
