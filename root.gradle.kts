@@ -6,9 +6,9 @@ preprocess {
     strictExtraMappings.set(false)
 
     "1.21.7-fabric"(1_21_07, "yarn") {
-        "1.21.7-neoforge"(1_21_07, "srg", file("versions/mappings/1.21.7-fabric+1.21.7-neoforge.txt")) {
+        "1.21.7-neoforge"(1_21_07, "srg") {
             "1.21.6-neoforge"(1_21_06, "srg") {
-                "1.21.6-fabric"(1_21_06, "yarn", file("versions/mappings/1.21.6-neoforge+1.21.6-fabric.txt")) {
+                "1.21.6-fabric"(1_21_06, "yarn") {
                     "1.21.5-fabric"(1_21_05, "yarn", file("versions/mappings/1.21.6-fabric+1.21.5-fabric.txt")) {
                         "1.21.5-neoforge"(1_21_05, "srg") {
                             "1.21.4-neoforge"(1_21_04, "srg", file("versions/mappings/1.21.5-neoforge+1.21.4-neoforge.txt")) {
