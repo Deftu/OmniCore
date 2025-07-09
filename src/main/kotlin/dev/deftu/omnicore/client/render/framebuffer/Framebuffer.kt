@@ -24,7 +24,7 @@ import java.io.File
 //#endif
 
 //#if MC < 1.21.5
-import com.mojang.blaze3d.platform.GlStateManager
+//$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
 public interface Framebuffer : AutoCloseable {
@@ -125,14 +125,14 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClear(mask: Int) {
             //#if MC >= 1.21.5
-            //$$ GL11.glClear(mask)
+            GL11.glClear(mask)
             //#else
-            GlStateManager._clear(
-                mask,
+            //$$ GlStateManager._clear(
+            //$$     mask,
                 //#if MC >= 1.16.5 && MC < 1.21.2
-                false,
+                //$$ false,
                 //#endif
-            )
+            //$$ )
             //#endif
         }
 
@@ -140,9 +140,9 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
             //#if MC >= 1.21.5
-            //$$ GL11.glClearColor(red, green, blue, alpha)
+            GL11.glClearColor(red, green, blue, alpha)
             //#else
-            GlStateManager._clearColor(red, green, blue, alpha)
+            //$$ GlStateManager._clearColor(red, green, blue, alpha)
             //#endif
         }
 
@@ -150,9 +150,9 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClearDepth(depth: Double) {
             //#if MC >= 1.21.5
-            //$$ GL11.glClearDepth(depth)
+            GL11.glClearDepth(depth)
             //#else
-            GlStateManager._clearDepth(depth)
+            //$$ GlStateManager._clearDepth(depth)
             //#endif
         }
 
@@ -160,9 +160,9 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClearStencil(stencil: Int) {
             //#if MC >= 1.21.5 || MC <= 1.12.2
-            //$$ GL11.glClearStencil(stencil)
+            GL11.glClearStencil(stencil)
             //#else
-            GlStateManager._clearStencil(stencil)
+            //$$ GlStateManager._clearStencil(stencil)
             //#endif
         }
 

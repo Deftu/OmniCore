@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.shaders
 
-import net.minecraft.client.render.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 
 /**
  * Adapted from EssentialGG UniversalCraft under LGPL-3.0 - https://github.com/EssentialGG/UniversalCraft/blob/91ec8f826e7f065f8a70460ab00e6f8f30ad9e6a/src/main/kotlin/gg/essential/universal/shader/ShaderTransformer.kt
@@ -79,7 +79,7 @@ internal class ShaderProcessor(
             //#if MC >= 1.17.1
             if (vertexFormat != null) {
                 newAttributes.sortedBy { (name, type) ->
-                    vertexFormat.attributeNames.indexOf(name.removePrefix("oc_"))
+                    vertexFormat.elementAttributeNames.indexOf(name.removePrefix("oc_"))
                 }.forEach { (name, type) ->
                     attributes.add(name)
                     transformed.add(type)
@@ -99,41 +99,41 @@ internal class ShaderProcessor(
         }
 
         //#if MC >= 1.21.6
-        //$$ transformed.add("""
-        //$$     layout(std140) uniform Projection {
-        //$$         mat4 ProjMat;
-        //$$     };
-        //$$
-        //$$     layout(std140) uniform DynamicTransforms {
-        //$$         mat4 ModelViewMat;
-        //$$         vec4 ColorModulator;
-        //$$         vec3 ModelOffset;
-        //$$         mat4 TextureMat;
-        //$$         float LineWidth;
-        //$$     };
-        //$$ """.trimIndent())
-        //$$ uniforms["Projection"] = UniformType.Mat4
-        //$$ uniforms["DynamicTransforms"] = UniformType.Mat4
-        //$$ replacements["gl_ModelViewMatrix"] = "ModelViewMat"
-        //$$ replacements["gl_ProjectionMatrix"] = "ProjMat"
-        //#else
-        fun replaceUniform(
-            needle: String,
-            type: UniformType,
-            replacementName: String,
-            replacement: String = replacementName
-        ) {
-            if (needle in source) {
-                replacements[needle] = replacement
-                if (replacementName !in uniforms) {
-                    uniforms[replacementName] = type
-                    transformed.add("uniform ${type.glslName} $replacementName;")
-                }
-            }
-        }
+        transformed.add("""
+            layout(std140) uniform Projection {
+                mat4 ProjMat;
+            };
 
-        replaceUniform("gl_ModelViewMatrix", UniformType.Mat4, "ModelViewMat")
-        replaceUniform("gl_ProjectionMatrix", UniformType.Mat4, "ProjMat")
+            layout(std140) uniform DynamicTransforms {
+                mat4 ModelViewMat;
+                vec4 ColorModulator;
+                vec3 ModelOffset;
+                mat4 TextureMat;
+                float LineWidth;
+            };
+        """.trimIndent())
+        uniforms["Projection"] = UniformType.Mat4
+        uniforms["DynamicTransforms"] = UniformType.Mat4
+        replacements["gl_ModelViewMatrix"] = "ModelViewMat"
+        replacements["gl_ProjectionMatrix"] = "ProjMat"
+        //#else
+        //$$ fun replaceUniform(
+        //$$     needle: String,
+        //$$     type: UniformType,
+        //$$     replacementName: String,
+        //$$     replacement: String = replacementName
+        //$$ ) {
+        //$$     if (needle in source) {
+        //$$         replacements[needle] = replacement
+        //$$         if (replacementName !in uniforms) {
+        //$$             uniforms[replacementName] = type
+        //$$             transformed.add("uniform ${type.glslName} $replacementName;")
+        //$$         }
+        //$$     }
+        //$$ }
+        //$$
+        //$$ replaceUniform("gl_ModelViewMatrix", UniformType.Mat4, "ModelViewMat")
+        //$$ replaceUniform("gl_ProjectionMatrix", UniformType.Mat4, "ProjMat")
         //#endif
 
         for (line in source.lines()) {
@@ -149,10 +149,10 @@ internal class ShaderProcessor(
                         uniforms[name] = UniformType.fromGlsl(typeName)
 
                         //#if MC >= 1.21.6
-                        //$$ replacements[name] = "oc_$name"
-                        //$$ "layout(std140) uniform $name { typeName oc_$name; };"
+                        replacements[name] = "oc_$name"
+                        "layout(std140) uniform $name { typeName oc_$name; };"
                         //#else
-                        line
+                        //$$ line
                         //#endif
                     }
                 }
@@ -181,23 +181,23 @@ internal enum class UniformType(
     Mat4("matrix4x4", "mat4", intArrayOf(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
 
     //#if MC >= 1.21.5
-    //$$ public val vanilla: com.mojang.blaze3d.shaders.UniformType
-    //$$     get() {
+    public val vanilla: net.minecraft.client.gl.UniformType
+        get() {
     //#if MC >= 1.21.6
-    //$$         return net.minecraft.client.gl.UniformType.UNIFORM_BUFFER
+            return net.minecraft.client.gl.UniformType.UNIFORM_BUFFER
     //#else
     //$$         return when (this) {
-    //$$             Int1 -> com.mojang.blaze3d.shaders.UniformType.INT
-    //$$             Float1 -> com.mojang.blaze3d.shaders.UniformType.FLOAT
-    //$$             Float2 -> com.mojang.blaze3d.shaders.UniformType.VEC2
-    //$$             Float3 -> com.mojang.blaze3d.shaders.UniformType.VEC3
-    //$$             Float4 -> com.mojang.blaze3d.shaders.UniformType.VEC4
+    //$$             Int1 -> net.minecraft.client.gl.UniformType.INT
+    //$$             Float1 -> net.minecraft.client.gl.UniformType.FLOAT
+    //$$             Float2 -> net.minecraft.client.gl.UniformType.VEC2
+    //$$             Float3 -> net.minecraft.client.gl.UniformType.VEC3
+    //$$             Float4 -> net.minecraft.client.gl.UniformType.VEC4
     //$$             Mat2 -> throw IllegalStateException("Mat2 is not supported in Minecraft 1.21.5+")
     //$$             Mat3 -> throw IllegalStateException("Mat3 is not supported in Minecraft 1.21.5+")
-    //$$             Mat4 -> com.mojang.blaze3d.shaders.UniformType.MATRIX4X4
+    //$$             Mat4 -> net.minecraft.client.gl.UniformType.MATRIX4X4
     //$$         }
     //#endif
-    //$$     }
+        }
     //#endif
 
     companion object {

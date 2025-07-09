@@ -2,7 +2,7 @@ package dev.deftu.omnicore.client.render.pipeline
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-import net.minecraft.client.render.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 
 @GameSide(Side.CLIENT)
 public enum class VertexFormats(

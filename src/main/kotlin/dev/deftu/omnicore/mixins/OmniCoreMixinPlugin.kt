@@ -45,8 +45,8 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         }
 
         //#if MC >= 1.20.6
-        //$$ result.add("common.Mixin_CustomPayload_CaptureCodecBuffer")
-        //$$ result.add("common.Mixin_CustomPayload_BypassOmniPackets")
+        result.add("common.Mixin_CustomPayload_CaptureCodecBuffer")
+        result.add("common.Mixin_CustomPayload_BypassOmniPackets")
         //#endif
 
         //#if MC == 1.20.4
@@ -55,7 +55,7 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         //#endif
 
         //#if MC >= 1.20.4
-        //$$ result.add("common.Mixin_UnknownCustomPayload_CapturePayloadData")
+        result.add("common.Mixin_UnknownCustomPayload_CapturePayloadData")
         //#endif
 
         //#if FABRIC || MC >= 1.16.5
@@ -64,7 +64,7 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         //#endif
 
         //#if MC >= 1.20.6
-        //$$ result.add("server.Mixin_ServerPlayNetworkHandler_CaptureOverridenCustomPayloads")
+        result.add("server.Mixin_ServerPlayNetworkHandler_CaptureOverridenCustomPayloads")
         //#endif
 
         result.add("server.Mixin_ServerPlayNetworkHandler_CaptureCustomPayloads")

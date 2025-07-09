@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client
 
-import net.minecraft.client.gui.screen.ConnectScreen
+import net.minecraft.client.gui.screen.multiplayer.ConnectScreen
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen
 import net.minecraft.client.network.ServerAddress
 import net.minecraft.client.network.ServerInfo
@@ -17,9 +17,9 @@ public object OmniClientMultiplayer {
     public val serverBrand: String?
         get() {
             //#if MC >= 1.20.4
-            //$$ return OmniClient.networkHandler?.serverBrand()
+            return OmniClient.networkHandler?.brand
             //#else
-            return OmniClientPlayer.getInstance()?.serverBrand
+            //$$ return OmniClientPlayer.getInstance()?.serverBrand
             //#endif
         }
 
@@ -89,9 +89,9 @@ public object OmniClientMultiplayer {
     public val isMultiplayerBanned: Boolean
         get() {
             //#if MC >= 1.20.4
-            //$$ return OmniClient.getInstance().multiplayerBan() != null
+            return OmniClient.getInstance().multiplayerBanDetails != null
             //#elseif MC >= 1.19.2
-            return OmniClient.getInstance().isMultiplayerBanned
+            //$$ return OmniClient.getInstance().shouldShowBanNotice()
             //#else
             //$$ return false // TODO - Find a way to fetch this value in earlier versions
             //#endif
@@ -124,9 +124,9 @@ public object OmniClientMultiplayer {
             name,
             hostname,
             //#if MC >= 1.20.4
-            //$$ if (isLocal) ServerData.Type.LAN else ServerData.Type.OTHER,
+            if (isLocal) ServerInfo.ServerType.LAN else ServerInfo.ServerType.OTHER,
             //#else
-            isLocal,
+            //$$ isLocal,
             //#endif
         )
 
@@ -141,7 +141,7 @@ public object OmniClientMultiplayer {
             false,
             //#endif
             //#if MC >= 1.20.6
-            //$$ null,
+            null,
             //#endif
         )
         //#else

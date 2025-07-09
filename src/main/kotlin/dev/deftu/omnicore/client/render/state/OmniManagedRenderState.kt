@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.render.state
 
-import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 import org.lwjgl.opengl.GL11
 
 //#if MC <= 1.16.5

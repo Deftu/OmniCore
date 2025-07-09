@@ -5,7 +5,7 @@ import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.platform.SourceFactor
+import com.mojang.blaze3d.platform.SourceFactor
 //#endif
 
 @GameSide(Side.CLIENT)
@@ -31,26 +31,26 @@ public enum class SrcFactor(
     ZERO("0", GL11.GL_ZERO);
 
     //#if MC >= 1.21.5
-    //$$ public val vanilla: SourceFactor
-    //$$     get() {
-    //$$         return when (this) {
-    //$$             CONSTANT_ALPHA -> SourceFactor.CONSTANT_ALPHA
-    //$$             CONSTANT_COLOR -> SourceFactor.CONSTANT_COLOR
-    //$$             DST_ALPHA -> SourceFactor.DST_ALPHA
-    //$$             DST_COLOR -> SourceFactor.DST_COLOR
-    //$$             ONE -> SourceFactor.ONE
-    //$$             ONE_MINUS_CONSTANT_ALPHA -> SourceFactor.ONE_MINUS_CONSTANT_ALPHA
-    //$$             ONE_MINUS_CONSTANT_COLOR -> SourceFactor.ONE_MINUS_CONSTANT_COLOR
-    //$$             ONE_MINUS_DST_ALPHA -> SourceFactor.ONE_MINUS_DST_ALPHA
-    //$$             ONE_MINUS_DST_COLOR -> SourceFactor.ONE_MINUS_DST_COLOR
-    //$$             ONE_MINUS_SRC_ALPHA -> SourceFactor.ONE_MINUS_SRC_ALPHA
-    //$$             ONE_MINUS_SRC_COLOR -> SourceFactor.ONE_MINUS_SRC_COLOR
-    //$$             SRC_ALPHA -> SourceFactor.SRC_ALPHA
-    //$$             SRC_ALPHA_SATURATE -> SourceFactor.SRC_ALPHA_SATURATE
-    //$$             SRC_COLOR -> SourceFactor.SRC_COLOR
-    //$$             ZERO -> SourceFactor.ZERO
-    //$$         }
-    //$$     }
+    public val vanilla: SourceFactor
+        get() {
+            return when (this) {
+                CONSTANT_ALPHA -> SourceFactor.CONSTANT_ALPHA
+                CONSTANT_COLOR -> SourceFactor.CONSTANT_COLOR
+                DST_ALPHA -> SourceFactor.DST_ALPHA
+                DST_COLOR -> SourceFactor.DST_COLOR
+                ONE -> SourceFactor.ONE
+                ONE_MINUS_CONSTANT_ALPHA -> SourceFactor.ONE_MINUS_CONSTANT_ALPHA
+                ONE_MINUS_CONSTANT_COLOR -> SourceFactor.ONE_MINUS_CONSTANT_COLOR
+                ONE_MINUS_DST_ALPHA -> SourceFactor.ONE_MINUS_DST_ALPHA
+                ONE_MINUS_DST_COLOR -> SourceFactor.ONE_MINUS_DST_COLOR
+                ONE_MINUS_SRC_ALPHA -> SourceFactor.ONE_MINUS_SRC_ALPHA
+                ONE_MINUS_SRC_COLOR -> SourceFactor.ONE_MINUS_SRC_COLOR
+                SRC_ALPHA -> SourceFactor.SRC_ALPHA
+                SRC_ALPHA_SATURATE -> SourceFactor.SRC_ALPHA_SATURATE
+                SRC_COLOR -> SourceFactor.SRC_COLOR
+                ZERO -> SourceFactor.ZERO
+            }
+        }
     //#endif
 
     public companion object {

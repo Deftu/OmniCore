@@ -1,7 +1,4 @@
-com.mojang.blaze3d.vertex.BufferBuilder com.mojang.blaze3d.vertex.VertexConsumer
-com.mojang.blaze3d.vertex.BufferBuilder addVertex() vertex()
-com.mojang.blaze3d.vertex.BufferBuilder setNormal() normal()
-com.mojang.blaze3d.vertex.BufferBuilder setColor() color()
-com.mojang.blaze3d.vertex.BufferBuilder setUv() uv()
+com.mojang.blaze3d.vertex.VertexFormatElement usage() getUsage()
+com.mojang.blaze3d.vertex.VertexFormatElement index() getIndex()
+
 com.mojang.blaze3d.vertex.BufferBuilder setUv1() overlayCoords()
-com.mojang.blaze3d.vertex.BufferBuilder setUv2() uv2()

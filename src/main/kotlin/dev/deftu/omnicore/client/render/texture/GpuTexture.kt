@@ -13,14 +13,14 @@ public interface GpuTexture : AutoCloseable {
         public companion object {
 
             //#if MC >= 1.21.5
-            //$$ @JvmStatic
-            //$$ public fun from(format: com.mojang.blaze3d.textures.TextureFormat): TextureFormat {
-            //$$     return when (format) {
-            //$$         com.mojang.blaze3d.textures.TextureFormat.RGBA8 -> RGBA8
-            //$$         com.mojang.blaze3d.textures.TextureFormat.DEPTH32 -> DEPTH32
-            //$$         else -> throw IllegalArgumentException("Invalid texture format: $format")
-            //$$     }
-            //$$ }
+            @JvmStatic
+            public fun from(format: com.mojang.blaze3d.textures.TextureFormat): TextureFormat {
+                return when (format) {
+                    com.mojang.blaze3d.textures.TextureFormat.RGBA8 -> RGBA8
+                    com.mojang.blaze3d.textures.TextureFormat.DEPTH32 -> DEPTH32
+                    else -> throw IllegalArgumentException("Invalid texture format: $format")
+                }
+            }
             //#endif
 
         }

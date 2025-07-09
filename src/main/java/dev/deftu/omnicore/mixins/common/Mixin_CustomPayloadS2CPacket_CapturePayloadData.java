@@ -2,29 +2,29 @@ package dev.deftu.omnicore.mixins.common;
 
 //#if MC == 1.20.4
 //$$ import dev.deftu.omnicore.common.OmniCustomPayloadDataHolder;
-//$$ import net.minecraft.network.FriendlyByteBuf;
-//$$ import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
-//$$ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-//$$ import net.minecraft.network.protocol.common.custom.DiscardedPayload;
-//$$ import net.minecraft.resources.ResourceLocation;
+//$$ import net.minecraft.network.PacketByteBuf;
+//$$ import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
+//$$ import net.minecraft.network.packet.CustomPayload;
+//$$ import net.minecraft.network.packet.UnknownCustomPayload;
+//$$ import net.minecraft.util.Identifier;
 //$$ import org.spongepowered.asm.mixin.Mixin;
 //$$ import org.spongepowered.asm.mixin.Shadow;
 //$$ import org.spongepowered.asm.mixin.injection.At;
 //$$ import org.spongepowered.asm.mixin.injection.Redirect;
 //$$
-//$$ @Mixin(ClientboundCustomPayloadPacket.class)
+//$$ @Mixin(CustomPayloadS2CPacket.class)
 //$$ public abstract class Mixin_CustomPayloadS2CPacket_CapturePayloadData {
 //$$
 //$$     @Shadow
-//$$     private static DiscardedPayload readUnknownPayload(ResourceLocation arg, FriendlyByteBuf arg2) {
+//$$     private static UnknownCustomPayload readUnknownPayload(Identifier arg, PacketByteBuf arg2) {
 //$$         return null;
 //$$     }
 //$$
-//$$     @Redirect(method = "readPayload*", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/common/ClientboundCustomPayloadPacket;readUnknownPayload(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/network/protocol/common/custom/DiscardedPayload;"))
-//$$     private static DiscardedPayload omnicore$capturePayloadData(ResourceLocation channel, FriendlyByteBuf buf) {
+//$$     @Redirect(method = "readPayload*", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;readUnknownPayload(Lnet/minecraft/util/Identifier;Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/UnknownCustomPayload;"))
+//$$     private static UnknownCustomPayload omnicore$capturePayloadData(Identifier channel, PacketByteBuf buf) {
 //$$         try {
-//$$             FriendlyByteBuf copiedBuffer = new FriendlyByteBuf(buf.copy());
-//$$             CustomPacketPayload packet = readUnknownPayload(channel, buf);
+//$$             PacketByteBuf copiedBuffer = new PacketByteBuf(buf.copy());
+//$$             CustomPayload packet = readUnknownPayload(channel, buf);
 //$$             if (packet instanceof OmniCustomPayloadDataHolder) {
 //$$                 ((OmniCustomPayloadDataHolder) packet).omnicore$setData(copiedBuffer);
 //$$             } else {
@@ -32,7 +32,7 @@ package dev.deftu.omnicore.mixins.common;
 //$$                 copiedBuffer.release();
 //$$             }
 //$$
-//$$             return (DiscardedPayload) packet;
+//$$             return (UnknownCustomPayload) packet;
 //$$         } catch (Throwable t) {
 //$$             t.printStackTrace();
 //$$             return null;

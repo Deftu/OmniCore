@@ -6,8 +6,8 @@ import dev.deftu.omnicore.annotations.VersionedAbove
 import dev.deftu.omnicore.annotations.VersionedBelow
 
 //#if MC >= 1.21.5
-//$$ import net.minecraft.world.entity.animal.wolf.WolfSoundVariant
-//$$ import net.minecraft.world.entity.animal.wolf.WolfSoundVariants
+import net.minecraft.entity.passive.WolfSoundVariant
+import net.minecraft.entity.passive.WolfSoundVariants
 //#endif
 
 //#if MC >= 1.12.2
@@ -19,9 +19,9 @@ import net.minecraft.sound.SoundEvents
 public object OmniSounds {
 
     //#if MC >= 1.21.5
-    //$$ private val classicWolfSounds: WolfSoundVariant by lazy {
-    //$$     SoundEvents.WOLF_SOUNDS[WolfSoundVariants.SoundSet.CLASSIC]!!
-    //$$ }
+    private val classicWolfSounds: WolfSoundVariant by lazy {
+        SoundEvents.WOLF_SOUNDS[WolfSoundVariants.Type.CLASSIC]!!
+    }
     //#endif
 
     @JvmField
@@ -82,7 +82,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_ITEM_BREAK
                 //#if MC >= 1.21.5
-                //$$ .value()
+                .comp_349()
                 //#endif
             //#else
             //$$ OmniIdentifier.create("random.break")
@@ -95,9 +95,9 @@ public object OmniSounds {
     public val WOLF_AMBIENT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            //$$ classicWolfSounds.ambientSound.value()
+            classicWolfSounds.comp_3779().comp_349()
             //#elseif MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_AMBIENT
+            //$$ SoundEvents.WOLF_AMBIENT
             //#else
             //$$ OmniIdentifier.create("entity.wolf.ambient")
             //#endif
@@ -109,9 +109,9 @@ public object OmniSounds {
     public val WOLF_DEATH: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            //$$ classicWolfSounds.deathSound.value()
+            classicWolfSounds.comp_3780().comp_349()
             //#elseif MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_DEATH
+            //$$ SoundEvents.WOLF_DEATH
             //#else
             //$$ OmniIdentifier.create("entity.wolf.death")
             //#endif
@@ -123,9 +123,9 @@ public object OmniSounds {
     public val WOLF_GROWL: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            //$$ classicWolfSounds.growlSound.value()
+            classicWolfSounds.comp_3781().comp_349()
             //#elseif MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_GROWL
+            //$$ SoundEvents.WOLF_GROWL
             //#else
             //$$ OmniIdentifier.create("entity.wolf.growl")
             //#endif
@@ -137,15 +137,15 @@ public object OmniSounds {
     @VersionedBelow("1.21.5")
     public val WOLF_HOWL: OmniSound = noInline {
         //#if MC >= 1.21.5
-        //$$ OmniSound.invalid()
+        OmniSound.invalid()
         //#else
-        OmniSound(
+        //$$ OmniSound(
             //#if MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_HOWL
+            //$$ SoundEvents.WOLF_HOWL
             //#else
             //$$ OmniIdentifier.create("entity.wolf.howl")
             //#endif
-        )
+        //$$ )
         //#endif
     }
 
@@ -154,9 +154,9 @@ public object OmniSounds {
     public val WOLF_HURT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            //$$ classicWolfSounds.hurtSound.value()
+            classicWolfSounds.comp_3782().comp_349()
             //#elseif MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_HURT
+            //$$ SoundEvents.WOLF_HURT
             //#else
             //$$ OmniIdentifier.create("entity.wolf.hurt")
             //#endif
@@ -168,9 +168,9 @@ public object OmniSounds {
     public val WOLF_PANT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            //$$ classicWolfSounds.pantSound.value()
+            classicWolfSounds.comp_3783().comp_349()
             //#elseif MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_PANT
+            //$$ SoundEvents.WOLF_PANT
             //#else
             //$$ OmniIdentifier.create("entity.wolf.pant")
             //#endif
@@ -206,9 +206,9 @@ public object OmniSounds {
     public val WOLF_WHINE: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            //$$ classicWolfSounds.whineSound.value()
+            classicWolfSounds.comp_3784().comp_349()
             //#elseif MC >= 1.12.2
-            SoundEvents.ENTITY_WOLF_WHINE
+            //$$ SoundEvents.WOLF_WHINE
             //#else
             //$$ OmniIdentifier.create("entity.wolf.whine")
             //#endif

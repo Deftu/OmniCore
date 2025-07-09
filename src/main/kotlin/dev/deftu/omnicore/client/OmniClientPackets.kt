@@ -6,7 +6,7 @@ import dev.deftu.omnicore.common.OmniPacketReceiverContext
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import net.minecraft.network.PacketByteBuf
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
 import java.util.concurrent.ConcurrentHashMap
@@ -15,7 +15,7 @@ import java.util.function.Consumer
 import java.util.function.Predicate
 
 //#if MC >= 1.20.4
-//$$ import dev.deftu.omnicore.common.OmniCustomPayloadImpl
+import dev.deftu.omnicore.common.OmniCustomPayloadImpl
 //#endif
 
 //#if FORGE && MC <= 1.12.2
@@ -57,9 +57,9 @@ public object OmniClientPackets {
             //#endif
             //#endif
             //#if MC >= 1.20.4
-            //$$ OmniCustomPayloadImpl(id, consumer).also { it.write(buf) }
+            OmniCustomPayloadImpl(id, consumer).also { it.write(buf) }
             //#else
-            PacketByteBuf(buf)
+            //$$ FriendlyByteBuf(buf)
             //#endif
         )
 

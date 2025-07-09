@@ -10,23 +10,23 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 //#if MC >= 1.21.6
-//$$ import com.mojang.blaze3d.textures.GpuTextureView
+import com.mojang.blaze3d.textures.GpuTextureView
 //#endif
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.opengl.GlTexture
-//$$ import com.mojang.blaze3d.systems.RenderSystem
-//$$ import com.mojang.blaze3d.textures.FilterMode
-//$$ import com.mojang.blaze3d.textures.GpuTexture
-//$$ import com.mojang.blaze3d.textures.TextureFormat
+import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.textures.FilterMode
+import com.mojang.blaze3d.textures.GpuTexture
+import com.mojang.blaze3d.textures.TextureFormat
 //#endif
 
 //#if MC <= 1.21.4
-import dev.deftu.omnicore.client.OmniClient
+//$$ import dev.deftu.omnicore.client.OmniClient
 //#endif
 
 //#if MC <= 1.21.3
-import net.minecraft.resource.ResourceManager
+//$$ import net.minecraft.resource.ResourceManager
 //#endif
 
 /**
@@ -56,44 +56,44 @@ public class ReleasedDynamicTexture(
     @GameSide(Side.CLIENT)
     public val currentGlId: Int
         //#if MC >= 1.21.5
-        //$$ get() {
-        //$$     upload()
-        //$$     return (resources.glTexture as GlTexture?)?.glId() ?: -1
-        //$$ }
+        get() {
+            upload()
+            return (resources.glTexture as GlTexture?)?.glId ?: -1
+        }
         //#else
-        get() = getGlId()
+        //$$ get() = getId()
         //#endif
 
     //#if MC <= 1.21.3
-    override fun load(resourceManager: ResourceManager?) {
-    }
+    //$$ override fun load(resourceManager: ResourceManager?) {
+    //$$ }
     //#endif
 
     @GameSide(Side.CLIENT)
     public fun upload() {
         if (!isUploaded) {
             //#if MC >= 1.21.5
-            //$$ val data = this.data ?: return
-            //$$ val renderDevice = RenderSystem.getDevice()
+            val data = this.data ?: return
+            val renderDevice = RenderSystem.getDevice()
             //#if MC >= 1.21.6
-            //$$ val usage = GpuTexture.USAGE_TEXTURE_BINDING or GpuTexture.USAGE_COPY_SRC or GpuTexture.USAGE_COPY_DST
-            //$$ val glTexture = renderDevice.createTexture(null as String?, usage, TextureFormat.RGBA8, width, height, 1, 1)
+            val usage = GpuTexture.USAGE_TEXTURE_BINDING or GpuTexture.USAGE_COPY_SRC or GpuTexture.USAGE_COPY_DST
+            val glTexture = renderDevice.createTexture(null as String?, usage, TextureFormat.RGBA8, width, height, 1, 1)
             //#else
             //$$ val glTexture = renderDevice.createTexture(null as String?, TextureFormat.RGBA8, width, height, 1)
             //#endif
-            //$$ glTexture.setTextureFilter(FilterMode.NEAREST, true)
-            //$$ renderDevice.createCommandEncoder().writeToTexture(glTexture, data.native)
-            //$$ this.resources.glTexture = glTexture
-            //$$ this.texture = glTexture
+            glTexture.setTextureFilter(FilterMode.NEAREST, true)
+            renderDevice.createCommandEncoder().writeToTexture(glTexture, data.native)
+            this.resources.glTexture = glTexture
+            this.glTexture = glTexture
             //#if MC >= 1.21.6
-            //$$ val view = renderDevice.createTextureView(glTexture)
-            //$$ this.glTextureView = view
-            //$$ resources.glTextureView = view
+            val view = renderDevice.createTextureView(glTexture)
+            this.glTextureView = view
+            resources.glTextureView = view
             //#endif
             //#else
-            this.data?.prepareTexture(allocGlId())
-            this.data?.uploadTexture(allocGlId())
-            this.resources.glId = allocGlId()
+            //$$ this.data?.prepareTexture(allocGlId())
+            //$$ this.data?.uploadTexture(allocGlId())
+            //$$ this.resources.glId = allocGlId()
             //#endif
 
             this.data = null
@@ -104,57 +104,57 @@ public class ReleasedDynamicTexture(
 
     //#if MC >= 1.21.5
     //#if MC >= 1.21.6
-    //$$ override fun getGlTextureView(): GpuTextureView {
-    //$$     upload()
-    //$$     return super.getGlTextureView()
-    //$$ }
-    //$$
-    //$$ override fun setUseMipmaps(mipmaps: Boolean) {
-    //$$     upload()
-    //$$     super.setUseMipmaps(mipmaps)
-    //$$ }
-    //#endif
-    //$$
-    //$$ override fun setClamp(clamp: Boolean) {
-    //$$     upload()
-    //$$     super.setClamp(clamp)
-    //$$ }
-    //$$
-    //$$ override fun setFilter(bilinear: Boolean, mipmap: Boolean) {
-    //$$     upload()
-    //$$     super.setFilter(bilinear, mipmap)
-    //$$ }
-    //$$
-    //$$ override fun getTexture(): GpuTexture {
-    //$$     upload()
-    //$$     return super.getTexture()
-    //$$ }
-    //$$
-    //$$ override fun close() {
-    //$$     super.close()
-    //$$     resources.close()
-    //$$ }
-    //#elseif MC <= 1.21.4
-    private fun allocGlId() = super.getGlId()
-
-    @GameSide(Side.CLIENT)
-    override fun getGlId(): Int {
+    override fun getGlTextureView(): GpuTextureView {
         upload()
-        return super.getGlId()
+        return super.getGlTextureView()
     }
 
-    @GameSide(Side.CLIENT)
-    override fun clearGlId() {
-        super.clearGlId()
-        resources.glId = -1
+    override fun setUseMipmaps(mipmaps: Boolean) {
+        upload()
+        super.setUseMipmaps(mipmaps)
+    }
+    //#endif
+
+    override fun setClamp(clamp: Boolean) {
+        upload()
+        super.setClamp(clamp)
     }
 
-    //#if MC >= 1.16.5
+    override fun setFilter(bilinear: Boolean, mipmap: Boolean) {
+        upload()
+        super.setFilter(bilinear, mipmap)
+    }
+
+    override fun getGlTexture(): GpuTexture {
+        upload()
+        return super.getGlTexture()
+    }
+
     override fun close() {
         super.close()
-        clearGlId()
         resources.close()
     }
+    //#elseif MC <= 1.21.4
+    //$$ private fun allocGlId() = super.getId()
+    //$$
+    //$$ @GameSide(Side.CLIENT)
+    //$$ override fun getId(): Int {
+    //$$     upload()
+    //$$     return super.getId()
+    //$$ }
+    //$$
+    //$$ @GameSide(Side.CLIENT)
+    //$$ override fun releaseId() {
+    //$$     super.releaseId()
+    //$$     resources.glId = -1
+    //$$ }
+    //$$
+    //#if MC >= 1.16.5
+    //$$ override fun close() {
+    //$$     super.close()
+    //$$     releaseId()
+    //$$     resources.close()
+    //$$ }
     //#endif
     //#endif
 
@@ -163,21 +163,21 @@ public class ReleasedDynamicTexture(
     ) : PhantomReference<ReleasedDynamicTexture>(referent, referenceQueue), Closeable {
 
         //#if MC >= 1.21.5
-        //$$ var glTexture: GpuTexture? = null
-        //$$     set(value) {
-        //$$         field?.close()
-        //$$         field = value
-        //$$     }
-        //$$
+        var glTexture: GpuTexture? = null
+            set(value) {
+                field?.close()
+                field = value
+            }
+
         //#if MC >= 1.21.6
-        //$$ var glTextureView: GpuTextureView? = null
-        //$$     set(value) {
-        //$$         field?.close()
-        //$$         field = value
-        //$$     }
+        var glTextureView: GpuTextureView? = null
+            set(value) {
+                field?.close()
+                field = value
+            }
         //#endif
         //#else
-        var glId: Int = -1
+        //$$ var glId: Int = -1
         //#endif
 
         var data: OmniImage? = null
@@ -194,19 +194,19 @@ public class ReleasedDynamicTexture(
             toBeCleanedUp.remove(this)
 
             //#if MC >= 1.21.5
-            //$$ glTexture = null
+            glTexture = null
             //#if MC >= 1.21.6
-            //$$ glTextureView = null
+            glTextureView = null
             //#endif
             //#else
-            if (glId != -1) {
-                OmniClient.textureManager.deleteTexture(glId)
-                glId = -1
-            }
+            //$$ if (glId != -1) {
+            //$$     OmniClient.textureManager.deleteTexture(glId)
+            //$$     glId = -1
+            //$$ }
             //#endif
 
             //#if MC <= 1.21.4
-            data = null
+            //$$ data = null
             //#endif
         }
 

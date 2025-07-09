@@ -51,7 +51,7 @@ public object OmniCore {
     public val minecraftVersion: String
         get() =
             //#if MC >= 1.16.5
-            SharedConstants.getGameVersion().name
+            SharedConstants.getGameVersion().comp_4025()
             //#else
             //#if FORGE
             //$$ ForgeVersion.mcVersion

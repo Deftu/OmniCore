@@ -54,11 +54,11 @@ public object OmniCommonEventPassthrough {
         //#else
         //$$ NeoForge
         //#endif
-        //$$     .EVENT_BUS.addListener<net.minecraftforge.event.TickEvent.ServerTickEvent> { event ->
+        //$$     .EVENT_BUS.addListener<net.neoforged.neoforge.event.TickEvent.ServerTickEvent> { event ->
         //$$         val server = OmniServer.getInstance() ?: return@addListener
         //$$         when (event.phase) {
-        //$$             net.minecraftforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(TickEvent.Server.Pre(server))
-        //$$             net.minecraftforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Server.Post(server))
+        //$$             net.neoforged.neoforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(TickEvent.Server.Pre(server))
+        //$$             net.neoforged.neoforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Server.Post(server))
         //$$         }
         //$$     }
         //#else

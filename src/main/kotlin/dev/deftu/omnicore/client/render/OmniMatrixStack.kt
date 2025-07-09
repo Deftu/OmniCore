@@ -9,7 +9,7 @@ import org.joml.Matrix4f
 import org.joml.Matrix3f
 
 //#if MC >= 1.21.6
-//$$ import org.joml.Matrix3x2f
+import org.joml.Matrix3x2f
 //#endif
 
 //#if MC >= 1.20.1
@@ -207,16 +207,16 @@ public class OmniMatrixStack private constructor(
     public constructor(stack: MatrixStack) : this(stack.peek())
 
     //#if MC >= 1.21.6
-    //$$ public constructor(stack: Matrix3x2f) : this() {
-    //$$     with(peek().matrix) {
-    //$$         m00(stack.m00)
-    //$$         m01(stack.m01)
-    //$$         m10(stack.m10)
-    //$$         m11(stack.m11)
-    //$$         m30(stack.m20)
-    //$$         m31(stack.m21)
-    //$$     }
-    //$$ }
+    public constructor(stack: Matrix3x2f) : this() {
+        with(peek().matrix) {
+            m00(stack.m00)
+            m01(stack.m01)
+            m10(stack.m10)
+            m11(stack.m11)
+            m30(stack.m20)
+            m31(stack.m21)
+        }
+    }
     //#endif
 
     /**
@@ -231,16 +231,16 @@ public class OmniMatrixStack private constructor(
     }
 
     //#if MC >= 1.21.6
-    //$$ public fun to3x2fJoml(dest: Matrix3x2f = Matrix3x2f()): Matrix3x2f {
-    //$$     return dest.apply {
-    //$$         val ours = peek().matrix
-    //$$         set(
-    //$$             ours.m00(), ours.m01(),
-    //$$             ours.m10(), ours.m11(),
-    //$$             ours.m30(), ours.m31()
-    //$$         )
-    //$$     }
-    //$$ }
+    public fun to3x2fJoml(dest: Matrix3x2f = Matrix3x2f()): Matrix3x2f {
+        return dest.apply {
+            val ours = peek().matrix
+            set(
+                ours.m00(), ours.m01(),
+                ours.m10(), ours.m11(),
+                ours.m30(), ours.m31()
+            )
+        }
+    }
     //#endif
     //#endif
 
@@ -511,14 +511,14 @@ public class OmniMatrixStack private constructor(
     public fun applyToGlobalState() {
         //#if MC >= 1.17
         //#if MC >= 1.20.5
-        //$$ RenderSystem.getModelViewStack().mul(stack.last.matrix)
+        RenderSystem.getModelViewStack().mul(stack.last.matrix)
         //#elseif MC >= 1.17.1
-        RenderSystem.getModelViewStack().multiplyPositionMatrix(stack.last.matrix)
+        //$$ RenderSystem.getModelViewStack().multiplyPositionMatrix(stack.last.matrix)
         //#else
         //$$ RenderSystem.getModelViewStack().method_34425(stack.last.matrix)
         //#endif
         //#if MC <= 1.21.1
-        RenderSystem.applyModelViewMatrix()
+        //$$ RenderSystem.applyModelViewMatrix()
         //#endif
         //#else
         //#if MC < 1.16
@@ -549,9 +549,9 @@ public class OmniMatrixStack private constructor(
     @GameSide(Side.CLIENT)
     public fun replaceGlobalState() {
         //#if MC >= 1.20.5
-        //$$ RenderSystem.getModelViewStack().identity()
+        RenderSystem.getModelViewStack().identity()
         //#elseif MC >= 1.17
-        RenderSystem.getModelViewStack().loadIdentity()
+        //$$ RenderSystem.getModelViewStack().loadIdentity()
         //#else
         //$$ GL11.glLoadIdentity()
         //#endif
@@ -562,9 +562,9 @@ public class OmniMatrixStack private constructor(
         //#if MC >= 1.17
         val stack = RenderSystem.getModelViewStack()
         //#if MC >= 1.20.5
-        //$$ stack.pushMatrix()
+        stack.pushMatrix()
         //#else
-        stack.push()
+        //$$ stack.push()
         //#endif
         //#else
         //$$ GlStateManager.pushMatrix()
@@ -572,12 +572,12 @@ public class OmniMatrixStack private constructor(
         return block().also {
             //#if MC >= 1.17
             //#if MC >= 1.20.5
-            //$$ stack.popMatrix()
+            stack.popMatrix()
             //#else
-            stack.pop()
+            //$$ stack.pop()
             //#endif
             //#if MC <= 1.21.1
-            RenderSystem.applyModelViewMatrix()
+            //$$ RenderSystem.applyModelViewMatrix()
             //#endif
             //#else
             //$$ GlStateManager.popMatrix()
