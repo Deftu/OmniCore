@@ -7,7 +7,7 @@ import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.17.1
-import net.minecraft.client.render.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 //#endif
 
 //#if MC >= 1.16.5

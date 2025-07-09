@@ -5,7 +5,7 @@ import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.platform.DestFactor
+import com.mojang.blaze3d.platform.DestFactor
 //#endif
 
 @GameSide(Side.CLIENT)
@@ -31,26 +31,26 @@ public enum class DstFactor(
     ZERO("0", GL11.GL_ZERO);
 
     //#if MC >= 1.21.5
-    //$$ public val vanilla: DestFactor
-    //$$     get() {
-    //$$         return when (this) {
-    //$$             CONSTANT_ALPHA -> DestFactor.CONSTANT_ALPHA
-    //$$             CONSTANT_COLOR -> DestFactor.CONSTANT_COLOR
-    //$$             DST_ALPHA -> DestFactor.DST_ALPHA
-    //$$             DST_COLOR -> DestFactor.DST_COLOR
-    //$$             ONE -> DestFactor.ONE
-    //$$             ONE_MINUS_CONSTANT_ALPHA -> DestFactor.ONE_MINUS_CONSTANT_ALPHA
-    //$$             ONE_MINUS_CONSTANT_COLOR -> DestFactor.ONE_MINUS_CONSTANT_COLOR
-    //$$             ONE_MINUS_DST_ALPHA -> DestFactor.ONE_MINUS_DST_ALPHA
-    //$$             ONE_MINUS_DST_COLOR -> DestFactor.ONE_MINUS_DST_COLOR
-    //$$             ONE_MINUS_SRC_ALPHA -> DestFactor.ONE_MINUS_SRC_ALPHA
-    //$$             ONE_MINUS_SRC_COLOR -> DestFactor.ONE_MINUS_SRC_COLOR
-    //$$             SRC_ALPHA -> DestFactor.SRC_ALPHA
-    //$$             SRC_COLOR -> DestFactor.SRC_COLOR
-    //$$             ZERO -> DestFactor.ZERO
-    //$$             else -> throw IllegalStateException("Unknown DstFactor: $this")
-    //$$         }
-    //$$     }
+    public val vanilla: DestFactor
+        get() {
+            return when (this) {
+                CONSTANT_ALPHA -> DestFactor.CONSTANT_ALPHA
+                CONSTANT_COLOR -> DestFactor.CONSTANT_COLOR
+                DST_ALPHA -> DestFactor.DST_ALPHA
+                DST_COLOR -> DestFactor.DST_COLOR
+                ONE -> DestFactor.ONE
+                ONE_MINUS_CONSTANT_ALPHA -> DestFactor.ONE_MINUS_CONSTANT_ALPHA
+                ONE_MINUS_CONSTANT_COLOR -> DestFactor.ONE_MINUS_CONSTANT_COLOR
+                ONE_MINUS_DST_ALPHA -> DestFactor.ONE_MINUS_DST_ALPHA
+                ONE_MINUS_DST_COLOR -> DestFactor.ONE_MINUS_DST_COLOR
+                ONE_MINUS_SRC_ALPHA -> DestFactor.ONE_MINUS_SRC_ALPHA
+                ONE_MINUS_SRC_COLOR -> DestFactor.ONE_MINUS_SRC_COLOR
+                SRC_ALPHA -> DestFactor.SRC_ALPHA
+                SRC_COLOR -> DestFactor.SRC_COLOR
+                ZERO -> DestFactor.ZERO
+                else -> throw IllegalStateException("Unknown DstFactor: $this")
+            }
+        }
     //#endif
 
     public companion object {

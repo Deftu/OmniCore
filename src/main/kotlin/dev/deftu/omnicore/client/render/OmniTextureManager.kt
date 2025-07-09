@@ -2,7 +2,7 @@
 
 package dev.deftu.omnicore.client.render
 
-import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 import com.mojang.blaze3d.platform.TextureUtil
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
@@ -19,12 +19,12 @@ import java.io.InputStream
 import javax.imageio.ImageIO
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.opengl.GlTexture
-//$$ import com.mojang.blaze3d.systems.RenderSystem
+import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.textures.TextureFormat
 //#endif
 
 //#if MC >= 1.21.4
-//$$ import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.common.OmniIdentifier
 //#endif
 
 //#if MC <= 1.16.5
@@ -32,6 +32,7 @@ import javax.imageio.ImageIO
 //#endif
 
 //#if MC >= 1.16.5
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.texture.NativeImage
 //#if FORGE
 //$$ import net.minecraft.client.renderer.texture.*
@@ -49,6 +50,7 @@ import net.minecraft.client.texture.NativeImage
 public class OmniTextureManager private constructor(
     private val textureManager: TextureManager
 ) {
+
     public companion object {
 
         @JvmStatic
@@ -82,9 +84,9 @@ public class OmniTextureManager private constructor(
         @GameSide(Side.CLIENT)
         public fun generateTexture(): Int {
             //#if MC >= 1.21.5
-            //$$ return GL11.glGenTextures()
+            return GL11.glGenTextures()
             //#elseif MC >= 1.17
-            return TextureUtil.generateTextureId()
+            //$$ return TextureUtil.generateTextureId()
             //#elseif MC >= 1.16.5
             //$$ return TextureUtil.generateId()
             //#else
@@ -106,8 +108,12 @@ public class OmniTextureManager private constructor(
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun bindTexture(index: Int, id: Int) {
-            //#if MC >= 1.17.1
-            OmniRenderState.setTexture(index, id)
+            //#if MC >= 1.21.6
+            RenderSystem.setShaderTexture(index, RenderSystem.getDevice().createTextureView(VanillaWrappedGlTexture(id)))
+            //#elseif MC >= 1.21.5
+            //$$ RenderSystem.setShaderTexture(index, VanillaWrappedGlTexture(id))
+            //#elseif MC >= 1.17.1
+            //$$ RenderSystem.setShaderTexture(index, id)
             //#else
             //$$ configureTextureUnit(index) {
             //$$     bindTexture(id)
@@ -157,6 +163,28 @@ public class OmniTextureManager private constructor(
 
     }
 
+    //#if MC >= 1.21.5
+    public class VanillaWrappedGlTexture(id: Int) : GlTexture(
+    //#if MC >= 1.21.6
+        USAGE_TEXTURE_BINDING,
+    //#endif
+        "",
+        TextureFormat.RGBA8,
+        0,
+        0,
+        0,
+    //#if MC >= 1.21.6
+        1,
+    //#endif
+        id
+    ) {
+
+        init {
+            this.needsReinit = false
+        }
+
+    }
+    //#endif
 
     @GameSide(Side.CLIENT)
     public fun getTexture(path: Identifier):
@@ -192,9 +220,15 @@ public class OmniTextureManager private constructor(
         //#endif
     ): OmniTextureManager = apply {
         //#if MC >= 1.21.5
-        //$$ RenderSystem.getDevice().createCommandEncoder().presentTexture(texture.texture)
+        val presentedTexture =
+            //#if MC >= 1.21.6
+            RenderSystem.getDevice().createTextureView(texture.glTexture)
+            //#else
+            //$$ texture.glTexture
+            //#endif
+        RenderSystem.getDevice().createCommandEncoder().presentTexture(presentedTexture)
         //#elseif MC >= 1.16.5
-        texture.bindTexture()
+        //$$ texture.bind()
         //#else
         //$$ bindTexture(texture.glTextureId)
         //#endif
@@ -233,9 +267,9 @@ public class OmniTextureManager private constructor(
     @GameSide(Side.CLIENT)
     public fun registerDynamicTexture(path: String, texture: NativeImageBackedTexture): OmniTextureManager = apply {
         //#if MC >= 1.21.4
-        //$$ textureManager.registerTexture(OmniIdentifier.create(path), texture)
+        textureManager.registerTexture(OmniIdentifier.create(path), texture)
         //#else
-        textureManager.registerDynamicTexture(path, texture)
+        //$$ textureManager.registerDynamicTexture(path, texture)
         //#endif
     }
 
@@ -252,9 +286,9 @@ public class OmniTextureManager private constructor(
     private fun getOrLoadId(identifier: Identifier): Int {
         val texture = textureManager.getTexture(identifier)
         //#if MC >= 1.21.5
-        //$$ return (texture.texture as GlTexture).glId()
+        return (texture.glTexture as GlTexture).glId
         //#elseif MC >= 1.17.1
-        return texture.glId
+        //$$ return texture.id
         //#else
         //$$ return if (texture != null) {
         //$$     texture.glId

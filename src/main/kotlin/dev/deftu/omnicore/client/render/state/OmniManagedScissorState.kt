@@ -6,10 +6,10 @@ import org.lwjgl.opengl.GL11
 import java.nio.ByteBuffer
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.systems.RenderPass
-//$$ import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.systems.RenderPass
+import com.mojang.blaze3d.systems.RenderSystem
 //#else
-import com.mojang.blaze3d.platform.GlStateManager
+//$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
 @GameSide(Side.CLIENT)
@@ -29,27 +29,31 @@ public data class OmniManagedScissorState(
             this.previousState = active()
         }
 
-        if (isEnabled) {
+        //#if MC >= 1.21.6
+        globalScissorState.set(this)
+        //#else
+        //$$ if (isEnabled) {
             //#if MC >= 1.21.5
             //$$ RenderSystem.SCISSOR_STATE.enable(x, y, width, height)
             //#elseif MC >= 1.17.1
-            GlStateManager._enableScissorTest()
+            //$$ GlStateManager._enableScissorTest()
             //#else
             //$$ GL11.glEnable(GL11.GL_SCISSOR_TEST)
             //#endif
-        } else {
+        //$$ } else {
             //#if MC >= 1.21.5
             //$$ RenderSystem.SCISSOR_STATE.disable()
             //#elseif MC >= 1.17.1
-            GlStateManager._disableScissorTest()
+            //$$ GlStateManager._disableScissorTest()
             //#else
             //$$ GL11.glDisable(GL11.GL_SCISSOR_TEST)
             //#endif
-        }
+        //$$ }
+        //#endif
 
         //#if MC <= 1.21.4
         //#if MC >= 1.17.1
-        GlStateManager._scissorBox(x, y, width, height)
+        //$$ GlStateManager._scissorBox(x, y, width, height)
         //#else
         //$$ GL11.glScissor(x, y, width, height)
         //#endif
@@ -61,13 +65,13 @@ public data class OmniManagedScissorState(
     }
 
     //#if MC >= 1.21.5
-    //$$ public fun applyTo(renderPass: RenderPass) {
-    //$$     if (isEnabled) {
-    //$$         renderPass.enableScissor(x, y, width, height)
-    //$$     } else {
-    //$$         renderPass.disableScissor()
-    //$$     }
-    //$$ }
+    public fun applyTo(renderPass: RenderPass) {
+        if (isEnabled) {
+            renderPass.enableScissor(x, y, width, height)
+        } else {
+            renderPass.disableScissor()
+        }
+    }
     //#endif
 
     public companion object {
@@ -76,10 +80,21 @@ public data class OmniManagedScissorState(
         @GameSide(Side.CLIENT)
         public val DISABLED: OmniManagedScissorState = OmniManagedScissorState(false, 0, 0, 0, 0)
 
+        //#if MC >= 1.21.6
+        // Minecraft no longer has a global scissor state, rather using a context-based stack when
+        // drawing into screens. This means we'll need to store our own to maintain compatibility
+        // with older versions.
+        private val globalScissorState: ThreadLocal<OmniManagedScissorState> = ThreadLocal.withInitial {
+            DISABLED
+        }
+        //#endif
+
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun active(): OmniManagedScissorState {
-            //#if MC >= 1.21.5
+            //#if MC >= 1.21.6
+            return globalScissorState.get()
+            //#elseif MC >= 1.21.5
             //$$ val vanillaState = RenderSystem.SCISSOR_STATE
             //$$ return OmniManagedScissorState(
             //$$     isEnabled = vanillaState.isEnabled,
@@ -89,14 +104,14 @@ public data class OmniManagedScissorState(
             //$$     height = vanillaState.height
             //$$ )
             //#else
-            val scissorBounds = ints(GL11.GL_SCISSOR_BOX, 4)
-            return OmniManagedScissorState(
-                isEnabled = GL11.glIsEnabled(GL11.GL_SCISSOR_TEST),
-                x = scissorBounds[0],
-                y = scissorBounds[1],
-                width = scissorBounds[2],
-                height = scissorBounds[3]
-            )
+            //$$ val scissorBounds = ints(GL11.GL_SCISSOR_BOX, 4)
+            //$$ return OmniManagedScissorState(
+            //$$     isEnabled = GL11.glIsEnabled(GL11.GL_SCISSOR_TEST),
+            //$$     x = scissorBounds[0],
+            //$$     y = scissorBounds[1],
+            //$$     width = scissorBounds[2],
+            //$$     height = scissorBounds[3]
+            //$$ )
             //#endif
         }
 
@@ -149,20 +164,20 @@ public data class OmniManagedScissorState(
         }
 
         //#if MC <= 1.21.4
-        private fun ints(param: Int, count: Int): List<Int> {
-            val buffer = ByteBuffer.allocateDirect(16 * Int.SIZE_BYTES).asIntBuffer()
-            return buffer.also { buffer ->
+        //$$ private fun ints(param: Int, count: Int): List<Int> {
+        //$$     val buffer = ByteBuffer.allocateDirect(16 * Int.SIZE_BYTES).asIntBuffer()
+        //$$     return buffer.also { buffer ->
                 //#if MC >= 1.16.5
-                GL11.glGetIntegerv(param, buffer)
+                //$$ GL11.glGetIntegerv(param, buffer)
                 //#else
                 //$$ GL11.glGetInteger(param, buffer)
                 //#endif
-            }.let { _ ->
-                List(count) { i ->
-                    buffer[i]
-                }
-            }
-        }
+        //$$     }.let { _ ->
+        //$$         List(count) { i ->
+        //$$             buffer[i]
+        //$$         }
+        //$$     }
+        //$$ }
         //#endif
 
     }

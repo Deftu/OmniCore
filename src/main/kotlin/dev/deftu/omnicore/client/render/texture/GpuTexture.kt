@@ -5,9 +5,26 @@ import java.awt.Color
 public interface GpuTexture : AutoCloseable {
 
     public enum class TextureFormat(public val isColor: Boolean = false) {
+
         RGBA8(isColor = true),
         DEPTH24_STENCIL8,
-        DEPTH32,
+        DEPTH32;
+
+        public companion object {
+
+            //#if MC >= 1.21.5
+            @JvmStatic
+            public fun from(format: com.mojang.blaze3d.textures.TextureFormat): TextureFormat {
+                return when (format) {
+                    com.mojang.blaze3d.textures.TextureFormat.RGBA8 -> RGBA8
+                    com.mojang.blaze3d.textures.TextureFormat.DEPTH32 -> DEPTH32
+                    else -> throw IllegalArgumentException("Invalid texture format: $format")
+                }
+            }
+            //#endif
+
+        }
+
     }
 
     public data class Copy(

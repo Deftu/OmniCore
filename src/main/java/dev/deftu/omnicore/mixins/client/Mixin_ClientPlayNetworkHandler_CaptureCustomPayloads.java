@@ -18,21 +18,21 @@ import java.util.function.Predicate;
 //#if MC >= 1.16.5
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
 //#if MC >= 1.20.4
-//$$ import dev.deftu.omnicore.common.OmniCustomPayloadDataHolder;
-//$$ import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
-//$$ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-//$$ import net.minecraft.network.protocol.common.custom.DiscardedPayload;
+import dev.deftu.omnicore.common.OmniCustomPayloadDataHolder;
+import net.minecraft.client.network.ClientCommonNetworkHandler;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.UnknownCustomPayload;
 //#else
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+//$$ import net.minecraft.client.multiplayer.ClientPacketListener;
 //#endif
 
 //#if MC >= 1.20.4
-//$$ @Mixin(ClientCommonPacketListenerImpl.class)
+@Mixin(ClientCommonNetworkHandler.class)
 //#else
-@Mixin(ClientPlayNetworkHandler.class)
+//$$ @Mixin(ClientPacketListener.class)
 //#endif
 //#else
 //$$ import dev.deftu.omnicore.common.OmniIdentifier;
@@ -47,9 +47,9 @@ public class Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads {
 
     @Inject(
             //#if MC >= 1.20.4
-            //$$ method = "handleCustomPayload(Lnet/minecraft/network/protocol/common/ClientboundCustomPayloadPacket;)V",
+            method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V",
             //#elseif MC >= 1.16.5
-            method = "onCustomPayload",
+            //$$ method = "handleCustomPayload",
             //#else
             //$$ method = "onCustomPayload",
             //#endif
@@ -65,26 +65,26 @@ public class Mixin_ClientPlayNetworkHandler_CaptureCustomPayloads {
             CallbackInfo ci
     ) {
         //#if MC >= 1.20.4
-        //$$ CustomPacketPayload payload = packet.payload();
-        //$$ if (!(payload instanceof DiscardedPayload)) {
-        //$$     return;
-        //$$ }
-        //$$
-        //$$ @SuppressWarnings("PatternVariableCanBeUsed")
-        //$$ DiscardedPayload discardedPayload = (DiscardedPayload) payload;
-        //$$ //noinspection ConstantValue
-        //$$ if (!(payload instanceof OmniCustomPayloadDataHolder)) {
-        //$$     return;
-        //$$ }
-        //$$
-        //$$ @SuppressWarnings("PatternVariableCanBeUsed")
-        //$$ OmniCustomPayloadDataHolder holder = (OmniCustomPayloadDataHolder) payload;
-        //$$
-        //$$ ResourceLocation channel = discardedPayload.id();
-        //$$ FriendlyByteBuf buf = holder.omnicore$getData();
+        CustomPayload payload = packet.comp_1646();
+        if (!(payload instanceof UnknownCustomPayload)) {
+            return;
+        }
+
+        @SuppressWarnings("PatternVariableCanBeUsed")
+        UnknownCustomPayload discardedPayload = (UnknownCustomPayload) payload;
+        //noinspection ConstantValue
+        if (!(payload instanceof OmniCustomPayloadDataHolder)) {
+            return;
+        }
+
+        @SuppressWarnings("PatternVariableCanBeUsed")
+        OmniCustomPayloadDataHolder holder = (OmniCustomPayloadDataHolder) payload;
+
+        Identifier channel = discardedPayload.comp_1678();
+        PacketByteBuf buf = holder.omnicore$getData();
         //#elseif MC >= 1.16.5
-        Identifier channel = packet.getChannel();
-        PacketByteBuf buf = packet.getData();
+        //$$ ResourceLocation channel = packet.getIdentifier();
+        //$$ FriendlyByteBuf buf = packet.getData();
         //#else
         //$$ Identifier channel = OmniIdentifier.create(packet.getChannel());
         //$$ PacketByteBuf buf = packet.getPayload();

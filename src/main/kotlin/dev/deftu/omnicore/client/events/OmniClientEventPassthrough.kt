@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 //#endif
 
 //#if MC >= 1.21.1
-//$$ import dev.deftu.omnicore.client.render.OmniGameRendering
+import dev.deftu.omnicore.client.render.OmniGameRendering
 //#endif
 
 //#if MC >= 1.16.5
@@ -54,7 +54,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //$$ // I HATE this.
 //$$ private typealias LoaderPreInitScreenEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.Init.Pre
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.Init.Pre
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.InitScreenEvent.Pre
 //#else
@@ -62,7 +62,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPostInitScreenEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.Init.Post
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.Init.Post
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.InitScreenEvent.Post
 //#else
@@ -70,7 +70,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPreRenderScreenEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.Render.Pre
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.Render.Pre
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.DrawScreenEvent.Pre
 //#else
@@ -78,7 +78,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPostRenderScreenEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.Render.Post
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.Render.Post
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.DrawScreenEvent.Post
 //#else
@@ -86,7 +86,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPreKeyPressEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.KeyPressed.Pre
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.KeyPressed.Pre
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.KeyboardKeyPressedEvent.Pre
 //#else
@@ -94,7 +94,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPostKeyPressEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.KeyPressed.Post
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.KeyPressed.Post
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.KeyboardKeyPressedEvent.Post
 //#else
@@ -102,7 +102,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPreKeyReleaseEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.KeyReleased.Pre
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.KeyReleased.Pre
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.KeyboardKeyReleasedEvent.Pre
 //#else
@@ -110,7 +110,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPostKeyReleaseEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.KeyReleased.Post
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.KeyReleased.Post
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.KeyboardKeyReleasedEvent.Post
 //#else
@@ -118,7 +118,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPreMouseClickEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.MouseButtonPressed.Pre
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.MouseButtonPressed.Pre
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.MouseClickedEvent.Pre
 //#else
@@ -126,7 +126,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPostMouseClickEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.MouseButtonPressed.Post
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.MouseButtonPressed.Post
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.MouseClickedEvent.Post
 //#else
@@ -134,7 +134,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPreMouseReleaseEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.MouseButtonReleased.Pre
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.MouseButtonReleased.Pre
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.MouseReleasedEvent.Pre
 //#else
@@ -142,7 +142,7 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 //$$ private typealias LoaderPostMouseReleaseEvent =
 //#if MC >= 1.19.2
-//$$     net.minecraftforge.client.event.ScreenEvent.MouseButtonReleased.Post
+//$$     net.neoforged.neoforge.client.event.ScreenEvent.MouseButtonReleased.Post
 //#elseif MC >= 1.18.2
 //$$     net.minecraftforge.client.event.ScreenEvent.MouseReleasedEvent.Post
 //#else
@@ -177,7 +177,7 @@ public object OmniClientEventPassthrough {
             )
 
             //#if MC >= 1.21.1
-            //$$ val tickDelta = OmniGameRendering.getTickDelta(false)
+            val tickDelta = OmniGameRendering.getTickDelta(false)
             //#endif
             OmniCore.eventBus.post(HudRenderEvent(matrixStack, tickDelta))
         }
@@ -257,10 +257,10 @@ public object OmniClientEventPassthrough {
         //$$     OmniCore.eventBus.post(TickEvent.Client.Post)
         //$$ }
         //#elseif MC >= 1.16.5
-        //$$ EventHolder.EVENT_BUS.addListener<net.minecraftforge.event.TickEvent.ClientTickEvent> { event ->
+        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.event.TickEvent.ClientTickEvent> { event ->
         //$$         when (event.phase) {
-        //$$             net.minecraftforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(TickEvent.Client.Pre)
-        //$$             net.minecraftforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Client.Post)
+        //$$             net.neoforged.neoforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(TickEvent.Client.Pre)
+        //$$             net.neoforged.neoforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Client.Post)
         //$$         }
         //$$     }
         //#endif
@@ -464,10 +464,10 @@ public object OmniClientEventPassthrough {
         //$$     OmniCore.eventBus.post(RenderTickEvent.Post)
         //$$ }
         //#else
-        //$$ EventHolder.EVENT_BUS.addListener<net.minecraftforge.event.TickEvent.RenderTickEvent> { event ->
+        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.event.TickEvent.RenderTickEvent> { event ->
         //$$     when (event.phase) {
-        //$$         net.minecraftforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(RenderTickEvent.Pre)
-        //$$         net.minecraftforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(RenderTickEvent.Post)
+        //$$         net.neoforged.neoforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(RenderTickEvent.Pre)
+        //$$         net.neoforged.neoforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(RenderTickEvent.Post)
         //$$         else -> {  } // no-op
         //$$     }
         //$$ }

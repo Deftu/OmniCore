@@ -1,11 +1,11 @@
 package dev.deftu.omnicore.client.shaders
 
-import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniRenderEnv
-import net.minecraft.client.render.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
@@ -29,9 +29,9 @@ public interface OmniShader {
             vertexFormat: VertexFormat?
         ): OmniShader {
             //#if MC >= 1.17.1 && MC < 1.21.5
-            return MinecraftShader.fromLegacyShader(vert, frag, blend, vertexFormat)
+            //$$ return MinecraftShader.fromLegacyShader(vert, frag, blend, vertexFormat)
             //#else
-            //$$ return GlShader(vert, frag, blend)
+            return GlShader(vert, frag, blend)
             //#endif
         }
 

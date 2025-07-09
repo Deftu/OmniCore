@@ -46,6 +46,10 @@ com.mojang.blaze3d.vertex.BufferBuilder net.minecraft.client.renderer.BufferBuil
 com.mojang.blaze3d.vertex.BufferBuilder end() finishDrawing()
 com.mojang.blaze3d.vertex.BufferBuilder discard() reset()
 
+com.mojang.blaze3d.vertex.VertexFormatElement net.minecraft.client.renderer.vertex.VertexFormatElement
+
+com.mojang.blaze3d.vertex.VertexFormatElement$Usage net.minecraft.client.renderer.vertex.VertexFormatElement$EnumUsage
+
 net.minecraft.util.profiling.ProfilerFiller net.minecraft.profiler.Profiler
 net.minecraft.util.profiling.ProfilerFiller popPush() endStartSection()
 

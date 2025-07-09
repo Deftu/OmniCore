@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.render.state
 
-import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 
 public data class OmniManagedColorLogic(
     public val isEnabled: Boolean,

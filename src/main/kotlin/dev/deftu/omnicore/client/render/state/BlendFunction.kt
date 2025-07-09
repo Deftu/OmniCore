@@ -20,8 +20,8 @@ public data class BlendFunction(
         get() = isSeparateSrc || isSeparateDst
 
     //#if MC >= 1.21.5
-    //$$ public val vanilla: com.mojang.blaze3d.pipeline.BlendFunction
-    //$$     get() = com.mojang.blaze3d.pipeline.BlendFunction(srcColor.vanilla, dstColor.vanilla, srcAlpha.vanilla, dstAlpha.vanilla)
+    public val vanilla: com.mojang.blaze3d.pipeline.BlendFunction
+        get() = com.mojang.blaze3d.pipeline.BlendFunction(srcColor.vanilla, dstColor.vanilla, srcAlpha.vanilla, dstAlpha.vanilla)
     //#endif
 
     public companion object {

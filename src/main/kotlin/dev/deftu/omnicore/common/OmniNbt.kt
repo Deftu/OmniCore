@@ -44,9 +44,9 @@ public object OmniNbt {
     @JvmStatic
     public fun parseCompound(value: String): NbtCompound {
         //#if MC >= 1.21.5
-        //$$ return TagParser.parseCompoundFully(value)
+        return StringNbtReader.readCompound(value)
         //#elseif MC >= 1.16.5
-        return StringNbtReader(StringReader(value)).parseCompound()
+        //$$ return TagParser(StringReader(value)).readStruct()
         //#else
         //$$ return JsonToNBT.getTagFromJson(value)
         //#endif
@@ -55,9 +55,9 @@ public object OmniNbt {
     @JvmStatic
     public fun parseElement(value: String): NbtElement {
         //#if MC >= 1.21.5
-        //$$ return TagParser.create(NbtOps.INSTANCE).parseFully(value)
+        return StringNbtReader.fromOps(NbtOps.INSTANCE).read(value)
         //#elseif MC >= 1.16.5
-        return StringNbtReader(StringReader(value)).parseElement()
+        //$$ return TagParser(StringReader(value)).readValue()
         //#else
         //$$ return try {
         //$$     val constructorHandle = MethodHandles.lookup().findConstructor(NBTBase::class.java, MethodType.methodType(Void.TYPE, String::class.java))
@@ -96,143 +96,143 @@ public object OmniNbt {
         @JvmStatic
         public fun getByteOrDefault(compound: NbtCompound, key: String, default: Byte): Byte {
             //#if MC >= 1.21.5
-            //$$ return compound.getByteOr(key, default)
+            return compound.getByte(key, default)
             //#else
-            return if (compound.contains(key, TYPE_BYTE)) {
-                compound.getByte(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_BYTE)) {
+            //$$     compound.getByte(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getShortOrDefault(compound: NbtCompound, key: String, default: Short): Short {
             //#if MC >= 1.21.5
-            //$$ return compound.getShortOr(key, default)
+            return compound.getShort(key, default)
             //#else
-            return if (compound.contains(key, TYPE_SHORT)) {
-                compound.getShort(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_SHORT)) {
+            //$$     compound.getShort(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getIntOrDefault(compound: NbtCompound, key: String, default: Int): Int {
             //#if MC >= 1.21.5
-            //$$ return compound.getIntOr(key, default)
+            return compound.getInt(key, default)
             //#else
-            return if (compound.contains(key, TYPE_INT)) {
-                compound.getInt(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_INT)) {
+            //$$     compound.getInt(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getLongOrDefault(compound: NbtCompound, key: String, default: Long): Long {
             //#if MC >= 1.21.5
-            //$$ return compound.getLongOr(key, default)
+            return compound.getLong(key, default)
             //#else
-            return if (compound.contains(key, TYPE_LONG)) {
-                compound.getLong(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_LONG)) {
+            //$$     compound.getLong(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getFloatOrDefault(compound: NbtCompound, key: String, default: Float): Float {
             //#if MC >= 1.21.5
-            //$$ return compound.getFloatOr(key, default)
+            return compound.getFloat(key, default)
             //#else
-            return if (compound.contains(key, TYPE_FLOAT)) {
-                compound.getFloat(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_FLOAT)) {
+            //$$     compound.getFloat(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getDoubleOrDefault(compound: NbtCompound, key: String, default: Double): Double {
             //#if MC >= 1.21.5
-            //$$ return compound.getDoubleOr(key, default)
+            return compound.getDouble(key, default)
             //#else
-            return if (compound.contains(key, TYPE_DOUBLE)) {
-                compound.getDouble(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_DOUBLE)) {
+            //$$     compound.getDouble(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getByteArrayOrDefault(compound: NbtCompound, key: String, default: ByteArray): ByteArray {
             //#if MC >= 1.21.5
-            //$$ return compound.getByteArray(key).orElse(default)
+            return compound.getByteArray(key).orElse(default)
             //#else
-            return if (compound.contains(key, TYPE_BYTE_ARRAY)) {
-                compound.getByteArray(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_BYTE_ARRAY)) {
+            //$$     compound.getByteArray(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getStringOrDefault(compound: NbtCompound, key: String, default: String): String {
             //#if MC >= 1.21.5
-            //$$ return compound.getStringOr(key, default)
+            return compound.getString(key, default)
             //#else
-            return if (compound.contains(key, TYPE_STRING)) {
-                compound.getString(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_STRING)) {
+            //$$     compound.getString(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getListOrDefault(compound: NbtCompound, key: String, default: NbtList): NbtList {
             //#if MC >= 1.21.5
-            //$$ return compound.getList(key).orElse(default)
+            return compound.getList(key).orElse(default)
             //#else
-            return if (compound.contains(key, TYPE_LIST)) {
-                compound.getList(key, TYPE_COMPOUND)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_LIST)) {
+            //$$     compound.getList(key, TYPE_COMPOUND)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getCompoundOrDefault(compound: NbtCompound, key: String, default: NbtCompound): NbtCompound {
             //#if MC >= 1.21.5
-            //$$ return compound.getCompound(key).orElse(default)
+            return compound.getCompound(key).orElse(default)
             //#else
-            return if (compound.contains(key, TYPE_COMPOUND)) {
-                compound.getCompound(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_COMPOUND)) {
+            //$$     compound.getCompound(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
         @JvmStatic
         public fun getIntArrayOrDefault(compound: NbtCompound, key: String, default: IntArray): IntArray {
             //#if MC >= 1.21.5
-            //$$ return compound.getIntArray(key).orElse(default)
+            return compound.getIntArray(key).orElse(default)
             //#else
-            return if (compound.contains(key, TYPE_INT_ARRAY)) {
-                compound.getIntArray(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_INT_ARRAY)) {
+            //$$     compound.getIntArray(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
 
@@ -241,13 +241,13 @@ public object OmniNbt {
         @VersionedAbove("1.16.5")
         public fun getLongArrayOrDefault(compound: NbtCompound, key: String, default: LongArray): LongArray {
             //#if MC >= 1.21.5
-            //$$ return compound.getLongArray(key).orElse(default)
+            return compound.getLongArray(key).orElse(default)
             //#else
-            return if (compound.contains(key, TYPE_LONG_ARRAY)) {
-                compound.getLongArray(key)
-            } else {
-                default
-            }
+            //$$ return if (compound.contains(key, TYPE_LONG_ARRAY)) {
+            //$$     compound.getLongArray(key)
+            //$$ } else {
+            //$$     default
+            //$$ }
             //#endif
         }
         //#endif
@@ -344,7 +344,7 @@ public object OmniNbt {
             return NbtIo.readCompressed(
                 bytes.inputStream(),
                 //#if MC >= 1.20.4
-                //$$ NbtAccounter.unlimitedHeap()
+                NbtSizeTracker.ofUnlimitedBytes()
                 //#endif
             )
         }
@@ -359,7 +359,7 @@ public object OmniNbt {
             return NbtIo.readCompressed(
                 input,
                 //#if MC >= 1.20.4
-                //$$ NbtAccounter.unlimitedHeap()
+                NbtSizeTracker.ofUnlimitedBytes()
                 //#endif
             )
         }
@@ -398,14 +398,14 @@ public object OmniNbt {
         public fun validate(compound: NbtCompound, requiredKeys: Map<String, Int>): Boolean {
             for ((key, expectedType) in requiredKeys) {
                 //#if MC >= 1.21.5
-                //$$ val tag = compound.get(key) ?: return false
-                //$$ if (tag.id.toInt() != expectedType) {
-                //$$     return false
-                //$$ }
-                //#else
-                if (!compound.contains(key, expectedType)) {
+                val tag = compound.get(key) ?: return false
+                if (tag.type.toInt() != expectedType) {
                     return false
                 }
+                //#else
+                //$$ if (!compound.contains(key, expectedType)) {
+                //$$     return false
+                //$$ }
                 //#endif
             }
 

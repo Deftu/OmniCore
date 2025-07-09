@@ -6,7 +6,7 @@ import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.util.profiler.Profiler
 
 //#if MC >= 1.21.2
-//$$ import net.minecraft.util.profiler.Profilers;
+import net.minecraft.util.profiler.Profilers;
 //#endif
 
 /**
@@ -24,9 +24,9 @@ public object OmniProfiler {
     @GameSide(Side.CLIENT)
     public fun getInstance(): Profiler {
         //#if MC >= 1.21.2
-        //$$ return Profilers.get()
+        return Profilers.get()
         //#else
-        return OmniClient.getInstance().profiler
+        //$$ return OmniClient.getInstance().profiler
         //#endif
     }
 

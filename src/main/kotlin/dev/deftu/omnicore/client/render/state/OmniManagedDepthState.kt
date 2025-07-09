@@ -5,9 +5,9 @@ import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.opengl.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 //#elseif MC >= 1.17.1
-import com.mojang.blaze3d.systems.RenderSystem
+//$$ import com.mojang.blaze3d.systems.RenderSystem
 //#else
 //$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
@@ -72,9 +72,9 @@ public data class OmniManagedDepthState(
         @GameSide(Side.CLIENT)
         public fun enableDepth() {
             //#if MC >= 1.21.5
-            //$$ GlStateManager._enableDepthTest()
+            GlStateManager._enableDepthTest()
             //#elseif MC >= 1.17.1
-            RenderSystem.enableDepthTest()
+            //$$ RenderSystem.enableDepthTest()
             //#elseif MC >= 1.16.5
             //$$ GlStateManager.enableDepthTest()
             //#else
@@ -86,9 +86,9 @@ public data class OmniManagedDepthState(
         @GameSide(Side.CLIENT)
         public fun disableDepth() {
             //#if MC >= 1.21.5
-            //$$ GlStateManager._disableDepthTest()
+            GlStateManager._disableDepthTest()
             //#elseif MC >= 1.17.1
-            RenderSystem.disableDepthTest()
+            //$$ RenderSystem.disableDepthTest()
             //#elseif MC >= 1.16.5
             //$$ GlStateManager.disableDepthTest()
             //#else
@@ -100,9 +100,9 @@ public data class OmniManagedDepthState(
         @GameSide(Side.CLIENT)
         public fun depthFunc(func: Int) {
             //#if MC >= 1.21.5
-            //$$ GlStateManager._depthFunc(func)
+            GlStateManager._depthFunc(func)
             //#elseif MC >= 1.17.1
-            RenderSystem.depthFunc(func)
+            //$$ RenderSystem.depthFunc(func)
             //#else
             //$$ GlStateManager.depthFunc(func)
             //#endif
@@ -112,9 +112,9 @@ public data class OmniManagedDepthState(
         @GameSide(Side.CLIENT)
         public fun depthMask(mask: Boolean) {
             //#if MC >= 1.21.5
-            //$$ GlStateManager._depthMask(mask)
+            GlStateManager._depthMask(mask)
             //#elseif MC >= 1.17.1
-            RenderSystem.depthMask(mask)
+            //$$ RenderSystem.depthMask(mask)
             //#else
             //$$ GlStateManager.depthMask(mask)
             //#endif

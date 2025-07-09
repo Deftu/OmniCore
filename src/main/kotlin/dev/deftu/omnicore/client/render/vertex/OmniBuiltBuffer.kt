@@ -61,9 +61,9 @@ internal class VanillaWrappingBuiltBuffer(override val vanilla: VanillaBuiltBuff
         }
 
         //#if MC >= 1.21.1
-        //$$ vanilla.close()
+        vanilla.close()
         //#elseif MC >= 1.19.2
-        vanilla.release()
+        //$$ vanilla.release()
         //#else
         //$$ vanilla.reset()
         //$$ OmniBufferBuilder.bufferPool.add(vanilla)

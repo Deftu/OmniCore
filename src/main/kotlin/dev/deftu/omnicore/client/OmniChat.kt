@@ -24,9 +24,9 @@ public object OmniChat {
         val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         player
             //#if MC >= 1.21.2
-            //$$ .sendMessage(text.asVanilla(), false)
+            .sendMessage(text.asVanilla(), false)
             //#elseif MC >= 1.19.2
-            .sendMessage(text.asVanilla())
+            //$$ .sendMessage(text.asVanilla())
             //#elseif MC >= 1.16.5
             //$$ .sendMessage(text.asVanilla(), false)
             //#else

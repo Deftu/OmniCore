@@ -4,9 +4,9 @@ import org.lwjgl.opengl.GL11
 import java.nio.ByteBuffer
 
 //#if MC >= 1.21.5
-//$$ import com.mojang.blaze3d.opengl.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 //#elseif MC >= 1.16.5
-import com.mojang.blaze3d.systems.RenderSystem
+//$$ import com.mojang.blaze3d.systems.RenderSystem
 //#else
 //$$ import net.minecraft.client.renderer.GlStateManager
 //#endif
@@ -20,9 +20,9 @@ public data class OmniManagedColorMask(
 
     public fun activate() {
         //#if MC >= 1.21.5
-        //$$ GlStateManager._colorMask(red, green, blue, alpha)
+        GlStateManager._colorMask(red, green, blue, alpha)
         //#elseif MC >= 1.16.5
-        RenderSystem.colorMask(red, green, blue, alpha)
+        //$$ RenderSystem.colorMask(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.colorMask(red, green, blue, alpha)
         //#endif

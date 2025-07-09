@@ -1,20 +1,20 @@
 package dev.deftu.omnicore.client.render.state
 
-import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.opengl.GlStateManager
 import org.lwjgl.opengl.GL11
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 
 //#if MC >= 1.17 && MC <= 1.21.1
-import net.minecraft.client.gl.GlBlendState
+//$$ import net.minecraft.client.gl.GlBlendState
 //#endif
 
 //#if MC <= 1.16.5 || MC >= 1.21.5
-//$$ import org.lwjgl.opengl.GL14
+import org.lwjgl.opengl.GL14
 //#endif
 
 //#if MC >= 1.16.5 && MC < 1.21.5
-import com.mojang.blaze3d.systems.RenderSystem
+//$$ import com.mojang.blaze3d.systems.RenderSystem
 //#endif
 
 /**
@@ -29,49 +29,49 @@ public data class OmniManagedBlendState(
 ) {
 
     //#if MC >= 1.17.1 && MC <= 1.21.1
-    @GameSide(Side.CLIENT)
-    private inner class VanillaBlendState : GlBlendState {
-
-        constructor() : super()
-
-        constructor(
-            srcRgb: Int,
-            dstRgb: Int,
-            func: Int
-        ) : super(srcRgb, dstRgb, func)
-
-        constructor(
-            srcRgb: Int,
-            dstRgb: Int,
-            srcAlpha: Int,
-            dstAlpha: Int,
-            func: Int
-        ) : super(srcRgb, dstRgb, srcAlpha, dstAlpha, func)
-
-        override fun enable() {
-            super.enable()
-            this@OmniManagedBlendState.applyGlobally()
-        }
-
-    }
-
-    @GameSide(Side.CLIENT)
-    public val vanilla: GlBlendState = if (isEnabled) {
-        if (function.isSeparate) {
-            VanillaBlendState(function.srcColor.value, function.dstColor.value, function.srcAlpha.value, function.dstAlpha.value, equation.value)
-        } else {
-            VanillaBlendState(function.srcColor.value, function.dstColor.value, equation.value)
-        }
-    } else {
-        VanillaBlendState()
-    }
+    //$$ @GameSide(Side.CLIENT)
+    //$$ private inner class VanillaBlendState : GlBlendState {
+    //$$
+    //$$     constructor() : super()
+    //$$
+    //$$     constructor(
+    //$$         srcRgb: Int,
+    //$$         dstRgb: Int,
+    //$$         func: Int
+    //$$     ) : super(srcRgb, dstRgb, func)
+    //$$
+    //$$     constructor(
+    //$$         srcRgb: Int,
+    //$$         dstRgb: Int,
+    //$$         srcAlpha: Int,
+    //$$         dstAlpha: Int,
+    //$$         func: Int
+    //$$     ) : super(srcRgb, dstRgb, srcAlpha, dstAlpha, func)
+    //$$
+    //$$     override fun enable() {
+    //$$         super.enable()
+    //$$         this@OmniManagedBlendState.applyGlobally()
+    //$$     }
+    //$$
+    //$$ }
+    //$$
+    //$$ @GameSide(Side.CLIENT)
+    //$$ public val vanilla: GlBlendState = if (isEnabled) {
+    //$$     if (function.isSeparate) {
+    //$$         VanillaBlendState(function.srcColor.value, function.dstColor.value, function.srcAlpha.value, function.dstAlpha.value, equation.value)
+    //$$     } else {
+    //$$         VanillaBlendState(function.srcColor.value, function.dstColor.value, equation.value)
+    //$$     }
+    //$$ } else {
+    //$$     VanillaBlendState()
+    //$$ }
     //#endif
 
     public fun activate() {
         //#if MC >= 1.17.1 && MC <= 1.21.1
-        vanilla.enable()
+        //$$ vanilla.enable()
         //#else
-        //$$ applyGlobally()
+        applyGlobally()
         //#endif
     }
 
@@ -154,9 +154,9 @@ public data class OmniManagedBlendState(
         @GameSide(Side.CLIENT)
         public fun blendEquation(equation: Int) {
             //#if MC >= 1.21.5
-            //$$ GL14.glBlendEquation(equation)
+            GL14.glBlendEquation(equation)
             //#elseif MC >= 1.16.5
-            RenderSystem.blendEquation(equation)
+            //$$ RenderSystem.blendEquation(equation)
             //#else
             //$$ GL14.glBlendEquation(equation)
             //#endif
@@ -166,9 +166,9 @@ public data class OmniManagedBlendState(
         @GameSide(Side.CLIENT)
         public fun blendFunc(srcFactor: Int, dstFactor: Int) {
             //#if MC >= 1.21.5
-            //$$ GL11.glBlendFunc(srcFactor, dstFactor)
+            GL11.glBlendFunc(srcFactor, dstFactor)
             //#elseif MC >= 1.17.1
-            RenderSystem.blendFunc(srcFactor, dstFactor)
+            //$$ RenderSystem.blendFunc(srcFactor, dstFactor)
             //#else
             //$$ GlStateManager.blendFunc(srcFactor, dstFactor)
             //#endif
@@ -184,9 +184,9 @@ public data class OmniManagedBlendState(
         @GameSide(Side.CLIENT)
         public fun blendFuncSeparate(srcFactor: Int, dstFactor: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) {
             //#if MC >= 1.21.5
-            //$$ GlStateManager._blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
+            GlStateManager._blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
             //#elseif MC >= 1.17.1
-            RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
+            //$$ RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
             //#else
             //$$ GlStateManager.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
             //#endif

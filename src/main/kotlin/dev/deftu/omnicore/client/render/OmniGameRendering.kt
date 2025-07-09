@@ -67,9 +67,9 @@ public object OmniGameRendering {
     public val isDebugRendering: Boolean
         get() {
             //#if MC >= 1.20.4
-            //$$ return OmniClient.getInstance().debugOverlay.showDebugScreen()
+            return OmniClient.getInstance().debugHud.shouldShowDebugHud()
             //#else
-            return OmniClient.getInstance().options.debugEnabled
+            //$$ return OmniClient.getInstance().options.renderDebug
             //#endif
         }
 
@@ -129,9 +129,9 @@ public object OmniGameRendering {
     @GameSide(Side.CLIENT)
     public fun getTickDelta(@VersionedAbove("1.21.1") allowStatic: Boolean = true): Float {
         //#if MC >= 1.21.1
-        //$$ return OmniClient.getInstance().timer.getGameTimeDeltaPartialTick(allowStatic)
+        return OmniClient.getInstance().renderTickCounter.getTickProgress(allowStatic)
         //#elseif MC >= 1.12.2
-        return OmniClient.getInstance().tickDelta
+        //$$ return OmniClient.getInstance().frameTime
         //#else
         //$$ return OmniClient.getInstance().deltaTickTracker.tickDelta
         //#endif

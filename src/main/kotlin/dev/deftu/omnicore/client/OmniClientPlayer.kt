@@ -85,9 +85,9 @@ public object OmniClientPlayer {
     public val uuid: UUID
         get() {
             //#if MC >= 1.20.1
-            //$$ return OmniClient.getInstance().user.profileId ?: throw IllegalStateException("Player UUID is null")
+            return OmniClient.getInstance().session.uuidOrNull ?: throw IllegalStateException("Player UUID is null")
             //#else
-            return OmniClient.getInstance().session.profile.id
+            //$$ return OmniClient.getInstance().session.profile.id
             //#endif
         }
 
@@ -107,9 +107,9 @@ public object OmniClientPlayer {
     public val gameProfile: GameProfile
         get() {
             //#if MC >= 1.20.4
-            //$$ return OmniClient.getInstance().gameProfile
+            return OmniClient.getInstance().gameProfile
             //#else
-            return OmniClient.getInstance().session.profile
+            //$$ return OmniClient.getInstance().user.gameProfile
             //#endif
         }
 
@@ -220,7 +220,7 @@ public object OmniClientPlayer {
     public val prevPosX: Double
         get() {
             //#if MC >= 1.16.5
-            return getInstance()?.prevX ?: 0.0
+            return getInstance()?.lastX ?: 0.0
             //#else
             //$$ return getInstance()?.prevPosX ?: 0.0
             //#endif
@@ -245,7 +245,7 @@ public object OmniClientPlayer {
     public val prevPosY: Double
         get() {
             //#if MC >= 1.16.5
-            return getInstance()?.prevY ?: 0.0
+            return getInstance()?.lastY ?: 0.0
             //#else
             //$$ return getInstance()?.prevPosY ?: 0.0
             //#endif
@@ -270,7 +270,7 @@ public object OmniClientPlayer {
     public val prevPosZ: Double
         get() {
             //#if MC >= 1.16.5
-            return getInstance()?.prevZ ?: 0.0
+            return getInstance()?.lastZ ?: 0.0
             //#else
             //$$ return getInstance()?.prevPosZ ?: 0.0
             //#endif
@@ -379,7 +379,7 @@ public object OmniClientPlayer {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val prevPitch: Float
-        get() = getInstance()?.prevPitch ?: 0f
+        get() = getInstance()?.lastPitch ?: 0f
 
     @JvmStatic
     @GameSide(Side.CLIENT)
@@ -392,7 +392,7 @@ public object OmniClientPlayer {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val prevYaw: Float
-        get() = getInstance()?.prevYaw ?: 0f
+        get() = getInstance()?.lastYaw ?: 0f
 
     @JvmStatic
     @GameSide(Side.CLIENT)

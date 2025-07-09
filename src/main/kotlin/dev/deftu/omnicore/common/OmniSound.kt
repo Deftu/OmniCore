@@ -48,7 +48,7 @@ public class OmniSound {
     //#if MC >= 1.12.2
     @GameSide(Side.BOTH)
     public constructor(event: SoundEvent) {
-        this.identifier = event.id
+        this.identifier = event.id()
         this.event = event
     }
     //#endif

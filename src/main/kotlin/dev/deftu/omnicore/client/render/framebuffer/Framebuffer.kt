@@ -12,6 +12,7 @@ import dev.deftu.omnicore.client.render.pipeline.VertexFormats
 import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.state.OmniManagedScissorState
 import dev.deftu.omnicore.client.render.texture.GlTexture
+import dev.deftu.omnicore.client.render.texture.GpuTexture
 import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniIdentifier
 import org.lwjgl.opengl.GL11
@@ -23,14 +24,15 @@ import java.io.File
 //#endif
 
 //#if MC < 1.21.5
-import com.mojang.blaze3d.platform.GlStateManager
+//$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
 
 public interface Framebuffer : AutoCloseable {
 
     public companion object {
 
-        private val PIPELINE by lazy {
+        @JvmStatic
+        public val pipeline: OmniRenderPipeline by lazy {
             OmniRenderPipeline.builderWithDefaultShader(
                 identifier = OmniIdentifier.create("omnicore", "framebuffer"),
                 vertexFormat = VertexFormats.POSITION_TEXTURE_COLOR,
@@ -123,14 +125,14 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClear(mask: Int) {
             //#if MC >= 1.21.5
-            //$$ GL11.glClear(mask)
+            GL11.glClear(mask)
             //#else
-            GlStateManager._clear(
-                mask,
+            //$$ GlStateManager._clear(
+            //$$     mask,
                 //#if MC >= 1.16.5 && MC < 1.21.2
-                false,
+                //$$ false,
                 //#endif
-            )
+            //$$ )
             //#endif
         }
 
@@ -138,9 +140,9 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClearColor(red: Float, green: Float, blue: Float, alpha: Float) {
             //#if MC >= 1.21.5
-            //$$ GL11.glClearColor(red, green, blue, alpha)
+            GL11.glClearColor(red, green, blue, alpha)
             //#else
-            GlStateManager._clearColor(red, green, blue, alpha)
+            //$$ GlStateManager._clearColor(red, green, blue, alpha)
             //#endif
         }
 
@@ -148,9 +150,9 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClearDepth(depth: Double) {
             //#if MC >= 1.21.5
-            //$$ GL11.glClearDepth(depth)
+            GL11.glClearDepth(depth)
             //#else
-            GlStateManager._clearDepth(depth)
+            //$$ GlStateManager._clearDepth(depth)
             //#endif
         }
 
@@ -158,9 +160,9 @@ public interface Framebuffer : AutoCloseable {
         @GameSide(Side.CLIENT)
         public fun apiClearStencil(stencil: Int) {
             //#if MC >= 1.21.5 || MC <= 1.12.2
-            //$$ GL11.glClearStencil(stencil)
+            GL11.glClearStencil(stencil)
             //#else
-            GlStateManager._clearStencil(stencil)
+            //$$ GlStateManager._clearStencil(stencil)
             //#endif
         }
 
@@ -227,36 +229,37 @@ public interface Framebuffer : AutoCloseable {
         }
     }
 
-    public fun drawColorTexture(matrixStack: OmniMatrixStack, x: Float, y: Float, width: Float, height: Float, color: Int) {
-        matrixStack.push()
-        matrixStack.scale(1f, 1f, 50f)
+    public fun drawColorTexture(
+        pipeline: OmniRenderPipeline,
+        stack: OmniMatrixStack,
+        x: Float, y: Float,
+        width: Float, height: Float,
+        color: Int
+    ) {
+        this.drawTexture(
+            pipeline,
+            this.colorTexture,
+            stack,
+            x, y,
+            width, height,
+            color
+        )
+    }
 
-        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
-        buffer
-            .vertex(matrixStack, x.toDouble(), (y + height).toDouble(), 0.0)
-            .texture(0.0, 0.0)
-            .color(color)
-            .next()
-        buffer
-            .vertex(matrixStack, (x + width).toDouble(), (y + height).toDouble(), 0.0)
-            .texture(1.0, 0.0)
-            .color(color)
-            .next()
-        buffer
-            .vertex(matrixStack, (x + width).toDouble(), y.toDouble(), 0.0)
-            .texture(1.0, 1.0)
-            .color(color)
-            .next()
-        buffer
-            .vertex(matrixStack, x.toDouble(), y.toDouble(), 0.0)
-            .texture(0.0, 1.0)
-            .color(color)
-            .next()
-        buffer.build()?.drawWithCleanup(PIPELINE) {
-            texture(0, colorTexture.id)
-        }
-
-        matrixStack.pop()
+    public fun drawColorTexture(
+        stack: OmniMatrixStack,
+        x: Float, y: Float,
+        width: Float, height: Float,
+        color: Int
+    ) {
+        this.drawTexture(
+            pipeline,
+            this.colorTexture,
+            stack,
+            x, y,
+            width, height,
+            color
+        )
     }
 
     public fun writeToFile(file: File) {
@@ -268,6 +271,45 @@ public interface Framebuffer : AutoCloseable {
         }
 
         OmniTextureManager.bindTexture(0)
+    }
+
+    private fun drawTexture(
+        pipeline: OmniRenderPipeline,
+        texture: GpuTexture,
+        stack: OmniMatrixStack,
+        x: Float, y: Float,
+        width: Float, height: Float,
+        color: Int
+    ) {
+        stack.push()
+        stack.scale(1f, 1f, 50f)
+
+        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
+        buffer
+            .vertex(stack, x.toDouble(), (y + height).toDouble(), 0.0)
+            .texture(0.0, 0.0)
+            .color(color)
+            .next()
+        buffer
+            .vertex(stack, (x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .texture(1.0, 0.0)
+            .color(color)
+            .next()
+        buffer
+            .vertex(stack, (x + width).toDouble(), y.toDouble(), 0.0)
+            .texture(1.0, 1.0)
+            .color(color)
+            .next()
+        buffer
+            .vertex(stack, x.toDouble(), y.toDouble(), 0.0)
+            .texture(0.0, 1.0)
+            .color(color)
+            .next()
+        buffer.build()?.drawWithCleanup(pipeline) {
+            texture(0, texture.id)
+        }
+
+        stack.pop()
     }
 
 }

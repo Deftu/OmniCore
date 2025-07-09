@@ -12,7 +12,7 @@ public object OmniIdentifier {
     @GameSide(Side.CLIENT)
     public fun create(namespace: String, path: String): Identifier {
         //#if MC >= 1.19.2
-        return Identifier.of(namespace, path) ?: throw IllegalArgumentException("Invalid identifier")
+        return Identifier.tryParse(namespace, path) ?: throw IllegalArgumentException("Invalid identifier")
         //#else
         //$$ return Identifier(namespace, path)
         //#endif

@@ -4,18 +4,18 @@ import dev.deftu.omnicore.client.render.pipeline.DrawModes
 import dev.deftu.omnicore.client.render.pipeline.VertexFormats
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 
 public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexConsumer, MCVertexConsumer(value) {
 
     //#if MC >= 1.21.1
-    //$$ public fun build(): OmniBuiltBuffer? {
-    //$$     return value.build()?.let(::VanillaWrappingBuiltBuffer)
-    //$$ }
-    //#elseif MC >= 1.19.2
     public fun build(): OmniBuiltBuffer? {
         return value.endNullable()?.let(::VanillaWrappingBuiltBuffer)
     }
+    //#elseif MC >= 1.19.2
+    //$$ public fun build(): OmniBuiltBuffer? {
+    //$$     return value.endOrDiscardIfEmpty()?.let(::VanillaWrappingBuiltBuffer)
+    //$$ }
     //#else
     //$$ private var vertexCount = 0
     //$$
@@ -45,14 +45,14 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
         @JvmStatic
         public fun create(drawMode: DrawModes, format: VertexFormat): OmniBufferBuilder {
             //#if MC >= 1.21.1
-            //$$ val vanilla = Tesselator.getInstance().begin(drawMode.vanilla, format)
+            val vanilla = Tessellator.getInstance().begin(drawMode.vanilla, format)
             //#else
             //#if MC >= 1.19.2
-            val vanilla = Tessellator.getInstance().buffer
+            //$$ val vanilla = Tesselator.getInstance().builder
             //#else
             //$$ val vanilla = bufferPool.removeLastOrNull() ?: BufferBuilder(1024 * 1024)
             //#endif
-            vanilla.begin(drawMode.vanilla, format)
+            //$$ vanilla.begin(drawMode.vanilla, format)
             //#endif
             return OmniBufferBuilder(vanilla)
         }
