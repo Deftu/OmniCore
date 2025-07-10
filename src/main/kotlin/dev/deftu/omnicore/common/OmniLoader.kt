@@ -7,12 +7,12 @@ import dev.deftu.omnicore.annotations.Side
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.jvm.optionals.getOrNull
 
 //#if FABRIC
 import net.fabricmc.loader.api.FabricLoader
 import net.fabricmc.loader.api.ModContainer
 import net.fabricmc.api.EnvType
-import kotlin.jvm.optionals.getOrNull
 //#elseif FORGE
 //#if MC >= 1.15.2
 //$$ import net.minecraftforge.fml.ModList
@@ -525,7 +525,13 @@ public object OmniLoader {
         //#else
         //#if MC >= 1.15.2
         //$$ val container = ModList.get().getModContainerById(id).orElse(null)
-        //$$ return container?.modInfo?.logoFile?.getOrNull()
+        //#if MC >= 1.17.1
+        //$$ val logoFile = container?.modInfo?.logoFile
+        //#else
+        //$$ val modInfo = container?.modInfo
+        //$$ val logoFile = if (modInfo is net.minecraftforge.fml.loading.moddiscovery.ModInfo) modInfo.logoFile else null
+        //#endif
+        //$$ return logoFile?.getOrNull()
         //#else
         //$$ val container = Loader.instance().getIndexedModList()[id]
         //$$ return container?.metadata?.logoFile
@@ -542,7 +548,13 @@ public object OmniLoader {
         //#else
         //#if MC >= 1.15.2
         //$$ val container = ModList.get().getModContainerById(id).orElse(null)
-        //$$ return container?.modInfo?.logoFile?.getOrNull()?.let { getResourceStream(id, it) }
+        //#if MC >= 1.17.1
+        //$$ val logoFile = container?.modInfo?.logoFile
+        //#else
+        //$$ val modInfo = container?.modInfo
+        //$$ val logoFile = if (modInfo is net.minecraftforge.fml.loading.moddiscovery.ModInfo) modInfo.logoFile else null
+        //#endif
+        //$$ return logoFile?.getOrNull()?.let { getResourceStream(id, it) }
         //#else
         //$$ val container = Loader.instance().getIndexedModList()[id]
         //$$ return container?.metadata?.logoFile?.let { getResourceStream(id, it) }
@@ -562,12 +574,18 @@ public object OmniLoader {
         //#else
         //#if MC >= 1.15.2
         //$$ val modFile = ModList.get().getModFileById(container.modId)
+        //#if MC >= 1.17.1
+        //$$ val logoFile = container.modInfo?.logoFile
+        //#else
+        //$$ val modInfo = container.modInfo
+        //$$ val logoFile = if (modInfo is net.minecraftforge.fml.loading.moddiscovery.ModInfo) modInfo.logoFile else null
+        //#endif
         //$$ return ModInfo(
         //$$     container.modInfo.displayName,
         //$$     container.modId,
         //$$     container.modInfo.version.toString(),
         //$$     modFile.file.filePath,
-        //$$     container.modInfo.logoFile.getOrNull()
+        //$$     logoFile?.getOrNull()
         //$$ )
         //#else
         //$$ return ModInfo(
