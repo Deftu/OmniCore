@@ -88,8 +88,11 @@ public object OmniLoader {
         val name: String,
         val id: String,
         val version: String,
-        val file: Path?
+        val file: Path?,
+        @GameSide(Side.CLIENT)
+        val iconPath: String?
     ) {
+
         public companion object {
 
             /**
@@ -97,9 +100,13 @@ public object OmniLoader {
              */
             @JvmStatic
             @GameSide(Side.BOTH)
-            public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null)
+            public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null, null)
 
         }
+
+        @GameSide(Side.CLIENT)
+        public val icon: InputStream?
+            get() = iconPath?.let { getResourceStream(id, it) }
 
         /**
          * Checks if the mod is loaded.
@@ -509,13 +516,48 @@ public object OmniLoader {
         //#endif
     }
 
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun getModIconPath(id: String): String? {
+        //#if FABRIC
+        val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
+        return container?.metadata?.getIconPath(0)?.getOrNull() // Get the first (smallest) icon path if available. Unfortunately it's not that easy to allow the consumer to specify which icon size to use, so we'll go with the smallest.
+        //#else
+        //#if MC >= 1.15.2
+        //$$ val container = ModList.get().getModContainerById(id).orElse(null)
+        //$$ return container?.modInfo?.logoFile?.getOrNull()
+        //#else
+        //$$ val container = Loader.instance().getIndexedModList()[id]
+        //$$ return container?.metadata?.logoFile
+        //#endif
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun getModIconStream(id: String): InputStream? {
+        //#if FABRIC
+        val iconPath = getModIconPath(id) ?: return null
+        return getResourceStream(id, iconPath)
+        //#else
+        //#if MC >= 1.15.2
+        //$$ val container = ModList.get().getModContainerById(id).orElse(null)
+        //$$ return container?.modInfo?.logoFile?.getOrNull()?.let { getResourceStream(id, it) }
+        //#else
+        //$$ val container = Loader.instance().getIndexedModList()[id]
+        //$$ return container?.metadata?.logoFile?.let { getResourceStream(id, it) }
+        //#endif
+        //#endif
+    }
+
     private fun createModInfo(container: ModContainer): ModInfo {
         //#if FABRIC
         return ModInfo(
             container.metadata.name,
             container.metadata.id,
             container.metadata.version.friendlyString,
-            container.rootPaths[0]
+            container.rootPaths[0],
+            container.metadata.getIconPath(0).getOrNull() // Get the first (smallest) icon path if available. Unfortunately it's not that easy to allow the consumer to specify which icon size to use, so we'll go with the smallest.
         )
         //#else
         //#if MC >= 1.15.2
@@ -524,16 +566,19 @@ public object OmniLoader {
         //$$     container.modInfo.displayName,
         //$$     container.modId,
         //$$     container.modInfo.version.toString(),
-        //$$     modFile.file.filePath
+        //$$     modFile.file.filePath,
+        //$$     container.modInfo.logoFile.getOrNull()
         //$$ )
         //#else
         //$$ return ModInfo(
         //$$     container.name,
         //$$     container.modId,
         //$$     container.version,
-        //$$     container.source.toPath()
+        //$$     container.source.toPath(),
+        //$$     container.metadata.logoFile
         //$$ )
         //#endif
         //#endif
     }
+
 }
