@@ -17,6 +17,24 @@ public class OmniServerCommandSource(
     public val world: ServerWorld
 ) {
 
+    //#if MC <= 1.12.2
+    //$$ public companion object {
+    //$$
+    //$$     @JvmStatic
+    //$$     public fun from(
+    //$$         server: MinecraftServer,
+    //$$         sender: ICommandSender,
+    //$$     ): OmniServerCommandSource {
+    //$$         return OmniServerCommandSource(
+    //$$             server = server,
+    //$$             output = sender,
+    //$$             sender.entityWorld as WorldServer
+    //$$         )
+    //$$     }
+    //$$
+    //$$ }
+    //#endif
+
     public val player: ServerPlayerEntity?
         get() = output as? ServerPlayerEntity
 

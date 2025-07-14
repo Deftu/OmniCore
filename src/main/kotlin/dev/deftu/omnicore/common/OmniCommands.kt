@@ -2,9 +2,17 @@ package dev.deftu.omnicore.common
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.ArgumentBuilder
+import com.mojang.brigadier.exceptions.CommandExceptionType
+import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.tree.CommandNode
 
 public object OmniCommands {
+
+    @JvmStatic
+    public fun isIgnoredException(type: CommandExceptionType): Boolean {
+        val builtIns = CommandSyntaxException.BUILT_IN_EXCEPTIONS
+        return type == builtIns.dispatcherUnknownCommand() || type == builtIns.dispatcherParseException()
+    }
 
     @JvmStatic
     public fun <T> printTree(dispatcher: CommandDispatcher<T>) {

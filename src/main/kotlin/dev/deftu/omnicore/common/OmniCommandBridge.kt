@@ -1,20 +1,16 @@
 package dev.deftu.omnicore.common
 
 //#if MC <= 1.12.2
-//$$ import com.mojang.brigadier.CommandDispatcher
-//$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import com.mojang.brigadier.tree.CommandNode
-//$$ import dev.deftu.omnicore.client.OmniChat
-//$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import net.minecraft.command.CommandBase
 //$$ import net.minecraft.command.ICommandSender
 //$$ import net.minecraft.server.MinecraftServer
 //$$ import net.minecraft.util.math.BlockPos
 //$$
 //$$ internal class OmniCommandBridge<S>(
-//$$     private val dispatcher: CommandDispatcher<S>,
 //$$     private val node: CommandNode<S>,
-//$$     private val contextFactory: (ICommandSender) -> S
+//$$     private val executor: (ICommandSender, String) -> Unit,
+//$$     private val completer: (ICommandSender, String) -> MutableList<String>,
 //$$ ) : CommandBase() {
 //$$
 //$$     override fun getName(): String = node.name
@@ -31,13 +27,7 @@ package dev.deftu.omnicore.common
 //$$         args: Array<out String>
 //$$     ) {
 //$$         val text = args.getText()
-//$$         val results = dispatcher.parse(text, contextFactory(sender))
-//$$
-//$$         try {
-//$$             dispatcher.execute(results)
-//$$         } catch (e: Exception) {
-//$$             OmniChat.displayClientMessage("${MCTextFormat.RED}${e.message}")
-//$$         }
+//$$         executor(sender, text)
 //$$     }
 //$$
 //$$     override fun getTabCompletions(
@@ -49,13 +39,7 @@ package dev.deftu.omnicore.common
 //$$         targetPos: BlockPos?
 //$$     ): MutableList<String> {
 //$$         val text = args.getText()
-//$$         val results = dispatcher.parse(text, contextFactory(sender))
-//$$
-//$$         return dispatcher.getCompletionSuggestions(results)
-//$$             .join()
-//$$             .list
-//$$             .map(Suggestion::getText)
-//$$             .toMutableList()
+//$$         return completer(sender, text)
 //$$     }
 //$$
 //$$     override fun checkPermission(

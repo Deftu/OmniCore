@@ -28,10 +28,15 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 //#endif
 
 //#if MC <= 1.12.2
+//$$ import com.mojang.brigadier.exceptions.CommandSyntaxException
+//$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import dev.deftu.omnicore.common.OmniCommandBridge
-//$$ import net.minecraft.world.WorldServer
+//$$ import dev.deftu.omnicore.common.OmniProfiler
+//$$ import dev.deftu.textile.minecraft.MCTextFormat
+//$$ import net.minecraft.command.ICommandSender
+//$$ import net.minecraft.server.MinecraftServer
+//$$ import org.apache.logging.log4j.LogManager
 //#if FORGE
-//$$ import net.minecraftforge.client.ClientCommandHandler
 //$$ import net.minecraft.command.ServerCommandManager
 //$$ import net.minecraftforge.fml.server.FMLServerHandler
 //#else
@@ -44,6 +49,10 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 public object OmniServerCommands {
 
     private var isInitialized = false
+
+    //#if MC <= 1.12.2
+    //$$ private val logger = LogManager.getLogger()
+    //#endif
 
     private val dispatcher: CommandDispatcher<OmniServerCommandSource> = CommandDispatcher<OmniServerCommandSource>()
 
@@ -70,7 +79,11 @@ public object OmniServerCommands {
         //$$ ServerLifecycleEvents.SERVER_STARTING.register { server ->
         //$$     val commandManager = server.commandManager as CommandManager
         //$$     for (child in dispatcher.root.children) {
-        //$$         commandManager.registerCommand(OmniCommandBridge(dispatcher, child) { sender -> OmniServerCommandSource(server, sender, sender.world as ServerWorld) })
+        //$$         commandManager.registerCommand(OmniCommandBridge(
+        //$$             node = child,
+        //$$             executor = { sender, command -> execute(server, sender, command) },
+        //$$             completer = { sender, command -> retrieveAutoComplete(server, sender, command) }
+        //$$         ))
         //$$     }
         //$$ }
         //#endif
@@ -100,7 +113,11 @@ public object OmniServerCommands {
         //#if FORGE && MC <= 1.12.2
         //$$ val server = FMLServerHandler.instance().server
         //$$ val commandManager = server.commandManager as ServerCommandManager
-        //$$ commandManager.registerCommand(OmniCommandBridge(dispatcher, node) { sender -> OmniServerCommandSource(server, sender, sender.entityWorld as WorldServer) })
+        //$$ commandManager.registerCommand(OmniCommandBridge(
+        //$$     node = command.build(),
+        //$$     executor = { sender, command -> execute(server, sender, command) },
+        //$$     completer = { sender, command -> retrieveAutoComplete(server, sender, command) }
+        //$$ ))
         //#endif
     }
 
@@ -115,6 +132,42 @@ public object OmniServerCommands {
     public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<OmniServerCommandSource, T> {
         return RequiredArgumentBuilder.argument(name, type)
     }
+
+    //#if MC <= 1.12.2
+    //$$ private fun execute(server: MinecraftServer, sender: ICommandSender, command: String) {
+    //$$     val context = OmniServerCommandSource.from(server, sender)
+    //$$     val results = dispatcher.parse(command, context)
+    //$$
+    //$$     OmniProfiler.start("omnicore_command___$command")
+    //$$
+    //$$     try {
+    //$$         dispatcher.execute(results)
+    //$$     } catch (e: CommandSyntaxException) {
+    //$$         val isIgnored = OmniCommands.isIgnoredException(e.type)
+    //$$         val message = "Syntax exception for server-sided command '$command'"
+    //$$
+    //$$         if (!isIgnored) {
+    //$$             logger.warn(message, e)
+    //$$             context.displayError(e)
+    //$$        } else {
+    //$$            logger.debug(message, e)
+    //$$       }
+    //$$     } finally {
+    //$$         OmniProfiler.end()
+    //$$     }
+    //$$ }
+    //$$
+    //$$ private fun retrieveAutoComplete(server: MinecraftServer, sender: ICommandSender, command: String): MutableList<String> {
+    //$$     val context = OmniServerCommandSource.from(server, sender)
+    //$$     val results = dispatcher.parse(command, context)
+    //$$     return dispatcher.getCompletionSuggestions(results)
+    //$$         .join()
+    //$$         .list
+    //$$         .map(Suggestion::getText)
+    //$$         .map { text -> MCTextFormat.GRAY + (if (command.contains(" ")) "" else "/") + text + MCTextFormat.RESET }
+    //$$         .toMutableList()
+    //$$ }
+    //#endif
 
     //#if FABRIC && MC >= 1.16.5
     private val ServerCommandSource.output: CommandOutput

@@ -122,7 +122,10 @@ public class OmniCoreEntrypoint
 
             OmniClientCommands.register(
                 OmniClientCommands.literal("omnicore")
-                    .then(
+                    .executes { ctx ->
+                        ctx.source.displayMessage(MCSimpleTextHolder("Hello, World!").withFormatting(MCTextFormat.LIGHT_PURPLE))
+                        1
+                    }.then(
                         OmniClientCommands.literal("version")
                             .executes { ctx ->
                                 val clickEvent = MCClickEvent.OpenUrl(URI.create(OmniCore.GIT_URL))

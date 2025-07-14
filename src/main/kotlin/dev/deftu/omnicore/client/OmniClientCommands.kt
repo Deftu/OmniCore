@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 //$$ import net.minecraftforge.client.ClientCommandHandler
 //#endif
 
-//#if FABRIC && MC <= 1.12.2
+//#if MC <= 1.12.2
 //$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //#endif
@@ -92,7 +92,11 @@ public object OmniClientCommands {
         dispatcher.root.addChild(node)
 
         //#if FORGE && MC <= 1.12.2
-        //$$ ClientCommandHandler.instance.registerCommand(OmniCommandBridge(dispatcher, node) { _ -> OmniClientCommandSource.UNIT })
+        //$$ ClientCommandHandler.instance.registerCommand(OmniCommandBridge(
+        //$$     node = node,
+        //$$     executor = { _, command -> execute(command) },
+        //$$     completer = { _, command -> retrieveAutoComplete(command).toMutableList() }
+        //$$ ))
         //#endif
     }
 
@@ -157,11 +161,12 @@ public object OmniClientCommands {
             dispatcher.execute(results)
             return true
         } catch (e: CommandSyntaxException) {
-            val isIgnored = isIgnoredException(e.type)
+            val isIgnored = OmniCommands.isIgnoredException(e.type)
             val message = "Syntax exception for client-sided command '$command'"
 
             if (!isIgnored) {
                 logger.warn(message, e)
+                OmniClientCommandSource.UNIT.displayError(e)
             } else {
                 logger.debug(message, e)
             }
@@ -172,12 +177,7 @@ public object OmniClientCommands {
         }
     }
 
-    private fun isIgnoredException(type: CommandExceptionType): Boolean {
-        val builtIns = CommandSyntaxException.BUILT_IN_EXCEPTIONS
-        return type == builtIns.dispatcherUnknownCommand() || type == builtIns.dispatcherParseException()
-    }
-
-    //#if FABRIC && MC <= 1.12.2
+    //#if MC <= 1.12.2
     //$$ @JvmStatic
     //$$ internal fun retrieveAutoComplete(command: String): Set<String> {
     //$$     val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
