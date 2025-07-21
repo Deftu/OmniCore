@@ -478,6 +478,28 @@ public object OmniClientPlayer {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
+    public val snapshot: OmniPlayerState
+        get() {
+            return OmniPlayerState(
+                uuid = uuid,
+                name = name,
+                prevPos = Vec3d(prevPosX, prevPosY, prevPosZ),
+                pos = Vec3d(posX, posY, posZ),
+                blockPos = blockPos,
+                gameMode = gameMode,
+                currentChunk = currentChunk,
+                prevYaw = prevYaw,
+                yaw = yaw,
+                prevPitch = prevPitch,
+                pitch = pitch,
+                health = health,
+                hunger = hunger,
+                saturation = saturation
+            )
+        }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun getEquipment(type: OmniEquipment.EquipmentType): ItemStack? {
         return getInstance()?.getEquipment(type)
     }
