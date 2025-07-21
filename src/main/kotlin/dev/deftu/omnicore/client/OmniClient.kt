@@ -17,6 +17,9 @@ import net.minecraft.server.integrated.IntegratedServer
 
 //#if MC >= 1.16.5
 import net.minecraft.client.util.GlfwUtil
+import net.minecraft.client.util.InputUtil
+//#else
+//$$ import net.minecraft.client.settings.GameSettings
 //#endif
 
 public object OmniClient {
@@ -259,6 +262,26 @@ public object OmniClient {
     @GameSide(Side.CLIENT)
     public fun translate(key: String, vararg args: Any): String {
         return I18n.translate(key, args)
+    }
+
+    /**
+     * @return The display name of the key with the given code or scan code.
+     *
+     * @since 0.39.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @JvmOverloads
+    @GameSide(Side.CLIENT)
+    public fun getKeyDisplayName(code: Int, scanCode: Int = -1): String {
+        val name =
+            //#if MC >= 1.16.5
+            InputUtil.fromKeyCode(code, scanCode).toString()
+            //#else
+            //$$ GameSettings.getKeyDisplayString(code) ?: return "Unknown"
+            //#endif
+
+        return if (name.length == 1) name.first().uppercase() else name
     }
 
 }
