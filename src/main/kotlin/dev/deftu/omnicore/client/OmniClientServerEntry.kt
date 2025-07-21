@@ -18,7 +18,7 @@ public data class OmniClientServerEntry(
                 //#if MC >= 1.20.4
                 serverInfo.serverType == ServerInfo.ServerType.LAN,
                 //#else
-                //$$ serverInfo.isLocal,
+                //$$ serverInfo.isLan,
                 //#endif
             )
         }
