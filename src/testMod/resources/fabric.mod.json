@@ -3,7 +3,7 @@
     "id": "test-mod",
     "name": "Test Mod",
     "version": "1.0.0",
-    "description": "A test mod for testing purposes/",
+    "description": "A test mod for testing purposes.",
     "environment": "*",
     "authors": [
         "Deftu"

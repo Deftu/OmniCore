@@ -82,6 +82,10 @@ class TestMod
 
     //#if FABRIC
     override
+    //#elseif FORGE && MC <= 1.12.2
+    //$$ @Mod.EventHandler
+    //#else
+    //$$ private
     //#endif
     fun onInitializeClient(
         //#if FORGE && MC <= 1.12.2
