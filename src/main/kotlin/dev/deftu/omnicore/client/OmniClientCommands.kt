@@ -152,7 +152,7 @@ public object OmniClientCommands {
     }
 
     @JvmStatic
-    internal fun execute(command: String): Boolean {
+    public fun execute(command: String): Boolean {
         val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
 
         OmniProfiler.start("omnicore_command___$command")
@@ -179,7 +179,7 @@ public object OmniClientCommands {
 
     //#if MC <= 1.12.2
     //$$ @JvmStatic
-    //$$ internal fun retrieveAutoComplete(command: String): Set<String> {
+    //$$ public fun retrieveAutoComplete(command: String): Set<String> {
     //$$     val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
     //$$     return dispatcher.getCompletionSuggestions(results)
     //$$         .join()
