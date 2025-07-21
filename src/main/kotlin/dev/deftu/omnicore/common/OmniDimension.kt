@@ -78,6 +78,12 @@ public sealed interface OmniDimension {
 
     public data class End(override val id: DimensionId) : OmniDimension
 
-    public data class Custom(override val id: DimensionId, public val name: String) : OmniDimension
+    public data class Custom(override val id: DimensionId, public val name: String) : OmniDimension {
+
+        init {
+            require(name.isNotBlank()) { "Dimension name cannot be blank" }
+        }
+
+    }
 
 }
