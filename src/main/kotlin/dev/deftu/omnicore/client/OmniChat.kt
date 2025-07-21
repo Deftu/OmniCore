@@ -53,10 +53,7 @@ public object OmniChat {
         val text = MCSimpleMutableTextHolder(throwable.message ?: "An error occurred")
             .addFormatting(MCTextFormat.RED)
         if (isDetailed) {
-            val stackTraceText = throwable.stackTraceToString()
-                .replace("\r\n", "\n")
-                .replace("\t", " ".repeat(4))
-            text.setHoverEvent(MCHoverEvent.ShowText(stackTraceText))
+            text.setHoverEvent(MCHoverEvent.ShowText(throwable.toReadableStackTrace()))
         }
 
         displayClientMessage(text)
@@ -66,16 +63,13 @@ public object OmniChat {
     @JvmOverloads
     @GameSide(Side.CLIENT)
     public fun displayErrorMessage(text: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true) {
-        val text = MCSimpleMutableTextHolder("")
+        val displayedText = MCSimpleMutableTextHolder("")
             .append(text)
         if (isDetailed) {
-            val stackTraceText = throwable.stackTraceToString()
-                .replace("\r\n", "\n")
-                .replace("\t", " ".repeat(4))
-            text.setHoverEvent(MCHoverEvent.ShowText(stackTraceText))
+            displayedText.setHoverEvent(MCHoverEvent.ShowText(throwable.toReadableStackTrace()))
         }
 
-        displayClientMessage(text)
+        displayClientMessage(displayedText)
     }
 
     /**
@@ -107,6 +101,12 @@ public object OmniChat {
     @GameSide(Side.CLIENT)
     public fun sendPlayerMessage(text: TextHolder<*, *>) {
         sendPlayerMessage(text.asString())
+    }
+
+    private fun Throwable.toReadableStackTrace(): String {
+        return this.stackTraceToString()
+            .replace("\r\n", "\n")
+            .replace("\t", " ".repeat(4))
     }
 
 }
