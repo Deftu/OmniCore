@@ -173,7 +173,7 @@ public object OmniLoader {
             val match = versionRegex.find(version) ?: throw IllegalArgumentException("Invalid version format, could not match to regex: $version")
             val groups = match.groups
 
-            val major = groups["major"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version forma, missing major version: $version")
+            val major = groups["major"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing major version: $version")
             val minor = groups["minor"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing minor version: $version")
             val patch = groups["patch"]?.value?.toInt() ?: 0
 
