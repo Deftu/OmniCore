@@ -4,7 +4,7 @@ import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 
 @GameSide(Side.CLIENT)
-public object OmniKeyBindingSettings {
+public object OmniKeyboardSettings {
 
     @GameSide(Side.CLIENT)
     public object Capabilities {
