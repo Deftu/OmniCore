@@ -12,7 +12,7 @@ public enum class SmoothLightingMode {
 
     public companion object {
 
-        internal fun from(vanilla: Int): SmoothLightingMode {
+        public fun from(vanilla: Int): SmoothLightingMode {
             return when (vanilla) {
                 0 -> OFF
                 1 -> MINIMUM

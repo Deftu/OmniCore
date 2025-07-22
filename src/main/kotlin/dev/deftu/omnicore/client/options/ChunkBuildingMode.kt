@@ -14,18 +14,18 @@ public enum class ChunkBuildingMode {
     PLAYER_AFFECTED,
     NEARBY;
 
-    //#if MC >= 1.18.2
-    internal companion object {
+    public companion object {
 
-        fun from(vanilla: ChunkBuilderMode): ChunkBuildingMode {
+        //#if MC >= 1.18.2
+        public fun from(vanilla: ChunkBuilderMode): ChunkBuildingMode {
             return when (vanilla) {
                 ChunkBuilderMode.NONE -> NONE
                 ChunkBuilderMode.PLAYER_AFFECTED -> PLAYER_AFFECTED
                 ChunkBuilderMode.NEARBY -> NEARBY
             }
         }
+        //#endif
 
     }
-    //#endif
 
 }

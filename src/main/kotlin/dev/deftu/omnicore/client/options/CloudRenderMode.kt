@@ -14,10 +14,10 @@ public enum class CloudRenderMode {
     FAST,
     FANCY;
 
-    internal companion object {
+    public companion object {
 
         //#if MC >= 1.16.5
-        fun from(vanilla: VanillaCloudRenderMode): CloudRenderMode {
+        public fun from(vanilla: VanillaCloudRenderMode): CloudRenderMode {
             return when (vanilla) {
                 VanillaCloudRenderMode.OFF -> DISABLED
                 VanillaCloudRenderMode.FAST -> FAST
@@ -25,7 +25,7 @@ public enum class CloudRenderMode {
             }
         }
         //#else
-        //$$ fun from(vanilla: Int): CloudRenderMode {
+        //$$ public fun from(vanilla: Int): CloudRenderMode {
         //$$     return when (vanilla) {
         //$$         0 -> DISABLED
         //$$         1 -> FAST
