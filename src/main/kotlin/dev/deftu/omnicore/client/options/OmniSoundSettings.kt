@@ -93,7 +93,7 @@ public object OmniSoundSettings {
     @GameSide(Side.CLIENT)
     public val narratorMode: NarratorMode
         get() {
-            //#if MC >= 1.16.2
+            //#if MC >= 1.12.2
             return NarratorMode.from(unwrap(options.narrator))
             //#else
             //$$ return NarratorMode.OFF
@@ -104,7 +104,7 @@ public object OmniSoundSettings {
     @GameSide(Side.CLIENT)
     public val isNarratorEnabled: Boolean
         get() {
-            //#if MC >= 1.16.2
+            //#if MC >= 1.12.2
             return narratorMode != NarratorMode.OFF
             //#else
             //$$ return false
