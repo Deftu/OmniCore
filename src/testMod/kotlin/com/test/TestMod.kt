@@ -2,6 +2,11 @@ package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.client.*
+import dev.deftu.omnicore.client.OmniClientCommands.argument
+import dev.deftu.omnicore.client.OmniClientCommands.command
+import dev.deftu.omnicore.client.OmniClientCommands.does
+import dev.deftu.omnicore.client.OmniClientCommands.register
+import dev.deftu.omnicore.client.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
@@ -41,11 +46,11 @@ class TestMod
 
     private val logger = LogManager.getLogger(TestMod::class.java)
 
-    private val exampleKeyBinding = OmniKeyBinding(
+    private val exampleKeyBinding = OmniKeyBinding.create(
         name = "Example KeyBinding",
         category = "Example Mod",
         defaultValue = OmniKeyboard.KEY_M,
-        type = OmniKeyBinding.Type.KEY
+        type = OmniKeyBinding.KeyBindingType.KEY
     )
 
     //#if FORGE && MC >= 1.16.5
@@ -78,6 +83,10 @@ class TestMod
 
     //#if FABRIC
     override
+    //#elseif FORGE && MC <= 1.12.2
+    //$$ @Mod.EventHandler
+    //#else
+    //$$ private
     //#endif
     fun onInitializeClient(
         //#if FORGE && MC <= 1.12.2
@@ -94,52 +103,43 @@ class TestMod
 
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
 
-        OmniClientCommands.register(
-            OmniClientCommands.literal("testmod")
-                .executes {
-                    val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
+        OmniClientCommands.command("testmod") {
+            does {
+                val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
 
-                    it.source.displayError(testError)
-                    OmniChat.displayClientMessage("---")
-                    OmniChat.displayErrorMessage(testError)
-                    OmniChat.displayClientMessage("---")
-                    OmniChat.displayErrorMessage(MCSimpleTextHolder("This is a test error message!").withFormatting(MCTextFormat.DARK_PURPLE), testError)
+                source.displayError(testError)
+                OmniChat.displayClientMessage("---")
+                OmniChat.displayErrorMessage(testError)
+                OmniChat.displayClientMessage("---")
+                OmniChat.displayErrorMessage(MCSimpleTextHolder("This is a test error message!").withFormatting(MCTextFormat.DARK_PURPLE), testError)
 
-                    OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
+                OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
 
-                    OmniChat.displayClientMessage("TestMod base command executed!")
-                    OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
-                        OmniPackets.writeString(this, "Hello, world!")
-                    })
+                OmniChat.displayClientMessage("TestMod base command executed!")
+                OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
+                    OmniPackets.writeString(this, "Hello, world!")
+                })
 
+                1
+            }
+
+            command("subcommand") {
+                argument("name", StringArgumentType.greedyString()) {
+                    does {
+                        val name = StringArgumentType.getString(this, "name")
+                        source.displayError("TestMod subcommand executed with name: $name")
+                        1
+                    }
+                }
+            }
+
+            command("screen") {
+                does {
+                    OmniScreen.openAfter(1, TestScreen())
                     1
                 }
-                .then(
-                    OmniClientCommands.literal("subcommand")
-                        .then(
-                            OmniClientCommands.argument("name", StringArgumentType.greedyString())
-                                .executes { ctx ->
-                                    val name = StringArgumentType.getString(ctx, "name")
-                                    ctx.source.displayError("TestMod subcommand executed with name: $name")
-                                    OmniScreen.openAfter(100, object : OmniScreen() {
-                                        override fun handleInitialize(width: Int, height: Int) {
-                                            println("Initialized screen with width $width and height $height")
-                                        }
-                                    })
-
-                                    1
-                                }
-                        )
-                )
-                .then(
-                    OmniClientCommands.literal("screen")
-                        .executes { ctx ->
-                            OmniScreen.openAfter(1, TestScreen())
-
-                            1
-                        }
-                )
-        )
+            }
+        }.register()
 
         //#if FABRIC && MC >= 1.16.5
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->

@@ -1,7 +1,10 @@
 package dev.deftu.omnicore
 
 import dev.deftu.omnicore.client.OmniClientCommands
+import dev.deftu.omnicore.client.OmniClientCommands.command
+import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
+import dev.deftu.omnicore.client.keybindings.MCKeyBinding
 import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.client.render.OmniGameRendering
 import dev.deftu.omnicore.common.OmniLoader
@@ -46,8 +49,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 
 //#if FORGE-LIKE
 //#if MC >= 1.16.5
-//$$ import dev.deftu.omnicore.client.OmniKeyBinding
-//$$
 //$$ @Mod(OmniCore.ID)
 //#else
 //$$ @Mod(modid = OmniCore.ID, version = OmniCore.VERSION)
@@ -111,67 +112,64 @@ public class OmniCoreEntrypoint
         OmniCommonEventPassthrough.initialize()
 
         if (OmniLoader.isPhysicalClient) {
-            //#if FORGE-LIKE && MC >= 1.19.2
-            //$$ OmniKeyBinding.initialize()
-            //#endif
-
             OmniClientEventPassthrough.initialize()
+            MCKeyBinding.initialize()
             ImmediateScreenRenderer.initialize()
             OmniGameRendering.initialize()
             OmniClientCommands.initialize()
 
-            OmniClientCommands.register(
-                OmniClientCommands.literal("omnicore")
-                    .executes { ctx ->
-                        ctx.source.displayMessage(MCSimpleTextHolder("Hello, World!").withFormatting(MCTextFormat.LIGHT_PURPLE))
+            OmniClientCommands.command(OmniCore.ID) {
+                does {
+                    source.displayMessage(MCSimpleTextHolder("Hello, World!").withFormatting(MCTextFormat.LIGHT_PURPLE))
+                    1
+                }
+
+                command("version") {
+                    does {
+                        val clickEvent = MCClickEvent.OpenUrl(URI.create(OmniCore.GIT_URL))
+                        val hoverEvent = MCHoverEvent.ShowText(OmniCore.GIT_URL)
+
+                        val lines = listOf(
+                            MCSimpleMutableTextHolder("OmniCore ")
+                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
+                                .append(
+                                    MCSimpleTextHolder("(${OmniCore.ID})")
+                                        .withFormatting(MCTextFormat.GREEN)
+                                ),
+                            MCSimpleMutableTextHolder("Version: ")
+                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
+                                .append(
+                                    MCSimpleTextHolder(OmniCore.VERSION)
+                                        .withFormatting(MCTextFormat.GREEN)
+                                ),
+                            MCSimpleMutableTextHolder("Branch: ")
+                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
+                                .setClickEvent(clickEvent)
+                                .setHoverEvent(hoverEvent)
+                                .append(
+                                    MCSimpleTextHolder(OmniCore.GIT_BRANCH)
+                                        .withFormatting(MCTextFormat.GREEN)
+                                ),
+                            MCSimpleMutableTextHolder("Commit: ")
+                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
+                                .setClickEvent(clickEvent)
+                                .setHoverEvent(hoverEvent)
+                                .append(
+                                    MCSimpleTextHolder(OmniCore.GIT_COMMIT)
+                                        .withFormatting(MCTextFormat.GREEN)
+                                ),
+                        )
+
+                        val maxLength = lines.map(TextHolder<*, *>::asUnformattedString).maxOf(String::length)
+
+                        source.displayMessage("-".repeat(maxLength))
+                        lines.forEach(source::displayMessage)
+                        source.displayMessage("-".repeat(maxLength))
+
                         1
-                    }.then(
-                        OmniClientCommands.literal("version")
-                            .executes { ctx ->
-                                val clickEvent = MCClickEvent.OpenUrl(URI.create(OmniCore.GIT_URL))
-                                val hoverEvent = MCHoverEvent.ShowText(OmniCore.GIT_URL)
-
-                                val lines = listOf(
-                                    MCSimpleMutableTextHolder("OmniCore ")
-                                        .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                        .append(
-                                            MCSimpleTextHolder("(${OmniCore.ID})")
-                                                .withFormatting(MCTextFormat.GREEN)
-                                        ),
-                                    MCSimpleMutableTextHolder("Version: ")
-                                        .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                        .append(
-                                            MCSimpleTextHolder(OmniCore.VERSION)
-                                                .withFormatting(MCTextFormat.GREEN)
-                                        ),
-                                    MCSimpleMutableTextHolder("Branch: ")
-                                        .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                        .setClickEvent(clickEvent)
-                                        .setHoverEvent(hoverEvent)
-                                        .append(
-                                            MCSimpleTextHolder(OmniCore.GIT_BRANCH)
-                                                .withFormatting(MCTextFormat.GREEN)
-                                        ),
-                                    MCSimpleMutableTextHolder("Commit: ")
-                                        .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                        .setClickEvent(clickEvent)
-                                        .setHoverEvent(hoverEvent)
-                                        .append(
-                                            MCSimpleTextHolder(OmniCore.GIT_COMMIT)
-                                                .withFormatting(MCTextFormat.GREEN)
-                                        ),
-                                )
-
-                                val maxLength = lines.map(TextHolder<*, *>::asUnformattedString).maxOf(String::length)
-
-                                ctx.source.displayMessage("-".repeat(maxLength))
-                                lines.forEach(ctx.source::displayMessage)
-                                ctx.source.displayMessage("-".repeat(maxLength))
-
-                                1
-                            }
-                    )
-            )
+                    }
+                }
+            }
         }
 
         if (OmniLoader.isPhysicalServer) {

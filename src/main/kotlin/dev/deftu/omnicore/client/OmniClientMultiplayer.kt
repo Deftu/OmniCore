@@ -31,7 +31,7 @@ public object OmniClientMultiplayer {
      */
     @JvmStatic
     public val currentServer: OmniClientServerEntry?
-        get() = OmniClient.currentServerInfo?.let { OmniClientServerEntry(it.name, it.address, it.isLocal) }
+        get() = OmniClient.currentServerInfo?.let(OmniClientServerEntry::fromServerInfo)
 
     /**
      * @return The server name, null if the player is not in a server.
@@ -115,23 +115,14 @@ public object OmniClientMultiplayer {
      */
     @JvmStatic
     public val isInMultiplayer: Boolean
-        get() = OmniClient.world != null && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServer != null && currentServer?.address != null
+        get() = OmniClient.world != null && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServer?.address != null
 
     @JvmStatic
-    @JvmOverloads
-    public fun connectTo(hostname: String, name: String = hostname, isLocal: Boolean = false) {
-        val serverInfo = ServerInfo(
-            name,
-            hostname,
-            //#if MC >= 1.20.4
-            if (isLocal) ServerInfo.ServerType.LAN else ServerInfo.ServerType.OTHER,
-            //#else
-            //$$ isLocal,
-            //#endif
-        )
+    public fun connectTo(entry: OmniClientServerEntry) {
+        val serverInfo = entry.toServerInfo()
 
         //#if MC >= 1.17.1
-        val serverAddress = ServerAddress.parse(hostname)
+        val serverAddress = ServerAddress.parse(entry.address)
         ConnectScreen.connect(
             MultiplayerScreen(OmniScreen.currentScreen),
             OmniClient.getInstance(),
@@ -147,6 +138,13 @@ public object OmniClientMultiplayer {
         //#else
         //$$ OmniScreen.currentScreen = ConnectScreen(MultiplayerScreen(OmniScreen.currentScreen), OmniClient.getInstance(), serverInfo)
         //#endif
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    public fun connectTo(hostname: String, name: String = hostname, isLocal: Boolean = false) {
+        val entry = OmniClientServerEntry(name, hostname, isLocal)
+        connectTo(entry)
     }
 
 }

@@ -1,0 +1,9 @@
+[
+    {
+        "modid": "testmod",
+        "name": "Test Mod",
+        "version": "1.0.0",
+        "description": "A test mod for testing purposes.",
+        "authorList": ["Deftu"]
+    }
+]

@@ -380,7 +380,7 @@ public object OmniClientEventPassthrough {
         //$$     val keyCode = event.keyCode
         //$$     val scanCode = event.scanCode
         //$$     val modifiers = event.modifiers.toKeyboardModifiers()
-        //$$     OmniCore.eventBus.post(ScreenEvent.KeyRelease.Pre(screen, keyCode, scanCode, modifiers))
+        //$$     OmniCore.eventBus.post(ScreenEvent.KeyRelease.Post(screen, keyCode, scanCode, modifiers))
         //$$ }
         //$$
         //$$ EventHolder.EVENT_BUS.addListener<LoaderPreKeyReleaseEvent> { event ->
@@ -525,7 +525,7 @@ public object OmniClientEventPassthrough {
     //$$     val modifiers = OmniKeyboard.modifiers
     //$$     val action = if (Keyboard.getEventKeyState()) 1 else 0
     //$$     when (action) {
-    //$$         1 -> OmniCore.eventBus.post(ScreenEvent.KeyPress.Pre(event.gui, keyCode, action, modifiers))
+    //$$         1 -> OmniCore.eventBus.post(ScreenEvent.KeyPress.Post(event.gui, keyCode, action, modifiers))
     //$$         0 -> OmniCore.eventBus.post(ScreenEvent.KeyRelease.Pre(event.gui, keyCode, action, modifiers))
     //$$     }
     //$$ }

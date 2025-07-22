@@ -37,7 +37,7 @@ public object OmniServerPackets {
     @JvmStatic
     @GameSide(Side.SERVER)
     public fun send(player: ServerPlayerEntity, id: Identifier, consumer: Consumer<ByteBuf>) {
-        val networkHandler = player.networkHandler ?: return
+        val networkHandler = player.networkHandler
 
         //#if FORGE && MC <= 1.12.2
         //$$ OmniPackets.setupCustomPacketHandler(

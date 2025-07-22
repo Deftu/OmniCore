@@ -45,7 +45,7 @@ package dev.deftu.omnicore.mixins.client;
 //$$         partialMessage = partialMessage.substring(1);
 //$$
 //$$         this.omnicore$autoCompletions.clear();
-//$$         this.omnicore$autoCompletions.addAll(OmniClientCommands.retrieveAutoComplete$OmniCore(partialMessage));
+//$$         this.omnicore$autoCompletions.addAll(OmniClientCommands.retrieveAutoComplete(partialMessage));
 //$$     }
 //$$
 //$$     @ModifyVariable(

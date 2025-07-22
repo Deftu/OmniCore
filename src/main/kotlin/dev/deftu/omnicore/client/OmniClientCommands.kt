@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
-import com.mojang.brigadier.exceptions.CommandExceptionType
+import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.deftu.omnicore.annotations.GameSide
@@ -152,7 +152,7 @@ public object OmniClientCommands {
     }
 
     @JvmStatic
-    internal fun execute(command: String): Boolean {
+    public fun execute(command: String): Boolean {
         val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
 
         OmniProfiler.start("omnicore_command___$command")
@@ -179,7 +179,7 @@ public object OmniClientCommands {
 
     //#if MC <= 1.12.2
     //$$ @JvmStatic
-    //$$ internal fun retrieveAutoComplete(command: String): Set<String> {
+    //$$ public fun retrieveAutoComplete(command: String): Set<String> {
     //$$     val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
     //$$     return dispatcher.getCompletionSuggestions(results)
     //$$         .join()
@@ -189,5 +189,62 @@ public object OmniClientCommands {
     //$$         .toSet()
     //$$ }
     //#endif
+
+    // Kotlin DSL
+
+    @GameSide(Side.CLIENT)
+    public fun LiteralArgumentBuilder<OmniClientCommandSource>.register(): LiteralCommandNode<OmniClientCommandSource> {
+        val node = this.build()
+        register(node)
+        return node
+    }
+
+    @GameSide(Side.CLIENT)
+    public fun OmniClientCommands.command(name: String, block: LiteralArgumentBuilder<OmniClientCommandSource>.() -> Unit): LiteralArgumentBuilder<OmniClientCommandSource> {
+        val command = literal(name)
+        command.block()
+        return command
+    }
+
+    @GameSide(Side.CLIENT)
+    public fun LiteralArgumentBuilder<OmniClientCommandSource>.does(block: CommandContext<OmniClientCommandSource>.() -> Int): LiteralArgumentBuilder<OmniClientCommandSource> {
+        this.executes { ctx ->
+            block(ctx)
+        }
+
+        return this
+    }
+
+    @GameSide(Side.CLIENT)
+    public fun LiteralArgumentBuilder<OmniClientCommandSource>.command(
+        name: String,
+        block: LiteralArgumentBuilder<OmniClientCommandSource>.() -> Unit
+    ): LiteralArgumentBuilder<OmniClientCommandSource> {
+        val command = literal(name)
+        command.block()
+        this.then(command)
+        return command
+    }
+
+    @GameSide(Side.CLIENT)
+    public fun <T> LiteralArgumentBuilder<OmniClientCommandSource>.argument(
+        name: String,
+        type: ArgumentType<T>,
+        block: RequiredArgumentBuilder<OmniClientCommandSource, *>.() -> Unit
+    ): RequiredArgumentBuilder<OmniClientCommandSource, *> {
+        val argument = argument(name, type)
+        argument.block()
+        this.then(argument)
+        return argument
+    }
+
+    @GameSide(Side.CLIENT)
+    public fun <T> RequiredArgumentBuilder<OmniClientCommandSource, T>.does(block: CommandContext<OmniClientCommandSource>.() -> Int): RequiredArgumentBuilder<OmniClientCommandSource, T> {
+        this.executes { ctx ->
+            block(ctx)
+        }
+
+        return this
+    }
 
 }

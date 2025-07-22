@@ -4,7 +4,11 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.builder.RequiredArgumentBuilder
+import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.tree.LiteralCommandNode
+import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Incubating
+import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.common.OmniCommands
 
 //#if MC >= 1.16.5
@@ -103,22 +107,24 @@ public object OmniServerCommands {
     }
 
     @JvmStatic
-    @Incubating
-    public fun register(command: LiteralArgumentBuilder<OmniServerCommandSource>) {
-        //#if MC <= 1.12.2
-        //$$ val node =
-        //#endif
-        dispatcher.register(command)
+    public fun register(node: LiteralCommandNode<OmniServerCommandSource>) {
+        dispatcher.root.addChild(node)
 
         //#if FORGE && MC <= 1.12.2
         //$$ val server = FMLServerHandler.instance().server
         //$$ val commandManager = server.commandManager as ServerCommandManager
         //$$ commandManager.registerCommand(OmniCommandBridge(
-        //$$     node = command.build(),
+        //$$     node = node,
         //$$     executor = { sender, command -> execute(server, sender, command) },
         //$$     completer = { sender, command -> retrieveAutoComplete(server, sender, command) }
         //$$ ))
         //#endif
+    }
+
+    @JvmStatic
+    @Incubating
+    public fun register(command: LiteralArgumentBuilder<OmniServerCommandSource>) {
+        register(command.build())
     }
 
     @JvmStatic
@@ -184,5 +190,62 @@ public object OmniServerCommands {
     //$$         return field.get(this) as CommandSource
     //$$     }
     //#endif
+
+    // Kotlin DSL
+
+    @GameSide(Side.SERVER)
+    public fun LiteralArgumentBuilder<OmniServerCommandSource>.register(): LiteralCommandNode<OmniServerCommandSource> {
+        val node = this.build()
+        register(node)
+        return node
+    }
+
+    @GameSide(Side.SERVER)
+    public fun OmniServerCommands.command(name: String, block: LiteralArgumentBuilder<OmniServerCommandSource>.() -> Unit): LiteralArgumentBuilder<OmniServerCommandSource> {
+        val command = literal(name)
+        command.block()
+        return command
+    }
+
+    @GameSide(Side.SERVER)
+    public fun LiteralArgumentBuilder<OmniServerCommandSource>.does(block: CommandContext<OmniServerCommandSource>.() -> Int): LiteralArgumentBuilder<OmniServerCommandSource> {
+        this.executes { ctx ->
+            block(ctx)
+        }
+
+        return this
+    }
+
+    @GameSide(Side.SERVER)
+    public fun LiteralArgumentBuilder<OmniServerCommandSource>.command(
+        name: String,
+        block: LiteralArgumentBuilder<OmniServerCommandSource>.() -> Unit
+    ): LiteralArgumentBuilder<OmniServerCommandSource> {
+        val command = literal(name)
+        command.block()
+        this.then(command)
+        return command
+    }
+
+    @GameSide(Side.SERVER)
+    public fun <T> LiteralArgumentBuilder<OmniServerCommandSource>.argument(
+        name: String,
+        type: ArgumentType<T>,
+        block: RequiredArgumentBuilder<OmniServerCommandSource, *>.() -> Unit
+    ): RequiredArgumentBuilder<OmniServerCommandSource, *> {
+        val argument = argument(name, type)
+        argument.block()
+        this.then(argument)
+        return argument
+    }
+
+    @GameSide(Side.SERVER)
+    public fun <T> RequiredArgumentBuilder<OmniServerCommandSource, T>.does(block: CommandContext<OmniServerCommandSource>.() -> Int): RequiredArgumentBuilder<OmniServerCommandSource, T> {
+        this.executes { ctx ->
+            block(ctx)
+        }
+
+        return this
+    }
 
 }

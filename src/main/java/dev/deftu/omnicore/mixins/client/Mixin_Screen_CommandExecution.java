@@ -31,7 +31,7 @@ package dev.deftu.omnicore.mixins.client;
 //$$         }
 //$$
 //$$         message = message.substring(1);
-//$$         if (OmniClientCommands.execute$OmniCore(message)) {
+//$$         if (OmniClientCommands.execute(message)) {
 //$$             ci.cancel();
 //$$         }
 //$$     }
@@ -52,14 +52,14 @@ package dev.deftu.omnicore.mixins.client;
 //$$
 //$$     @Inject(method = "sendCommand(Ljava/lang/String;)Z", at = @At("HEAD"), cancellable = true)
 //$$     private void omnicore$overwriteCommandSend(String command, CallbackInfoReturnable<Boolean> cir) {
-//$$         if (OmniClientCommands.execute$OmniCore(command)) {
+//$$         if (OmniClientCommands.execute(command)) {
 //$$             cir.setReturnValue(true);
 //$$         }
 //$$     }
 //$$
 //$$     @Inject(method = "sendCommandInternal", at = @At("HEAD"), cancellable = true)
 //$$     private void omnicore$overwriteCommandSend(String command, Text text, CallbackInfo ci) {
-//$$         if (OmniClientCommands.execute$OmniCore(command)) {
+//$$         if (OmniClientCommands.execute(command)) {
 //$$             ci.cancel();
 //$$         }
 //$$     }
@@ -84,14 +84,14 @@ public class Mixin_Screen_CommandExecution {
     //#if MC >= 1.21.6
     @Inject(method = "runClickEventCommand", at = @At("HEAD"), cancellable = true)
     private void omnicore$overwriteCommandSend(String command, Screen screen, CallbackInfo ci) {
-        if (OmniClientCommands.execute$OmniCore(command)) {
+        if (OmniClientCommands.execute(command)) {
             ci.cancel();
         }
     }
     //#else
     //$$ @Inject(method = "sendCommand", at = @At("HEAD"), cancellable = true)
     //$$ private void omnicore$overwriteCommandSend(String command, CallbackInfoReturnable<Boolean> cir) {
-    //$$     if (OmniClientCommands.execute$OmniCore(command)) {
+    //$$     if (OmniClientCommands.execute(command)) {
     //$$         cir.setReturnValue(true);
     //$$     }
     //$$ }
@@ -99,7 +99,7 @@ public class Mixin_Screen_CommandExecution {
 
     @Inject(method = "sendChatCommand", at = @At("HEAD"), cancellable = true)
     private void omnicore$overwriteCommandSend(String command, CallbackInfo ci) {
-        if (OmniClientCommands.execute$OmniCore(command)) {
+        if (OmniClientCommands.execute(command)) {
             ci.cancel();
         }
     }

@@ -39,7 +39,11 @@ public object OmniClientPackets {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public fun send(id: Identifier, consumer: Consumer<ByteBuf>) {
-        val networkHandler = OmniClient.networkHandler ?: return
+        val networkHandler = OmniClient.networkHandler
+        if (networkHandler == null) {
+            logger.warn("Attempted to send packet '$id' while network handler is null.")
+            return
+        }
 
         //#if FORGE && MC <= 1.12.2
         //$$ setupForgeListener()
