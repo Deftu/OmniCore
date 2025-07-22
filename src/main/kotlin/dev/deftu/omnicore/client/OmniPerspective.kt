@@ -10,17 +10,17 @@ import net.minecraft.client.option.Perspective
  * Represents the camera perspectives available in Minecraft
  * and provides utilities to read and apply them via the client options.
  *
- * @property firstPerson true if this perspective is first-person
- * @property frontView  true if this perspective shows the camera in front of the player
+ * @property isFirstPerson true if this perspective is first-person
+ * @property isFrontView  true if this perspective shows the camera in front of the player
  */
 @GameSide(Side.CLIENT)
 @Suppress("EnumValuesSoftDeprecate")
 public enum class OmniPerspective(
     @get:GameSide(Side.CLIENT)
-    public val firstPerson: Boolean,
+    public val isFirstPerson: Boolean,
 
     @get:GameSide(Side.CLIENT)
-    public val frontView: Boolean
+    public val isFrontView: Boolean
 ) {
 
     FIRST_PERSON(true,  false),
