@@ -2,47 +2,95 @@ package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
-
 //#if MC >= 1.16.2
 import net.minecraft.client.option.Perspective
 //#endif
 
+/**
+ * Represents the camera perspectives available in Minecraft
+ * and provides utilities to read and apply them via the client options.
+ *
+ * @property firstPerson true if this perspective is first-person
+ * @property frontView  true if this perspective shows the camera in front of the player
+ */
 @GameSide(Side.CLIENT)
-public object OmniPerspective {
+public enum class OmniPerspective(
+    @get:GameSide(Side.CLIENT)
+    public val firstPerson: Boolean,
 
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public var perspective: Int
-        get() {
-            //#if MC >= 1.16.2
-            return OmniClient.getInstance().options.perspective.ordinal
-            //#else
-            //$$ return OmniClient.getInstance().gameSettings.thirdPersonView
-            //#endif
-        }
-        set(value) {
-            //#if MC >= 1.16.2
-            OmniClient.getInstance().options.perspective = Perspective.entries[perspective]
-            //#else
-            //$$ OmniClient.getInstance().gameSettings.thirdPersonView = perspective
-            //#endif
-        }
+    @get:GameSide(Side.CLIENT)
+    public val frontView: Boolean
+) {
+    FIRST_PERSON(true,  false),
+    THIRD_PERSON_BACK(false, false),
+    THIRD_PERSON_FRONT(false, true);
 
     /**
-     * <= 1.16.1 will max at 2. Technically it could be expanded by other mods but tracking that might be difficult.
-     * <br>
-     * For modern MC perspective enum, this is completely possible to expand and track so long as this is being used.
-     * @return The maximum perspective index
+     * Sets the current camera perspective to this.
      */
-    @JvmStatic
     @GameSide(Side.CLIENT)
-    public var maximumPerspective: Int = 2
-        get() {
-            //#if MC >= 1.16.2
-            return Perspective.entries.size - 1
-            //#else
-            //$$ return 2
-            //#endif
-        }
+    public fun apply() {
+        rawCurrentPerspective = ordinal
+    }
 
+    /**
+     * Cycles to the next perspective, wrapping back to FIRST_PERSON.
+     */
+    @GameSide(Side.CLIENT)
+    public fun next(): OmniPerspective {
+        val all = OmniPerspective.entries.toTypedArray()
+        return all[(ordinal + 1) % all.size]
+    }
+
+
+    /**
+     * Cycles to the previous perspective, wrapping back to THIRD_PERSON_FRONT.
+     */
+    @GameSide(Side.CLIENT)
+    public fun prev(): OmniPerspective {
+        val all = OmniPerspective.entries.toTypedArray()
+        return all[(ordinal - 1 + all.size) % all.size]
+    }
+
+    public companion object {
+        /**
+         * The raw integer value of the current camera perspective
+         * as provided by the Minecraft client.
+         */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public var rawCurrentPerspective: Int
+            get() {
+                //#if MC >= 1.16.2
+                return OmniClient.getInstance().options.perspective.ordinal
+                //#else
+                //$$ return OmniClient.getInstance().gameSettings.thirdPersonView
+                //#endif
+            }
+            set(value) {
+                //#if MC >= 1.16.2
+                OmniClient.getInstance().options.perspective = Perspective.entries[value]
+                //#else
+                //$$ OmniClient.getInstance().gameSettings.thirdPersonView = value
+                //#endif
+            }
+
+        /**
+         * The current camera perspective.
+         */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public var currentPerspective: OmniPerspective
+            get() = fromInt(rawCurrentPerspective)
+            set(value) { rawCurrentPerspective = value.ordinal }
+
+        /**
+         * Returns an OmniPerspective for the given raw index,
+         * defaulting to FIRST_PERSON if out of bounds.
+         */
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun fromInt(value: Int): OmniPerspective =
+            OmniPerspective.entries[value]
+    }
 }
