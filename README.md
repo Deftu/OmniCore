@@ -42,6 +42,14 @@ maven(url = "https://maven.deftu.dev/releases") {
 <details>
     <summary>Minecraft versions & mod loaders</summary>
 
+- 1.21.8 NeoForge    (1.21.8-neoforge)
+- 1.21.8 Fabric      (1.21.8-fabric)
+- 1.21.7 NeoForge    (1.21.7-neoforge)
+- 1.21.7 Fabric      (1.21.7-fabric)
+- 1.21.6 NeoForge    (1.21.6-neoforge)
+- 1.21.6 Fabric      (1.21.6-fabric)
+- 1.21.5 NeoForge    (1.21.5-neoforge)
+- 1.21.5 Fabric      (1.21.5-fabric)
 - 1.21.4 NeoForge    (1.21.4-neoforge)
 - 1.21.4 Fabric      (1.21.4-fabric)
 - 1.21.1 NeoForge    (1.21.1-neoforge)
