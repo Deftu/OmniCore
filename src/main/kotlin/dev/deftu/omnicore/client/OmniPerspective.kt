@@ -72,7 +72,7 @@ public enum class OmniPerspective(
             }
             set(value) {
                 //#if MC >= 1.16.2
-                OmniClient.getInstance().options.perspective = Perspective.entries[value]
+                OmniClient.getInstance().options.perspective = Perspective.values()[value]
                 //#else
                 //$$ OmniClient.getInstance().gameSettings.thirdPersonView = value
                 //#endif
