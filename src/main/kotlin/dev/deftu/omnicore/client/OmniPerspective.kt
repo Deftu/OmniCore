@@ -44,12 +44,11 @@ public enum class OmniPerspective(
         return all[(ordinal + 1) % all.size]
     }
 
-
     /**
      * Cycles to the previous perspective, wrapping back to THIRD_PERSON_FRONT.
      */
     @GameSide(Side.CLIENT)
-    public fun prev(): OmniPerspective {
+    public fun previous(): OmniPerspective {
         val all = OmniPerspective.values()
         return all[(ordinal - 1 + all.size) % all.size]
     }
