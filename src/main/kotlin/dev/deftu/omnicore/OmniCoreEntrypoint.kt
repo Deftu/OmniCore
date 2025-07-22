@@ -4,6 +4,7 @@ import dev.deftu.omnicore.client.OmniClientCommands
 import dev.deftu.omnicore.client.OmniClientCommands.command
 import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
+import dev.deftu.omnicore.client.keybindings.MCKeyBinding
 import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.client.render.OmniGameRendering
 import dev.deftu.omnicore.common.OmniLoader
@@ -48,8 +49,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 
 //#if FORGE-LIKE
 //#if MC >= 1.16.5
-//$$ import dev.deftu.omnicore.client.OmniKeyBinding
-//$$
 //$$ @Mod(OmniCore.ID)
 //#else
 //$$ @Mod(modid = OmniCore.ID, version = OmniCore.VERSION)
@@ -113,11 +112,8 @@ public class OmniCoreEntrypoint
         OmniCommonEventPassthrough.initialize()
 
         if (OmniLoader.isPhysicalClient) {
-            //#if FORGE-LIKE && MC >= 1.19.2
-            //$$ OmniKeyBinding.initialize()
-            //#endif
-
             OmniClientEventPassthrough.initialize()
+            MCKeyBinding.initialize()
             ImmediateScreenRenderer.initialize()
             OmniGameRendering.initialize()
             OmniClientCommands.initialize()

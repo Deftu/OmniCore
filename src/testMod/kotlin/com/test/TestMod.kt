@@ -6,6 +6,7 @@ import dev.deftu.omnicore.client.OmniClientCommands.argument
 import dev.deftu.omnicore.client.OmniClientCommands.command
 import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.OmniClientCommands.register
+import dev.deftu.omnicore.client.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
@@ -45,11 +46,11 @@ class TestMod
 
     private val logger = LogManager.getLogger(TestMod::class.java)
 
-    private val exampleKeyBinding = OmniKeyBinding(
+    private val exampleKeyBinding = OmniKeyBinding.create(
         name = "Example KeyBinding",
         category = "Example Mod",
         defaultValue = OmniKeyboard.KEY_M,
-        type = OmniKeyBinding.Type.KEY
+        type = OmniKeyBinding.KeyBindingType.KEY
     )
 
     //#if FORGE && MC >= 1.16.5
