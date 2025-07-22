@@ -85,8 +85,7 @@ public enum class OmniPerspective(
             set(value) { rawCurrentPerspective = value.ordinal }
 
         /**
-         * Returns an OmniPerspective for the given raw index,
-         * defaulting to FIRST_PERSON if out of bounds.
+         * Returns an OmniPerspective for the given raw index
          */
         @JvmStatic
         @GameSide(Side.CLIENT)
