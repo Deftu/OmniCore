@@ -67,7 +67,7 @@ public object OmniVideoSettings {
             //#if MC >= 1.18.2
             return unwrap(options.simulationDistance)
             //#else
-            //$$ return -1 // Inconsistent between singleplayer and multiplayer so we'll just return -1
+            //$$ return 0 // Inconsistent between singleplayer and multiplayer so we'll just return 0
             //#endif
         }
 
@@ -80,7 +80,7 @@ public object OmniVideoSettings {
             //#elseif MC >= 1.17.1
             //$$ return options.entityDistanceScaling.toDouble()
             //#else
-            //$$ return -1 // Inconsistent between singleplayer and multiplayer so we'll just return -1
+            //$$ return 0.0 // Inconsistent between singleplayer and multiplayer so we'll just return 0
             //#endif
         }
 
@@ -97,7 +97,17 @@ public object OmniVideoSettings {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val renderMode: RenderMode
-        get() = RenderMode.from(unwrap(options.graphicsMode))
+        get() {
+            //#if MC >= 1.16.5
+            return RenderMode.from(unwrap(options.graphicsMode))
+            //#else
+            //$$ return if (options.fancyGraphics) {
+            //$$     RenderMode.FANCY
+            //$$ } else {
+            //$$     RenderMode.FAST
+            //$$ }
+            //#endif
+        }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
@@ -110,7 +120,7 @@ public object OmniVideoSettings {
                 SmoothLightingMode.OFF
             }
             //#elseif MC >= 1.16.5
-            //$$ return SmoothLightingMode.from(unwrap(options.ambientOcclusion.id))
+            //$$ return SmoothLightingMode.from(unwrap(options.ambientOcclusion()).id)
             //#else
             //$$ return SmoothLightingMode.from(options.ambientOcclusion)
             //#endif

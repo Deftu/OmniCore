@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.options
 
-//#if MC >= 1.9
+//#if MC >= 1.16.5
 import net.minecraft.client.option.AttackIndicator
 //#endif
 
@@ -17,11 +17,11 @@ public enum class AttackIndicatorPosition {
                 //#if MC >= 1.9
                 return true
                 //#else
-                // return false
+                //$$ return false
                 //#endif
             }
 
-        //#if MC >= 1.9
+        //#if MC >= 1.16.5
         public fun from(vanilla: AttackIndicator): AttackIndicatorPosition {
             return when (vanilla) {
                 AttackIndicator.OFF -> OFF
@@ -29,6 +29,15 @@ public enum class AttackIndicatorPosition {
                 AttackIndicator.HOTBAR -> HOTBAR
             }
         }
+        //#elseif MC >= 1.12.2
+        //$$ public fun from(vanilla: Int): AttackIndicatorPosition {
+        //$$     return when (vanilla) {
+        //$$         0 -> OFF
+        //$$         1 -> CROSSHAIR
+        //$$         2 -> HOTBAR
+        //$$         else -> throw IllegalArgumentException("Unknown attack indicator value: $vanilla")
+        //$$     }
+        //$$ }
         //#endif
 
     }

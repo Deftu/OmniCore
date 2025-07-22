@@ -25,7 +25,7 @@ public enum class CloudRenderMode {
             }
         }
         //#else
-        //$$ fun fromVanilla(vanilla: Int): CloudRenderingMode {
+        //$$ fun from(vanilla: Int): CloudRenderMode {
         //$$     return when (vanilla) {
         //$$         0 -> DISABLED
         //$$         1 -> FAST
