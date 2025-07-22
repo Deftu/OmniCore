@@ -14,6 +14,7 @@ import net.minecraft.client.option.Perspective
  * @property frontView  true if this perspective shows the camera in front of the player
  */
 @GameSide(Side.CLIENT)
+@Suppress("EnumValuesSoftDeprecate")
 public enum class OmniPerspective(
     @get:GameSide(Side.CLIENT)
     public val firstPerson: Boolean,
@@ -21,6 +22,7 @@ public enum class OmniPerspective(
     @get:GameSide(Side.CLIENT)
     public val frontView: Boolean
 ) {
+
     FIRST_PERSON(true,  false),
     THIRD_PERSON_BACK(false, false),
     THIRD_PERSON_FRONT(false, true);
@@ -38,7 +40,7 @@ public enum class OmniPerspective(
      */
     @GameSide(Side.CLIENT)
     public fun next(): OmniPerspective {
-        val all = OmniPerspective.entries.toTypedArray()
+        val all = OmniPerspective.values()
         return all[(ordinal + 1) % all.size]
     }
 
@@ -48,11 +50,12 @@ public enum class OmniPerspective(
      */
     @GameSide(Side.CLIENT)
     public fun prev(): OmniPerspective {
-        val all = OmniPerspective.entries.toTypedArray()
+        val all = OmniPerspective.values()
         return all[(ordinal - 1 + all.size) % all.size]
     }
 
     public companion object {
+
         /**
          * The raw integer value of the current camera perspective
          * as provided by the Minecraft client.
@@ -90,6 +93,8 @@ public enum class OmniPerspective(
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun fromInt(value: Int): OmniPerspective =
-            OmniPerspective.entries[value]
+            OmniPerspective.values()[value]
+
     }
+
 }
