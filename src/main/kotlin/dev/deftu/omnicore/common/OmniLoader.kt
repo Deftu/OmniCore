@@ -98,7 +98,7 @@ public object OmniLoader {
             /**
              * A dummy [ModInfo] object that represents a non-existent mod.
              */
-            @JvmStatic
+            @JvmField
             @GameSide(Side.BOTH)
             public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null, null)
 
