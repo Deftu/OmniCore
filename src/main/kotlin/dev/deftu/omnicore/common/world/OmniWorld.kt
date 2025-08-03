@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.common.world
 
 import dev.deftu.omnicore.common.OmniBlockPos
+import net.minecraft.block.Block
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.BlockPos
@@ -129,6 +130,10 @@ public class OmniWorld(public val vanilla: World) {
 
     public fun isBlockLoaded(x: Int, y: Int, z: Int): Boolean {
         return isBlockLoaded(OmniBlockPos.from(x, y, z))
+    }
+
+    public fun getBlockTypeAt(pos: BlockPos): Block? {
+        return vanilla.getBlockState(pos)?.block
     }
     
     public fun getPlayerByUuid(uuid: UUID): PlayerEntity? {
