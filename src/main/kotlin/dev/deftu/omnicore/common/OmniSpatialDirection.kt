@@ -71,11 +71,16 @@ public enum class OmniSpatialDirection {
             DOWN to Direction.DOWN
         )
 
+        @JvmField
+        @GameSide(Side.BOTH)
+        public val VANILLA_MAPPINGS_INVERSE: Map<Direction, OmniSpatialDirection> = VANILLA_MAPPINGS.entries
+            .associate { (key, value) -> value to key }
+
         @JvmStatic
         @GameSide(Side.BOTH)
         public fun from(direction: Direction): OmniSpatialDirection {
-            return VANILLA_MAPPINGS.entries.firstOrNull { it.value == direction }
-                ?.key ?: throw IllegalArgumentException("No OmniSpatialDirection for $direction")
+            return VANILLA_MAPPINGS_INVERSE[direction]
+                ?: throw IllegalArgumentException("No OmniSpatialDirection for vanilla direction $direction")
         }
 
     }
