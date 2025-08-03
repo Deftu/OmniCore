@@ -87,7 +87,6 @@ public object OmniClient {
                 return cachedLastWorld
             }
 
-            println("Invalidating cached world instance: $world")
             cachedLastWorld = OmniWorld(world)
             return cachedLastWorld
         }
