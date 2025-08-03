@@ -50,6 +50,15 @@ public class OmniWorld(public val vanilla: World) {
             //#endif
         }
 
+    public val height: Int
+        get() {
+            //#if MC >= 1.16.5
+            return vanilla.height
+            //#else
+            //$$ return vanilla.actualHeight
+            //#endif
+        }
+
     public val worldTime: Long
         get() = vanilla.timeOfDay
 
