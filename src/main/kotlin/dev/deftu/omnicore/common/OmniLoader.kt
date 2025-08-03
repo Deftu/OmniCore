@@ -435,19 +435,24 @@ public object OmniLoader {
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun getModInfo(id: String): ModInfo? {
+        val container = findModContainer(id)
+        return container?.let(::createModInfo)
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun findModContainer(id: String): ModContainer? {
         //#if FABRIC
-        val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
-        return if (container != null) createModInfo(container) else null
+        return FabricLoader.getInstance().getModContainer(id).orElse(null)
         //#else
         //#if MC >= 1.15.2
-        //$$ val container = ModList.get().getModContainerById(id).orElse(null)
-        //$$ return if (container != null) createModInfo(container) else null
+        //$$ return ModList.get().getModContainerById(id).orElse(null)
         //#else
-        //$$ val container = Loader.instance().getIndexedModList()[id]
-        //$$ return if (container != null) createModInfo(container) else null
+        //$$ return Loader.instance().getIndexedModList()[id]
         //#endif
         //#endif
     }
+
 
     @JvmStatic
     @GameSide(Side.BOTH)
