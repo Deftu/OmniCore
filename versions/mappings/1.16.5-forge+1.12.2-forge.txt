@@ -55,6 +55,8 @@ net.minecraft.util.profiling.ProfilerFiller popPush() endStartSection()
 
 net.minecraft.client.multiplayer.ClientLevel net.minecraft.client.multiplayer.WorldClient
 
+net.minecraft.core.Direction net.minecraft.util.EnumFacing
+
 net.minecraft.client.player.LocalPlayer net.minecraft.client.entity.EntityPlayerSP
 net.minecraft.client.player.LocalPlayer getX() posX
 net.minecraft.client.player.LocalPlayer getPrevX() getPrevPosX()
