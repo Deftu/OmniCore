@@ -113,6 +113,10 @@ public object OmniLoader {
             findModContainer(id)
         }
 
+        @GameSide(Side.BOTH)
+        public val isTrueMod: Boolean
+            get() = !isDummy && isLoaded
+
         @GameSide(Side.CLIENT)
         public val icon: InputStream?
             get() = iconPath?.let { getResourceStream(id, it) }
