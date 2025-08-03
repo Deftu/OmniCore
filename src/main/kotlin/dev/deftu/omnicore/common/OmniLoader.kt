@@ -108,6 +108,11 @@ public object OmniLoader {
         public val isDummy: Boolean
             get() = this === DUMMY
 
+        @GameSide(Side.BOTH)
+        public val modContainer: ModContainer? by lazy {
+            findModContainer(id)
+        }
+
         @GameSide(Side.CLIENT)
         public val icon: InputStream?
             get() = iconPath?.let { getResourceStream(id, it) }
