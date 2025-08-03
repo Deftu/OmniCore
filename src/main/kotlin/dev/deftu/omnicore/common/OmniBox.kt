@@ -6,6 +6,11 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.Vec3d
 
+//#if MC <= 1.8.9
+//$$ import kotlin.math.max
+//$$ import kotlin.math.min
+//#endif
+
 @GameSide(Side.BOTH)
 public object OmniBox {
 
@@ -25,7 +30,18 @@ public object OmniBox {
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun from(pos: BlockPos): Box {
+        //#if MC >= 1.12.2
         return Box(pos)
+        //#else
+        //$$ return Box(
+        //$$     pos.x.toDouble(),
+        //$$     pos.y.toDouble(),
+        //$$     pos.z.toDouble(),
+        //$$     pos.x + 1.0,
+        //$$     pos.y + 1.0,
+        //$$     pos.z + 1.0
+        //$$ )
+        //#endif
     }
 
     @JvmStatic
@@ -91,7 +107,20 @@ public object OmniBox {
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun intersect(box1: Box, box2: Box): Box? {
+        //#if MC >= 1.12.2
         return box1.intersection(box2)
+        //#else
+        //$$ val minX = max(box1.minX, box2.minX)
+        //$$ val minY = max(box1.minY, box2.minY)
+        //$$ val minZ = max(box1.minZ, box2.minZ)
+        //$$ val maxX = min(box1.maxX, box2.maxX)
+        //$$ val maxY = min(box1.maxY, box2.maxY)
+        //$$ val maxZ = min(box1.maxZ, box2.maxZ)
+        //$$ return Box(
+        //$$     minX, minY, minZ,
+        //$$     maxX, maxY, maxZ
+        //$$ )
+        //#endif
     }
 
     @JvmStatic
