@@ -14,6 +14,7 @@ import net.minecraft.SharedConstants
 //$$ import net.fabricmc.loader.api.FabricLoader
 //#endif
 
+@GameSide(Side.BOTH)
 public object OmniCore {
 
     @GameSide(Side.BOTH)
