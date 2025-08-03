@@ -128,6 +128,10 @@ public object OmniLoader {
         public val isVersionLoaded: Boolean
             get() = isModLoaded(id, version)
 
+        override fun toString(): String {
+            return "$name ($id@$version)"
+        }
+
     }
 
     internal val versionRegex = "(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?".toRegex()
