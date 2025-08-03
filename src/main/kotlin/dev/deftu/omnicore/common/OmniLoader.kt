@@ -102,6 +102,12 @@ public object OmniLoader {
             @GameSide(Side.BOTH)
             public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null, null)
 
+            @JvmStatic
+            @Deprecated("Use field access instead", ReplaceWith("DUMMY"), level = DeprecationLevel.WARNING)
+            public fun getDUMMY(): ModInfo {
+                return DUMMY
+            }
+
         }
 
         @GameSide(Side.BOTH)
