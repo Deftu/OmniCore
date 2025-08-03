@@ -104,6 +104,10 @@ public object OmniLoader {
 
         }
 
+        @GameSide(Side.BOTH)
+        public val isDummy: Boolean
+            get() = this === DUMMY
+
         @GameSide(Side.CLIENT)
         public val icon: InputStream?
             get() = iconPath?.let { getResourceStream(id, it) }
