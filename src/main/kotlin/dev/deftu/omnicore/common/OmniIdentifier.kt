@@ -36,6 +36,12 @@ public object OmniIdentifier {
 
     @JvmStatic
     @GameSide(Side.CLIENT)
+    public fun toTranslationKey(identifier: Identifier, prefix: String): String {
+        return "${prefix}.${toTranslationKey(identifier)}"
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
     public fun toShortTranslationKey(identifier: Identifier): String {
         return if (identifier.namespace.equals(MINECRAFT_NAMESPACE)) identifier.path else toTranslationKey(identifier)
     }
@@ -56,6 +62,10 @@ public object OmniIdentifier {
 
 public fun Identifier.translationKey(): String {
     return OmniIdentifier.toTranslationKey(this)
+}
+
+public fun Identifier.translationKey(prefix: String): String {
+    return OmniIdentifier.toTranslationKey(this, prefix)
 }
 
 public fun Identifier.shortTranslationKey(): String {

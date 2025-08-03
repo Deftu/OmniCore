@@ -5,6 +5,8 @@ import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.VersionedAbove
 import dev.deftu.omnicore.common.*
+import dev.deftu.omnicore.common.world.OmniBiomeData
+import dev.deftu.omnicore.common.world.OmniChunkData
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.BlockPos
@@ -125,6 +127,8 @@ public object OmniClientPlayer {
         get() {
             val player = getInstance() ?: return OmniGameMode.UNKNOWN
             val gameMode = OmniClient.networkHandler?.getPlayerListEntry(player.uuid)?.gameMode ?: return OmniGameMode.UNKNOWN
+
+            @Suppress("REDUNDANT_ELSE_IN_WHEN")
             return when (gameMode) {
                 GameMode.ADVENTURE -> OmniGameMode.ADVENTURE
                 GameMode.CREATIVE -> OmniGameMode.CREATIVE
@@ -342,31 +346,13 @@ public object OmniClientPlayer {
     @GameSide(Side.CLIENT)
     public val currentChunk: OmniChunkData?
         get() {
-            //#if MC >= 1.17.1
-            val player = getInstance() ?: return null
-            val chunkPos = player.chunkPos ?: return null
-            //#else
-            //$$ val chunkPos = OmniClient.world?.getChunk(blockPos)?.pos ?: return null
-            //#endif
-            return OmniChunkData(
-                chunkX = chunkPos.x,
-                chunkZ = chunkPos.z,
-                blockStartX = chunkPos.startX,
-                blockStartZ = chunkPos.startZ,
-                blockEndX = chunkPos.endX,
-                blockEndZ = chunkPos.endZ
-            ) { x, y, z ->
-                //#if MC >= 1.17.1
-                chunkPos.getBlockPos(x, y, z)
-                //#elseif MC >= 1.16.5
-                //$$ val xOff = ChunkSectionPos.getBlockCoord(chunkPos.x) + x
-                //$$ val zOff = ChunkSectionPos.getBlockCoord(chunkPos.z) + z
-                //$$ blockPos.add(xOff, y, zOff)
-                //#else
-                //$$ chunkPos.getBlock(x, y, z)
-                //#endif
-            }
+            return OmniClient.currentWorld?.getChunkAt(blockPos)
         }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val currentBiome: OmniBiomeData?
+        get() = currentChunk?.getBiomeAt(blockPos)
 
     @JvmStatic
     @GameSide(Side.CLIENT)
