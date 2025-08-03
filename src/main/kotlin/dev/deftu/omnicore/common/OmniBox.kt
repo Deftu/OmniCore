@@ -46,12 +46,6 @@ public object OmniBox {
 
     @JvmStatic
     @GameSide(Side.BOTH)
-    public fun from(min: Vec3d, max: Vec3d): Box {
-        return Box(min, max)
-    }
-
-    @JvmStatic
-    @GameSide(Side.BOTH)
     public fun usingMinX(box: Box, minX: Double): Box {
         return Box(minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ)
     }
