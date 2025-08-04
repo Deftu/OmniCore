@@ -11,6 +11,7 @@ import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.common.OmniCommands
 import dev.deftu.omnicore.common.OmniProfiler
+import dev.deftu.omnicore.common.profile
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC && MC >= 1.19
@@ -155,25 +156,23 @@ public object OmniClientCommands {
     public fun execute(command: String): Boolean {
         val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
 
-        OmniProfiler.start("omnicore_command___$command")
+        return profile<Boolean>("omnicore_command___$command") {
+            try {
+                dispatcher.execute(results)
+                true
+            } catch (e: CommandSyntaxException) {
+                val isIgnored = OmniCommands.isIgnoredException(e.type)
+                val message = "Syntax exception for client-sided command '$command'"
 
-        try {
-            dispatcher.execute(results)
-            return true
-        } catch (e: CommandSyntaxException) {
-            val isIgnored = OmniCommands.isIgnoredException(e.type)
-            val message = "Syntax exception for client-sided command '$command'"
+                if (!isIgnored) {
+                    logger.warn(message, e)
+                    OmniClientCommandSource.UNIT.displayError(e)
+                } else {
+                    logger.debug(message, e)
+                }
 
-            if (!isIgnored) {
-                logger.warn(message, e)
-                OmniClientCommandSource.UNIT.displayError(e)
-            } else {
-                logger.debug(message, e)
+                !isIgnored
             }
-
-            return !isIgnored
-        } finally {
-            OmniProfiler.end()
         }
     }
 

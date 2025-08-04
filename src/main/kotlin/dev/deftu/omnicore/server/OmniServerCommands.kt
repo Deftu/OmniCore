@@ -35,7 +35,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 //$$ import com.mojang.brigadier.exceptions.CommandSyntaxException
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import dev.deftu.omnicore.common.OmniCommandBridge
-//$$ import dev.deftu.omnicore.common.OmniProfiler
+//$$ import dev.deftu.omnicore.common.profile
 //$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import net.minecraft.command.ICommandSender
 //$$ import net.minecraft.server.MinecraftServer
@@ -144,22 +144,20 @@ public object OmniServerCommands {
     //$$     val context = OmniServerCommandSource.from(server, sender)
     //$$     val results = dispatcher.parse(command, context)
     //$$
-    //$$     OmniProfiler.start("omnicore_command___$command")
+    //$$     return profile("omnicore_command___$command") {
+    //$$         try {
+    //$$             dispatcher.execute(results)
+    //$$         } catch (e: CommandSyntaxException) {
+    //$$             val isIgnored = OmniCommands.isIgnoredException(e.type)
+    //$$             val message = "Syntax exception for server-sided command '$command'"
     //$$
-    //$$     try {
-    //$$         dispatcher.execute(results)
-    //$$     } catch (e: CommandSyntaxException) {
-    //$$         val isIgnored = OmniCommands.isIgnoredException(e.type)
-    //$$         val message = "Syntax exception for server-sided command '$command'"
-    //$$
-    //$$         if (!isIgnored) {
-    //$$             logger.warn(message, e)
-    //$$             context.displayError(e)
-    //$$        } else {
-    //$$            logger.debug(message, e)
-    //$$       }
-    //$$     } finally {
-    //$$         OmniProfiler.end()
+    //$$             if (!isIgnored) {
+    //$$                 logger.warn(message, e)
+    //$$                 context.displayError(e)
+    //$$            } else {
+    //$$                logger.debug(message, e)
+    //$$           }
+    //$$         }
     //$$     }
     //$$ }
     //$$
