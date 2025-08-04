@@ -98,11 +98,30 @@ public object OmniLoader {
             /**
              * A dummy [ModInfo] object that represents a non-existent mod.
              */
-            @JvmStatic
+            @JvmField
             @GameSide(Side.BOTH)
             public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null, null)
 
+            @JvmStatic
+            @Deprecated("Use field access instead", ReplaceWith("DUMMY"), level = DeprecationLevel.WARNING)
+            public fun getDUMMY(): ModInfo {
+                return DUMMY
+            }
+
         }
+
+        @GameSide(Side.BOTH)
+        public val isDummy: Boolean
+            get() = this === DUMMY
+
+        @GameSide(Side.BOTH)
+        public val modContainer: ModContainer? by lazy {
+            findModContainer(id)
+        }
+
+        @GameSide(Side.BOTH)
+        public val isTrueMod: Boolean
+            get() = !isDummy && isLoaded
 
         @GameSide(Side.CLIENT)
         public val icon: InputStream?
@@ -127,6 +146,10 @@ public object OmniLoader {
         @GameSide(Side.BOTH)
         public val isVersionLoaded: Boolean
             get() = isModLoaded(id, version)
+
+        override fun toString(): String {
+            return "$name ($id@$version)"
+        }
 
     }
 
@@ -435,19 +458,24 @@ public object OmniLoader {
     @JvmStatic
     @GameSide(Side.BOTH)
     public fun getModInfo(id: String): ModInfo? {
+        val container = findModContainer(id)
+        return container?.let(::createModInfo)
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
+    public fun findModContainer(id: String): ModContainer? {
         //#if FABRIC
-        val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
-        return if (container != null) createModInfo(container) else null
+        return FabricLoader.getInstance().getModContainer(id).orElse(null)
         //#else
         //#if MC >= 1.15.2
-        //$$ val container = ModList.get().getModContainerById(id).orElse(null)
-        //$$ return if (container != null) createModInfo(container) else null
+        //$$ return ModList.get().getModContainerById(id).orElse(null)
         //#else
-        //$$ val container = Loader.instance().getIndexedModList()[id]
-        //$$ return if (container != null) createModInfo(container) else null
+        //$$ return Loader.instance().getIndexedModList()[id]
         //#endif
         //#endif
     }
+
 
     @JvmStatic
     @GameSide(Side.BOTH)
