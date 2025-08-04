@@ -31,6 +31,11 @@ public enum class GuiScale {
 
     public companion object {
 
+        @JvmField
+        @GameSide(Side.BOTH)
+        @Suppress("EnumValuesSoftDeprecate")
+        public val ALL: List<GuiScale> = GuiScale.values().toList()
+
         /**
          * The raw integer value of the current GUI scale as provided by the Minecraft client.
          *
@@ -86,7 +91,7 @@ public enum class GuiScale {
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun fromInt(value: Int): GuiScale {
-            return values()[value]
+            return ALL[value]
         }
 
     }
