@@ -28,6 +28,8 @@ public enum class OmniPerspective(
     THIRD_PERSON_BACK(false, false),
     THIRD_PERSON_FRONT(false, true);
 
+    public val isThirdPerson: Boolean get() = !isFirstPerson
+
     /**
      * Sets the current camera perspective to this.
      */
