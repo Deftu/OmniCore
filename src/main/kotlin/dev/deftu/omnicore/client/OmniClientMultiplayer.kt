@@ -115,7 +115,7 @@ public object OmniClientMultiplayer {
      */
     @JvmStatic
     public val isInMultiplayer: Boolean
-        get() = OmniClient.world != null && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServer?.address != null
+        get() = OmniClient.hasWorld && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServer?.address != null
 
     @JvmStatic
     public fun connectTo(entry: OmniClientServerEntry) {

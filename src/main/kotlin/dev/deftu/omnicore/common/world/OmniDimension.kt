@@ -1,7 +1,8 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.common.world
 
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.util.Identifier
+import net.minecraft.world.World
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.16.5
@@ -22,28 +23,33 @@ public sealed interface OmniDimension {
         @JvmStatic
         public val current: OmniDimension?
             get() {
-                val world = OmniClient.world ?: return null
-                //#if MC >= 1.16.5
-                val id = world.registryKey.value
-                val type = world.dimension.toString()
-                //#elseif MC >= 1.12.2
-                //#if FORGE
-                //$$ val id = world.provider.dimension
-                //#else
-                //$$ val id = world.dimension.dimensionType.id
-                //#endif
-                //$$ val type = world.provider.dimensionType.toString()
-                //#else
-                //#if FORGE
-                //$$ val id = world.provider.dimensionId
-                //$$ val type = world.provider.dimensionName
-                //#else
-                //$$ val id = world.dimension.type
-                //$$ val type = world.dimension.name
-                //#endif
-                //#endif
-                return from(id, type)
+                val world = OmniClient.currentWorld ?: return null
+                return from(world.vanilla)
             }
+
+        @JvmStatic
+        public fun from(world: World): OmniDimension {
+            //#if MC >= 1.16.5
+            val id = world.registryKey.value
+            val type = world.dimension.toString()
+            //#elseif MC >= 1.12.2
+            //#if FORGE
+            //$$ val id = world.provider.dimension
+            //#else
+            //$$ val id = world.dimension.dimensionType.id
+            //#endif
+            //$$ val type = world.provider.dimensionType.toString()
+            //#else
+            //#if FORGE
+            //$$ val id = world.provider.dimensionId
+            //$$ val type = world.provider.dimensionName
+            //#else
+            //$$ val id = world.dimension.type
+            //$$ val type = world.dimension.name
+            //#endif
+            //#endif
+            return from(id, type)
+        }
 
         @JvmStatic
         @ApiStatus.Internal

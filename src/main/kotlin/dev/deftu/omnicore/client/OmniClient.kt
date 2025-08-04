@@ -3,6 +3,7 @@ package dev.deftu.omnicore.client
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniTextureManager
+import dev.deftu.omnicore.common.world.OmniWorld
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.hud.ChatHud
@@ -23,6 +24,8 @@ import net.minecraft.client.util.InputUtil
 //#endif
 
 public object OmniClient {
+
+    private var cachedLastWorld: OmniWorld? = null
 
     /**
      * @return True if the current working environment is on macOS, false otherwise.
@@ -66,20 +69,39 @@ public object OmniClient {
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
+    @Deprecated("Use currentWorld instead.", ReplaceWith("currentWorld"))
     public val world: ClientWorld?
         get() = getInstance().world
+
+    /**
+     * @since 0.40.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val currentWorld: OmniWorld?
+        get() {
+            @Suppress("DEPRECATION")
+            val world = world ?: return null
+            if (cachedLastWorld?.vanilla === world) {
+                return cachedLastWorld
+            }
+
+            cachedLastWorld = OmniWorld(world)
+            return cachedLastWorld
+        }
 
     /**
      * @return True if the client is aware of an existing world, false otherwise.
      *
      * @since 0.13.0
-     * @see world
+     * @see currentWorld
      * @author Deftu
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val hasWorld: Boolean
-        get() = world != null
+        get() = currentWorld != null
 
     /**
      * @return The current **integrated** server instance, null if the player is not in a singleplayer world.

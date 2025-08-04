@@ -2,6 +2,7 @@ package dev.deftu.omnicore.client
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.common.world.OmniWorld
 import dev.deftu.textile.minecraft.*
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayerEntity
@@ -54,8 +55,18 @@ public class OmniClientCommandSource {
      * @author Deftu
      */
     @GameSide(Side.CLIENT)
+    @Suppress("DEPRECATION")
+    @Deprecated("Use currentWorld instead.", ReplaceWith("currentWorld"))
     public val world: ClientWorld
         get() = OmniClient.world ?: throw IllegalAccessException("World is null when it shouldn't be")
+
+    /**
+     * @since 0.40.0
+     * @author Deftu
+     */
+    @GameSide(Side.CLIENT)
+    public val currentWorld: OmniWorld
+        get() = OmniClient.currentWorld ?: throw IllegalAccessException("World is null when it shouldn't be")
 
     /**
      * Displays a message to the player. This message is ONLY displayed in the client's chat, and is not sent to the server.

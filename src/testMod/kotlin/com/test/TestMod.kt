@@ -139,6 +139,30 @@ class TestMod
                     1
                 }
             }
+
+            command("world") {
+                does {
+                    val world = OmniClient.currentWorld
+                    val playerChunk = OmniClientPlayer.currentChunk
+                    val playerBiome = OmniClientPlayer.currentBiome
+
+                    source.displayMessage("""
+                        Is day? ${world?.isDay}
+                        Is night? ${world?.isNight}
+                        Is raining? ${world?.isRaining}
+                        Is thundering? ${world?.isThundering}
+                        Is clear weather? ${world?.isClearWeather}
+                        
+                        Dimension: ${playerChunk?.dimension}
+                        
+                        Biome name: ${playerBiome?.name}
+                        Translated biome name: ${playerBiome?.translatedName}
+                        Biome identifier: ${playerBiome?.identifier}
+                        Biome water color: ${playerBiome?.waterColor}
+                    """.trimIndent())
+                    1
+                }
+            }
         }.register()
 
         //#if FABRIC && MC >= 1.16.5
