@@ -3,7 +3,6 @@ package dev.deftu.omnicore.client
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen
 import net.minecraft.client.network.ServerAddress
-import net.minecraft.client.network.ServerInfo
 
 public object OmniClientMultiplayer {
 
@@ -62,6 +61,16 @@ public object OmniClientMultiplayer {
     @JvmStatic
     public val isInLan: Boolean
         get() = currentServer?.isLocal ?: false
+
+    /**
+     * @return Whether the player is in their client's integrated server.
+     *
+     * @since 0.40.0
+     * @author Deftu
+     */
+    @JvmStatic
+    public val isIntegratedServerRunning: Boolean
+        get() = OmniClient.getInstance().isIntegratedServerRunning
 
     /**
      * @return Whether the player has multiplayer enabled, is allowed to join servers, and is not banned from multiplayer.
