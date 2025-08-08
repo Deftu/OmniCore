@@ -3,6 +3,7 @@ package dev.deftu.omnicore.client
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.render.OmniTextureManager
+import dev.deftu.omnicore.common.resources.ResourceReloadListener
 import dev.deftu.omnicore.common.world.OmniWorld
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
@@ -17,10 +18,33 @@ import net.minecraft.client.world.ClientWorld
 import net.minecraft.server.integrated.IntegratedServer
 
 //#if MC >= 1.16.5
+//#if FABRIC
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper
+import net.minecraft.resource.ResourceType
+//#elseif FORGE && MC >= 1.17.1
+//$$ import net.minecraftforge.common.MinecraftForge
+//$$ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent
+//#elseif NEOFORGE
+//$$ import net.neoforged.neoforge.common.NeoForge
+//#if MC >= 1.21.4
+//$$ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent
+//#else
+//$$ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
+//#endif
+//#endif
+
 import net.minecraft.client.util.GlfwUtil
 import net.minecraft.client.util.InputUtil
 //#else
+//#if FABRIC
+//$$ import net.legacyfabric.fabric.api.resource.ResourceManagerHelper
+//#endif
+//$$
 //$$ import net.minecraft.client.settings.GameSettings
+//#endif
+
+//#if FORGE && MC <= 1.16.5
+//$$ import net.minecraft.server.packs.resources.ReloadableResourceManager
 //#endif
 
 public object OmniClient {
@@ -226,7 +250,8 @@ public object OmniClient {
      */
     @JvmStatic
     @GameSide(Side.CLIENT)
-    public val textureManager: OmniTextureManager = OmniTextureManager.INSTANCE
+    public val textureManager: OmniTextureManager
+        get() = OmniTextureManager.INSTANCE
 
     /**
      * Executes a task on Minecraft's main thread.
@@ -271,6 +296,48 @@ public object OmniClient {
         return (GlfwUtil.getTime() * 1000).toLong()
         //#else
         //$$ return Minecraft.getSystemTime()
+        //#endif
+    }
+
+    /**
+     * Registers a resource reload listener to be notified when resources are reloaded.
+     *
+     * @since 0.41.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public fun registerReloadListener(listener: ResourceReloadListener) {
+        //#if FABRIC
+        //#if MC >= 1.16.5
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(listener)
+        //#else
+        //$$ ResourceManagerHelper.getInstance().registerReloadListener(listener)
+        //#endif
+        //#elseif MC >= 1.17.1
+        //#if FORGE
+        //$$ MinecraftForge
+        //#else
+        //$$ NeoForge
+        //#endif
+        //$$     .EVENT_BUS
+        //$$     .addListener<
+        //#if MC >= 1.21.4
+        //$$         AddClientReloadListenersEvent
+        //$$     > { event ->
+        //$$         event.addListener(listener.reloadIdentifier, listener)
+        //$$     }
+        //#else
+        //$$         RegisterClientReloadListenersEvent
+        //$$     > { event ->
+        //$$         event.registerReloadListener(listener)
+        //$$     }
+        //#endif
+        //#else
+        //$$ val resourceManager = getInstance().resourceManager
+        //$$ if (resourceManager is ReloadableResourceManager) {
+        //$$     resourceManager.registerReloadListener(listener)
+        //$$ }
         //#endif
     }
 
