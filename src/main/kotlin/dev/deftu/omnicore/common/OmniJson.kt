@@ -11,7 +11,7 @@ public object OmniJson {
     //#endif
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    @GameSide(Side.BOTH)
     @Throws(JsonSyntaxException::class)
     public fun parse(json: String): JsonElement {
         //#if MC >= 1.18.2
@@ -104,7 +104,7 @@ public object OmniJson {
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    @GameSide(Side.BOTH)
     public fun withPrettyPrinting(gson: Gson): Gson {
         return gson.newGsonBuilder()
             .setPrettyPrinting()
