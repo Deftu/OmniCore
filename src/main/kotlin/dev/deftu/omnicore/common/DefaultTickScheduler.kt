@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager
 import java.util.PriorityQueue
 import java.util.concurrent.ConcurrentLinkedQueue
 
-public class DefaultTickScheduler(private val name: String, ) : TickScheduler {
+public class DefaultTickScheduler(private val name: String) : TickScheduler {
     private companion object {
         private val logger = LogManager.getLogger(TickScheduler::class.java)
     }
