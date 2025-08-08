@@ -3,7 +3,6 @@
 package dev.deftu.omnicore.client.render
 
 import com.mojang.blaze3d.opengl.GlStateManager
-import com.mojang.blaze3d.platform.TextureUtil
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
@@ -29,6 +28,10 @@ import dev.deftu.omnicore.common.OmniIdentifier
 
 //#if MC <= 1.16.5
 //$$ import net.minecraft.client.texture.ResourceTexture
+//#endif
+
+//#if MC >= 1.16.5 && MC <= 1.21.4
+//$$ import com.mojang.blaze3d.platform.TextureUtil
 //#endif
 
 //#if MC >= 1.16.5
@@ -196,6 +199,11 @@ public class OmniTextureManager private constructor(
     {
         return textureManager.getTexture(path)
     }
+    
+    @GameSide(Side.CLIENT)
+    public fun isTextureLoaded(path: Identifier): Boolean {
+        return getTexture(path) != null
+    }
 
     @GameSide(Side.CLIENT)
     public fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
@@ -283,19 +291,35 @@ public class OmniTextureManager private constructor(
         OmniTextureManager.deleteTexture(id)
     }
 
-    private fun getOrLoadId(identifier: Identifier): Int {
-        val texture = textureManager.getTexture(identifier)
+    @GameSide(Side.CLIENT)
+    public fun getId(
+        //#if MC >= 1.16.5
+        texture: AbstractTexture
+        //#else
+        //$$ texture: ITextureObject
+        //#endif
+    ): Int {
         //#if MC >= 1.21.5
         return (texture.glTexture as GlTexture).glId
         //#elseif MC >= 1.17.1
         //$$ return texture.id
         //#else
+        //$$ return texture.glId
+        //#endif
+    }
+
+    @GameSide(Side.CLIENT)
+    public fun getOrLoadId(identifier: Identifier): Int {
+        val texture = textureManager.getTexture(identifier)
+        //#if MC >= 1.17.1
+        return getId(texture)
+        //#else
         //$$ return if (texture != null) {
-        //$$     texture.glId
+        //$$     getId(texture)
         //$$ } else {
         //$$     val newTexture = ResourceTexture(identifier)
         //$$     textureManager.registerTexture(identifier, newTexture)
-        //$$     newTexture.glId
+        //$$     getId(newTexture)
         //$$ }
         //#endif
     }
