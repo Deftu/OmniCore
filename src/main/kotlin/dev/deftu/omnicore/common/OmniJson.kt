@@ -25,7 +25,7 @@ public object OmniJson {
     @JvmStatic
     @GameSide(Side.BOTH)
     @Throws(JsonSyntaxException::class)
-    public fun parse(reader: Reader) : JsonElement {
+    public fun parse(reader: Reader): JsonElement {
         //#if MC >= 1.18.2
         return JsonParser.parseReader(reader)
         //#else
