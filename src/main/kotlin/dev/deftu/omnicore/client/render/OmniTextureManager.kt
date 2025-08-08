@@ -199,6 +199,11 @@ public class OmniTextureManager private constructor(
     {
         return textureManager.getTexture(path)
     }
+    
+    @GameSide(Side.CLIENT)
+    public fun isTextureLoaded(path: Identifier): Boolean {
+        return getTexture(path) != null
+    }
 
     @GameSide(Side.CLIENT)
     public fun getReleasedDynamicTexture(stream: InputStream): ReleasedDynamicTexture {
