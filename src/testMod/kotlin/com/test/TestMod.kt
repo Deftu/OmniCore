@@ -102,6 +102,7 @@ class TestMod
         exampleKeyBinding.register()
 
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
+        OmniClient.registerReloadListener(TestResourceListener)
 
         OmniClientCommands.command("testmod") {
             does {

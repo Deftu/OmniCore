@@ -42,6 +42,10 @@ com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
 
+net.minecraft.server.packs.resources.ReloadableResourceManager net.minecraft.client.resources.IReloadableResourceManager
+net.minecraft.server.packs.resources.ResourceManager getResources() getAllResources()
+net.minecraft.server.packs.resources.Resource net.minecraft.client.resources.IResource
+
 com.mojang.blaze3d.vertex.BufferBuilder net.minecraft.client.renderer.BufferBuilder
 com.mojang.blaze3d.vertex.BufferBuilder end() finishDrawing()
 com.mojang.blaze3d.vertex.BufferBuilder discard() reset()

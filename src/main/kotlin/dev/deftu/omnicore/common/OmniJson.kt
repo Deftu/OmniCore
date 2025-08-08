@@ -3,6 +3,7 @@ package dev.deftu.omnicore.common
 import com.google.gson.*
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import java.io.Reader
 
 public object OmniJson {
 
@@ -11,7 +12,7 @@ public object OmniJson {
     //#endif
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    @GameSide(Side.BOTH)
     @Throws(JsonSyntaxException::class)
     public fun parse(json: String): JsonElement {
         //#if MC >= 1.18.2
@@ -22,7 +23,18 @@ public object OmniJson {
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    @GameSide(Side.BOTH)
+    @Throws(JsonSyntaxException::class)
+    public fun parse(reader: Reader): JsonElement {
+        //#if MC >= 1.18.2
+        return JsonParser.parseReader(reader)
+        //#else
+        //$$ return parser.parse(reader)
+        //#endif
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
     public fun parseSafe(json: String): JsonElement? {
         return try {
             parse(json)
@@ -32,7 +44,17 @@ public object OmniJson {
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    @GameSide(Side.BOTH)
+    public fun parseSafe(reader: Reader): JsonElement? {
+        return try {
+            parse(reader)
+        } catch (e: JsonSyntaxException) {
+            null
+        }
+    }
+
+    @JvmStatic
+    @GameSide(Side.BOTH)
     public fun newGsonBuilder(gson: Gson): GsonBuilder {
         //#if MC >= 1.18.2
         return gson.newBuilder()
@@ -104,7 +126,7 @@ public object OmniJson {
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    @GameSide(Side.BOTH)
     public fun withPrettyPrinting(gson: Gson): Gson {
         return gson.newGsonBuilder()
             .setPrettyPrinting()
