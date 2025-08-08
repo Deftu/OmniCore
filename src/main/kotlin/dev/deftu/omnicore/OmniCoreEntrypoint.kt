@@ -8,6 +8,7 @@ import dev.deftu.omnicore.client.keybindings.MCKeyBinding
 import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.client.render.OmniGameRendering
 import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.common.TickSchedulers
 import dev.deftu.omnicore.common.events.OmniCommonEventPassthrough
 import dev.deftu.omnicore.server.OmniServer
 import dev.deftu.omnicore.server.OmniServerCommands
@@ -110,6 +111,7 @@ public class OmniCoreEntrypoint
         //#endif
 
         OmniCommonEventPassthrough.initialize()
+        TickSchedulers.initialize()
 
         if (OmniLoader.isPhysicalClient) {
             OmniClientEventPassthrough.initialize()
