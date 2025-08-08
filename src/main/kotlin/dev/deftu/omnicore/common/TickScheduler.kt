@@ -36,6 +36,8 @@ public interface TickScheduler {
      * @param runnable the task to run.
      *
      * @return A handle you can use to cancel the scheduled task.
+     * @author Deftu
+     * @since 0.41.0
      */
     public fun every(
         period: Int,
