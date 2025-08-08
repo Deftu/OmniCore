@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.common
 
-import kotlinx.atomicfu.atomic
 import org.apache.logging.log4j.LogManager
 import java.util.PriorityQueue
 import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.atomic.AtomicBoolean
 
 public class DefaultTickScheduler(private val name: String) : TickScheduler {
     private companion object {
@@ -16,16 +16,24 @@ public class DefaultTickScheduler(private val name: String) : TickScheduler {
         val isFixedRate: Boolean, // fixed-rate vs fixed-delay
         val runnable: Runnable,
     ) : TickScheduler.Handle {
-        override var isCancelled by atomic(false)
-            private set
-        override fun cancel() { isCancelled = true }
+        private val cancelled = AtomicBoolean(false)
+
+        override var isCancelled: Boolean
+            get() = cancelled.get()
+            set(value) {
+                cancelled.set(value)
+            }
+
+        override fun cancel() {
+            isCancelled = true
+        }
     }
 
     private val immediate = ConcurrentLinkedQueue<Runnable>()
     private val scheduled = PriorityQueue<ScheduledHandle>(compareBy(ScheduledHandle::whenTick))
 
     // Drainage guards
-    private var isTicking by atomic(false)
+    private var isTicking = AtomicBoolean(false)
     private var tickCounter: Long = 0
 
     override fun post(runnable: Runnable) {
@@ -60,12 +68,12 @@ public class DefaultTickScheduler(private val name: String) : TickScheduler {
      * Call this from your END phase tick/render hook for the timeline.
      */
     public fun tick() {
-        if (isTicking) {
+        if (isTicking.get()) {
             logger.warn("TickScheduler $name is already ticking; skipping to avoid reentrancy")
             return
         }
 
-        isTicking = true
+        isTicking.set(true)
 
         try {
             tickCounter++
@@ -112,7 +120,7 @@ public class DefaultTickScheduler(private val name: String) : TickScheduler {
                 }
             }
         } finally {
-            isTicking = false
+            isTicking.set(false)
         }
     }
 }
