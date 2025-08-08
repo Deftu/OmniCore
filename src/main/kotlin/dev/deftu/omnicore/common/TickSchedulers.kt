@@ -29,15 +29,15 @@ public object TickSchedulers {
 
     public fun initialize() {
         OmniCore.eventBus.on<TickEvent.Server.Post> {
-            (server as DefaultTickScheduler).tick()
+            (this@TickSchedulers.server as DefaultTickScheduler).tick()
         }
 
         OmniCore.eventBus.on<TickEvent.Client.Post> {
-            (client as DefaultTickScheduler).tick()
+            (this@TickSchedulers.client as DefaultTickScheduler).tick()
         }
 
         OmniCore.eventBus.on<RenderTickEvent.Post> {
-            (render as DefaultTickScheduler).tick()
+            (this@TickSchedulers.render as DefaultTickScheduler).tick()
         }
     }
 
