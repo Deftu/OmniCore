@@ -57,11 +57,7 @@ public object OmniResourceManager {
         resourceManager: ResourceManager,
         identifier: Identifier
     ): List<Resource> {
-        //#if MC >= 1.16.5
         return resourceManager.getAllResources(identifier).toList()
-        //#else
-        //$$ return resourceManager.getAllResources(identifier).toList()
-        //#endif
     }
 
 }
