@@ -8,20 +8,42 @@ import java.util.stream.IntStream
 public object OmniDataResult {
 
     @JvmStatic
+    @JvmOverloads
     @GameSide(Side.BOTH)
     public fun <T> error(message: String, partialValue: T? = null): DataResult<T> {
         //#if MC >= 1.19.4
-        return DataResult.error({ message }, partialValue)
+        return if (partialValue == null) {
+            DataResult.error { message }
+        } else {
+            DataResult.error({ message }, partialValue)
+        }
         //#else
-        //$$ return DataResult.error(message, partialValue)
+        //$$ return if (partialValue == null) {
+        //$$     DataResult.error(message)
+        //$$ } else {
+        //$$     DataResult.error(message, partialValue)
+        //$$ }
         //#endif
     }
 
     @JvmStatic
+    @JvmOverloads
     @GameSide(Side.BOTH)
     public fun <T> error(supplier: () -> String?, partialValue: T? = null): DataResult<T> {
         //#if MC >= 1.19.4
-        return DataResult.error(supplier, partialValue)
+        return if (partialValue == null) {
+            DataResult.error(supplier)
+        } else {
+            DataResult.error(supplier, partialValue)
+        }
+        //#else
+        //$$ return if (partialValue == null) {
+        //$$     DataResult.error(supplier())
+        //$$ } else {
+        //$$     DataResult.error(supplier(), partialValue)
+        //$$ }
+        //#endif
+    }
         //#else
         //$$ return DataResult.error(supplier(), partialValue)
         //#endif
