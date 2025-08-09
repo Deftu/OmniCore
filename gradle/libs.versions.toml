@@ -2,11 +2,13 @@
 textile = "0.21.0"
 enhancedeventbus = "2.0.0"
 brigadier = "1.0.18"
+dfu = "4.0.26"
 
 [libraries]
 textile = { group = "dev.deftu", name = "textile", version.ref = "textile" }
 enhancedeventbus = { group = "dev.deftu", name = "enhancedeventbus", version.ref = "enhancedeventbus" }
 brigadier = { group = "com.mojang", name = "brigadier", version.ref = "brigadier" }
+dfu = { group = "com.mojang", name = "datafixerupper", version.ref = "dfu" }
 flk = { group = "net.fabricmc", name = "fabric-language-kotlin" }
 lfapi = { group = "net.legacyfabric.legacy-fabric-api", name = "legacy-fabric-api" }
 fapi = { group = "net.fabricmc.fabric-api", name = "fabric-api" }

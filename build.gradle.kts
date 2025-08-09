@@ -73,9 +73,20 @@ dependencies {
     api(libs.brigadier)
     api(includeOrShade(libs.enhancedeventbus.get())!!)
 
-    if (mcData.isForge && mcData.version <= MinecraftVersions.VERSION_1_12_2) {
-        includeOrShade(kotlin("stdlib-jdk8"))
+    if (mcData.version <= MinecraftVersions.VERSION_1_12_2) {
+        if (mcData.isForge) {
+            includeOrShade(kotlin("stdlib-jdk8"))
+        }
+
         includeOrShade(libs.brigadier)
+
+        api(libs.dfu) {
+            exclude(group = "com.google.guava", module = "guava")
+        }
+
+        includeOrShade(libs.dfu) {
+            exclude(group = "com.google.guava", module = "guava")
+        }
     }
 
     if (mcData.isFabric) {
