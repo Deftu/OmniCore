@@ -88,6 +88,9 @@ public object OmniCodecs {
     }, OmniUuid::toUndashed), UUID_INT_STREAM)
 
     @JvmField
+    public val UUID_LENIENT: Codec<UUID> = withAlternative(UUID_STRICT, UUID_UNDASHED)
+
+    @JvmField
     public val BLOCK_POS: Codec<BlockPos> =
         //#if MC >= 1.16.5
         BlockPos.CODEC
