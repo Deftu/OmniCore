@@ -1,12 +1,16 @@
 package com.test
 
+import com.mojang.serialization.JsonOps
 import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.common.OmniJson
+import dev.deftu.omnicore.common.codecs.whenError
 import dev.deftu.omnicore.common.resources.SimpleResourceReloadListener
 import dev.deftu.omnicore.common.resources.findFirst
 import net.minecraft.resource.ResourceManager
 import net.minecraft.util.Identifier
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
+import kotlin.jvm.optionals.getOrNull
 
 object TestResourceListener : SimpleResourceReloadListener<TestData?> {
 
@@ -21,9 +25,11 @@ object TestResourceListener : SimpleResourceReloadListener<TestData?> {
             }
 
             val resource = resource.get()
-            resource.inputStream?.use { inputStream ->
-                TestData.fromJson(inputStream)
-            }
+            val json = OmniJson.parseSafe(resource.inputStream.bufferedReader())
+            println("TestResourceListener: Loaded JSON: $json")
+            TestCodecs.TEST_CODEC.parse(JsonOps.INSTANCE, json)?.whenError {
+                println("TestResourceListener: Failed to parse test codec: ${it.message()}")
+            }?.result()?.getOrNull()
         }, executor)
     }
 
