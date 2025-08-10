@@ -7,6 +7,7 @@ import dev.deftu.omnicore.annotations.Side
 import dev.deftu.omnicore.annotations.VersionedAbove
 import dev.deftu.omnicore.client.OmniClient
 import dev.deftu.omnicore.client.events.RenderTickEvent
+import dev.deftu.omnicore.common.OmniColor
 import net.minecraft.client.font.TextRenderer
 
 //#if MC == 1.8.9
@@ -163,19 +164,23 @@ public object OmniGameRendering {
     ) {
         val fontRenderer = OmniClient.fontRenderer
 
-        //#if MC >= 1.20
-        fontRenderer.draw(
-            text,
-            x,
-            y,
-            color,
-            shadow,
-            stack.toVanillaStack().peek().positionMatrix,
-            OmniClient.getInstance().bufferBuilders.entityVertexConsumers,
-            TextRenderer.TextLayerType.NORMAL,
-            0,
-            15728880
-        )
+        //#if MC >= 1.21.6
+        val drawer = ImmediateGlyphDrawer(stack.peek().matrix)
+        fontRenderer.prepare(text, x, y, OmniColor.Rgba.asOpaque(color), shadow, 0).draw(drawer)
+        drawer.flush()
+        //#elseif MC >= 1.20.1
+        //$$ fontRenderer.draw(
+        //$$     text,
+        //$$     x,
+        //$$     y,
+        //$$     OmniColor.Rgba.asOpaque(color),
+        //$$     shadow,
+        //$$     stack.toVanillaStack().peek().positionMatrix,
+        //$$     OmniClient.getInstance().bufferBuilders.entityVertexConsumers,
+        //$$     TextRenderer.TextLayerType.NORMAL,
+        //$$     0,
+        //$$     15728880
+        //$$ )
         //#elseif MC >= 1.16.5
         //$$ if (shadow) {
         //$$     fontRenderer.drawWithShadow(stack.toVanillaStack(), text, x, y, color)
