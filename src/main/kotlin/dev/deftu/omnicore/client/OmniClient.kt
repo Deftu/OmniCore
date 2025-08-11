@@ -125,6 +125,7 @@ public object OmniClient {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val hasWorld: Boolean
+        @JvmName("hasWorld")
         get() = currentWorld != null
 
     /**
@@ -371,6 +372,13 @@ public object OmniClient {
             //#endif
 
         return if (name.length == 1) name.first().uppercase() else name
+    }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    @Deprecated("Use hasWorld() instead", ReplaceWith("hasWorld()"))
+    public fun getHasWorld(): Boolean {
+        return hasWorld
     }
 
 }
