@@ -8,9 +8,6 @@ package dev.deftu.omnicore.mixins.client;
 //$$
 //$$ @Mixin(MinecraftClient.class)
 //$$ public interface Mixin_MinecraftClient_TimerAccessor {
-//$$
-//$$     @Accessor
-//$$     ClientTickTracker getTicker();
-//$$
+//$$     @Accessor ClientTickTracker getTicker();
 //$$ }
 //#endif

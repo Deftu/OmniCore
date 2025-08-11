@@ -7,14 +7,6 @@ import net.minecraft.network.packet.UnknownCustomPayload;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-
-//#if MC >= 1.20.6
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-//#endif
 
 @Mixin(UnknownCustomPayload.class)
 public class Mixin_UnknownCustomPayload_CapturePayloadData implements OmniCustomPayloadDataHolder {

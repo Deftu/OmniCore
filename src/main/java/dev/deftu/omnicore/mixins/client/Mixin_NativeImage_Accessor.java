@@ -8,12 +8,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(NativeImage.class)
 public interface Mixin_NativeImage_Accessor {
-
-    @Accessor
-    long getPointer();
-
-    @Invoker
-    void invokeCheckAllocated();
-
+    @Accessor long getPointer();
+    @Invoker void invokeCheckAllocated();
 }
 //#endif
