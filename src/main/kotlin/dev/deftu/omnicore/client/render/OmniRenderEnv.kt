@@ -128,4 +128,15 @@ public object OmniRenderEnv {
             //#endif
         }
 
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val isShaderSupported: Boolean
+        get() {
+            //#if MC >= 1.15.2
+            return true
+            //#else
+            //$$ return OpenGlHelper.shadersSupported
+            //#endif
+        }
+
 }
