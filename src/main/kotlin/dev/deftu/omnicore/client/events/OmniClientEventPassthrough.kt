@@ -283,7 +283,11 @@ public object OmniClientEventPassthrough {
         //$$          OmniCore.eventBus.post(HudRenderEvent(matrixStack, tickDelta))
         //$$     }
         //#elseif MC >= 1.16.5
-        //$$ EventHolder.EVENT_BUS.addListener<RenderGameOverlayEvent> { event ->
+        //$$ EventHolder.EVENT_BUS.addListener<RenderGameOverlayEvent.Post> { event ->
+        //$$      if (event.type != RenderGameOverlayEvent.ElementType.ALL) {
+        //$$          return@addListener
+        //$$      }
+        //$$
         //$$     val matrixStack = OmniMatrixStack.vanilla(event.matrixStack)
         //$$     OmniCore.eventBus.post(HudRenderEvent(matrixStack, event.partialTicks))
         //$$ }
@@ -493,6 +497,10 @@ public object OmniClientEventPassthrough {
     //$$
     //$$ @SubscribeEvent
     //$$ public fun onRenderGameOverlay(event: RenderGameOverlayEvent.Post) {
+    //$$     if (event.type != RenderGameOverlayEvent.ElementType.ALL) {
+    //$$         return
+    //$$     }
+    //$$
     //$$     val matrixStack = OmniMatrixStack()
     //$$     OmniCore.eventBus.post(HudRenderEvent(matrixStack, event.partialTicks))
     //$$ }
