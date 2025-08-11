@@ -74,6 +74,7 @@ public object OmniClientPlayer {
     @JvmStatic
     @GameSide(Side.CLIENT)
     public val hasPlayer: Boolean
+        @JvmName("hasPlayer")
         get() = getInstance() != null
 
     /**
@@ -483,6 +484,13 @@ public object OmniClientPlayer {
                 saturation = saturation
             )
         }
+
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    @Deprecated("Use hasPlayer() instead", ReplaceWith("hasPlayer()"))
+    public fun getHasPlayer(): Boolean {
+        return hasPlayer
+    }
 
     @JvmStatic
     @GameSide(Side.CLIENT)
