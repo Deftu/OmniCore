@@ -29,5 +29,22 @@ public class Mixin_MinecraftClient_RenderTickEvent {
         OmniCore.getEventBus().post(RenderTickEvent.Pre.INSTANCE);
     }
 
+    @Inject(
+            //#if MC >= 1.16.5
+            method = "render",
+            //#else
+            //$$ method = "runGameLoop",
+            //#endif
+            at = @At("RETURN")
+    )
+    public void onRenderTickEnd(
+            //#if MC >= 1.16.5
+            boolean ticking,
+            //#endif
+            CallbackInfo ci
+    ) {
+        OmniCore.getEventBus().post(RenderTickEvent.Post.INSTANCE);
+    }
+
 }
 //#endif
