@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.client.options
 
+import dev.deftu.omnicore.annotations.VersionedAbove
 import net.minecraft.sound.SoundCategory as VanillaSoundCategory
 
 public interface SoundCategory {
@@ -49,12 +50,14 @@ public interface SoundCategory {
     }
 
     //#if MC >= 1.12.2
+    @VersionedAbove("1.12.2")
     public data object Voices : SoundCategory {
         override val vanilla: VanillaSoundCategory = VanillaSoundCategory.VOICE
     }
     //#endif
 
     //#if MC >= 1.21.6
+    @VersionedAbove("1.21.6")
     public data object UI : SoundCategory {
         override val vanilla: VanillaSoundCategory = VanillaSoundCategory.UI
     }
