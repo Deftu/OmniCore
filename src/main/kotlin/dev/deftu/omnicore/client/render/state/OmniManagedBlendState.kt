@@ -101,6 +101,10 @@ public data class OmniManagedBlendState(
 
         @JvmField
         @GameSide(Side.CLIENT)
+        public val ALPHA_OVERWRITE: OmniManagedBlendState = OmniManagedBlendState(true, BlendEquation.ADD, BlendFunction.ALPHA_OVERWRITE)
+
+        @JvmField
+        @GameSide(Side.CLIENT)
         public val PREMULTIPLIED: OmniManagedBlendState = OmniManagedBlendState(true, BlendEquation.ADD, BlendFunction.PREMULTIPLIED)
 
         @JvmStatic

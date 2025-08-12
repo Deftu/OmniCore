@@ -60,6 +60,9 @@ public data class BlendFunction(
         public val ALPHA: BlendFunction = BlendFunction(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ONE_MINUS_SRC_ALPHA)
 
         @JvmField
+        public val ALPHA_OVERWRITE: BlendFunction = BlendFunction(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA, SrcFactor.ONE, DstFactor.ZERO)
+
+        @JvmField
         public val PREMULTIPLIED: BlendFunction = of(SrcFactor.ONE, DstFactor.ONE_MINUS_SRC_ALPHA)
 
         @JvmStatic
