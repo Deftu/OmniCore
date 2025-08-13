@@ -15,6 +15,8 @@ import net.minecraft.client.network.ServerInfo
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.sound.SoundManager
 import net.minecraft.client.world.ClientWorld
+import net.minecraft.entity.Entity
+import net.minecraft.resource.ResourceManager
 import net.minecraft.server.integrated.IntegratedServer
 
 //#if MC >= 1.16.5
@@ -32,7 +34,6 @@ import net.minecraft.resource.ResourceType
 //$$ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent
 //#endif
 //#endif
-
 import net.minecraft.client.util.GlfwUtil
 import net.minecraft.client.util.InputUtil
 //#else
@@ -165,6 +166,15 @@ public object OmniClient {
         get() = OmniClientPlayer.hasPlayer
 
     /**
+     * @since 0.45.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val cameraEntity: Entity?
+        get() = getInstance().cameraEntity ?: OmniClientPlayer.getInstance()
+
+    /**
      * @return The player's unformatted username.
      *
      * @since 0.16.0
@@ -253,6 +263,15 @@ public object OmniClient {
     @GameSide(Side.CLIENT)
     public val textureManager: OmniTextureManager
         get() = OmniTextureManager.INSTANCE
+
+    /**
+     * @since 0.45.0
+     * @author Deftu
+     */
+    @JvmStatic
+    @GameSide(Side.CLIENT)
+    public val resourceManager: ResourceManager
+        get() = getInstance().resourceManager
 
     /**
      * Executes a task on Minecraft's main thread.
