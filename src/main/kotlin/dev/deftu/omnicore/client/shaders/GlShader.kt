@@ -162,9 +162,10 @@ internal class DirectUniform(
     override fun setValue(matrix: FloatArray) {
         val size = matrix.size
         //#if MC <= 1.12.2
-        //$$ val matrixBuffer = ByteBuffer.allocateDirect(matrix.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer()
-        //$$ matrixBuffer.put(matrix)
-        //$$ matrixBuffer.rewind()
+        //$$ val array = matrix
+        //$$ val matrix = ByteBuffer.allocateDirect(array.size * 4).order(ByteOrder.nativeOrder()).asFloatBuffer()
+        //$$ matrix.put(array)
+        //$$ matrix.rewind()
         //#endif
 
         when (size) {
