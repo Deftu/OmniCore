@@ -13,7 +13,9 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
 
         if (OmniLoader.isPhysicalClient) {
             //#if FABRIC
+            result.add("client.Mixin_Keyboard_KeyInputEvent")
             result.add("client.Mixin_MinecraftClient_RenderTickEvent")
+            result.add("client.Mixin_Mouse_MouseInputEvent")
             //#endif
 
             //#if FABRIC || MC >= 1.16.5

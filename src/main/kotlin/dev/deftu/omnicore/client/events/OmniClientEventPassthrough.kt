@@ -22,6 +22,11 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 //#else
 //$$ import net.minecraftforge.client.event.RenderGameOverlayEvent
 //#endif
+//#if MC >= 1.16.5
+//$$ import net.minecraftforge.client.event.InputEvent as ForgeInputEvent
+//#else
+//$$ import net.minecraftforge.fml.common.gameevent.InputEvent as ForgeInputEvent
+//#endif
 //#if MC <= 1.12.2
 //$$ import dev.deftu.omnicore.client.OmniKeyboard
 //$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -30,6 +35,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 //$$ import org.lwjgl.input.Mouse
 //#endif
 //#else
+//$$ import net.neoforged.neoforge.client.event.InputEvent as ForgeInputEvent
 //$$ import net.neoforged.neoforge.client.event.RenderGuiEvent
 //$$ import net.neoforged.neoforge.common.NeoForge
 //#endif
@@ -43,6 +49,10 @@ import dev.deftu.omnicore.client.toKeyboardModifiers
 //#endif
 
 //#if FORGE-LIKE
+//#if MC >= 1.16.5
+//$$ import org.lwjgl.glfw.GLFW
+//#endif
+//$$
 //$$ private typealias EventHolder =
 //#if FORGE
 //$$     MinecraftForge
@@ -476,6 +486,61 @@ public object OmniClientEventPassthrough {
         //$$     }
         //$$ }
         //#endif
+        //$$
+        //$$ EventHolder.EVENT_BUS.addListener<
+        //#if MC >= 1.19.2
+        //$$     ForgeInputEvent.MouseButton.Pre
+        //#else
+        //$$     ForgeInputEvent.MouseInputEvent
+        //#endif
+        //$$ > { event ->
+        //$$     val button = event.button
+        //$$     val modifiers = event
+        //#if MC >= 1.18.2
+        //$$         .modifiers
+        //#else
+        //$$         .mods
+        //#endif
+        //$$         .toKeyboardModifiers()
+        //$$     val state = when (event.action) {
+        //$$         GLFW.GLFW_PRESS -> InputState.PRESSED
+        //$$         GLFW.GLFW_RELEASE -> InputState.RELEASED
+        //$$         GLFW.GLFW_REPEAT -> InputState.REPEATED
+        //$$         else -> InputState.INVALID
+        //$$     }
+        //$$
+        //$$     OmniCore.eventBus.post(InputEvent.MouseButton(
+        //$$         state,
+        //$$         button,
+        //$$         modifiers
+        //$$     ))
+        //$$ }
+        //$$
+        //$$ EventHolder.EVENT_BUS.addListener<
+        //#if MC >= 1.19.2
+        //$$     ForgeInputEvent.Key
+        //#else
+        //$$     ForgeInputEvent.KeyInputEvent
+        //#endif
+        //$$ > { event ->
+        //$$     val keyCode = event.key
+        //$$     val modifiers = event
+        //$$         .modifiers
+        //$$         .toKeyboardModifiers()
+        //$$     val state = when (event.action) {
+        //$$         GLFW.GLFW_PRESS -> InputState.PRESSED
+        //$$         GLFW.GLFW_RELEASE -> InputState.RELEASED
+        //$$         GLFW.GLFW_REPEAT -> InputState.REPEATED
+        //$$         else -> InputState.INVALID
+        //$$     }
+        //$$
+        //$$     OmniCore.eventBus.post(InputEvent.Key(
+        //$$         state,
+        //$$         keyCode,
+        //$$         -1, // Forge doesn't give us the scancode
+        //$$         modifiers
+        //$$     ))
+        //$$ }
         //#else
         //$$ EventHolder.EVENT_BUS.register(this)
         //#endif
@@ -580,6 +645,38 @@ public object OmniClientEventPassthrough {
     //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END -> OmniCore.eventBus.post(RenderTickEvent.Post)
     //$$         else -> {  } // no-op
     //$$     }
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onKeyInput(event: ForgeInputEvent.KeyInputEvent) {
+    //$$     val keyCode = Keyboard.getEventKey()
+    //$$     val modifiers = OmniKeyboard.modifiers
+    //$$     val state = when (Keyboard.getEventKeyState()) {
+    //$$         false -> InputState.RELEASED
+    //$$         true -> {
+    //$$             // Check repeat state
+    //$$             if (Keyboard.isRepeatEvent()) {
+    //$$                 InputState.REPEATED
+    //$$             } else {
+    //$$                 InputState.PRESSED
+    //$$             }
+    //$$         }
+    //$$     }
+    //$$
+    //$$     OmniCore.eventBus.post(InputEvent.Key(state, keyCode, -1, modifiers))
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onMouseInput(event: ForgeInputEvent.MouseInputEvent) {
+    //$$     val button = Mouse.getEventButton()
+    //$$     val modifiers = OmniKeyboard.modifiers
+    //$$     val state = if (Mouse.getEventButtonState()) {
+    //$$         InputState.PRESSED
+    //$$     } else {
+    //$$         InputState.RELEASED
+    //$$     }
+    //$$
+    //$$     OmniCore.eventBus.post(InputEvent.MouseButton(state, button, modifiers))
     //$$ }
     //#endif
 
