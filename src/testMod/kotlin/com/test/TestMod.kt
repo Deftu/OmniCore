@@ -7,6 +7,7 @@ import dev.deftu.omnicore.client.OmniClientCommands.command
 import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.OmniClientCommands.register
 import dev.deftu.omnicore.client.keybindings.OmniKeyBinding
+import dev.deftu.omnicore.client.keybindings.OmniKeyBindings
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
@@ -103,6 +104,16 @@ class TestMod
 
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
         OmniClient.registerReloadListener(TestResourceListener)
+
+        OmniKeyBindings.on(exampleKeyBinding) { type, state ->
+            if (type.isKey && state.isPressed) {
+                OmniChat.displayClientMessage("Example KeyBinding pressed!")
+                logger.info("Example KeyBinding pressed!")
+                true
+            } else {
+                false
+            }
+        }
 
         OmniClientCommands.command("testmod") {
             does {
