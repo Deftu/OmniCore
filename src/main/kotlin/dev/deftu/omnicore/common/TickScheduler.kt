@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.common
 
 public interface TickScheduler {
-
     public interface Handle {
         public val isCancelled: Boolean
 
@@ -41,9 +40,23 @@ public interface TickScheduler {
      */
     public fun every(
         period: Int,
-        runnable: Runnable,
         initialDelay: Int = period,
-        isFixedRate: Boolean = true
+        isFixedRate: Boolean = true,
+        runnable: Runnable,
     ): Handle
 
+    public fun every(
+        period: Int,
+        initialDelay: Int = period,
+        runnable: Runnable,
+    ): Handle {
+        return every(period, initialDelay, true, runnable)
+    }
+
+    public fun every(
+        period: Int,
+        runnable: Runnable,
+    ): Handle {
+        return every(period, period, true, runnable)
+    }
 }

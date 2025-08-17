@@ -51,9 +51,9 @@ public class DefaultTickScheduler(private val name: String) : TickScheduler {
 
     override fun every(
         period: Int,
-        runnable: Runnable,
         initialDelay: Int,
-        isFixedRate: Boolean
+        isFixedRate: Boolean,
+        runnable: Runnable,
     ): TickScheduler.Handle {
         require(period > 0) { "Period must be positive" }
         require(initialDelay >= 0) { "Initial delay must be non-negative" }
