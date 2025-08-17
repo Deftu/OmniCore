@@ -33,14 +33,14 @@ public sealed interface InputEvent {
         public val isMiddleButton: Boolean
             get() = button == OmniMouse.MIDDLE
 
-        public val isLeftSideButton: Boolean
-            get() = button == OmniMouse.LEFT
+        public val isForwardSideButton: Boolean
+            get() = button == OmniMouse.FORWARD
 
-        public val isRightSideButton: Boolean
-            get() = button == OmniMouse.RIGHT
+        public val isBackSideButton: Boolean
+            get() = button == OmniMouse.BACK
 
         public val isSideButton: Boolean
-            get() = isLeftSideButton || isRightSideButton
+            get() = isForwardSideButton || isBackSideButton
     }
 }
 
