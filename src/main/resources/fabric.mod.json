@@ -12,6 +12,9 @@
     "entrypoints": {
         "main": [
             "dev.deftu.omnicore.OmniCoreEntrypoint"
+        ],
+        "client": [
+            "dev.deftu.omnicore.OmniCoreEntrypoint"
         ]
     },
     "mixins": [
