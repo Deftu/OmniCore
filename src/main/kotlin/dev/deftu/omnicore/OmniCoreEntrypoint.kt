@@ -1,42 +1,19 @@
 package dev.deftu.omnicore
 
-import dev.deftu.omnicore.client.OmniClientCommands
-import dev.deftu.omnicore.client.OmniClientCommands.command
-import dev.deftu.omnicore.client.OmniClientCommands.does
-import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
-import dev.deftu.omnicore.client.keybindings.MCKeyBinding
-import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
-import dev.deftu.omnicore.client.render.OmniGameRendering
-import dev.deftu.omnicore.common.OmniLoader
+import dev.deftu.omnicore.client.OmniCoreClient
 import dev.deftu.omnicore.common.TickSchedulers
 import dev.deftu.omnicore.common.events.OmniCommonEventPassthrough
-import dev.deftu.omnicore.server.OmniServer
-import dev.deftu.omnicore.server.OmniServerCommands
-import dev.deftu.textile.TextHolder
-import dev.deftu.textile.minecraft.*
-import java.net.URI
+import dev.deftu.omnicore.server.OmniCoreServer
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
 import net.fabricmc.api.ModInitializer
-//#if MC >= 1.16.5
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-//#else
-//$$ import net.legacyfabric.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-//#endif
+import net.fabricmc.api.ClientModInitializer
 //#elseif FORGE
-//$$ import net.minecraftforge.common.MinecraftForge
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.eventbus.api.IEventBus
 //$$ import net.minecraftforge.fml.common.Mod
 //$$ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext
-//#if MC >= 1.18.2
-//$$ import net.minecraftforge.event.server.ServerStartingEvent
-//#elseif MC >= 1.17.1
-//$$ import net.minecraftforge.fmlserverevents.FMLServerStartingEvent
-//#else
-//$$ import net.minecraftforge.fml.event.server.FMLServerStartingEvent
-//#endif
 //#else
 //$$ import net.minecraftforge.fml.common.Mod
 //$$ import net.minecraftforge.fml.common.event.FMLInitializationEvent
@@ -44,12 +21,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 //#elseif NEOFORGE
 //$$ import net.neoforged.bus.api.IEventBus
 //$$ import net.neoforged.fml.common.Mod
-//$$ import net.neoforged.neoforge.common.NeoForge
-//$$ import net.neoforged.neoforge.event.server.ServerStartingEvent
 //#endif
 
 //#if FORGE-LIKE
 //#if MC >= 1.16.5
+//$$ import dev.deftu.omnicore.common.OmniLoader
+//$$
 //$$ @Mod(OmniCore.ID)
 //#else
 //$$ @Mod(modid = OmniCore.ID, version = OmniCore.VERSION)
@@ -57,7 +34,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 //#endif
 public class OmniCoreEntrypoint
     //#if FABRIC
-    : ModInitializer
+    : ModInitializer, ClientModInitializer
     //#endif
 {
 
@@ -88,101 +65,35 @@ public class OmniCoreEntrypoint
     ) {
         logger.info("Initializing OmniCore ${OmniCore.VERSION}")
 
-        //#if FABRIC
-        ServerLifecycleEvents.SERVER_STARTING.register { server ->
-            OmniServer.server = server
-        }
-        //#elseif FORGE-LIKE && MC >= 1.16.5
-        //#if FORGE
-        //$$ MinecraftForge
-        //#else
-        //$$ NeoForge
-        //#endif
-        //$$     .EVENT_BUS
-        //$$     .addListener<
-        //#if MC >= 1.18.2
-        //$$         ServerStartingEvent
-        //#else
-        //$$         FMLServerStartingEvent
-        //#endif
-        //$$     > { event ->
-        //$$         OmniServer.server = event.server
-        //$$     }
-        //#endif
-
         OmniCommonEventPassthrough.initialize()
+        OmniCoreServer.initialize()
         TickSchedulers.initialize()
+    }
 
-        if (OmniLoader.isPhysicalClient) {
-            OmniClientEventPassthrough.initialize()
-            MCKeyBinding.initialize()
-            ImmediateScreenRenderer.initialize()
-            OmniGameRendering.initialize()
-            OmniClientCommands.initialize()
-
-            OmniClientCommands.command(OmniCore.ID) {
-                does {
-                    source.displayMessage(MCSimpleTextHolder("Hello, World!").withFormatting(MCTextFormat.LIGHT_PURPLE))
-                    1
-                }
-
-                command("version") {
-                    does {
-                        val clickEvent = MCClickEvent.OpenUrl(URI.create(OmniCore.GIT_URL))
-                        val hoverEvent = MCHoverEvent.ShowText(OmniCore.GIT_URL)
-
-                        val lines = listOf(
-                            MCSimpleMutableTextHolder("OmniCore ")
-                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                .append(
-                                    MCSimpleTextHolder("(${OmniCore.ID})")
-                                        .withFormatting(MCTextFormat.GREEN)
-                                ),
-                            MCSimpleMutableTextHolder("Version: ")
-                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                .append(
-                                    MCSimpleTextHolder(OmniCore.VERSION)
-                                        .withFormatting(MCTextFormat.GREEN)
-                                ),
-                            MCSimpleMutableTextHolder("Branch: ")
-                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                .setClickEvent(clickEvent)
-                                .setHoverEvent(hoverEvent)
-                                .append(
-                                    MCSimpleTextHolder(OmniCore.GIT_BRANCH)
-                                        .withFormatting(MCTextFormat.GREEN)
-                                ),
-                            MCSimpleMutableTextHolder("Commit: ")
-                                .setFormatting(MCTextFormat.GOLD, MCTextFormat.BOLD)
-                                .setClickEvent(clickEvent)
-                                .setHoverEvent(hoverEvent)
-                                .append(
-                                    MCSimpleTextHolder(OmniCore.GIT_COMMIT)
-                                        .withFormatting(MCTextFormat.GREEN)
-                                ),
-                        )
-
-                        val maxLength = lines.map(TextHolder<*, *>::asUnformattedString).maxOf(String::length)
-
-                        source.displayMessage("-".repeat(maxLength))
-                        lines.forEach(source::displayMessage)
-                        source.displayMessage("-".repeat(maxLength))
-
-                        1
-                    }
-                }
-            }
-        }
-
-        if (OmniLoader.isPhysicalServer) {
-            OmniServerCommands.initialize()
-        }
+    //#if FABRIC
+    override
+    //#elseif FORGE && MC <= 1.12.2
+    //$$ @Mod.EventHandler
+    //$$ private
+    //#else
+    //$$ private
+    //#endif
+    fun onInitializeClient(
+        //#if FORGE && MC <= 1.12.2
+        //$$ event: FMLInitializationEvent
+        //#endif
+    ) {
+        OmniCoreClient.initialize()
     }
 
     //#if FORGE-LIKE && MC >= 1.16.5
     //$$ private fun setupForgeEvents(modEventBus: IEventBus) {
     //$$     OmniLoader.modEventBus = modEventBus
     //$$     onInitialize()
+    //$$
+    //$$     if (OmniLoader.isPhysicalClient) {
+    //$$         onInitializeClient()
+    //$$     }
     //$$ }
     //#endif
 
