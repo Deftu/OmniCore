@@ -2,15 +2,30 @@ package dev.deftu.omnicore.client.keybindings
 
 import net.minecraft.client.option.KeyBinding
 
-//#if MC <= 1.12.2
-//$$ import dev.deftu.omnicore.client.OmniKeyboard
+//#if MC >= 1.16.5
+import dev.deftu.omnicore.client.OmniKeyboard
+import dev.deftu.omnicore.mixins.client.Mixin_KeyBinding_AccessorBoundKey
 //#endif
 
 public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCKeyBinding {
-
     override val name: String = this.vanillaKeyBinding.translationKey
 
     override val category: String = this.vanillaKeyBinding.category
+
+    override val type: OmniKeyBinding.KeyBindingType
+        get() {
+            val keyCode =
+                //#if MC >= 1.16.5
+                (this.vanillaKeyBinding as Mixin_KeyBinding_AccessorBoundKey).boundKey?.code ?: OmniKeyboard.KEY_NONE
+                //#else
+                //$$ this.vanillaKeyBinding.keyCode
+                //#endif
+            return if (keyCode < 0) {
+                OmniKeyBinding.KeyBindingType.MOUSE
+            } else {
+                OmniKeyBinding.KeyBindingType.KEY
+            }
+        }
 
     override val defaultValue: Int
         get() {
@@ -20,27 +35,6 @@ public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCK
             //$$ return this.vanillaKeyBinding.keyCodeDefault
             //#endif
         }
-
-    override val isDefault: Boolean
-        get() {
-            //#if MC >= 1.16.5
-            return this.vanillaKeyBinding.isDefault
-            //#else
-            //$$ return this.vanillaKeyBinding.keyCode == this.defaultValue
-            //#endif
-        }
-
-    override val isUnbound: Boolean
-        get() {
-            //#if MC >= 1.16.5
-            return this.vanillaKeyBinding.isUnbound
-            //#else
-            //$$ return this.vanillaKeyBinding.keyCode == OmniKeyboard.KEY_NONE
-            //#endif
-        }
-
-    override val isPressed: Boolean
-        get() = !isUnbound && this.vanillaKeyBinding.isPressed
 
     override fun matchesMouse(button: Int): Boolean {
         //#if MC >= 1.16.5
@@ -56,9 +50,5 @@ public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCK
         //#else
         //$$ return keyCode == this.vanillaKeyBinding.keyCode
         //#endif
-    }
-
-    override fun consume(): Boolean {
-        return this.vanillaKeyBinding.wasPressed()
     }
 }

@@ -23,6 +23,7 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#endif
 
             //#if MC >= 1.16.5
+            result.add("client.Mixin_KeyBinding_AccessorBoundKey")
             result.add("client.Mixin_NativeImage_Accessor")
             //#endif
 

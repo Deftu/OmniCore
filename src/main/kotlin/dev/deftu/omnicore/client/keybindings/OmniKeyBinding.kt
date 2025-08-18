@@ -3,6 +3,10 @@ package dev.deftu.omnicore.client.keybindings
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
 
+//#if MC >= 1.16.5
+import net.minecraft.client.util.InputUtil
+//#endif
+
 /**
  * A contract for key bindings in OmniCore. Declared so that we can
  * have a common interface should the consumer want to use their own
@@ -11,9 +15,7 @@ import dev.deftu.omnicore.annotations.Side
  * and any which may be wrapped by our consumer.
  */
 public interface OmniKeyBinding {
-
     public companion object {
-
         @JvmStatic
         @JvmOverloads
         @GameSide(Side.CLIENT)
@@ -25,19 +27,30 @@ public interface OmniKeyBinding {
         ): ManagedKeyBinding {
             return ManagedKeyBinding(name, category, defaultValue, type)
         }
-
     }
 
     public enum class KeyBindingType {
         KEY,
-        MOUSE
+        MOUSE;
+
+        //#if MC >= 1.16.5
+        public val vanilla: InputUtil.Type
+            get() = when (this) {
+                KEY -> InputUtil.Type.KEYSYM
+                MOUSE -> InputUtil.Type.MOUSE
+            }
+        //#endif
     }
 
     public val name: String
 
     public val category: String
 
+    public val type: KeyBindingType
+
     public val defaultValue: Int
+
+    public var boundValue: Int
 
     public val isDefault: Boolean
 
@@ -58,5 +71,4 @@ public interface OmniKeyBinding {
      * key binding if it's been pressed since the last time this method was called.
      */
     public fun consume(): Boolean
-
 }

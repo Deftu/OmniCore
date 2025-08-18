@@ -50,7 +50,7 @@ class TestMod
     private val exampleKeyBinding = OmniKeyBinding.create(
         name = "Example KeyBinding",
         category = "Example Mod",
-        defaultValue = OmniKeyboard.KEY_M,
+        defaultValue = OmniKeyboard.KEY_B,
         type = OmniKeyBinding.KeyBindingType.KEY
     )
 
@@ -107,11 +107,11 @@ class TestMod
 
         OmniKeyBindings.on(exampleKeyBinding) { type, state ->
             if (type.isKey && state.isPressed) {
-                OmniChat.displayClientMessage("Example KeyBinding pressed!")
-                logger.info("Example KeyBinding pressed!")
-                true
-            } else {
-                false
+                if (OmniClientPlayer.hasPlayer) {
+                    OmniChat.displayClientMessage("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue}) [should be: ${OmniKeyboard.KEY_B}]")
+                }
+
+                logger.info("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue})")
             }
         }
 
