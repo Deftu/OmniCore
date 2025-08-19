@@ -25,7 +25,7 @@ public interface OmniKeyBinding {
             category: String,
             defaultValue: Int,
             type: KeyBindingType = KeyBindingType.KEY
-        ): ManagedKeyBinding {
+        ): MCKeyBinding {
             return ManagedKeyBinding(name, category, defaultValue, type)
         }
 
