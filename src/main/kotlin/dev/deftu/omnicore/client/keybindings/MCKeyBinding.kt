@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.client.keybindings
 
+import dev.deftu.omnicore.client.OmniClient
 import dev.deftu.omnicore.client.OmniKeyboard
 import net.minecraft.client.option.KeyBinding
 
@@ -54,6 +55,15 @@ public interface MCKeyBinding : OmniKeyBinding {
     }
 
     public val vanillaKeyBinding: KeyBinding
+
+    public val translatedName: String
+        get() {
+            //#if MC >= 1.16.5
+            return OmniClient.translate(this.vanillaKeyBinding.translationKey)
+            //#else
+            //$$ return OmniClient.translate(this.vanillaKeyBinding.keyDescription)
+            //#endif
+        }
 
     override var boundValue: Int
         get() {
