@@ -2,6 +2,7 @@ package dev.deftu.omnicore.client.keybindings
 
 import dev.deftu.omnicore.annotations.GameSide
 import dev.deftu.omnicore.annotations.Side
+import net.minecraft.client.option.KeyBinding
 
 //#if MC >= 1.16.5
 import net.minecraft.client.util.InputUtil
@@ -26,6 +27,12 @@ public interface OmniKeyBinding {
             type: KeyBindingType = KeyBindingType.KEY
         ): ManagedKeyBinding {
             return ManagedKeyBinding(name, category, defaultValue, type)
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun wrap(vanillaKeyBinding: KeyBinding): MCKeyBinding {
+            return WrappedKeyBinding(vanillaKeyBinding)
         }
     }
 
