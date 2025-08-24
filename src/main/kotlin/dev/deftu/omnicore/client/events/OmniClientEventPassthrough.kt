@@ -222,8 +222,14 @@ public object OmniClientEventPassthrough {
 
             ScreenEvents.beforeRender(screen).register { _, ctx, _, _, tickDelta ->
                 val matrixStack = OmniMatrixStack.vanilla(ctx)
-                val event = ScreenEvent.Render.Pre(screen, matrixStack, tickDelta)
-                OmniCore.eventBus.post(event)
+                OmniCore.eventBus.post(ScreenEvent.Render.Pre(
+                    screen,
+                    //#if MC >= 1.20.1
+                    ctx,
+                    //#endif
+                    matrixStack,
+                    tickDelta
+                ))
             }
         }
 
@@ -252,8 +258,14 @@ public object OmniClientEventPassthrough {
 
             ScreenEvents.afterRender(screen).register { _, ctx, _, _, tickDelta ->
                 val matrixStack = OmniMatrixStack.vanilla(ctx)
-                val event = ScreenEvent.Render.Post(screen, matrixStack, tickDelta)
-                OmniCore.eventBus.post(event)
+                OmniCore.eventBus.post(ScreenEvent.Render.Post(
+                    screen,
+                    //#if MC >= 1.20.1
+                    ctx,
+                    //#endif
+                    matrixStack,
+                    tickDelta
+                ))
             }
         }
         //#endif
@@ -344,7 +356,14 @@ public object OmniClientEventPassthrough {
         //#else
         //$$     val partialTicks = event.renderPartialTicks
         //#endif
-        //$$     OmniCore.eventBus.post(ScreenEvent.Render.Pre(screen, matrixStack, partialTicks))
+        //$$     OmniCore.eventBus.post(ScreenEvent.Render.Pre(
+        //$$         screen,
+        //#if MC >= 1.20.1
+        //$$         event.guiGraphics,
+        //#endif
+        //$$         matrixStack,
+        //$$         partialTicks
+        //$$     ))
         //$$ }
         //$$
         //$$ EventHolder.EVENT_BUS.addListener<LoaderPostRenderScreenEvent> { event ->
@@ -370,7 +389,14 @@ public object OmniClientEventPassthrough {
         //#else
         //$$     val partialTicks = event.renderPartialTicks
         //#endif
-        //$$     OmniCore.eventBus.post(ScreenEvent.Render.Post(screen, matrixStack, partialTicks))
+        //$$     OmniCore.eventBus.post(ScreenEvent.Render.Post(
+        //$$         screen,
+        //#if MC >= 1.20.1
+        //$$         event.guiGraphics,
+        //#endif
+        //$$         matrixStack,
+        //$$         partialTicks
+        //$$     ))
         //$$ }
         //$$
         //$$ EventHolder.EVENT_BUS.addListener<LoaderPreKeyPressEvent> { event ->
