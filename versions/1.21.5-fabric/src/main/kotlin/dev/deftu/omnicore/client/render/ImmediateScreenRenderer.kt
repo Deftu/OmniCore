@@ -1,6 +1,8 @@
 package dev.deftu.omnicore.client.render
 
+import dev.deftu.omnicore.annotations.VersionedBelow
 import dev.deftu.omnicore.client.OmniScreen
+import dev.deftu.omnicore.client.events.ScreenEvent
 import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 
 //#if MC >= 1.20.1
@@ -21,11 +23,11 @@ import net.minecraft.client.gui.DrawContext
  * you please. Use it as you wish elsewhere should you need to.
  */
 public object ImmediateScreenRenderer {
-
     public fun initialize() {
         // no-op below 1.21.6
     }
 
+    @JvmStatic
     public fun render(
         //#if MC >= 1.20.1
         ctx: DrawContext,
@@ -43,4 +45,21 @@ public object ImmediateScreenRenderer {
         block(stack)
     }
 
+    @JvmStatic
+    @VersionedBelow("1.21.5")
+    public fun render(stack: OmniMatrixStack, block: (OmniMatrixStack) -> Unit) {
+        block(stack)
+    }
+
+    @JvmStatic
+    public fun render(event: ScreenEvent.Render, block: (OmniMatrixStack) -> Unit) {
+        render(
+            //#if MC >= 1.20.1
+            event.context,
+            //#elseif MC >= 1.16.5
+            //$$ event.matrixStack,
+            //#endif
+            block
+        )
+    }
 }

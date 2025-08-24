@@ -6,6 +6,7 @@ import dev.deftu.eventbus.on
 import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.client.OmniScreen
 import dev.deftu.omnicore.client.events.RenderTickEvent
+import dev.deftu.omnicore.client.events.ScreenEvent
 import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniIdentifier
 import net.minecraft.client.gl.RenderPipelines
@@ -45,6 +46,7 @@ public object ImmediateScreenRenderer {
         isInitialized = true
     }
 
+    @JvmStatic
     public fun render(ctx: DrawContext, block: (OmniMatrixStack) -> Unit) {
         val scaleFactor = OmniResolution.scaleFactor.toFloat()
         val width = OmniResolution.viewportWidth
@@ -100,4 +102,15 @@ public object ImmediateScreenRenderer {
         OmniTextureManager.INSTANCE.destroyTexture(identifier)
     }
 
+    @JvmStatic
+    public fun render(event: ScreenEvent.Render, block: (OmniMatrixStack) -> Unit) {
+        render(
+            //#if MC >= 1.20.1
+            event.context,
+            //#elseif MC >= 1.16.5
+            //$$ event.matrixStack,
+            //#endif
+            block
+        )
+    }
 }
