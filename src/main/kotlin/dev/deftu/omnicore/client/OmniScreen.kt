@@ -12,6 +12,7 @@ import dev.deftu.textile.minecraft.MCTextHolder
 import dev.deftu.textile.minecraft.MCTranslatableTextHolder
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen
+import net.minecraft.client.gui.screen.ingame.HandledScreen
 
 //#if MC <= 1.12.2
 //$$ import java.io.IOException
@@ -114,6 +115,16 @@ public abstract class OmniScreen(
         @GameSide(Side.CLIENT)
         public fun isInScreen(screenClz: Class<out Screen>): Boolean {
             return currentScreen?.javaClass == screenClz
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun isContainerScreen(screen: Screen?): Boolean {
+            //#if MC >= 1.16.5
+            return screen is HandledScreen<*>
+            //#else
+            //$$ return screen is GuiContainer
+            //#endif
         }
 
         @JvmStatic
