@@ -10,7 +10,6 @@ import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import java.awt.Color
-import kotlin.math.roundToInt
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.BufferBuilder
@@ -32,10 +31,10 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
     private val bottomLeftColor = Color(0x0000FF) // Blue
     private val bottomRightColor = Color(0xFFFF00) // Yellow
 
-    private val renderX = 50.0
-    private val renderY = 50.0
-    private val renderWidth = 100.0
-    private val renderHeight = 100.0
+    private val renderX1 = 50.0
+    private val renderY1 = 50.0
+    private val renderX2 = 150.0
+    private val renderY2 = 150.0
 
     override fun handleRender(stack: OmniMatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
         super.handleRender(stack, mouseX, mouseY, tickDelta) // Render vanilla screen
@@ -58,19 +57,19 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
     private fun render(stack: OmniMatrixStack) {
         val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
         buffer
-            .vertex(stack, renderX, renderY, 0.0)
+            .vertex(stack, renderX1, renderY1, 0.0)
             .color(topLeftColor)
             .next()
         buffer
-            .vertex(stack, renderX + renderWidth, renderY, 0.0)
+            .vertex(stack, renderX2, renderY1, 0.0)
             .color(topRightColor)
             .next()
         buffer
-            .vertex(stack, renderX + renderWidth, renderY + renderHeight, 0.0)
+            .vertex(stack, renderX2, renderY2, 0.0)
             .color(bottomRightColor)
             .next()
         buffer
-            .vertex(stack, renderX, renderY + renderHeight, 0.0)
+            .vertex(stack, renderX1, renderY2, 0.0)
             .color(bottomLeftColor)
             .next()
         buffer.build()?.drawWithCleanup(pipeline)

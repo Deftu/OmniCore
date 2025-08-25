@@ -1,18 +1,29 @@
 package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
+import dev.deftu.eventbus.on
+import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.client.OmniClientCommands.argument
 import dev.deftu.omnicore.client.OmniClientCommands.command
 import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.OmniClientCommands.register
+import dev.deftu.omnicore.client.events.ScreenEvent
 import dev.deftu.omnicore.client.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.client.keybindings.OmniKeyBindings
+import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
+import dev.deftu.omnicore.client.render.pipeline.DrawModes
+import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.client.render.pipeline.VertexFormats
+import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
+import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextFormat
+import net.minecraft.client.gui.screen.ingame.HandledScreen
 import org.apache.logging.log4j.LogManager
+import java.awt.Color
 
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
@@ -44,6 +55,14 @@ class TestMod
     : ModInitializer, ClientModInitializer
 //#endif
 {
+
+    private val pipeline = OmniRenderPipeline.builderWithDefaultShader(
+        identifier = OmniIdentifier.create(OmniCore.ID, "screen_injector"),
+        vertexFormat = VertexFormats.POSITION_COLOR,
+        mode = DrawModes.QUADS,
+    ).apply {
+        blendState = OmniManagedBlendState.ALPHA
+    }.build()
 
     private val logger = LogManager.getLogger(TestMod::class.java)
 
@@ -180,6 +199,47 @@ class TestMod
                 }
             }
         }.register()
+
+        val topLeftColor = Color(0xFF0000) // Red
+        val topRightColor = Color(0x00FF00) // Green
+        val bottomLeftColor = Color(0x0000FF) // Blue
+        val bottomRightColor = Color(0xFFFF00) // Yellow
+
+        val renderX1 = 50.0
+        val renderY1 = 50.0
+        val renderX2 = 150.0
+        val renderY2 = 150.0
+
+        OmniCore.eventBus.on<ScreenEvent.Render.Post> {
+            if (!OmniScreen.isContainerScreen(screen)) {
+                return@on
+            }
+
+            matrixStack.push()
+            logger.warn("Rendering on top of screen ${screen.javaClass.simpleName}")
+            ImmediateScreenRenderer.render(this) { stack ->
+                val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
+                buffer
+                    .vertex(stack, renderX1, renderY1, 0.0)
+                    .color(topLeftColor)
+                    .next()
+                buffer
+                    .vertex(stack, renderX2, renderY1, 0.0)
+                    .color(topRightColor)
+                    .next()
+                buffer
+                    .vertex(stack, renderX2, renderY2, 0.0)
+                    .color(bottomRightColor)
+                    .next()
+                buffer
+                    .vertex(stack, renderX1, renderY2, 0.0)
+                    .color(bottomLeftColor)
+                    .next()
+                buffer.build()?.drawWithCleanup(pipeline)
+            }
+            matrixStack.pop()
+            OmniClient.getInstance().framebuffer.blitToScreen()
+        }
 
         //#if FABRIC && MC >= 1.16.5
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
