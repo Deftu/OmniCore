@@ -100,6 +100,10 @@ class TestMod
         //$$ }
         //#endif
 
+        //#if MC >= 1.16.5
+        RenderDoc.init()
+        //#endif
+
         exampleKeyBinding.register()
 
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
