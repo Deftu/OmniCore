@@ -61,7 +61,7 @@ public object DefaultShaders {
     //$$         put(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, createSupplierNonnull(GameRenderer::getPositionColorTexLightmapProgram))
     //$$         put(VertexFormats.POSITION_COLOR_LIGHT, createSupplierNonnull(GameRenderer::getPositionColorLightmapProgram))
     //$$         put(VertexFormats.LINES, createSupplierNonnull(GameRenderer::getRenderTypeLinesProgram))
-    //$$         put(VertexFormats.BLIT_SCREEN, Supplier { OmniClient.getInstance().gameRenderer.blitScreenProgram })
+    //$$         put(VertexFormats.BLIT_SCREEN, Supplier { OmniClient.getInstance().gameRenderer.blitScreenProgram!! })
     //$$
             //#if MC < 1.20.6
             //$$ put(VertexFormats.POSITION_TEXTURE_LIGHT_COLOR, createSupplierNonnull(GameRenderer::getPositionTexLightmapColorProgram))

@@ -238,7 +238,6 @@ class TestMod
                 buffer.build()?.drawWithCleanup(pipeline)
             }
             matrixStack.pop()
-            OmniClient.getInstance().framebuffer.blitToScreen()
         }
 
         //#if FABRIC && MC >= 1.16.5

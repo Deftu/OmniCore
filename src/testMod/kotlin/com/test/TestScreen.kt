@@ -11,11 +11,6 @@ import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import java.awt.Color
 
-//#if MC <= 1.12.2
-//$$ import net.minecraft.client.renderer.BufferBuilder
-//$$ import net.minecraft.client.renderer.Tessellator
-//#endif
-
 class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
 
     private val pipeline by lazy {
@@ -39,11 +34,6 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
     override fun handleRender(stack: OmniMatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
         super.handleRender(stack, mouseX, mouseY, tickDelta) // Render vanilla screen
 
-        render(stack)
-        //#if MC <= 1.12.2
-        //$$ renderVanilla()
-        //#endif
-
         val text = "Hello, OmniCore!"
         OmniGameRendering.drawCenteredText(
             stack = stack,
@@ -52,6 +42,8 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
             y = 25f,
             color = Color.WHITE.rgb
         )
+
+        render(stack)
     }
 
     private fun render(stack: OmniMatrixStack) {
@@ -74,36 +66,4 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
             .next()
         buffer.build()?.drawWithCleanup(pipeline)
     }
-
-    //#if MC <= 1.12.2
-    //$$ private fun renderVanilla() {
-    //$$     val renderX = renderX + renderWidth + 50.0
-    //$$
-    //$$     val tessellator = Tessellator.getInstance()
-    //$$     val buffer = tessellator.buffer
-    //$$     buffer.begin(DrawModes.QUADS.vanilla, VertexFormats.POSITION_COLOR.vanilla)
-    //$$     buffer
-    //$$         .pos(renderX, renderY, 0.0)
-    //$$         .color(topLeftColor)
-    //$$         .endVertex()
-    //$$     buffer
-    //$$         .pos(renderX + renderWidth, renderY, 0.0)
-    //$$         .color(topRightColor)
-    //$$         .endVertex()
-    //$$     buffer
-    //$$         .pos(renderX + renderWidth, renderY + renderHeight, 0.0)
-    //$$         .color(bottomRightColor)
-    //$$         .endVertex()
-    //$$     buffer
-    //$$         .pos(renderX, renderY + renderHeight, 0.0)
-    //$$         .color(bottomLeftColor)
-    //$$         .endVertex()
-    //$$     tessellator.draw()
-    //$$ }
-    //$$
-    //$$ private fun BufferBuilder.color(color: Color): BufferBuilder {
-    //$$     return color(color.red, color.green, color.blue, color.alpha)
-    //$$ }
-    //#endif
-
 }
