@@ -1,28 +1,23 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.api.scheduling
 
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.events.RenderTickEvent
+import dev.deftu.omnicore.internal.scheduling.DefaultTickScheduler
 import dev.deftu.omnicore.common.events.TickEvent
 
 public object TickSchedulers {
-
     @JvmStatic
-    @GameSide(Side.BOTH)
-    public val server: TickScheduler = DefaultTickScheduler("server")
-        @JvmName("server")
-        get
-
-    @JvmStatic
-    @GameSide(Side.CLIENT)
     public val client: TickScheduler = DefaultTickScheduler("client")
         @JvmName("client")
         get
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
+    public val server: TickScheduler = DefaultTickScheduler("server")
+        @JvmName("server")
+        get
+
+    @JvmStatic
     public val render: TickScheduler = DefaultTickScheduler("render")
         @JvmName("render")
         get
@@ -40,5 +35,4 @@ public object TickSchedulers {
             (this@TickSchedulers.render as DefaultTickScheduler).tick()
         }
     }
-
 }

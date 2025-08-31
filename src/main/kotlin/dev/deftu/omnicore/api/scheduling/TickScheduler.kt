@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.api.scheduling
 
 public interface TickScheduler {
     public interface Handle {

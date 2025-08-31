@@ -1,5 +1,6 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.internal.scheduling
 
+import dev.deftu.omnicore.api.scheduling.TickScheduler
 import org.apache.logging.log4j.LogManager
 import java.util.PriorityQueue
 import java.util.concurrent.ConcurrentLinkedQueue

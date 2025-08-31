@@ -1,7 +1,7 @@
 package dev.deftu.omnicore
 
 import dev.deftu.omnicore.client.OmniCoreClient
-import dev.deftu.omnicore.common.TickSchedulers
+import dev.deftu.omnicore.api.scheduling.TickSchedulers
 import dev.deftu.omnicore.common.events.OmniCommonEventPassthrough
 import dev.deftu.omnicore.server.OmniCoreServer
 import org.apache.logging.log4j.LogManager
