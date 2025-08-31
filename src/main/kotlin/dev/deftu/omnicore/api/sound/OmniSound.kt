@@ -1,39 +1,27 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.api.sound
 
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
-import dev.deftu.omnicore.client.OmniClientSound
-import dev.deftu.omnicore.server.OmniServerSound
-import net.minecraft.server.network.ServerPlayerEntity
+import dev.deftu.omnicore.common.OmniIdentifier
 import net.minecraft.util.Identifier
 
 //#if MC >= 1.12.2
 import net.minecraft.sound.SoundEvent
 //#endif
 
-@GameSide(Side.BOTH)
 public class OmniSound {
-
     public companion object {
-
         @JvmStatic
-        @GameSide(Side.BOTH)
         public fun invalid(): OmniSound {
             return OmniSound(OmniIdentifier.create(OmniCore.ID, "invalid"))
         }
-
     }
 
-    @GameSide(Side.BOTH)
     public val identifier: Identifier
 
     //#if MC >= 1.12.2
-    @GameSide(Side.BOTH)
     public val event: SoundEvent
     //#endif
 
-    @GameSide(Side.BOTH)
     public constructor(identifier: Identifier) {
         this.identifier = identifier
         //#if MC >= 1.12.2
@@ -46,22 +34,11 @@ public class OmniSound {
     }
 
     //#if MC >= 1.12.2
-    @GameSide(Side.BOTH)
     public constructor(event: SoundEvent) {
         this.identifier = event.id()
         this.event = event
     }
     //#endif
-
-    @GameSide(Side.CLIENT)
-    public fun playForClient(volume: Float, pitch: Float) {
-        OmniClientSound.play(this, volume, pitch)
-    }
-
-    @GameSide(Side.SERVER)
-    public fun playForServer(player: ServerPlayerEntity, volume: Float, pitch: Float) {
-        OmniServerSound.play(player, this, volume, pitch)
-    }
 
     override fun equals(other: Any?): Boolean {
         return when {
@@ -81,5 +58,4 @@ public class OmniSound {
     override fun hashCode(): Int {
         return identifier.hashCode()
     }
-
 }

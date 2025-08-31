@@ -1,45 +1,35 @@
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.api.client
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import org.apache.logging.log4j.LogManager
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
 import java.util.concurrent.TimeUnit
 
-@GameSide(Side.CLIENT)
 public object OmniDesktop {
-
-    private val logger = LogManager.getLogger()
+    private val logger = LogManager.getLogger(OmniDesktop::class.java)
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public var isWindows: Boolean = false
         private set
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public var isMac: Boolean = false
         private set
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public var isLinux: Boolean = false
         private set
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public var isXdg: Boolean = false
         private set
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public var isKde: Boolean = false
         private set
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public var isGnome: Boolean = false
         private set
 
@@ -61,31 +51,35 @@ public object OmniDesktop {
                 isGnome = gnomeSession?.contains("gnome") == true
                 isKde = gnomeSession?.contains("kde") == true
             }
-        } else logger.error("Couldn't assign OS variables because the OS name is null")
+        } else {
+            logger.error("OS name is null... Uh oh...")
+        }
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun browse(uri: URI): Boolean =
-        browseInternally(uri) || openWithCommand(uri.toString())
+    public fun browse(uri: URI): Boolean {
+        return browseInternally(uri) || openWithCommand(uri.toString())
+    }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun open(file: File): Boolean =
-        openInternally(file) || openWithCommand(file.absolutePath)
+    public fun open(file: File): Boolean {
+        return openInternally(file) || openWithCommand(file.absolutePath)
+    }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun edit(file: File): Boolean =
-        editInternally(file) || openWithCommand(file.absolutePath)
+    public fun edit(file: File): Boolean {
+        return editInternally(file) || openWithCommand(file.absolutePath)
+    }
 
     private fun browseInternally(uri: URI): Boolean {
-        if (!Desktop.isDesktopSupported())
+        if (!Desktop.isDesktopSupported()) {
             return false
+        }
 
         return try {
-            if (!Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))
+            if (!Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 return false
+            }
 
             Desktop.getDesktop().browse(uri)
             true
@@ -96,12 +90,14 @@ public object OmniDesktop {
     }
 
     private fun openInternally(file: File): Boolean {
-        if (!Desktop.isDesktopSupported())
+        if (!Desktop.isDesktopSupported()) {
             return false
+        }
 
         return try {
-            if (!Desktop.getDesktop().isSupported(Desktop.Action.OPEN))
+            if (!Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
                 return false
+            }
 
             Desktop.getDesktop().open(file)
             true
@@ -112,12 +108,14 @@ public object OmniDesktop {
     }
 
     private fun editInternally(file: File): Boolean {
-        if (!Desktop.isDesktopSupported())
+        if (!Desktop.isDesktopSupported()) {
             return false
+        }
 
         return try {
-            if (!Desktop.getDesktop().isSupported(Desktop.Action.EDIT))
+            if (!Desktop.getDesktop().isSupported(Desktop.Action.EDIT)) {
                 return false
+            }
 
             Desktop.getDesktop().edit(file)
             true
@@ -150,13 +148,15 @@ public object OmniDesktop {
             if (checkExit) {
                 if (process.waitFor(5, TimeUnit.SECONDS)) {
                     process.exitValue() == 0
-                } else true
-            } else process.isAlive
+                } else {
+                    true
+                }
+            } else {
+                process.isAlive
+            }
         } catch (e: Exception) {
             logger.error("Failed to run command", e)
             false
         }
     }
-
-
 }

@@ -3,7 +3,11 @@ package dev.deftu.omnicore.api.client.chat
 import dev.deftu.omnicore.api.chat.MessageSurface
 import dev.deftu.omnicore.client.OmniClient
 import dev.deftu.omnicore.client.OmniClientPlayer
+import dev.deftu.omnicore.internal.asReadableString
+import dev.deftu.textile.minecraft.MCHoverEvent
+import dev.deftu.textile.minecraft.MCSimpleMutableTextHolder
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
+import dev.deftu.textile.minecraft.MCTextFormat
 import dev.deftu.textile.minecraft.MCTextHolder
 
 public object OmniClientChat {
@@ -11,6 +15,7 @@ public object OmniClientChat {
     public fun display(surface: MessageSurface) {
         when (surface) {
             is MessageSurface.ChatMessage -> displayChatMessage(surface.content)
+            is MessageSurface.ErrorMessage -> displayErrorMessage(surface.content, surface.error, surface.isDetailed)
             is MessageSurface.ActionBar -> displayActionBar(surface.content)
             is MessageSurface.Title -> displayTitle(
                 surface.title,
@@ -36,6 +41,30 @@ public object OmniClientChat {
     @JvmStatic
     public fun displayChatMessage(text: String) {
         displayChatMessage(MCSimpleTextHolder(text))
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    public fun displayErrorMessage(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true) {
+        val displayedText = MCSimpleMutableTextHolder("")
+            .append(content)
+        if (isDetailed) {
+            displayedText.setHoverEvent(MCHoverEvent.ShowText(throwable.asReadableString))
+        }
+
+        displayChatMessage(displayedText)
+    }
+
+    @JvmStatic
+    @JvmOverloads
+    public fun displayErrorMessage(error: Throwable, isDetailed: Boolean = true) {
+        val text = MCSimpleMutableTextHolder(error.message ?: "An error occurred")
+            .addFormatting(MCTextFormat.RED)
+        if (isDetailed) {
+            text.setHoverEvent(MCHoverEvent.ShowText(error.asReadableString))
+        }
+
+        displayChatMessage(text)
     }
 
     @JvmStatic

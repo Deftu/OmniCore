@@ -1,13 +1,8 @@
-package dev.deftu.omnicore.common.codecs
+package dev.deftu.omnicore.api.serialization
 
-import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
-import com.mojang.serialization.MapCodec
-import com.mojang.serialization.codecs.EitherMapCodec
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
-import dev.deftu.omnicore.common.OmniUuid
+import dev.deftu.omnicore.api.OmniUuid
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import java.time.Instant
@@ -26,9 +21,7 @@ import java.util.regex.Pattern
 //$$ import java.util.stream.IntStream
 //#endif
 
-@GameSide(Side.BOTH)
 public object OmniCodecs {
-
     private val UUID_INT_STREAM: Codec<UUID> = Codec.INT_STREAM.comapFlatMap(
         { stream ->
             OmniDataResult
@@ -70,7 +63,7 @@ public object OmniCodecs {
     )
 
     @JvmField
-    public val UUID_STRICT: Codec<UUID> = withAlternative(Codec.STRING.comapFlatMap({ string ->
+    public val UUID_STRICT: Codec<UUID> = OmniCodecOps.withAlternative(Codec.STRING.comapFlatMap({ string ->
         try {
             DataResult.success(UUID.fromString(string))
         } catch (e: Exception) {
@@ -79,7 +72,7 @@ public object OmniCodecs {
     }, UUID::toString), UUID_INT_STREAM)
 
     @JvmField
-    public val UUID_UNDASHED: Codec<UUID> = withAlternative(Codec.STRING.comapFlatMap({ string ->
+    public val UUID_UNDASHED: Codec<UUID> = OmniCodecOps.withAlternative(Codec.STRING.comapFlatMap({ string ->
         try {
             DataResult.success(OmniUuid.fromUndashed(string))
         } catch (e: Exception) {
@@ -88,7 +81,7 @@ public object OmniCodecs {
     }, OmniUuid::toUndashed), UUID_INT_STREAM)
 
     @JvmField
-    public val UUID_LENIENT: Codec<UUID> = withAlternative(UUID_STRICT, UUID_UNDASHED)
+    public val UUID_LENIENT: Codec<UUID> = OmniCodecOps.withAlternative(UUID_STRICT, UUID_UNDASHED)
 
     @JvmField
     public val BLOCK_POS: Codec<BlockPos> =
@@ -111,27 +104,6 @@ public object OmniCodecs {
     public val INSTANT: Codec<Instant> = time(DateTimeFormatter.ISO_INSTANT).xmap(Instant::from, Function.identity())
 
     @JvmStatic
-    @GameSide(Side.BOTH)
-    public fun <T> unwrapEither(either: Either<out T, out T>): T {
-        //#if MC >= 1.20.6
-        return Either.unwrap(either)
-        //#else
-        //$$ return either.map(Function.identity(), Function.identity())
-        //#endif
-    }
-
-    @JvmStatic
-    @GameSide(Side.BOTH)
-    public fun <T> withAlternative(primary: Codec<T>, alternative: Codec<T>): Codec<T> {
-        //#if MC >= 1.20.6
-        return Codec.withAlternative(primary, alternative)
-        //#else
-        //$$ return Codec.either(primary, alternative).xmap(::unwrapEither, Either<T, T>::left)
-        //#endif
-    }
-
-    @JvmStatic
-    @GameSide(Side.BOTH)
     public fun time(formatter: DateTimeFormatter): Codec<TemporalAccessor> {
         return Codec.STRING.comapFlatMap({ string ->
             try {
@@ -141,45 +113,4 @@ public object OmniCodecs {
             }
         }, formatter::format)
     }
-
-    /**
-     * Accepts either:
-     * - list field (e.g. "items": [ ... ])
-     * - single field (e.g. "item":  "...")
-     * and always decodes to List<T>.
-     *
-     * Encoding picks Right (single) when size==1, otherwise Left (list).
-     *
-     * @since 0.42.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.BOTH)
-    public fun <T> singleOrList(
-        single: MapCodec<T>,
-        list: MapCodec<List<T>>
-    ): MapCodec<List<T>> {
-        return EitherMapCodec(list, single).xmap(
-            { e -> e.map({ it }, { listOf(it) }) },
-            { xs -> if (xs.size == 1) Either.right(xs[0]) else Either.left(xs) }
-        )
-    }
-
-    /**
-     * Convenience function to automatically build the map-codecs from names + element codec.
-     *
-     * @since 0.42.0
-     * @author Deftu
-     */
-    public fun <T> singleOrList(
-        singleName: String,
-        listName: String,
-        element: Codec<T>
-    ): MapCodec<List<T>> {
-        return singleOrList(
-            single = element.fieldOf(singleName),
-            list = element.listOf().fieldOf(listName)
-        )
-    }
-
 }

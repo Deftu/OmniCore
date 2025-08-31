@@ -3,6 +3,8 @@ package dev.deftu.omnicore.internal.client
 import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.api.client.input.keybindings.MCKeyBinding
 import dev.deftu.omnicore.api.client.render.ImmediateScreenRenderer
+import dev.deftu.omnicore.api.client.render.OmniFrameClock
+import dev.deftu.omnicore.api.client.render.OmniRenderTicks
 import dev.deftu.omnicore.client.OmniClientCommands
 import dev.deftu.omnicore.internal.client.events.ClientEventForwarding
 import org.apache.logging.log4j.LogManager
@@ -25,7 +27,8 @@ public object OmniClientInitializer {
         ClientEventForwarding.initialize()
         ImmediateScreenRenderer.initialize()
         MCKeyBinding.initialize()
-        OmniGameRendering.initialize()
+        OmniFrameClock.initialize()
+        OmniRenderTicks.initialize()
         OmniClientCommands.initialize()
 
         isInitialized = true

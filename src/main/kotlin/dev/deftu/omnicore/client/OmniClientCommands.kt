@@ -10,7 +10,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.deftu.omnicore.api.annotations.GameSide
 import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.common.OmniCommands
-import dev.deftu.omnicore.common.profile
+import dev.deftu.omnicore.api.profiling.profiled
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC && MC >= 1.19
@@ -155,7 +155,7 @@ public object OmniClientCommands {
     public fun execute(command: String): Boolean {
         val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
 
-        return profile<Boolean>("omnicore_command___$command") {
+        return profiled<Boolean>("omnicore_command___$command") {
             try {
                 dispatcher.execute(results)
                 true

@@ -1,7 +1,5 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.api.sound
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.api.annotations.VersionedBelow
 
@@ -25,7 +23,6 @@ public object OmniSounds {
     //#endif
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val BUTTON_PRESS: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -40,7 +37,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val EXPERIENCE_ORB_PICKUP: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -52,7 +48,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val ITEM_PICKUP: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -64,7 +59,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val LEVEL_UP: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -76,7 +70,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val ITEM_BREAK: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -91,7 +84,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_AMBIENT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
@@ -105,7 +97,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_DEATH: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
@@ -119,7 +110,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_GROWL: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
@@ -133,7 +123,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedBelow("1.21.5")
     public val WOLF_HOWL: OmniSound = noInline {
         //#if MC >= 1.21.5
@@ -150,7 +139,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_HURT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
@@ -164,7 +152,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_PANT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
@@ -178,7 +165,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_SHAKE: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -190,7 +176,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_STEP: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -202,7 +187,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val WOLF_WHINE: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
@@ -216,7 +200,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_BASEDRUM: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -231,7 +214,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_BASS: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -246,7 +228,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_HARP: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -261,7 +242,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_HAT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -276,7 +256,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_PLING: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -291,7 +270,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     public val NOTE_BLOCK_SNARE: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.12.2
@@ -306,7 +284,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.12.2")
     public val NOTE_BLOCK_BELL: OmniSound = noInline {
         //#if MC >= 1.12.2
@@ -322,7 +299,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.12.2")
     public val NOTE_BLOCK_CHIME: OmniSound = noInline {
         //#if MC >= 1.12.2
@@ -338,7 +314,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.12.2")
     public val NOTE_BLOCK_FLUTE: OmniSound = noInline {
         //#if MC >= 1.12.2
@@ -354,7 +329,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.12.2")
     public val NOTE_BLOCK_GUITAR: OmniSound = noInline {
         //#if MC >= 1.12.2
@@ -370,7 +344,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.12.2")
     public val NOTE_BLOCK_XYLOPHONE: OmniSound = noInline {
         //#if MC >= 1.12.2
@@ -386,7 +359,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.16.5")
     public val NOTE_BLOCK_IRON_XYLOPHONE: OmniSound = noInline {
         //#if MC >= 1.16.5
@@ -402,7 +374,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.16.5")
     public val NOTE_BLOCK_COW_BELL: OmniSound = noInline {
         //#if MC >= 1.16.5
@@ -418,7 +389,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.16.5")
     public val NOTE_BLOCK_DIDGERIDOO: OmniSound = noInline {
         //#if MC >= 1.16.5
@@ -434,7 +404,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.16.5")
     public val NOTE_BLOCK_BIT: OmniSound = noInline {
         //#if MC >= 1.16.5
@@ -450,7 +419,6 @@ public object OmniSounds {
     }
 
     @JvmField
-    @GameSide(Side.CLIENT)
     @VersionedAbove("1.16.5")
     public val NOTE_BLOCK_BANJO: OmniSound = noInline {
         //#if MC >= 1.16.5
@@ -465,10 +433,7 @@ public object OmniSounds {
         //#endif
     }
 
-    /**
-     * Adapted from EssentialGG UniversalCraft under LGPL-3.0
-     * https://github.com/EssentialGG/UniversalCraft/blob/f4917e139b5f6e5346c3bafb6f56ce8877854bf1/LICENSE
-     */
-    private inline fun <T> noInline(init: () -> T): T = init()
-
+    private inline fun <T> noInline(block: () -> T): T {
+        return block()
+    }
 }

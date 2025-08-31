@@ -41,6 +41,15 @@ public object OmniRenderTicks {
     //#endif
 
     @JvmStatic
+    public fun initialize() {
+        // Force-init the deltaTickTracker property on MC 1.8.9
+
+        //#if MC == 1.8.9
+        //$$ val _ = OmniClient.getInstance().deltaTickTracker
+        //$$ //#endif
+    }
+
+    @JvmStatic
     @JvmOverloads
     public fun get(
         ignoreFreeze: Boolean = true,

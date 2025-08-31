@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.client
 
 import com.mojang.authlib.GameProfile
+import dev.deftu.omnicore.api.OmniGameMode
 import dev.deftu.omnicore.api.annotations.GameSide
 import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.api.annotations.VersionedAbove
@@ -117,7 +118,7 @@ public object OmniClientPlayer {
         }
 
     /**
-     * @return The player's current game mode, or [OmniGameMode.UNKNOWN] if the player is not in a world.
+     * @return The player's current game mode, or [dev.deftu.omnicore.api.OmniGameMode.UNKNOWN] if the player is not in a world.
      *
      * @since 0.20.0
      * @author Deftu

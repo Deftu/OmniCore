@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.common
 
+import dev.deftu.omnicore.api.OmniGameMode
 import dev.deftu.omnicore.common.world.OmniChunkData
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d

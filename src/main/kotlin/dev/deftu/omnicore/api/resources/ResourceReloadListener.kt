@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.common.resources
+package dev.deftu.omnicore.api.resources
 
 import net.minecraft.util.Identifier
 
@@ -17,7 +17,7 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 //#endif
 
 public interface ResourceReloadListener
-    //#if MC >= 1.16.5
+//#if MC >= 1.16.5
     : ResourceReloader
     //#endif
     //#if MC < 1.16.5
@@ -25,9 +25,8 @@ public interface ResourceReloadListener
     //#endif
     //#if FABRIC
     , IdentifiableResourceReloadListener
-    //#endif
+//#endif
 {
-
     public val reloadIdentifier: Identifier
 
     public val dependencies: List<Identifier>
@@ -52,5 +51,4 @@ public interface ResourceReloadListener
     //$$ }
     //#endif
     //#endif
-
 }

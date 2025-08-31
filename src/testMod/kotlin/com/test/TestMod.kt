@@ -1,6 +1,7 @@
 package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
+import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.client.OmniClientCommands.argument
 import dev.deftu.omnicore.client.OmniClientCommands.command
@@ -9,6 +10,7 @@ import dev.deftu.omnicore.client.OmniClientCommands.register
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBindings
+import dev.deftu.omnicore.api.sound.OmniSounds
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
@@ -109,7 +111,7 @@ class TestMod
         OmniKeyBindings.on(exampleKeyBinding) { type, state ->
             if (type.isKey && state.isPressed) {
                 if (OmniClientPlayer.hasPlayer) {
-                    OmniChat.displayClientMessage("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue}) [should be: ${OmniKeys.KEY_B}]")
+                    OmniClientChat.displayChatMessage("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue}) [should be: ${OmniKeys.KEY_B}]")
                 }
 
                 logger.info("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue})")
@@ -121,14 +123,14 @@ class TestMod
                 val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
 
                 source.displayError(testError)
-                OmniChat.displayClientMessage("---")
-                OmniChat.displayErrorMessage(testError)
-                OmniChat.displayClientMessage("---")
-                OmniChat.displayErrorMessage(MCSimpleTextHolder("This is a test error message!").withFormatting(MCTextFormat.DARK_PURPLE), testError)
+                OmniClientChat.displayChatMessage("---")
+                OmniClientChat.displayErrorMessage(testError)
+                OmniClientChat.displayChatMessage("---")
+                OmniClientChat.displayErrorMessage(MCSimpleTextHolder("This is a test error message!").withFormatting(MCTextFormat.DARK_PURPLE), testError)
 
                 OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
 
-                OmniChat.displayClientMessage("TestMod base command executed!")
+                OmniClientChat.displayChatMessage("TestMod base command executed!")
                 OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
                     OmniPackets.writeString(this, "Hello, world!")
                 })

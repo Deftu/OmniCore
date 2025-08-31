@@ -1,28 +1,16 @@
-package dev.deftu.omnicore.common.resources
+package dev.deftu.omnicore.api.resources
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import net.minecraft.resource.Resource
 import net.minecraft.resource.ResourceManager
 import net.minecraft.util.Identifier
 import java.util.Optional
 
-public fun ResourceManager.findFirst(identifier: Identifier): Optional<Resource> {
-    return OmniResourceManager.findFirst(this, identifier)
-}
-
-public fun ResourceManager.findFirstOrThrow(identifier: Identifier): Resource {
-    return OmniResourceManager.findFirstOrThrow(this, identifier)
-}
-
-public fun ResourceManager.findAll(identifier: Identifier): List<Resource> {
-    return OmniResourceManager.findAll(this, identifier)
-}
+//#if MC >= 1.19.2
+import kotlin.jvm.optionals.getOrNull
+//#endif
 
 public object OmniResourceManager {
-
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun findFirst(
         resourceManager: ResourceManager,
         identifier: Identifier
@@ -39,7 +27,6 @@ public object OmniResourceManager {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun findFirstOrThrow(
         resourceManager: ResourceManager,
         identifier: Identifier
@@ -52,7 +39,22 @@ public object OmniResourceManager {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
+    public fun findFirstOrNull(
+        resourceManager: ResourceManager,
+        identifier: Identifier
+    ): Resource? {
+        //#if MC >= 1.19.2
+        return resourceManager.getResource(identifier).getOrNull()
+        //#else
+        //$$ return try {
+        //$$     resourceManager.getResource(identifier)
+        //$$ } catch (e: Exception) {
+        //$$     null
+        //$$ }
+        //#endif
+    }
+
+    @JvmStatic
     public fun findAll(
         resourceManager: ResourceManager,
         identifier: Identifier
@@ -60,4 +62,19 @@ public object OmniResourceManager {
         return resourceManager.getAllResources(identifier).toList()
     }
 
+    @JvmStatic
+    public fun findSequence(
+        resourceManager: ResourceManager,
+        identifier: Identifier
+    ): Sequence<Resource> {
+        return resourceManager.getAllResources(identifier).asSequence()
+    }
+
+    @JvmStatic
+    public fun exists(
+        resourceManager: ResourceManager,
+        identifier: Identifier
+    ): Boolean {
+        return findFirst(resourceManager, identifier).isPresent
+    }
 }

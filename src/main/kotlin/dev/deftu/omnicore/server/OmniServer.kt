@@ -3,7 +3,6 @@ package dev.deftu.omnicore.server
 import dev.deftu.omnicore.api.annotations.GameSide
 import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.api.annotations.VersionedAbove
-import dev.deftu.omnicore.common.resources.ResourceReloadListener
 import net.minecraft.server.MinecraftServer
 
 //#if MC >= 1.16.5

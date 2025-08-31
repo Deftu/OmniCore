@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.server
 
-import dev.deftu.omnicore.common.OmniSound
+import dev.deftu.omnicore.api.sound.OmniSound
 import net.minecraft.server.network.ServerPlayerEntity
 import org.jetbrains.annotations.ApiStatus
 

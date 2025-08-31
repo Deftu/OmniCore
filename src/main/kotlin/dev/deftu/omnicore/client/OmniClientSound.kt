@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client
 
-import dev.deftu.omnicore.common.OmniSound
+import dev.deftu.omnicore.api.sound.OmniSound
 import net.minecraft.client.sound.PositionedSoundInstance
 import org.jetbrains.annotations.ApiStatus
 
@@ -14,7 +14,6 @@ import net.minecraft.sound.SoundEvent
 //#endif
 
 public object OmniClientSound {
-
     @JvmStatic
     @ApiStatus.Internal
     public fun play(
@@ -63,5 +62,4 @@ public object OmniClientSound {
     //$$     return positionedSoundRecordConstructor?.invokeExact(event, volume, pitch, false, 0, SoundInstance.AttenuationType.NONE, 0.0f, 0.0f, 0.0f) as? PositionedSoundInstance
     //$$ }
     //#endif
-
 }

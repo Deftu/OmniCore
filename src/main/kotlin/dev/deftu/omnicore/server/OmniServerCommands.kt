@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 //$$ import com.mojang.brigadier.exceptions.CommandSyntaxException
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import dev.deftu.omnicore.common.OmniCommandBridge
-//$$ import dev.deftu.omnicore.common.profile
+//$$ import dev.deftu.omnicore.api.profiling.profile
 //$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import net.minecraft.command.ICommandSender
 //$$ import net.minecraft.server.MinecraftServer

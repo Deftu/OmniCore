@@ -2,10 +2,10 @@ package com.test
 
 import com.mojang.serialization.JsonOps
 import dev.deftu.omnicore.common.OmniIdentifier
-import dev.deftu.omnicore.common.OmniJson
-import dev.deftu.omnicore.common.codecs.whenError
+import dev.deftu.omnicore.api.serialization.OmniJson
+import dev.deftu.omnicore.api.serialization.whenError
 import dev.deftu.omnicore.common.resources.SimpleResourceReloadListener
-import dev.deftu.omnicore.common.resources.findFirst
+import dev.deftu.omnicore.api.resources.findFirst
 import net.minecraft.resource.ResourceManager
 import net.minecraft.util.Identifier
 import java.util.concurrent.CompletableFuture

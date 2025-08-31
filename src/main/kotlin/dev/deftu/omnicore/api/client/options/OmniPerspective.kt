@@ -1,7 +1,6 @@
-package dev.deftu.omnicore.client
+package dev.deftu.omnicore.api.client.options
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
+import dev.deftu.omnicore.client.OmniClient
 
 //#if MC >= 1.16.5
 import net.minecraft.client.option.Perspective
@@ -14,13 +13,9 @@ import net.minecraft.client.option.Perspective
  * @property isFirstPerson true if this perspective is first-person
  * @property isFrontView  true if this perspective shows the camera in front of the player
  */
-@GameSide(Side.CLIENT)
 @Suppress("EnumValuesSoftDeprecate")
 public enum class OmniPerspective(
-    @get:GameSide(Side.CLIENT)
     public val isFirstPerson: Boolean,
-
-    @get:GameSide(Side.CLIENT)
     public val isFrontView: Boolean
 ) {
 
@@ -33,7 +28,6 @@ public enum class OmniPerspective(
     /**
      * Sets the current camera perspective to this.
      */
-    @GameSide(Side.CLIENT)
     public fun apply() {
         rawCurrentPerspective = ordinal
     }
@@ -41,7 +35,6 @@ public enum class OmniPerspective(
     /**
      * Cycles to the next perspective, wrapping back to FIRST_PERSON.
      */
-    @GameSide(Side.CLIENT)
     public fun next(): OmniPerspective {
         return ALL[(ordinal + 1) % ALL.size]
     }
@@ -49,32 +42,25 @@ public enum class OmniPerspective(
     /**
      * Cycles to the previous perspective, wrapping back to THIRD_PERSON_FRONT.
      */
-    @GameSide(Side.CLIENT)
     public fun previous(): OmniPerspective {
         return ALL[(ordinal - 1 + ALL.size) % ALL.size]
     }
 
     public companion object {
-
         @JvmField
-        @GameSide(Side.BOTH)
         @Suppress("EnumValuesSoftDeprecate")
-        public val ALL: List<OmniPerspective> = OmniPerspective.values().toList()
+        public val ALL: List<OmniPerspective> = values().toList()
 
         @JvmField
-        @GameSide(Side.BOTH)
         public val FRONT_VIEW: Set<OmniPerspective> = setOf(FIRST_PERSON, THIRD_PERSON_FRONT)
 
         @JvmField
-        @GameSide(Side.BOTH)
         public val BACK_VIEW: Set<OmniPerspective> = setOf(THIRD_PERSON_BACK)
 
         @JvmField
-        @GameSide(Side.BOTH)
         public val FIRST_PERSON_VIEW: Set<OmniPerspective> = setOf(FIRST_PERSON)
 
         @JvmField
-        @GameSide(Side.BOTH)
         public val THIRD_PERSON_VIEW: Set<OmniPerspective> = setOf(THIRD_PERSON_BACK, THIRD_PERSON_FRONT)
 
         /**
@@ -82,7 +68,6 @@ public enum class OmniPerspective(
          * as provided by the Minecraft client.
          */
         @JvmStatic
-        @GameSide(Side.CLIENT)
         public var rawCurrentPerspective: Int
             get() {
                 //#if MC >= 1.16.2
@@ -103,20 +88,17 @@ public enum class OmniPerspective(
          * The current camera perspective.
          */
         @JvmStatic
-        @GameSide(Side.CLIENT)
         public var currentPerspective: OmniPerspective
-            get() = fromInt(rawCurrentPerspective)
+            get() = from(rawCurrentPerspective)
             set(value) { rawCurrentPerspective = value.ordinal }
 
         /**
          * Returns an OmniPerspective for the given raw index.
          */
         @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun fromInt(value: Int): OmniPerspective {
+        public fun from(value: Int): OmniPerspective {
             return ALL[value]
         }
-
     }
 
 }

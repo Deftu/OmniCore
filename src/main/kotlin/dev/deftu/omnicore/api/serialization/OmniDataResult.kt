@@ -1,32 +1,12 @@
-package dev.deftu.omnicore.common.codecs
+package dev.deftu.omnicore.api.serialization
 
 import com.mojang.serialization.DataResult
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import java.util.function.Consumer
 import java.util.stream.IntStream
 
-@GameSide(Side.BOTH)
-public fun <T> DataResult<T>.whenSuccess(consumer: Consumer<T>): DataResult<T> {
-    return OmniDataResult.ifSuccess(this, consumer)
-}
-
-@GameSide(Side.BOTH)
-public fun <T> DataResult<T>.whenError(
-    //#if MC >= 1.20.6
-    consumer: Consumer<in DataResult.Error<T>>
-    //#else
-    //$$ consumer: Consumer<DataResult.PartialResult<T>>
-    //#endif
-): DataResult<T> {
-    return OmniDataResult.ifError(this, consumer)
-}
-
 public object OmniDataResult {
-
     @JvmStatic
     @JvmOverloads
-    @GameSide(Side.BOTH)
     public fun <T> error(message: String, partialValue: T? = null): DataResult<T> {
         //#if MC >= 1.19.4
         return if (partialValue == null) {
@@ -45,7 +25,6 @@ public object OmniDataResult {
 
     @JvmStatic
     @JvmOverloads
-    @GameSide(Side.BOTH)
     public fun <T> error(supplier: () -> String?, partialValue: T? = null): DataResult<T> {
         //#if MC >= 1.19.4
         return if (partialValue == null) {
@@ -63,7 +42,6 @@ public object OmniDataResult {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun <T> ifSuccess(
         result: DataResult<T>,
         //#if MC >= 1.20.6
@@ -81,7 +59,6 @@ public object OmniDataResult {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun <T> ifError(
         result: DataResult<T>,
         //#if MC >= 1.20.6
@@ -99,7 +76,6 @@ public object OmniDataResult {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun decodeFixedLengthArray(stream: IntStream, length: Int): DataResult<IntArray> {
         val limitedStream = stream.limit(length.toLong() + 1).toArray()
         return if (limitedStream.size != length) {
@@ -113,5 +89,4 @@ public object OmniDataResult {
             DataResult.success(limitedStream)
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.common.resources
+package dev.deftu.omnicore.api.resources
 
 import net.minecraft.resource.ResourceManager
 import java.util.concurrent.CompletableFuture
@@ -13,7 +13,6 @@ import net.minecraft.resource.ResourceReloader
 //#endif
 
 public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
-
     //#if MC <= 1.12.2
     //$$ private data object DirectExecutor : Executor {
     //$$     override fun execute(command: Runnable) {
@@ -61,5 +60,4 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
     public fun reload(resourceManager: ResourceManager, executor: Executor): CompletableFuture<T>
 
     public fun apply(data: T, resourceManager: ResourceManager, executor: Executor): CompletableFuture<Void>
-
 }

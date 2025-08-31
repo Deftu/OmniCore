@@ -1,7 +1,5 @@
-package dev.deftu.omnicore.common
+package dev.deftu.omnicore.api.profiling
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import net.minecraft.util.profiler.Profiler
 
 //#if MC >= 1.21.2
@@ -10,31 +8,16 @@ import net.minecraft.util.profiler.Profilers
 //$$ import dev.deftu.omnicore.client.OmniClient
 //#endif
 
-public inline fun profile(name: String, crossinline block: () -> Unit) {
-    OmniProfiler.withProfiler(name) {
-        block()
-    }
-}
-
-public inline fun <T> profile(name: String, crossinline block: () -> T): T {
-    return OmniProfiler.withProfiler(name) {
-        block()
-    }
-}
-
 /**
  * @since 0.17.0
  * @author Deftu
  */
-@GameSide(Side.CLIENT)
 public object OmniProfiler {
-
     /**
      * @since 0.17.0
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun getInstance(): Profiler {
         //#if MC >= 1.21.2
         return Profilers.get()
@@ -48,7 +31,6 @@ public object OmniProfiler {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun start(name: String) {
         getInstance().push(name)
     }
@@ -58,7 +40,6 @@ public object OmniProfiler {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun end() {
         getInstance().pop()
     }
@@ -68,7 +49,6 @@ public object OmniProfiler {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun swap(name: String) {
         getInstance().swap(name)
     }
@@ -78,7 +58,6 @@ public object OmniProfiler {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun withProfiler(name: String, runnable: Runnable) {
         try {
             try {
@@ -99,7 +78,6 @@ public object OmniProfiler {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun <T> withProfiler(name: String, supplier: () -> T): T {
         try {
             try {
@@ -114,5 +92,4 @@ public object OmniProfiler {
             end()
         }
     }
-
 }

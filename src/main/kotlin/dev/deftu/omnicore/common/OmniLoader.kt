@@ -1,8 +1,6 @@
 package dev.deftu.omnicore.common
 
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -54,13 +52,11 @@ import net.fabricmc.api.EnvType
 //$$ import kotlin.io.path.inputStream
 //#endif
 
-@GameSide(Side.BOTH)
 public object OmniLoader {
 
     /**
      * An enumeration of loaders which OmniCore supports, representing a loader that the current environment is running on.
      */
-    @GameSide(Side.BOTH)
     public enum class LoaderType {
         FABRIC,
         FORGE,
@@ -73,7 +69,6 @@ public object OmniLoader {
      * @since 0.13.0
      * @author Deftu
      */
-    @GameSide(Side.BOTH)
     public enum class PhysicalSide {
         CLIENT,
         SERVER
@@ -82,13 +77,11 @@ public object OmniLoader {
     /**
      * Represents a mod's basic information.
      */
-    @GameSide(Side.BOTH)
     public data class ModInfo(
         val name: String,
         val id: String,
         val version: String,
         val file: Path?,
-        @GameSide(Side.CLIENT)
         val iconPath: String?
     ) {
 
@@ -98,7 +91,6 @@ public object OmniLoader {
              * A dummy [ModInfo] object that represents a non-existent mod.
              */
             @JvmField
-            @GameSide(Side.BOTH)
             public val DUMMY: ModInfo = ModInfo("Dummy", "dummy", "0.0.0", null, null)
 
             @JvmStatic
@@ -109,20 +101,16 @@ public object OmniLoader {
 
         }
 
-        @GameSide(Side.BOTH)
         public val isDummy: Boolean
             get() = this === DUMMY
 
-        @GameSide(Side.BOTH)
         public val modContainer: ModContainer? by lazy {
             findModContainer(id)
         }
 
-        @GameSide(Side.BOTH)
         public val isTrueMod: Boolean
             get() = !isDummy && isLoaded
 
-        @GameSide(Side.CLIENT)
         public val icon: InputStream?
             get() = iconPath?.let { getResourceStream(id, it) }
 
@@ -132,7 +120,6 @@ public object OmniLoader {
          * @since 0.13.0
          * @author Deftu
          */
-        @GameSide(Side.BOTH)
         public val isLoaded: Boolean
             get() = isModLoaded(id)
 
@@ -142,7 +129,6 @@ public object OmniLoader {
          * @since 0.13.0
          * @author Deftu
          */
-        @GameSide(Side.BOTH)
         public val isVersionLoaded: Boolean
             get() = isModLoaded(id, version)
 
@@ -165,7 +151,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val isDevelopment: Boolean
         get() {
             //#if FABRIC
@@ -188,7 +173,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val paddedMinecraftVersion: Int
         get() {
             val version = OmniCore.minecraftVersion
@@ -203,7 +187,6 @@ public object OmniLoader {
         }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val gameDir: Path
         get() {
             //#if FABRIC
@@ -218,7 +201,6 @@ public object OmniLoader {
         }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val configDir: Path
         get() {
             //#if FABRIC
@@ -239,7 +221,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val loaderType: LoaderType
         get() {
             //#if FABRIC
@@ -258,7 +239,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val isFabric: Boolean
         get() = loaderType == LoaderType.FABRIC
 
@@ -269,7 +249,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val isForge: Boolean
         get() = loaderType == LoaderType.FORGE
 
@@ -280,12 +259,10 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val isNeoForge: Boolean
         get() = loaderType == LoaderType.NEOFORGE
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val physicalSide: PhysicalSide
         get() {
             //#if FABRIC
@@ -320,7 +297,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val isPhysicalClient: Boolean
         get() = physicalSide == PhysicalSide.CLIENT
 
@@ -333,7 +309,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val isPhysicalServer: Boolean
         get() = physicalSide == PhysicalSide.SERVER
 
@@ -344,7 +319,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public val loadedMods: Set<ModInfo>
         get() {
             val value = mutableSetOf<ModInfo>()
@@ -371,8 +345,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
-    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
     public val hasActiveMod: Boolean
         get() {
             //#if FABRIC
@@ -395,8 +367,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
-    @IntendedLoader(LoaderType.FORGE, LoaderType.NEOFORGE)
     public val activeMod: ModInfo
         get() {
             //#if FABRIC
@@ -421,7 +391,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun isModLoaded(id: String, version: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id) && FabricLoader.getInstance().getModContainer(id).get().metadata.version.friendlyString == version
@@ -441,7 +410,6 @@ public object OmniLoader {
      * @author Deftu
      */
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun isModLoaded(id: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id)
@@ -455,14 +423,12 @@ public object OmniLoader {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun getModInfo(id: String): ModInfo? {
         val container = findModContainer(id)
         return container?.let(::createModInfo)
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun findModContainer(id: String): ModContainer? {
         //#if FABRIC
         return FabricLoader.getInstance().getModContainer(id).orElse(null)
@@ -477,7 +443,6 @@ public object OmniLoader {
 
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun getResourcePath(id: String, path: String): Path? {
         //#if FABRIC
         val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
@@ -512,7 +477,6 @@ public object OmniLoader {
     }
 
     @JvmStatic
-    @GameSide(Side.BOTH)
     public fun getResourceStream(id: String, path: String): InputStream? {
         //#if FABRIC
         val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
@@ -544,7 +508,6 @@ public object OmniLoader {
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun getModIconPath(id: String): String? {
         //#if FABRIC
         val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
@@ -567,7 +530,6 @@ public object OmniLoader {
     }
 
     @JvmStatic
-    @GameSide(Side.CLIENT)
     public fun getModIconStream(id: String): InputStream? {
         //#if FABRIC
         val iconPath = getModIconPath(id) ?: return null

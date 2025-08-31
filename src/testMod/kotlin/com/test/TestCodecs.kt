@@ -2,10 +2,9 @@ package com.test
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import dev.deftu.omnicore.common.codecs.OmniCodecs
+import dev.deftu.omnicore.api.serialization.OmniCodecs
 
 object TestCodecs {
-
     @JvmField
     val TEST_CODEC: Codec<TestData> = RecordCodecBuilder.create { instance ->
         instance.group(
@@ -21,5 +20,4 @@ object TestCodecs {
             OmniCodecs.INSTANT.fieldOf("instant").forGetter(TestData::instant)
         ).apply(instance, ::TestData)
     }
-
 }
