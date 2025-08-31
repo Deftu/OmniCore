@@ -19,7 +19,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 //#if MC >= 1.16.5
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.math.MathHelper
-
 //#endif
 
 //#if MC <= 1.16.5

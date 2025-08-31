@@ -40,9 +40,6 @@ public object OmniRenderTicks {
     //$$ }
     //#endif
 
-    public val value: Float
-        get() = get(true) // Default, mimics behavior prior to 1.21.1, when freezing was added
-
     @JvmStatic
     @JvmOverloads
     public fun get(
