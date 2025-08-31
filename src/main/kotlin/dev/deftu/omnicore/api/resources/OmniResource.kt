@@ -23,4 +23,9 @@ public object OmniResource {
     public fun readJson(resource: Resource): JsonElement {
         return OmniJson.parse(resource.inputStream.bufferedReader())
     }
+
+    @JvmStatic
+    public fun readJsonSafe(resource: Resource): JsonElement? {
+        return OmniJson.parseSafe(resource.inputStream.bufferedReader())
+    }
 }

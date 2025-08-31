@@ -43,3 +43,7 @@ public fun Resource.readString(charset: Charset = StandardCharsets.UTF_8): Strin
 public fun Resource.readJson(): JsonElement {
     return OmniResource.readJson(this)
 }
+
+public fun Resource.readJsonSafe(): JsonElement? {
+    return OmniResource.readJsonSafe(this)
+}
