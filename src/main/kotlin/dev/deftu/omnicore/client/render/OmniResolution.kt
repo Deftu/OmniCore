@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client.render
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 
 //#if MC <= 1.12.2

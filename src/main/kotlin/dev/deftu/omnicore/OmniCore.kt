@@ -3,8 +3,8 @@ package dev.deftu.omnicore
 import dev.deftu.eventbus.EventBus
 import dev.deftu.eventbus.bus
 import dev.deftu.eventbus.invokers.LMFInvoker
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 
 //#if MC >= 1.16.5
 import net.minecraft.SharedConstants

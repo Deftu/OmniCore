@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.client.events
 
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.client.render.OmniMatrixStack
 import dev.deftu.omnicore.common.events.TickEvent
 
 //#if FABRIC
@@ -28,7 +27,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 //$$ import net.minecraftforge.fml.common.gameevent.InputEvent as ForgeInputEvent
 //#endif
 //#if MC <= 1.12.2
-//$$ import dev.deftu.omnicore.client.OmniKeyboard
+//$$ import dev.deftu.omnicore.client.input.OmniKeyboard
 //$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 //$$ import net.minecraftforge.client.event.GuiScreenEvent
 //$$ import org.lwjgl.input.Keyboard
@@ -41,11 +40,10 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 //#endif
 
 //#if MC >= 1.21.1
-import dev.deftu.omnicore.client.render.OmniGameRendering
 //#endif
 
 //#if MC >= 1.16.5
-import dev.deftu.omnicore.client.toKeyboardModifiers
+import dev.deftu.omnicore.client.input.toKeyboardModifiers
 //#endif
 
 //#if FORGE-LIKE

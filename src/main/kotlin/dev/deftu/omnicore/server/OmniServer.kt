@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.server
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.annotations.VersionedAbove
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.common.resources.ResourceReloadListener
 import net.minecraft.server.MinecraftServer
 

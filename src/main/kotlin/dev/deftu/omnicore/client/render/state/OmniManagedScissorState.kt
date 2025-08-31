@@ -1,13 +1,11 @@
 package dev.deftu.omnicore.client.render.state
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import org.lwjgl.opengl.GL11
-import java.nio.ByteBuffer
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.systems.RenderPass
-import com.mojang.blaze3d.systems.RenderSystem
+
 //#else
 //$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif
@@ -154,6 +152,19 @@ public data class OmniManagedScissorState(
             block: OmniManagedScissorState.() -> Unit
         ) {
             val state = asEnabled(x, y, width, height)
+            state.activate()
+
+            try {
+                state.block()
+            } finally {
+                state.restore()
+            }
+        }
+
+        @JvmStatic
+        @GameSide(Side.CLIENT)
+        public fun without(block: OmniManagedScissorState.() -> Unit) {
+            val state = DISABLED
             state.activate()
 
             try {

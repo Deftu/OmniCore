@@ -6,8 +6,9 @@ import dev.deftu.omnicore.client.OmniClientCommands.argument
 import dev.deftu.omnicore.client.OmniClientCommands.command
 import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.OmniClientCommands.register
-import dev.deftu.omnicore.client.keybindings.OmniKeyBinding
-import dev.deftu.omnicore.client.keybindings.OmniKeyBindings
+import dev.deftu.omnicore.api.client.input.OmniKeys
+import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBinding
+import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBindings
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
@@ -50,7 +51,7 @@ class TestMod
     private val exampleKeyBinding = OmniKeyBinding.create(
         name = "Example KeyBinding",
         category = "Example Mod",
-        defaultValue = OmniKeyboard.KEY_B,
+        defaultValue = OmniKeys.KEY_B,
         type = OmniKeyBinding.KeyBindingType.KEY
     )
 
@@ -108,7 +109,7 @@ class TestMod
         OmniKeyBindings.on(exampleKeyBinding) { type, state ->
             if (type.isKey && state.isPressed) {
                 if (OmniClientPlayer.hasPlayer) {
-                    OmniChat.displayClientMessage("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue}) [should be: ${OmniKeyboard.KEY_B}]")
+                    OmniChat.displayClientMessage("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue}) [should be: ${OmniKeys.KEY_B}]")
                 }
 
                 logger.info("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue})")

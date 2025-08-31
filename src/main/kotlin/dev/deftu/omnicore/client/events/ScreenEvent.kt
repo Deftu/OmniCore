@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.client.events
 
-import dev.deftu.omnicore.client.OmniKeyboard
-import dev.deftu.omnicore.client.render.OmniMatrixStack
+import dev.deftu.omnicore.api.client.input.OmniKeyboard
 import dev.deftu.omnicore.common.events.CancellableEvent
 import net.minecraft.client.gui.screen.Screen
 
@@ -17,7 +16,6 @@ public sealed interface ScreenEvent {
     }
 
     public sealed interface Render : ScreenEvent {
-
         public val matrixStack: OmniMatrixStack
         public val tickDelta: Float
 
@@ -32,7 +30,6 @@ public sealed interface ScreenEvent {
             override val matrixStack: OmniMatrixStack,
             override val tickDelta: Float
         ) : Render
-
     }
 
     public sealed interface KeyPress : ScreenEvent {

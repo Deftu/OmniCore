@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.render.OmniTextureManager
 import dev.deftu.omnicore.common.resources.ResourceReloadListener
 import dev.deftu.omnicore.common.world.OmniWorld

@@ -5,9 +5,8 @@ import dev.deftu.omnicore.client.OmniClientCommands.command
 import dev.deftu.omnicore.client.OmniClientCommands.does
 import dev.deftu.omnicore.client.OmniClientCommands.register
 import dev.deftu.omnicore.client.events.OmniClientEventPassthrough
-import dev.deftu.omnicore.client.keybindings.MCKeyBinding
-import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
-import dev.deftu.omnicore.client.render.OmniGameRendering
+import dev.deftu.omnicore.api.client.input.keybindings.MCKeyBinding
+import dev.deftu.omnicore.api.client.render.ImmediateScreenRenderer
 import dev.deftu.textile.TextHolder
 import dev.deftu.textile.minecraft.MCClickEvent
 import dev.deftu.textile.minecraft.MCHoverEvent

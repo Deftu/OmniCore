@@ -1,8 +1,7 @@
 package dev.deftu.omnicore.client.render.vertex
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.client.render.OmniMatrixStack
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import org.jetbrains.annotations.ApiStatus
 import java.awt.Color
 

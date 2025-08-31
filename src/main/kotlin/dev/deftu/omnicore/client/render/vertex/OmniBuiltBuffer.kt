@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client.render.vertex
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.render.pipeline.OmniRenderPass
 import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.client.render.pipeline.RenderPassBuilder

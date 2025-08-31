@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 
 //#if MC >= 1.16.5
 import net.minecraft.client.option.Perspective

@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.common.codecs
 
 import com.mojang.serialization.DataResult
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import java.util.function.Consumer
 import java.util.stream.IntStream
 

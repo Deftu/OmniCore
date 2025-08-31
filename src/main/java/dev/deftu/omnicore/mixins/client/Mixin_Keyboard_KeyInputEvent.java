@@ -3,10 +3,10 @@ package dev.deftu.omnicore.mixins.client;
 //#if FABRIC
 import dev.deftu.omnicore.OmniCore;
 import dev.deftu.omnicore.client.OmniClient;
-import dev.deftu.omnicore.client.OmniKeyboard;
-import dev.deftu.omnicore.client.OmniKeyboardKt;
+import dev.deftu.omnicore.api.client.input.KeyboardModifiers;
 import dev.deftu.omnicore.client.events.InputEvent;
 import dev.deftu.omnicore.client.events.InputState;
+import dev.deftu.omnicore.api.client.input.OmniKey;
 import net.minecraft.client.Keyboard;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,10 +23,10 @@ public class Mixin_Keyboard_KeyInputEvent {
             return;
         }
 
-        OmniKeyboard.KeyboardModifiers mods = OmniKeyboardKt.toKeyboardModifiers(modifiers);
+        KeyboardModifiers mods = KeyboardModifiers.wrap(modifiers);
         InputState state = action == GLFW.GLFW_PRESS ? InputState.PRESSED : action == GLFW.GLFW_RELEASE ? InputState.RELEASED : InputState.REPEATED;
 
-        OmniCore.getEventBus().post(new InputEvent.Key(state, key, scancode, mods));
+        OmniCore.getEventBus().post(new InputEvent.Key(state, new OmniKey(key), scancode, mods));
     }
 
 }

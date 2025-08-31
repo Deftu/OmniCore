@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client.render.pipeline
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import com.mojang.blaze3d.vertex.VertexFormat
 
 @GameSide(Side.CLIENT)

@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.common
 
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.OmniClientSound
 import dev.deftu.omnicore.server.OmniServerSound
 import net.minecraft.server.network.ServerPlayerEntity

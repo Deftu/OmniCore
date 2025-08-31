@@ -15,7 +15,7 @@ import java.nio.channels.ScatteringByteChannel
 import java.nio.charset.Charset
 
 //#if MC >= 1.12.2
-import dev.deftu.omnicore.annotations.VersionedAbove
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import java.nio.channels.FileChannel
 //#endif
 

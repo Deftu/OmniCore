@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.client.shaders
 
 import com.mojang.blaze3d.opengl.GlStateManager
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.OmniRenderEnv
 import com.mojang.blaze3d.vertex.VertexFormat

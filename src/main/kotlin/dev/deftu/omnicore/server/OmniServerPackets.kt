@@ -1,11 +1,10 @@
 package dev.deftu.omnicore.server
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.common.OmniPacketReceiverContext
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier

@@ -2,8 +2,8 @@
 
 package dev.deftu.omnicore.client.render.pipeline
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.17.1

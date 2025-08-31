@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.common
 
 import com.google.gson.*
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import java.io.Reader
 
 public object OmniJson {

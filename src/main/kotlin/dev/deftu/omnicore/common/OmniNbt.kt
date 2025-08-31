@@ -1,8 +1,6 @@
 package dev.deftu.omnicore.common
 
-import com.mojang.brigadier.StringReader
-import dev.deftu.omnicore.annotations.VersionedAbove
-import dev.deftu.omnicore.annotations.VersionedBelow
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import net.minecraft.nbt.*
 import java.io.ByteArrayOutputStream
 import java.io.InputStream

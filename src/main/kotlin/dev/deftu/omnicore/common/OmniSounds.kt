@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.common
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.annotations.VersionedAbove
-import dev.deftu.omnicore.annotations.VersionedBelow
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
+import dev.deftu.omnicore.api.annotations.VersionedAbove
+import dev.deftu.omnicore.api.annotations.VersionedBelow
 
 //#if MC >= 1.21.5
 import net.minecraft.entity.passive.WolfSoundVariant

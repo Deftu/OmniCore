@@ -1,9 +1,8 @@
 package dev.deftu.omnicore.common
 
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.IntendedLoader
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path

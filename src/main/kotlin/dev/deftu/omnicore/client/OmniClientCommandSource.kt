@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.common.world.OmniWorld
 import dev.deftu.textile.minecraft.*
 import net.minecraft.client.MinecraftClient

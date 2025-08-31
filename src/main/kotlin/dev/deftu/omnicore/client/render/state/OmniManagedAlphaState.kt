@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.client.render.state
 
-import dev.deftu.omnicore.annotations.VersionedBelow
+import dev.deftu.omnicore.api.annotations.VersionedBelow
 
 //#if MC <= 1.16.5
 //$$ import com.mojang.blaze3d.platform.GlStateManager

@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.common.world
 
-import dev.deftu.omnicore.annotations.VersionedAbove
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.util.Identifier
 import net.minecraft.world.World

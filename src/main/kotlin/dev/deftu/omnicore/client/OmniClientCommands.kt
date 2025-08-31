@@ -7,10 +7,9 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.tree.LiteralCommandNode
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.common.OmniCommands
-import dev.deftu.omnicore.common.OmniProfiler
 import dev.deftu.omnicore.common.profile
 import org.apache.logging.log4j.LogManager
 

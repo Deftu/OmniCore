@@ -3,10 +3,10 @@ package dev.deftu.omnicore.client
 import dev.deftu.omnicore.OmniCore
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.client.render.ImmediateScreenRenderer
-import dev.deftu.omnicore.client.render.OmniMatrixStack
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
+import dev.deftu.omnicore.api.client.input.KeyboardModifiers
+import dev.deftu.omnicore.api.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.common.events.TickEvent
 import dev.deftu.textile.minecraft.MCTextHolder
 import dev.deftu.textile.minecraft.MCTranslatableTextHolder
@@ -210,16 +210,16 @@ public abstract class OmniScreen(
         keyCode: Int,
         scancode: Int,
         typedChar: Char,
-        modifiers: OmniKeyboard.KeyboardModifiers,
+        modifiers: KeyboardModifiers,
         trigger: KeyPressTrigger
     ): Boolean {
-        //#if MC >= 1.15
+        //#if MC >= 1.16.5
         if (trigger == KeyPressTrigger.KEY_CODE_EVENT) {
-            return super.keyPressed(keyCode, 0, modifiers.toInt())
+            return super.keyPressed(keyCode, 0, modifiers.toMods())
         }
 
         if (trigger == KeyPressTrigger.CHAR_TYPE_EVENT) {
-            return super.charTyped(typedChar, modifiers.toInt())
+            return super.charTyped(typedChar, modifiers.toMods())
         }
         //#else
         //$$ try {
@@ -239,7 +239,7 @@ public abstract class OmniScreen(
         keyCode: Int,
         scancode: Int,
         typedChar: Char,
-        modifiers: OmniKeyboard.KeyboardModifiers
+        modifiers: KeyboardModifiers
     ): Boolean {
         return handleKeyRelease(keyCode, scancode, modifiers)
     }
@@ -248,11 +248,11 @@ public abstract class OmniScreen(
     public open fun handleKeyRelease(
         keyCode: Int,
         scancode: Int,
-        modifiers: OmniKeyboard.KeyboardModifiers
+        modifiers: KeyboardModifiers
     ): Boolean {
         //#if MC >= 1.15
         if (keyCode != 0) {
-            return super.keyReleased(keyCode, 0, modifiers.toInt())
+            return super.keyReleased(keyCode, 0, modifiers.toMods())
         }
         //#endif
 
@@ -455,17 +455,17 @@ public abstract class OmniScreen(
     //#endif
 
     final override fun keyPressed(keyCode: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyPress(keyCode, scancode, 0.toChar(), modifiers.toKeyboardModifiers(), KeyPressTrigger.KEY_CODE_EVENT)
+        handleKeyPress(keyCode, scancode, 0.toChar(), KeyboardModifiers.wrap(modifiers), KeyPressTrigger.KEY_CODE_EVENT)
         return false
     }
 
     final override fun charTyped(typedChar: Char, modifiers: Int): Boolean {
-        handleKeyPress(0, 0, typedChar, modifiers.toKeyboardModifiers(), KeyPressTrigger.CHAR_TYPE_EVENT)
+        handleKeyPress(0, 0, typedChar, KeyboardModifiers.wrap(modifiers), KeyPressTrigger.CHAR_TYPE_EVENT)
         return false
     }
 
     final override fun keyReleased(keyCode: Int, scancode: Int, modifiers: Int): Boolean {
-        handleKeyRelease(keyCode, scancode, modifiers.toKeyboardModifiers())
+        handleKeyRelease(keyCode, scancode, KeyboardModifiers.wrap(modifiers))
         return false
     }
 

@@ -2,8 +2,8 @@ package dev.deftu.omnicore.common
 
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.events.RenderTickEvent
 import dev.deftu.omnicore.common.events.TickEvent
 

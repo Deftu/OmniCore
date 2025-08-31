@@ -2,16 +2,13 @@
 
 package dev.deftu.omnicore.client.render
 
-import com.mojang.blaze3d.opengl.GlStateManager
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.client.OmniClient
 import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.texture.TextureManager
 import net.minecraft.util.Identifier
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -65,104 +62,6 @@ public class OmniTextureManager private constructor(
         @JvmStatic
         @GameSide(Side.CLIENT)
         public fun get(): TextureManager = OmniClient.getInstance().textureManager
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun getActiveTexture(): Int =
-            GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun setActiveTexture(id: Int) {
-            //#if MC >= 1.17
-            GlStateManager._activeTexture(id)
-            //#elseif MC >= 1.14
-            //$$ GlStateManager.activeTexture(id)
-            //#else
-            //$$ GlStateManager.setActiveTexture(id)
-            //#endif
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun generateTexture(): Int {
-            //#if MC >= 1.21.5
-            return GL11.glGenTextures()
-            //#elseif MC >= 1.17
-            //$$ return TextureUtil.generateTextureId()
-            //#elseif MC >= 1.16.5
-            //$$ return TextureUtil.generateId()
-            //#else
-            //$$ // TODO
-            //$$ return 0
-            //#endif
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun bindTexture(id: Int) {
-            //#if MC >= 1.17
-            GlStateManager._bindTexture(id)
-            //#else
-            //$$ GlStateManager.bindTexture(id)
-            //#endif
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun bindTexture(index: Int, id: Int) {
-            //#if MC >= 1.21.6
-            RenderSystem.setShaderTexture(index, RenderSystem.getDevice().createTextureView(VanillaWrappedGlTexture(id)))
-            //#elseif MC >= 1.21.5
-            //$$ RenderSystem.setShaderTexture(index, VanillaWrappedGlTexture(id))
-            //#elseif MC >= 1.17.1
-            //$$ RenderSystem.setShaderTexture(index, id)
-            //#else
-            //$$ configureTextureUnit(index) {
-            //$$     bindTexture(id)
-            //$$ }
-            //#endif
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun removeTexture() {
-            bindTexture(GL11.GL_NONE)
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun removeTexture(index: Int) {
-            bindTexture(index, GL11.GL_NONE)
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun deleteTexture(id: Int) {
-            //#if MC >= 1.17
-            GlStateManager._deleteTexture(id)
-            //#else
-            //$$ GlStateManager.deleteTexture(id)
-            //#endif
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun configureTexture(id: Int, block: Runnable) {
-            val prevActiveTexture = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
-            bindTexture(id)
-            block.run()
-            bindTexture(prevActiveTexture)
-        }
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun configureTextureUnit(index: Int, block: Runnable) {
-            val prevActiveTexture = getActiveTexture()
-            setActiveTexture(GL13.GL_TEXTURE0 + index)
-            block.run()
-            setActiveTexture(prevActiveTexture)
-        }
 
     }
 

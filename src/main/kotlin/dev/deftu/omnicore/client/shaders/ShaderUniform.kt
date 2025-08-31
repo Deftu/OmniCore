@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client.shaders
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 
 @GameSide(Side.CLIENT)
 public interface ShaderUniform {

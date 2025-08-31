@@ -2,8 +2,8 @@ package dev.deftu.omnicore.client.render.state
 
 import com.mojang.blaze3d.opengl.GlStateManager
 import org.lwjgl.opengl.GL11
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 
 //#if MC >= 1.17 && MC <= 1.21.1
 //$$ import net.minecraft.client.gl.GlBlendState

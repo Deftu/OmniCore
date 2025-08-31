@@ -1,11 +1,10 @@
 package dev.deftu.omnicore.client
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import dev.deftu.omnicore.common.OmniPacketReceiverContext
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
-import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager

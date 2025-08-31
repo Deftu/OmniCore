@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.common
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import net.minecraft.util.Identifier
 
 public object OmniIdentifier {

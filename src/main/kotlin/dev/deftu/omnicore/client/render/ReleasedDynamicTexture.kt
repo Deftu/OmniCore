@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.client.render
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
 import net.minecraft.client.texture.AbstractTexture
 import java.io.Closeable
 import java.lang.ref.PhantomReference

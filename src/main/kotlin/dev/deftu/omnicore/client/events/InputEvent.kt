@@ -1,8 +1,10 @@
 package dev.deftu.omnicore.client.events
 
-import dev.deftu.omnicore.annotations.VersionedAbove
-import dev.deftu.omnicore.client.OmniKeyboard
-import dev.deftu.omnicore.client.OmniMouse
+import dev.deftu.omnicore.api.annotations.VersionedAbove
+import dev.deftu.omnicore.api.client.input.KeyboardModifiers
+import dev.deftu.omnicore.api.client.input.OmniKey
+import dev.deftu.omnicore.api.client.input.OmniMouseButton
+import dev.deftu.omnicore.api.client.input.OmniMouseButtons
 
 public sealed interface InputEvent {
     public val type: InputEventType
@@ -10,34 +12,34 @@ public sealed interface InputEvent {
 
     public data class Key(
         override val state: InputState,
-        val keyCode: Int,
+        val key: OmniKey,
         @field:VersionedAbove("1.16.5") val scanCode: Int,
-        val modifiers: OmniKeyboard.KeyboardModifiers
+        val modifiers: KeyboardModifiers
     ) : InputEvent {
         override val type: InputEventType = InputEventType.KEY
     }
 
     public data class MouseButton(
         override val state: InputState,
-        val button: Int,
-        val modifiers: OmniKeyboard.KeyboardModifiers
+        val button: OmniMouseButton,
+        val modifiers: KeyboardModifiers
     ) : InputEvent {
         override val type: InputEventType = InputEventType.MOUSE
 
         public val isLeftButton: Boolean
-            get() = button == OmniMouse.LEFT
+            get() = button == OmniMouseButtons.LEFT
 
         public val isRightButton: Boolean
-            get() = button == OmniMouse.RIGHT
+            get() = button == OmniMouseButtons.RIGHT
 
         public val isMiddleButton: Boolean
-            get() = button == OmniMouse.MIDDLE
+            get() = button == OmniMouseButtons.MIDDLE
 
         public val isForwardSideButton: Boolean
-            get() = button == OmniMouse.FORWARD
+            get() = button == OmniMouseButtons.FORWARD
 
         public val isBackSideButton: Boolean
-            get() = button == OmniMouse.BACK
+            get() = button == OmniMouseButtons.BACK
 
         public val isSideButton: Boolean
             get() = isForwardSideButton || isBackSideButton

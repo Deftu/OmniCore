@@ -3,10 +3,10 @@ package dev.deftu.omnicore.mixins.client;
 //#if FABRIC
 import dev.deftu.omnicore.OmniCore;
 import dev.deftu.omnicore.client.OmniClient;
-import dev.deftu.omnicore.client.OmniKeyboard;
-import dev.deftu.omnicore.client.OmniKeyboardKt;
+import dev.deftu.omnicore.api.client.input.OmniKeyboard;
 import dev.deftu.omnicore.client.events.InputEvent;
 import dev.deftu.omnicore.client.events.InputState;
+import dev.deftu.omnicore.client.input.OmniKeyboardKt;
 import net.minecraft.client.Mouse;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;

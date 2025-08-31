@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.client
 
 import com.mojang.authlib.GameProfile
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
-import dev.deftu.omnicore.annotations.VersionedAbove
+import dev.deftu.omnicore.api.annotations.GameSide
+import dev.deftu.omnicore.api.annotations.Side
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.common.*
 import dev.deftu.omnicore.common.world.OmniBiomeData
 import dev.deftu.omnicore.common.world.OmniChunkData
