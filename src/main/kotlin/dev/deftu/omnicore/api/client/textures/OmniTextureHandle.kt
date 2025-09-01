@@ -19,6 +19,17 @@ public interface OmniTextureHandle : AutoCloseable {
     public val height: Int
     public val format: OmniTextureFormat
 
+    public fun bind(unit: Int)
+    public fun unbind(unit: Int)
+
+    public fun bind() {
+        bind(0)
+    }
+
+    public fun unbind() {
+        unbind(0)
+    }
+
     /** Resizes the texture to the given width and height. */
     public fun resize(width: Int, height: Int)
 
@@ -85,5 +96,23 @@ public interface OmniTextureHandle : AutoCloseable {
             width = width,
             height = height
         ))
+    }
+
+    public fun using(block: () -> Unit) {
+        bind()
+        try {
+            block()
+        } finally {
+            unbind()
+        }
+    }
+
+    public fun <T> using(block: () -> T): T {
+        bind()
+        try {
+            return block()
+        } finally {
+            unbind()
+        }
     }
 }

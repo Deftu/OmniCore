@@ -4,7 +4,6 @@ import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
-import dev.deftu.omnicore.client.render.OmniImage
 import dev.deftu.omnicore.client.render.OmniResolution
 import dev.deftu.omnicore.client.render.pipeline.DrawModes
 import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
@@ -15,9 +14,7 @@ import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
-import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.lwjgl.opengl.GL11
-import java.io.File
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
@@ -130,17 +127,6 @@ public interface OmniFramebuffer : AutoCloseable {
             width, height,
             color
         )
-    }
-
-    public fun writeToFile(file: File) {
-        TextureInternals.bind(colorTexture.id)
-        OmniImage(this.width, this.height).use { image ->
-            image.loadFromBoundTexture()
-            image.flipY()
-            image.saveTo(file)
-        }
-
-        TextureInternals.unbind()
     }
 
     private fun drawTexture(

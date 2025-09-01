@@ -16,6 +16,13 @@ import com.mojang.blaze3d.systems.RenderSystem
 @ApiStatus.Internal
 public object TextureInternals {
     @JvmStatic
+    public var active: Int
+        get() = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
+        set(value) {
+            bind0(value)
+        }
+
+    @JvmStatic
     public var activeUnit: Int
         get() = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
         set(value) {

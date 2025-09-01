@@ -7,6 +7,7 @@ import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import dev.deftu.omnicore.api.client.render.ClearMask
 import dev.deftu.omnicore.internal.client.render.GlInternals
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
@@ -24,6 +25,34 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
                 internalFloatBuffer.put(FloatArray(capacity))
                 internalFloatBuffer.flip()
             }
+        }
+    }
+
+    override fun bind(unit: Int) {
+        val prevUnit = TextureInternals.activeUnit
+        val prevTexture = TextureInternals.active
+        if (prevUnit != unit) {
+            TextureInternals.activeUnit = unit
+        }
+
+        TextureInternals.active = id
+
+        if (prevUnit != unit) {
+            TextureInternals.activeUnit = prevUnit
+        }
+    }
+
+    override fun unbind(unit: Int) {
+        val prevUnit = TextureInternals.activeUnit
+        val prevTexture = TextureInternals.active
+        if (prevUnit != unit) {
+            TextureInternals.activeUnit = unit
+        }
+
+        TextureInternals.active = 0
+
+        if (prevUnit != unit) {
+            TextureInternals.activeUnit = prevUnit
         }
     }
 

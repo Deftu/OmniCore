@@ -1,18 +1,19 @@
 package dev.deftu.omnicore.api.client.textures
 
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.texture.AbstractTexture
+import net.minecraft.util.Identifier
+
 //#if MC >= 1.21.6
-import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.textures.GpuTextureView
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
 import net.minecraft.client.texture.GlTextureView
 //#endif
 
 //#if MC >= 1.21.5
 import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.textures.GpuTexture
 //#endif
 
-@GameSide(Side.CLIENT)
 public object OmniTextures {
     @JvmStatic
     public fun create(
@@ -31,6 +32,22 @@ public object OmniTextures {
         format: OmniTextureFormat
     ): WrappedTexture {
         return WrappedTexture(id, width, height, format)
+    }
+
+    @JvmStatic
+    public fun wrap(
+        //#if MC >= 1.16.5
+        texture: AbstractTexture,
+        //#else
+        //$$ texture: ITextureObject,
+        //#endif
+    ): WrappedTexture {
+        return wrap(texture.glTextureView)
+    }
+
+    @JvmStatic
+    public fun wrap(identifier: Identifier): OmniTextureHandle {
+        return wrap(MinecraftClient.getInstance().textureManager.getTexture(identifier))
     }
 
     //#if MC >= 1.21.5
