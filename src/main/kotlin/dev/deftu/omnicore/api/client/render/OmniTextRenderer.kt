@@ -1,11 +1,11 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.client.OmniClient
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.textile.minecraft.MCTextHolder
 
 public object OmniTextRenderer {
     private inline val textRenderer
-        get() = OmniClient.getInstance().textRenderer
+        get() = client.textRenderer
 
     @JvmStatic
     public val lineHeight: Int

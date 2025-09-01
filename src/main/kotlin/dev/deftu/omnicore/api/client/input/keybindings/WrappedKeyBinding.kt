@@ -15,7 +15,6 @@ public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCK
             return when (val code = boundValue) {
                 is OmniKey -> OmniKeyBinding.KeyBindingType.KEY
                 is OmniMouseButton -> OmniKeyBinding.KeyBindingType.MOUSE
-                else -> throw IllegalStateException("Unknown key binding type for code: $code")
             }
         }
 

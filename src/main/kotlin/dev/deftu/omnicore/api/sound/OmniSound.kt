@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.api.sound
 
-import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.internal.identifierOf
 import net.minecraft.util.Identifier
 
 //#if MC >= 1.12.2
@@ -12,7 +11,7 @@ public class OmniSound {
     public companion object {
         @JvmStatic
         public fun invalid(): OmniSound {
-            return OmniSound(OmniIdentifier.create(OmniCore.ID, "invalid"))
+            return OmniSound(identifierOf("invalid"))
         }
     }
 

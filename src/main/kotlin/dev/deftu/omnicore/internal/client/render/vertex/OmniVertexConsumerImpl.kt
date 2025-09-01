@@ -1,7 +1,8 @@
-package dev.deftu.omnicore.client.render.vertex
+package dev.deftu.omnicore.internal.client.render.vertex
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
+import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 import org.jetbrains.annotations.ApiStatus
 import java.awt.Color
 
@@ -19,60 +20,8 @@ import net.minecraft.client.render.BufferBuilder
 //$$ import org.lwjgl.util.vector.Vector3f
 //#endif
 
-@GameSide(Side.CLIENT)
-public interface OmniVertexConsumer {
-
-    @GameSide(Side.CLIENT)
-    public fun vertex(stack: OmniMatrixStack, x: Double, y: Double, z: Double): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun color(red: Int, green: Int, blue: Int, alpha: Int): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun color(red: Float, green: Float, blue: Float, alpha: Float): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun color(color: Color): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun color(color: Int): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun texture(u: Double, v: Double): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun overlay(u: Int, v: Int): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun light(u: Int, v: Int): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun normal(stack: OmniMatrixStack, nx: Float, ny: Float, nz: Float): OmniVertexConsumer
-
-    @GameSide(Side.CLIENT)
-    public fun next(): OmniVertexConsumer
-
-    public companion object {
-
-        @JvmStatic
-        @GameSide(Side.CLIENT)
-        public fun vanilla(
-            //#if MC >= 1.16.5
-            value: BufferBuilder,
-            //#else
-            //$$ value: BufferBuilder,
-            //#endif
-        ): OmniVertexConsumer {
-            return MCVertexConsumer(value)
-        }
-
-    }
-
-}
-
 @ApiStatus.Internal
-@GameSide(Side.CLIENT)
-public open class MCVertexConsumer(
+public class OmniVertexConsumerImpl(
     //#if MC >= 1.16.5
     private val value: BufferBuilder,
     //#else
@@ -81,7 +30,7 @@ public open class MCVertexConsumer(
 ) : OmniVertexConsumer {
 
     override fun vertex(stack: OmniMatrixStack, x: Double, y: Double, z: Double): OmniVertexConsumer {
-        if (stack == OmniMatrixStack.EMPTY) {
+        if (stack == OmniMatrixStacks.UNIT) {
             //#if MC >= 1.21.1
             value.vertex(x.toFloat(), y.toFloat(), z.toFloat())
             //#elseif MC >= 1.16.5
@@ -93,10 +42,10 @@ public open class MCVertexConsumer(
         }
 
         //#if MC >= 1.16.5
-        value.vertex(stack.peek().matrix, x.toFloat(), y.toFloat(), z.toFloat())
+        value.vertex(stack.current.positionMatrix, x.toFloat(), y.toFloat(), z.toFloat())
         //#else
         //$$ val vector = Vector4f(x.toFloat(), y.toFloat(), z.toFloat(), 1f)
-        //$$ Matrix4f.transform(stack.peek().matrix, vector, vector)
+        //$$ Matrix4f.transform(stack.current.positionMatrix, vector, vector)
         //$$ value.pos(vector.x.toDouble(), vector.y.toDouble(), vector.z.toDouble())
         //#endif
         return this
@@ -152,19 +101,19 @@ public open class MCVertexConsumer(
     }
 
     override fun normal(stack: OmniMatrixStack, nx: Float, ny: Float, nz: Float): OmniVertexConsumer {
-        if (stack == OmniMatrixStack.EMPTY) {
+        if (stack == OmniMatrixStacks.UNIT) {
             value.normal(nx, ny, nz)
             return this
         }
 
         //#if MC >= 1.20.6
-        val normal = stack.peek().normal.transform(nx, ny, nz, Vector3f())
+        val normal = stack.current.normalMatrix.transform(nx, ny, nz, Vector3f())
         value.normal(normal.x, normal.y, normal.z)
         //#elseif MC >= 1.16.5
-        //$$ value.normal(stack.peek().normal, nx, ny, nz)
+        //$$ value.normal(stack.current.normalMatrix, nx, ny, nz)
         //#else
         //$$ val vector = Vector3f(nx, ny, nz)
-        //$$ Matrix3f.transform(stack.peek().normal, vector, vector)
+        //$$ Matrix3f.transform(stack.current.normalMatrix, vector, vector)
         //$$ value.normal(vector.x, vector.y, vector.z)
         //#endif
         return this

@@ -3,16 +3,13 @@ package dev.deftu.omnicore.api.client.render
 import com.mojang.blaze3d.systems.ProjectionType
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.eventbus.on
-import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.eventBus
 import dev.deftu.omnicore.client.OmniScreen
 import dev.deftu.omnicore.client.events.RenderTickEvent
-import dev.deftu.omnicore.client.render.OmniResolution
-import dev.deftu.omnicore.client.render.OmniTextureManager
-import dev.deftu.omnicore.client.render.TemporaryTextureAllocator
-import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
-import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.internal.client.render.TemporaryTextureAllocator
+import dev.deftu.omnicore.internal.identifierOf
 import net.minecraft.client.gl.RenderPipelines
 import net.minecraft.client.render.ProjectionMatrix2
 import net.minecraft.client.texture.AbstractTexture
@@ -39,7 +36,7 @@ public object ImmediateScreenRenderer {
             return
         }
 
-        OmniCore.eventBus.on<RenderTickEvent.Pre> {
+        eventBus.on<RenderTickEvent.Pre> {
             textureAllocator.tick()
         }
 
@@ -72,7 +69,7 @@ public object ImmediateScreenRenderer {
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         RenderSystem.setProjectionMatrix(prevProjectionBuffer, prevProjectionType)
 
-        val identifier = OmniIdentifier.create(OmniCore.ID, "__temporary_screen_render__")
+        val identifier = identifierOf("__temporary_screen_render__")
         OmniTextureManager.Companion.INSTANCE.registerTexture(identifier, object : AbstractTexture() {
             init { glTextureView = textureAllocation.colorTextureView }
 

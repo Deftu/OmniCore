@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.api.client.input
 
 import dev.deftu.omnicore.client.OmniClient
-import dev.deftu.omnicore.client.render.OmniResolution
 import kotlin.math.max
 
 //#if MC >= 1.15

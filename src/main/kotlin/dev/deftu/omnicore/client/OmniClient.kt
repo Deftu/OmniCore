@@ -1,8 +1,5 @@
 package dev.deftu.omnicore.client
 
-import dev.deftu.omnicore.api.annotations.GameSide
-import dev.deftu.omnicore.api.annotations.Side
-import dev.deftu.omnicore.client.render.OmniTextureManager
 import dev.deftu.omnicore.common.world.OmniWorld
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
@@ -50,28 +47,6 @@ import net.minecraft.client.util.InputUtil
 public object OmniClient {
 
     private var cachedLastWorld: OmniWorld? = null
-
-    /**
-     * @return True if the current working environment is on macOS, false otherwise.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public val isRunningOnMac: Boolean
-        get() = MinecraftClient.IS_SYSTEM_MAC
-
-    /**
-     * @return True if the game is running on the main thread, false otherwise.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public val isRunningOnMainThread: Boolean
-        get() = getInstance().isOnThread
 
     /**
      * @return The static instance of Minecraft's main class.
@@ -230,28 +205,6 @@ public object OmniClient {
         get() = getInstance().networkHandler
 
     /**
-     * @return The sound manager instance, which controls the game's sound output.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public val soundManager: SoundManager?
-        get() = getInstance().soundManager
-
-    /**
-     * @return The text renderer instance, which is used to render text on the screen.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public val fontRenderer: TextRenderer
-        get() = getInstance().textRenderer
-
-    /**
      * @return OmniCore's wrapper around Minecraft's texture manager, which is used to load, bind, and manage textures.
      *
      * @since 0.1.0
@@ -271,126 +224,6 @@ public object OmniClient {
     @GameSide(Side.CLIENT)
     public val resourceManager: ResourceManager
         get() = getInstance().resourceManager
-
-    /**
-     * Executes a task on Minecraft's main thread.
-     *
-     * @param runnable The task to execute.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     * @see execute
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun execute(runnable: () -> Unit) {
-        getInstance().execute(runnable)
-    }
-
-    /**
-     * Executes a task on Minecraft's main thread.
-     *
-     * @param runnable The task to execute.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     * @see execute
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun execute(runnable: Runnable) {
-        execute(runnable::run)
-    }
-
-    /**
-     * @return The time since the game started in milliseconds.
-     *
-     * @since 0.1.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun getTimeSinceStart(): Long {
-        //#if MC >= 1.14
-        return (GlfwUtil.getTime() * 1000).toLong()
-        //#else
-        //$$ return Minecraft.getSystemTime()
-        //#endif
-    }
-
-    /**
-     * Registers a resource reload listener to be notified when resources are reloaded.
-     *
-     * @since 0.41.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun registerReloadListener(listener: ResourceReloadListener) {
-        //#if FABRIC
-        //#if MC >= 1.16.5
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(listener)
-        //#else
-        //$$ ResourceManagerHelper.getInstance().registerReloadListener(listener)
-        //#endif
-        //#elseif MC >= 1.17.1
-        //#if FORGE
-        //$$ MinecraftForge
-        //#else
-        //$$ NeoForge
-        //#endif
-        //$$     .EVENT_BUS
-        //$$     .addListener<
-        //#if MC >= 1.21.4
-        //$$         AddClientReloadListenersEvent
-        //$$     > { event ->
-        //$$         event.addListener(listener.reloadIdentifier, listener)
-        //$$     }
-        //#else
-        //$$         RegisterClientReloadListenersEvent
-        //$$     > { event ->
-        //$$         event.registerReloadListener(listener)
-        //$$     }
-        //#endif
-        //#else
-        //$$ val resourceManager = getInstance().resourceManager
-        //$$ if (resourceManager is ReloadableResourceManager) {
-        //$$     resourceManager.registerReloadListener(listener)
-        //$$ }
-        //#endif
-    }
-
-    /**
-     * @return The formatted string using Minecraft's built-in I18n.
-     *
-     * @since 0.16.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @GameSide(Side.CLIENT)
-    public fun translate(key: String, vararg args: Any): String {
-        return I18n.translate(key, args)
-    }
-
-    /**
-     * @return The display name of the key with the given code or scan code.
-     *
-     * @since 0.39.0
-     * @author Deftu
-     */
-    @JvmStatic
-    @JvmOverloads
-    @GameSide(Side.CLIENT)
-    public fun getKeyDisplayName(code: Int, scanCode: Int = -1): String {
-        val name =
-            //#if MC >= 1.16.5
-            InputUtil.fromKeyCode(code, scanCode).toString()
-            //#else
-            //$$ GameSettings.getKeyDisplayString(code) ?: return "Unknown"
-            //#endif
-
-        return if (name.length == 1) name.first().uppercase() else name
-    }
 
     @JvmStatic
     @GameSide(Side.CLIENT)

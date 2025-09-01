@@ -14,7 +14,6 @@ import net.minecraft.client.texture.GlTexture
 import com.mojang.blaze3d.systems.RenderPass
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.TextureFormat
-import dev.deftu.omnicore.client.render.OmniTextureManager
 import dev.deftu.omnicore.client.OmniClient
 import java.util.OptionalDouble
 import java.util.OptionalInt

@@ -1,19 +1,19 @@
 package dev.deftu.omnicore.api.client.framebuffer
 
+import dev.deftu.omnicore.api.client.render.OmniResolution
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
-import dev.deftu.omnicore.client.render.OmniResolution
 import dev.deftu.omnicore.client.render.pipeline.DrawModes
 import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.client.render.pipeline.VertexFormats
 import dev.deftu.omnicore.client.render.state.OmniManagedBlendState
 import dev.deftu.omnicore.client.render.state.OmniManagedScissorState
-import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
-import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
+import dev.deftu.omnicore.internal.identifierOf
 import org.lwjgl.opengl.GL11
 
 //#if MC <= 1.12.2
@@ -29,7 +29,7 @@ public interface OmniFramebuffer : AutoCloseable {
         @JvmStatic
         public val defaultPipeline: OmniRenderPipeline by lazy {
             OmniRenderPipeline.builderWithDefaultShader(
-                identifier = OmniIdentifier.create("omnicore", "framebuffer"),
+                identifier = identifierOf("framebuffer"),
                 vertexFormat = VertexFormats.POSITION_TEXTURE_COLOR,
                 mode = DrawModes.QUADS,
             ).apply {
@@ -161,7 +161,7 @@ public interface OmniFramebuffer : AutoCloseable {
             .texture(0.0, 1.0)
             .color(color)
             .next()
-        buffer.build()?.drawWithCleanup(pipeline) {
+        buffer.build()?.drawAndClose(pipeline) {
             texture(0, texture.id)
         }
 

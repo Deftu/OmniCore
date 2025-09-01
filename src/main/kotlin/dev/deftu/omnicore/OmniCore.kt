@@ -17,32 +17,6 @@ import net.minecraft.SharedConstants
 @GameSide(Side.BOTH)
 public object OmniCore {
 
-    @GameSide(Side.BOTH)
-    public const val ID: String = "@MOD_ID@"
-
-    /**
-     * Represents OmniCore's current version.
-     */
-    @GameSide(Side.BOTH)
-    public const val VERSION: String = "@MOD_VERSION@"
-
-    @GameSide(Side.BOTH)
-    public const val GIT_BRANCH: String = "@GIT_BRANCH@"
-
-    @GameSide(Side.BOTH)
-    public const val GIT_COMMIT: String = "@GIT_COMMIT@"
-
-    @GameSide(Side.BOTH)
-    public const val GIT_URL: String = "@GIT_URL@"
-
-    /**
-     * Represents if OmniCore is in debug mode.
-     */
-    @JvmStatic
-    @GameSide(Side.BOTH)
-    public val isDebug: Boolean
-        get() = System.getProperty("omnicore.debug")?.toBoolean() ?: false
-
     /**
      * Represents the currently running Minecraft version.
      */

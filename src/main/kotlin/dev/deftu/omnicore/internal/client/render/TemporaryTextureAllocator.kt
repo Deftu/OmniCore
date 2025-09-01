@@ -1,11 +1,10 @@
-package dev.deftu.omnicore.client.render
+package dev.deftu.omnicore.internal.client.render
 
 import com.mojang.blaze3d.systems.RenderSystem
 
 internal class TemporaryTextureAllocator(
     private val onClose: () -> Unit = {},
 ) : AutoCloseable {
-
     private val usedAllocations = mutableListOf<TextureAllocation>()
     private val reusableAllocations = mutableListOf<TextureAllocation>()
 
@@ -46,5 +45,4 @@ internal class TemporaryTextureAllocator(
         assert(usedAllocations.isEmpty())
         assert(reusableAllocations.isEmpty())
     }
-
 }

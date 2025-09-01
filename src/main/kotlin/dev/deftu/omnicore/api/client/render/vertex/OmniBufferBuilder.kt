@@ -1,20 +1,21 @@
-package dev.deftu.omnicore.client.render.vertex
+package dev.deftu.omnicore.api.client.render.vertex
 
 import dev.deftu.omnicore.client.render.pipeline.DrawModes
 import dev.deftu.omnicore.client.render.pipeline.VertexFormats
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
 import com.mojang.blaze3d.vertex.VertexFormat
+import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
+import dev.deftu.omnicore.internal.client.render.vertex.OmniVertexConsumerImpl
 
-public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexConsumer, MCVertexConsumer(value) {
-
+public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexConsumer by OmniVertexConsumerImpl(value) {
     //#if MC >= 1.21.1
     public fun build(): OmniBuiltBuffer? {
-        return value.endNullable()?.let(::VanillaWrappingBuiltBuffer)
+        return value.endNullable()?.let(::OmniBuiltBufferImpl)
     }
     //#elseif MC >= 1.19.2
     //$$ public fun build(): OmniBuiltBuffer? {
-    //$$     return value.endOrDiscardIfEmpty()?.let(::VanillaWrappingBuiltBuffer)
+    //$$     return value.endOrDiscardIfEmpty()?.let(::OmniBuiltBufferImpl)
     //$$ }
     //#else
     //$$ private var vertexCount = 0
@@ -22,7 +23,7 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
     //$$ public fun build(): OmniBuiltBuffer? {
     //$$     value.end()
     //$$     return if (vertexCount > 0) {
-    //$$         VanillaWrappingBuiltBuffer(value)
+    //$$         OmniBuiltBufferImpl(value)
     //$$     } else {
     //$$         value.reset()
     //$$         bufferPool.add(value)
@@ -37,7 +38,6 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
     //#endif
 
     public companion object {
-
         //#if MC < 1.19.2
         //$$ internal val bufferPool = mutableListOf<BufferBuilder>()
         //#endif
@@ -61,7 +61,6 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
         public fun create(drawMode: DrawModes, format: VertexFormats): OmniBufferBuilder {
             return create(drawMode, format.vanilla)
         }
-
     }
 
 }

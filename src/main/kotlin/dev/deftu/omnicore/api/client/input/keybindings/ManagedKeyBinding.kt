@@ -12,7 +12,6 @@ public data class ManagedKeyBinding @JvmOverloads constructor(
     override val type: OmniKeyBinding.KeyBindingType = when (defaultValue) {
         is OmniKey -> OmniKeyBinding.KeyBindingType.KEY
         is OmniMouseButton -> OmniKeyBinding.KeyBindingType.MOUSE
-        else -> throw IllegalArgumentException("Please provide a keybinding type for your custom input code type.")
     }
 ) : MCKeyBinding {
     override val vanillaKeyBinding: KeyBinding by lazy {

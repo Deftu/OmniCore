@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.client.render.vertex
+package dev.deftu.omnicore.internal.client.render.vertex
 
 //#if MC >= 1.21.1
 import net.minecraft.client.render.BuiltBuffer as VanillaBuiltBuffer
@@ -8,4 +8,4 @@ import net.minecraft.client.render.BuiltBuffer as VanillaBuiltBuffer
 //$$ import net.minecraft.client.render.BufferBuilder as VanillaBuiltBuffer
 //#endif
 
-public typealias VanillaBuiltBuffer = VanillaBuiltBuffer
+internal typealias VanillaBuiltBuffer = VanillaBuiltBuffer

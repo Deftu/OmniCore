@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.client.render
+package dev.deftu.omnicore.internal.client.render
 
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.FilterMode
@@ -10,7 +10,6 @@ public class TextureAllocation(
     public val width: Int,
     public val height: Int
 ) : AutoCloseable {
-
     private val device = RenderSystem.getDevice()
 
     public val colorTexture: GpuTexture = device.createTexture(
@@ -39,5 +38,4 @@ public class TextureAllocation(
         depthTexture.close()
         colorTexture.close()
     }
-
 }
