@@ -34,7 +34,7 @@ public data class OmniCreativeTab @JvmOverloads public constructor(
         entries += item
     }
 
-    public fun register() {
+    public fun register(): OmniCreativeTab {
         val key = RegistryKey.of(RegistryKeys.ITEM_GROUP, id)
         Registry.register(Registries.ITEM_GROUP, key, group)
         ItemGroupEvents.modifyEntriesEvent(key).register { groupEntries ->
@@ -42,6 +42,8 @@ public data class OmniCreativeTab @JvmOverloads public constructor(
                 groupEntries.add(item)
             }
         }
+
+        return this
     }
 
     internal fun builtin(): OmniCreativeTab {
