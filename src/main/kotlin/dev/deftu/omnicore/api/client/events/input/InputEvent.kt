@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.api.client.events
+package dev.deftu.omnicore.api.client.events.input
 
 import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
@@ -44,28 +44,4 @@ public sealed interface InputEvent {
         public val isSideButton: Boolean
             get() = isForwardSideButton || isBackSideButton
     }
-}
-
-public enum class InputEventType {
-    KEY,
-    MOUSE;
-
-    public val isKey: Boolean
-        get() = this == KEY
-
-    public val isMouse: Boolean
-        get() = this == MOUSE
-}
-
-public enum class InputState {
-    PRESSED,
-    RELEASED,
-    REPEATED,
-    INVALID;
-
-    public val isPressed: Boolean
-        get() = this == PRESSED || this == REPEATED
-
-    public val isReleased: Boolean
-        get() = this == RELEASED
 }
