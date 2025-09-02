@@ -1,7 +1,5 @@
 package dev.deftu.omnicore.api
 
-import dev.deftu.omnicore.api.OmniSpatialDirection
-
 public enum class OmniPlanarDirection(
     public val fullName: String,
     public val abbreviatedName: String
