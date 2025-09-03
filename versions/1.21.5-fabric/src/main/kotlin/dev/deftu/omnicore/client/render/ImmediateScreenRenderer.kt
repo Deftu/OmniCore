@@ -62,4 +62,18 @@ public object ImmediateScreenRenderer {
             block
         )
     }
+
+    @JvmStatic
+    public fun render(painful: Any, block: (OmniMatrixStack) -> Unit) {
+        when (painful) {
+            //#if MC >= 1.20.1
+            is DrawContext -> render(painful, block)
+            //#elseif MC >= 1.16.5
+            //$$ is MatrixStack -> render(painful, block)
+            //#endif
+            is OmniMatrixStack -> render(painful, block)
+            is ScreenEvent.Render -> render(painful, block)
+            else -> throw IllegalArgumentException("Unsupported type for rendering: ${painful::class.java.name}")
+        }
+    }
 }
