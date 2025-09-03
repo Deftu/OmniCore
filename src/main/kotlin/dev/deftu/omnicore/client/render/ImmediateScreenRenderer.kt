@@ -65,7 +65,6 @@ public object ImmediateScreenRenderer {
 
         val stack = OmniMatrixStack()
         stack.translate(0f, 0f, -10_000f) // Render on the same layer as everything else on the screen
-        stack.scale(1f / scaleFactor, 1f / scaleFactor, 0f) // Undo Minecraft's GUI scaling to provide a more accurate rendering context
         block(stack)
 
         RenderSystem.outputColorTextureOverride = prevColorOverride
@@ -83,6 +82,7 @@ public object ImmediateScreenRenderer {
         })
 
         ctx.matrices.pushMatrix()
+        ctx.matrices.scale(1 / scaleFactor, 1 / scaleFactor)
         ctx.drawTexture(
             RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA,
             identifier,
