@@ -1,9 +1,7 @@
 package dev.deftu.omnicore.api.client.input.keybindings
 
 import dev.deftu.eventbus.on
-import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.api.annotations.VersionedAbove
-import dev.deftu.omnicore.client.OmniClient
 import dev.deftu.omnicore.client.events.InputEvent
 import dev.deftu.omnicore.client.events.InputEventType
 import dev.deftu.omnicore.client.events.InputState

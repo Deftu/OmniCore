@@ -1,7 +1,5 @@
 package dev.deftu.omnicore.api.client.input
 
-import dev.deftu.omnicore.client.OmniClient
-
 //#if MC >= 1.16.5
 import org.lwjgl.glfw.GLFW
 //#else

@@ -1,8 +1,6 @@
 package dev.deftu.omnicore.api.scheduling
 
 import dev.deftu.eventbus.on
-import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.client.events.RenderTickEvent
 import dev.deftu.omnicore.internal.scheduling.DefaultTickScheduler
 import dev.deftu.omnicore.common.events.TickEvent
 

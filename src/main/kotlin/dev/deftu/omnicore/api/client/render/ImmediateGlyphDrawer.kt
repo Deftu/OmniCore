@@ -2,10 +2,11 @@ package dev.deftu.omnicore.api.client.render
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.textures.GpuTextureView
-import dev.deftu.omnicore.client.OmniClient
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPass
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
+import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPass
+import dev.deftu.omnicore.internal.client.render.pipeline.RenderPassEncoderImpl
+import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
 import net.minecraft.client.font.BakedGlyph
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.BufferBuilder
@@ -36,12 +37,13 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer
 
         cachedBuffer!!.endNullable().use { builtBuffer ->
             builtBuffer ?: return
-            val lightTexture = OmniClient.getInstance().gameRenderer.lightmapTextureManager.glTextureView
+            val lightTexture = client.gameRenderer.lightmapTextureManager.glTextureView
             OmniRenderPass().use { renderPass ->
                 renderPass.draw(
-                    builtBuffer = OmniBuiltBuffer.wrapping(builtBuffer),
-                    pipeline = OmniRenderPipeline.wrap(cachedPipeline!!)
+                    builtBuffer = OmniBuiltBufferImpl(builtBuffer),
+                    pipeline = OmniRenderPipelines.wrap(cachedPipeline!!)
                 ) { builder ->
+                    (builder as RenderPassEncoderImpl)
                     builder.vanilla.bindSampler("Sampler0", cachedTexture)
                     builder.vanilla.bindSampler("Sampler2", lightTexture)
                 }

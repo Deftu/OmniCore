@@ -1,9 +1,7 @@
 package com.test
 
 import dev.deftu.omnicore.client.OmniScreen
-import dev.deftu.omnicore.client.render.pipeline.DrawModes
 import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.pipeline.VertexFormats
 import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.textile.minecraft.MCSimpleTextHolder

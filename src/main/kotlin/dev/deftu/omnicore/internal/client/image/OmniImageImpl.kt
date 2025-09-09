@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.internal.client.image
 
 import dev.deftu.omnicore.api.client.image.OmniImage
-import dev.deftu.omnicore.common.OmniColor
 import java.io.File
 import java.nio.file.Path
 import kotlin.use

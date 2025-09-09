@@ -3,11 +3,10 @@ package dev.deftu.omnicore.api.client.render
 import com.mojang.blaze3d.systems.ProjectionType
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.eventbus.on
+import dev.deftu.omnicore.api.client.events.RenderTickEvent
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.eventBus
-import dev.deftu.omnicore.client.OmniScreen
-import dev.deftu.omnicore.client.events.RenderTickEvent
 import dev.deftu.omnicore.internal.client.render.TemporaryTextureAllocator
 import dev.deftu.omnicore.internal.identifierOf
 import net.minecraft.client.gl.RenderPipelines
@@ -20,7 +19,7 @@ import net.minecraft.client.texture.AbstractTexture
  * to it/them, restoring the original buffers, and then submitting those overriden texture(s) to the renderer to be drawn.
  *
  * It should be noted that this is a very low-level renderer, and as such, it is not recommended to use it unless you know what you are doing,
- * and that it is automatically used to wrap the rendering of [OmniScreen]s, allowing you to use the [OmniBufferBuilder] API to render whatever
+ * and that it is automatically used to wrap the rendering of [dev.deftu.omnicore.api.client.screen.OmniScreen]s, allowing you to use the [dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder] API to render whatever
  * you please. Use it as you wish elsewhere should you need to.
  */
 public object ImmediateScreenRenderer {

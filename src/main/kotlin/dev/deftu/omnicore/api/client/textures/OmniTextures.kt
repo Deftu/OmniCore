@@ -46,8 +46,8 @@ public object OmniTextures {
     }
 
     @JvmStatic
-    public fun wrap(identifier: Identifier): OmniTextureHandle {
-        return wrap(MinecraftClient.getInstance().textureManager.getTexture(identifier))
+    public fun wrap(location: Identifier): OmniTextureHandle {
+        return wrap(MinecraftClient.getInstance().textureManager.getTexture(location))
     }
 
     //#if MC >= 1.21.5

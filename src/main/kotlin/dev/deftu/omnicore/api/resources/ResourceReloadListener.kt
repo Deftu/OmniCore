@@ -27,7 +27,7 @@ public interface ResourceReloadListener
     , IdentifiableResourceReloadListener
 //#endif
 {
-    public val reloadIdentifier: Identifier
+    public val location: Identifier
 
     public val dependencies: List<Identifier>
         get() = emptyList()
@@ -35,7 +35,7 @@ public interface ResourceReloadListener
     //#if FABRIC
     //#if MC >= 1.16.5
     override fun getFabricId(): Identifier {
-        return this.reloadIdentifier
+        return this.location
     }
 
     override fun getFabricDependencies(): Collection<Identifier> {

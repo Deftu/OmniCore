@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.mixins
 
 //#if FABRIC || MC >= 1.16.5
-import dev.deftu.omnicore.common.OmniLoader
 import org.objectweb.asm.tree.ClassNode
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo

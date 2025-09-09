@@ -2,17 +2,19 @@ package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
+import dev.deftu.omnicore.api.client.commands.argument
+import dev.deftu.omnicore.api.client.commands.command
 import dev.deftu.omnicore.client.*
-import dev.deftu.omnicore.client.OmniClientCommands.argument
-import dev.deftu.omnicore.client.OmniClientCommands.command
-import dev.deftu.omnicore.client.OmniClientCommands.does
-import dev.deftu.omnicore.client.OmniClientCommands.register
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBindings
+import dev.deftu.omnicore.api.client.network.OmniClientNetworking
+import dev.deftu.omnicore.api.client.resources.OmniClientResources
+import dev.deftu.omnicore.api.client.sound.OmniClientSound
+import dev.deftu.omnicore.api.loader.OmniLoader
+import dev.deftu.omnicore.api.network.OmniNetworking
 import dev.deftu.omnicore.api.sound.OmniSounds
 import dev.deftu.omnicore.common.*
-import dev.deftu.omnicore.server.OmniServerPackets
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextFormat
 import org.apache.logging.log4j.LogManager
@@ -20,6 +22,8 @@ import org.apache.logging.log4j.LogManager
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
+import net.minecraft.server.network.ServerPlayerEntity
+
 //#elseif FORGE
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.fml.common.Mod
@@ -77,10 +81,13 @@ class TestMod
     fun onInitialize() {
         //#if FABRIC && MC >= 1.16.5
         println("Hello Fabric world!")
-        OmniServerPackets.createChanneledPacketReceiver(OmniIdentifier.create("testmod:base_command")) { player, buf ->
-            val message = buf.readString()
-            logger.info("Received message: $message")
-            true
+        OmniNetworking.register(TestPacketPayload.TYPE) { payload ->
+            logger.info("Received test packet on the server with message: ${payload.message}")
+
+            // Echo the packet back to the client
+            if (player is ServerPlayerEntity) {
+                OmniNetworking.send(player as ServerPlayerEntity, payload)
+            }
         }
         //#endif
     }
@@ -106,7 +113,7 @@ class TestMod
         exampleKeyBinding.register()
 
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
-        OmniClient.registerReloadListener(TestResourceListener)
+        OmniClientResources.registerReloadListener(TestResourceListener)
 
         OmniKeyBindings.on(exampleKeyBinding) { type, state ->
             if (type.isKey && state.isPressed) {
@@ -118,11 +125,18 @@ class TestMod
             }
         }
 
-        OmniClientCommands.command("testmod") {
-            does {
+        OmniClientNetworking.register(TestPacketPayload.TYPE) { payload ->
+            logger.info("Received test packet with message: ${payload.message}")
+            if (OmniClientPlayer.hasPlayer) {
+                OmniClientChat.displayChatMessage("Received test packet with message: ${payload.message}")
+            }
+        }
+
+        command("testmod") {
+            runs {
                 val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
 
-                source.displayError(testError)
+                OmniClientChat.displayErrorMessage(testError)
                 OmniClientChat.displayChatMessage("---")
                 OmniClientChat.displayErrorMessage(testError)
                 OmniClientChat.displayChatMessage("---")
@@ -131,37 +145,35 @@ class TestMod
                 OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
 
                 OmniClientChat.displayChatMessage("TestMod base command executed!")
-                OmniClientPackets.send(OmniIdentifier.create("testmod:base_command"), block = {
-                    OmniPackets.writeString(this, "Hello, world!")
-                })
+                sendTestPacket()
 
                 1
             }
 
-            command("subcommand") {
+            then("subcommand") {
                 argument("name", StringArgumentType.greedyString()) {
-                    does {
-                        val name = StringArgumentType.getString(this, "name")
-                        source.displayError("TestMod subcommand executed with name: $name")
-                        1
+                    runs { ctx ->
+                        val name = ctx.argument<String>("name")
+                        ctx.source.replyChat("TestMod subcommand executed with name: $name")
                     }
                 }
             }
 
             command("screen") {
-                does {
-                    OmniScreen.openAfter(1, TestScreen())
-                    1
+                requires { src -> src.world != null }
+
+                runs { ctx ->
+                    ctx.source.openScreen(TestScreen())
                 }
             }
 
             command("world") {
-                does {
+                runs { ctx ->
                     val world = OmniClient.currentWorld
                     val playerChunk = OmniClientPlayer.currentChunk
                     val playerBiome = OmniClientPlayer.currentBiome
 
-                    source.displayMessage("""
+                    ctx.source.replyChat("""
                         Is day? ${world?.isDay}
                         Is night? ${world?.isNight}
                         Is raining? ${world?.isRaining}
@@ -175,7 +187,6 @@ class TestMod
                         Biome identifier: ${playerBiome?.identifier}
                         Biome water color: ${playerBiome?.waterColor}
                     """.trimIndent())
-                    1
                 }
             }
         }.register()
@@ -183,12 +194,12 @@ class TestMod
         //#if FABRIC && MC >= 1.16.5
         net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
             println("Joined server!")
-            OmniClientPackets.send(OmniIdentifier.create("testmod:base_command")) {
-                writeString(OmniIdentifier.create("testmod:base_command").toString())
-                writeString("Hello, world!")
-            }
+            sendTestPacket()
         }
         //#endif
     }
 
+    private fun sendTestPacket() {
+        OmniClientNetworking.send(TestPacketPayload("Hello from the client!"))
+    }
 }

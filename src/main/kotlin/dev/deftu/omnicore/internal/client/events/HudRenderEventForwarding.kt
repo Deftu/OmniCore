@@ -2,11 +2,11 @@
 
 package dev.deftu.omnicore.internal.client.events
 
-import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.api.client.events.HudRenderEvent
 import dev.deftu.omnicore.api.client.render.OmniRenderTicks
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import org.jetbrains.annotations.ApiStatus
 
 //#if FABRIC && MC <= 1.21.3
 //$$ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
@@ -33,6 +33,7 @@ import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 //#endif
 //#endif
 
+@ApiStatus.Internal
 public object HudRenderEventForwarding {
     public fun initialize() {
         //#if FABRIC && MC <= 1.21.3

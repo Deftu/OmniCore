@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.client.OmniClient
+import dev.deftu.omnicore.api.client.client
 
 //#if MC >= 1.21.1
 import net.minecraft.client.render.RenderTickCounter
@@ -23,13 +23,13 @@ public object OmniRenderTicks {
     //#endif
     //$$ private val MinecraftClient.deltaTickTracker: ClientTickTracker by lazy {
     //#if FABRIC
-    //$$     (OmniClient.getInstance() as Mixin_MinecraftClient_TimerAccessor).ticker
+    //$$     (client as Mixin_MinecraftClient_TimerAccessor).ticker
     //#else
     //$$     for (fieldName in timerFieldNames) {
     //$$         try {
     //$$             val field = Minecraft::class.java.getDeclaredField(fieldName)
     //$$             field.isAccessible = true
-    //$$             return@lazy field.get(OmniClient.getInstance()) as Timer
+    //$$             return@lazy field.get(client) as Timer
     //$$         } catch (ignored: NoSuchFieldException) {
     //$$             // no-op
     //$$         }
@@ -45,7 +45,7 @@ public object OmniRenderTicks {
         // Force-init the deltaTickTracker property on MC 1.8.9
 
         //#if MC == 1.8.9
-        //$$ val _ = OmniClient.getInstance().deltaTickTracker
+        //$$ val _ = client.deltaTickTracker
         //$$ //#endif
     }
 
@@ -54,15 +54,15 @@ public object OmniRenderTicks {
     public fun get(
         ignoreFreeze: Boolean = true,
         //#if MC >= 1.21.1
-        renderTickCounter: RenderTickCounter = OmniClient.getInstance().renderTickCounter,
+        renderTickCounter: RenderTickCounter = client.renderTickCounter,
         //#endif
     ): Float {
         //#if MC >= 1.21.1
         return renderTickCounter.getTickProgress(ignoreFreeze)
         //#elseif MC >= 1.12.2
-        //$$ return OmniClient.getInstance().frameTime
+        //$$ return client.frameTime
         //#else
-        //$$ return OmniClient.getInstance().deltaTickTracker.tickDelta
+        //$$ return client.deltaTickTracker.tickDelta
         //#endif
     }
 }

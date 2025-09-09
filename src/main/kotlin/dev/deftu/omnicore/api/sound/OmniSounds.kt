@@ -15,7 +15,6 @@ import net.minecraft.sound.SoundEvents
 //#endif
 
 public object OmniSounds {
-
     //#if MC >= 1.21.5
     private val classicWolfSounds: WolfSoundVariant by lazy {
         SoundEvents.WOLF_SOUNDS[WolfSoundVariants.Type.CLASSIC]!!

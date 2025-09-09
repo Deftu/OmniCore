@@ -3,7 +3,7 @@ package dev.deftu.omnicore.api.client.image
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.internal.client.image.OmniImageImpl
-import dev.deftu.omnicore.internal.client.image.OmniImageInternals
+import dev.deftu.omnicore.internal.client.image.ImageInternals
 import java.io.File
 import java.nio.file.Path
 
@@ -53,7 +53,7 @@ public object OmniImages {
     public fun from(texture: OmniTextureHandle): OmniImage {
         val image = OmniImageImpl(texture.width, texture.height)
         texture.using {
-            OmniImageInternals.loadTextureInto(texture, image)
+            ImageInternals.loadTextureInto(texture, image)
         }
 
         return image

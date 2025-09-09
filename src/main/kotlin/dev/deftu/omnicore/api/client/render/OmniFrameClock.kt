@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.eventbus.on
-import dev.deftu.omnicore.OmniCore
-import dev.deftu.omnicore.client.events.RenderTickEvent
+import dev.deftu.omnicore.api.client.events.RenderTickEvent
+import dev.deftu.omnicore.api.eventBus
 
 public object OmniFrameClock {
     private var lastFrameTimeNanos: Long = System.nanoTime()
@@ -32,7 +32,7 @@ public object OmniFrameClock {
         lastFrameDurationNanos = 0L
         frameDurations.clear()
 
-        OmniCore.eventBus.on<RenderTickEvent.Pre> {
+        eventBus.on<RenderTickEvent.Pre> {
             // Calculate the time since the last frame
             val currentTimeNanos = System.nanoTime()
             lastFrameDurationNanos = currentTimeNanos - lastFrameTimeNanos

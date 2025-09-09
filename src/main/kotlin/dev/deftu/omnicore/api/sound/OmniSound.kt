@@ -15,26 +15,26 @@ public class OmniSound {
         }
     }
 
-    public val identifier: Identifier
+    public val location: Identifier
 
     //#if MC >= 1.12.2
     public val event: SoundEvent
     //#endif
 
-    public constructor(identifier: Identifier) {
-        this.identifier = identifier
+    public constructor(location: Identifier) {
+        this.location = location
         //#if MC >= 1.12.2
         //#if MC >= 1.19.4
-        this.event = SoundEvent.of(identifier)
+        this.event = SoundEvent.of(location)
         //#else
-        //$$ this.event = SoundEvent(identifier)
+        //$$ this.event = SoundEvent(location)
         //#endif
         //#endif
     }
 
     //#if MC >= 1.12.2
     public constructor(event: SoundEvent) {
-        this.identifier = event.id()
+        this.location = event.id()
         this.event = event
     }
     //#endif
@@ -42,11 +42,11 @@ public class OmniSound {
     override fun equals(other: Any?): Boolean {
         return when {
             this === other -> true
-            other is Identifier -> identifier == other
+            other is Identifier -> location == other
             //#if MC >= 1.12.2
             other is SoundEvent -> event == other
             //#endif
-            other is OmniSound -> identifier == other.identifier
+            other is OmniSound -> location == other.location
             else -> false
         }
     }
@@ -55,6 +55,6 @@ public class OmniSound {
      * Returns the hash code of this sound's identifier. We can't consider the sound event's hash code because it's only available in 1.12.2 and above.
      */
     override fun hashCode(): Int {
-        return identifier.hashCode()
+        return location.hashCode()
     }
 }

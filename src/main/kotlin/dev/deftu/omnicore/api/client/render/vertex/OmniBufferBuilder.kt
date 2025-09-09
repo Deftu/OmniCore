@@ -1,10 +1,10 @@
 package dev.deftu.omnicore.api.client.render.vertex
 
-import dev.deftu.omnicore.client.render.pipeline.DrawModes
-import dev.deftu.omnicore.client.render.pipeline.VertexFormats
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
 import com.mojang.blaze3d.vertex.VertexFormat
+import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
+import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
 import dev.deftu.omnicore.internal.client.render.vertex.OmniVertexConsumerImpl
 
@@ -43,7 +43,7 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
         //#endif
 
         @JvmStatic
-        public fun create(drawMode: DrawModes, format: VertexFormat): OmniBufferBuilder {
+        public fun create(drawMode: DrawMode, format: VertexFormat): OmniBufferBuilder {
             //#if MC >= 1.21.1
             val vanilla = Tessellator.getInstance().begin(drawMode.vanilla, format)
             //#else
@@ -58,9 +58,8 @@ public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexCon
         }
 
         @JvmStatic
-        public fun create(drawMode: DrawModes, format: VertexFormats): OmniBufferBuilder {
+        public fun create(drawMode: DrawMode, format: DefaultVertexFormats): OmniBufferBuilder {
             return create(drawMode, format.vanilla)
         }
     }
-
 }

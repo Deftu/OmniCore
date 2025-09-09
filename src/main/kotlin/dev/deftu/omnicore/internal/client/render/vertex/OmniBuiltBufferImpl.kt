@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.internal.client.render.vertex
 
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPass
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.pipeline.RenderPassBuilder
+import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPass
 import org.jetbrains.annotations.ApiStatus
 import java.util.function.Consumer
 import kotlin.use
@@ -12,7 +12,7 @@ import kotlin.use
 public class OmniBuiltBufferImpl(override val vanilla: VanillaBuiltBuffer) : OmniBuiltBuffer {
     private var isClosed = false
 
-    override fun draw(pipeline: OmniRenderPipeline, builder: Consumer<RenderPassBuilder>) {
+    override fun draw(pipeline: OmniRenderPipeline, builder: Consumer<RenderPassEncoder>) {
         OmniRenderPass().use { renderPass ->
             renderPass.draw(this, pipeline, builder)
         }

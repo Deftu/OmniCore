@@ -1,6 +1,5 @@
 package dev.deftu.omnicore.api.client.input.keybindings
 
-import dev.deftu.omnicore.client.OmniClient
 import dev.deftu.omnicore.api.client.input.OmniInputCode
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import net.minecraft.client.option.KeyBinding
@@ -10,7 +9,7 @@ import net.minecraft.client.option.KeyBinding
 //#endif
 
 //#if MC >= 1.16.5
-import dev.deftu.omnicore.mixins.client.Mixin_KeyBinding_AccessorBoundKey
+import dev.deftu.omnicore.internals.mixins.client.Mixin_KeyBinding_AccessorBoundKey
 //#endif
 
 //#if FABRIC
@@ -103,7 +102,7 @@ public interface MCKeyBinding : OmniKeyBinding {
     override val isPressed: Boolean
         get() = !isUnbound && this.vanillaKeyBinding.isPressed
 
-    public fun register(): MCKeyBinding = apply {
+    public fun register(): MCKeyBinding = this@MCKeyBinding.apply {
         //#if FABRIC
         KeyBindingHelper.registerKeyBinding(this.vanillaKeyBinding)
         //#elseif FORGE && MC <= 1.18.2

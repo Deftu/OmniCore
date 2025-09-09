@@ -1,7 +1,5 @@
 package dev.deftu.omnicore.api.client.options
 
-import dev.deftu.omnicore.client.OmniClient
-
 public object OmniVideoSettings {
     public object Capabilities {
         @JvmStatic

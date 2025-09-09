@@ -1,6 +1,5 @@
 package dev.deftu.omnicore.client.events
 
-import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.common.events.TickEvent
 
 //#if FABRIC

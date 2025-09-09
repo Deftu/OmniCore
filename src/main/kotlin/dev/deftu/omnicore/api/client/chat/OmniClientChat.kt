@@ -1,13 +1,10 @@
 package dev.deftu.omnicore.api.client.chat
 
 import dev.deftu.omnicore.api.chat.MessageSurface
-import dev.deftu.omnicore.client.OmniClient
+import dev.deftu.omnicore.api.chat.OmniChat
+import dev.deftu.omnicore.api.client.playerHud
 import dev.deftu.omnicore.client.OmniClientPlayer
-import dev.deftu.omnicore.internal.asReadableString
-import dev.deftu.textile.minecraft.MCHoverEvent
-import dev.deftu.textile.minecraft.MCSimpleMutableTextHolder
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextFormat
 import dev.deftu.textile.minecraft.MCTextHolder
 
 public object OmniClientChat {
@@ -46,25 +43,13 @@ public object OmniClientChat {
     @JvmStatic
     @JvmOverloads
     public fun displayErrorMessage(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true) {
-        val displayedText = MCSimpleMutableTextHolder("")
-            .append(content)
-        if (isDetailed) {
-            displayedText.setHoverEvent(MCHoverEvent.ShowText(throwable.asReadableString))
-        }
-
-        displayChatMessage(displayedText)
+        displayChatMessage(OmniChat.buildErrorMessage(content, throwable, isDetailed))
     }
 
     @JvmStatic
     @JvmOverloads
     public fun displayErrorMessage(error: Throwable, isDetailed: Boolean = true) {
-        val text = MCSimpleMutableTextHolder(error.message ?: "An error occurred")
-            .addFormatting(MCTextFormat.RED)
-        if (isDetailed) {
-            text.setHoverEvent(MCHoverEvent.ShowText(error.asReadableString))
-        }
-
-        displayChatMessage(text)
+        displayChatMessage(OmniChat.buildErrorMessage(error, isDetailed))
     }
 
     @JvmStatic
@@ -73,7 +58,7 @@ public object OmniClientChat {
         val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         player.sendMessage(text.asVanilla(), true)
         //#else
-        //$$ OmniClient.networkHandler?.handleChat(S02PacketChat(text.asVanilla(), 2))
+        //$$ networkHandler?.handleChat(S02PacketChat(text.asVanilla(), 2))
         //#endif
     }
 
@@ -92,14 +77,14 @@ public object OmniClientChat {
         fadeOut: Int = 20
     ) {
         //#if MC >= 1.17.1
-        OmniClient.getInstance().inGameHud?.apply {
+        playerHud?.apply {
             clear()
             setTitleTicks(fadeIn, stay, fadeOut)
             subtitle?.let(MCTextHolder<*>::asVanilla).let(this::setSubtitle)
             setTitle(title.asVanilla())
         }
         //#else
-        //$$ val hud = OmniClient.getInstance().inGameHud ?: return
+        //$$ val hud = playerHud ?: return
         //$$ hud.setTitles(title.asVanilla(), subtitle?.asVanilla(), fadeIn, stay, fadeOut)
         //#endif
     }

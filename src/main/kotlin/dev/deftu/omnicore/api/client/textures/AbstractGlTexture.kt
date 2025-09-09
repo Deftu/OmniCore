@@ -1,11 +1,10 @@
 package dev.deftu.omnicore.api.client.textures
 
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
-import dev.deftu.omnicore.client.render.state.OmniManagedColorMask
-import dev.deftu.omnicore.client.render.state.OmniManagedScissorState
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import dev.deftu.omnicore.api.client.render.ClearMask
+import dev.deftu.omnicore.api.client.render.state.OmniColorMask
 import dev.deftu.omnicore.internal.client.render.GlInternals
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.lwjgl.BufferUtils
@@ -58,30 +57,26 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
 
     override fun clearColor(red: Float, green: Float, blue: Float, alpha: Float) {
         FramebufferHelper.attachColor(internalDrawFramebuffer, id, FramebufferTarget.WRITE)
-        OmniManagedScissorState.without {
-            OmniManagedColorMask(
-                red = true,
-                green = true,
-                blue = true,
-                alpha = true
-            ).activate()
-            FramebufferHelper.with(FramebufferTarget.WRITE, internalDrawFramebuffer) {
-                GlInternals.clearColor(red, green, blue, alpha)
-                GlInternals.clear(ClearMask.COLOR)
-            }
+        OmniColorMask(
+            red = true,
+            green = true,
+            blue = true,
+            alpha = true
+        ).submit(false)
+        FramebufferHelper.with(FramebufferTarget.WRITE, internalDrawFramebuffer) {
+            GlInternals.clearColor(red, green, blue, alpha)
+            GlInternals.clear(ClearMask.COLOR)
         }
     }
 
     override fun clearDepth(depth: Float) {
         FramebufferHelper.attachDepth(internalDrawFramebuffer, id, target = FramebufferTarget.WRITE)
-        OmniManagedScissorState.without {
-            val prevDepthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK)
-            FramebufferHelper.with(FramebufferTarget.WRITE, internalDrawFramebuffer) {
-                GlInternals.depthMask(true)
-                GlInternals.clearDepth(depth.toDouble())
-                GlInternals.clear(ClearMask.DEPTH)
-                GlInternals.depthMask(prevDepthMask)
-            }
+        val prevDepthMask = GL11.glGetBoolean(GL11.GL_DEPTH_WRITEMASK)
+        FramebufferHelper.with(FramebufferTarget.WRITE, internalDrawFramebuffer) {
+            GlInternals.depthMask(true)
+            GlInternals.clearDepth(depth.toDouble())
+            GlInternals.clear(ClearMask.DEPTH)
+            GlInternals.depthMask(prevDepthMask)
         }
     }
 
@@ -172,22 +167,20 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
 
         FramebufferHelper.with(FramebufferTarget.WRITE, internalDrawFramebuffer) {
             FramebufferHelper.with(FramebufferTarget.READ, internalReadFramebuffer) {
-                OmniManagedScissorState.without {
-                    FramebufferHelper.attach(FramebufferTarget.WRITE, attachment, id)
-                    for ((src, srcX, srcY, dstX, dstY, width, height) in operations) {
-                        FramebufferHelper.attach(FramebufferTarget.READ, attachment, src.id)
-                        GL30.glBlitFramebuffer(
-                            srcX, srcY,
-                            srcX + width, srcY + height,
-                            dstX, dstY,
-                            dstX + width, dstY + height,
-                            bufferBit, GL11.GL_NEAREST
-                        )
-                    }
-
-                    FramebufferHelper.detach(FramebufferTarget.WRITE, attachment)
-                    FramebufferHelper.detach(FramebufferTarget.READ, attachment)
+                FramebufferHelper.attach(FramebufferTarget.WRITE, attachment, id)
+                for ((src, srcX, srcY, dstX, dstY, width, height) in operations) {
+                    FramebufferHelper.attach(FramebufferTarget.READ, attachment, src.id)
+                    GL30.glBlitFramebuffer(
+                        srcX, srcY,
+                        srcX + width, srcY + height,
+                        dstX, dstY,
+                        dstX + width, dstY + height,
+                        bufferBit, GL11.GL_NEAREST
+                    )
                 }
+
+                FramebufferHelper.detach(FramebufferTarget.WRITE, attachment)
+                FramebufferHelper.detach(FramebufferTarget.READ, attachment)
             }
         }
     }

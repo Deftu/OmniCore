@@ -1,11 +1,11 @@
 package com.test
 
 import com.mojang.serialization.JsonOps
+import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.omnicore.api.resources.SimpleResourceReloadListener
-import dev.deftu.omnicore.common.OmniIdentifier
 import dev.deftu.omnicore.api.serialization.whenError
 import dev.deftu.omnicore.api.resources.findFirst
-import dev.deftu.omnicore.api.resources.readJsonSafe
+import dev.deftu.omnicore.api.resources.readJsonOrNull
 import net.minecraft.resource.ResourceManager
 import net.minecraft.util.Identifier
 import java.util.concurrent.CompletableFuture
@@ -13,19 +13,18 @@ import java.util.concurrent.Executor
 import kotlin.jvm.optionals.getOrNull
 
 object TestResourceListener : SimpleResourceReloadListener<TestData?> {
-
-    override val reloadIdentifier: Identifier = OmniIdentifier.create("testmod", "test_resource_listener")
+    override val location: Identifier = identifierOrThrow("testmod", "test_resource_listener")
 
     override fun reload(resourceManager: ResourceManager, executor: Executor): CompletableFuture<TestData?> {
         return CompletableFuture.supplyAsync({
-            resourceManager.findFirst(OmniIdentifier.create("testmod", "tests/test_data.json"))
+            resourceManager.findFirst(identifierOrThrow("testmod", "tests/test_data.json"))
         }, executor).thenApplyAsync({ resource ->
             if (resource == null || !resource.isPresent) {
                 return@thenApplyAsync null
             }
 
             val resource = resource.get()
-            val json = resource.readJsonSafe() ?: return@thenApplyAsync null
+            val json = resource.readJsonOrNull() ?: return@thenApplyAsync null
             println("TestResourceListener: Loaded JSON: $json")
             TestCodecs.TEST_CODEC.parse(JsonOps.INSTANCE, json)?.whenError {
                 println("TestResourceListener: Failed to parse test codec: ${it.message()}")
@@ -42,5 +41,4 @@ object TestResourceListener : SimpleResourceReloadListener<TestData?> {
             }
         }, executor)
     }
-
 }

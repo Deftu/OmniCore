@@ -1,6 +1,8 @@
 package dev.deftu.omnicore.api.client.options
 
-import dev.deftu.omnicore.client.OmniClient
+//#if MC >= 1.16.5 && MC < 1.20.5
+//$$ import dev.deftu.omnicore.api.client.client
+//#endif
 
 /**
  * Represents the GUI scales Minecraft provides, which force render operations to be scaled by a certain factor.
@@ -41,22 +43,21 @@ public enum class GuiScale {
             get() {
                 val guiScale =
                     //#if MC >= 1.19.2
-                    OmniClient.getInstance().options.guiScale.value
+                    options.guiScale.value
                     //#else
-                    //$$ OmniClient.getInstance().options.guiScale
+                    //$$ options.guiScale
                     //#endif
 
                 return guiScale
             }
             set(value) {
                 //#if MC >= 1.19.2
-                OmniClient.getInstance().options.guiScale.value = value
+                options.guiScale.value = value
                 //#else
-                //$$ OmniClient.getInstance().options.guiScale = value
+                //$$ options.guiScale = value
                 //#endif
 
-                //#if MC >= 1.15.2 && MC < 1.20.5
-                //$$ val client = OmniClient.getInstance()
+                //#if MC >= 1.16.5 && MC < 1.20.5
                 //$$ val window = client.window
                 //$$ val scaleFactor = window.calculateScaleFactor(value, client.forcesUnicodeFont())
                 //$$ window.scaleFactor = scaleFactor.toDouble()

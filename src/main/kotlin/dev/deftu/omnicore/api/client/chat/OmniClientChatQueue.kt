@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.api.client.chat
 
 import dev.deftu.eventbus.on
-import dev.deftu.omnicore.OmniCore
 import dev.deftu.omnicore.api.client.events.ClientTickEvent
 import dev.deftu.omnicore.client.OmniClientPlayer
 import java.util.concurrent.ConcurrentLinkedQueue
