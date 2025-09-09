@@ -46,7 +46,7 @@ public object OmniRenderTicks {
 
         //#if MC == 1.8.9
         //$$ val _ = client.deltaTickTracker
-        //$$ //#endif
+        //#endif
     }
 
     @JvmStatic
