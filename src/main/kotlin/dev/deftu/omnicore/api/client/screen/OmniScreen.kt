@@ -33,6 +33,15 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         get() = if (storePreviousScreen) currentScreen else null
 
     // Internal state tracking
+    //#if MC >= 1.20.4
+    private var isBackgroundSuppressed =
+        //#if MC >= 1.21.6
+        true
+        //#else
+        //$$ false
+        //#endif
+    //#endif
+
     //#if MC >= 1.16.5
     private var prevClickTime = 0L
     //#endif
@@ -187,12 +196,20 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         mouseY: Int,
         tickDelta: Float,
     ) {
+        //#if MC >= 1.20.4 && MC < 1.21.6
+        //$$ isBackgroundSuppressed = true
+        //#endif
+
         //#if MC >= 1.20.1
         super.render(ctx.graphics, mouseX, mouseY, tickDelta)
         //#elseif MC >= 1.16.5
         //$$ super.render(ctx.matrices.toVanillaStack(), mouseX, mouseY, tickDelta)
         //#else
         //$$ super.drawScreen(mouseX, mouseY, tickDelta)
+        //#endif
+
+        //#if MC >= 1.20.4 && MC < 1.21.6
+        //$$ isBackgroundSuppressed = false
         //#endif
     }
 
@@ -202,13 +219,35 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         mouseY: Int,
         tickDelta: Float,
     ) {
-        // TODO
+        //#if MC >= 1.21.6
+        ctx.graphics.createNewRootLayer()
+        //#endif
+
+        //#if MC >= 1.20.1
+        super.renderBackground(
+            ctx.graphics,
+            //#if MC >= 1.20.4
+            mouseX,
+            mouseY,
+            tickDelta
+            //#endif
+        )
+        //#elseif MC >= 1.16.5
+        //$$ super.renderBackground(ctx.matrices.toVanillaStack())
+        //#else
+        //$$ super.drawDefaultBackground()
+        //#endif
+
+        //#if MC >= 1.21.6
+        ctx.graphics.createNewRootLayer()
+        //#endif
     }
 
     //#if MC >= 1.16.5
     final override fun getTitle(): Text? {
         return screenTitle?.asVanilla()
     }
+    //#endif
 
     final override fun shouldPause(): Boolean {
         return isPauseScreen
@@ -222,6 +261,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         onResize(width, height)
     }
 
+    //#if MC >= 1.16.5
     final override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         return onKeyPress(OmniKey(keyCode), scanCode, INVALID_CHAR, KeyboardModifiers.wrap(modifiers), KeyPressEvent.PRESSED)
     }
@@ -233,16 +273,64 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     final override fun keyReleased(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         return onKeyRelease(OmniKey(keyCode), scanCode, KeyboardModifiers.wrap(modifiers))
     }
+    //#else
+    //$$ final override fun keyTyped(typedChar: Char, keyCode: Int): Boolean {
+    //$$     if (keyCode != 0) {
+    //$$         return onKeyPress(OmniKey(keyCode), 0, INVALID_CHAR, KeyboardModifiers.current, KeyPressEvent.PRESSED)
+    //$$     }
+    //$$
+    //$$     if (typedChar != 0.toChar() || typedChar != INVALID_CHAR) {
+    //$$         return onKeyPress(OmniKeys.KEY_NONE, 0, typedChar, KeyboardModifiers.current, KeyPressEvent.TYPED)
+    //$$     }
+    //$$ }
+    //$$
+    //$$ final override fun handleKeyboardInput() {
+    //$$     super.handleKeyboardInput()
+    //$$     if (!Keyboard.getEventKeyState()) {
+    //$$         handleKeyRelease(OmniKey(Keyboard.getEventKey()), 0, Keyboard.getEventKeyState())
+    //$$     }
+    //$$ }
+    //#endif
 
-    final override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    final override fun mouseClicked(
+        //#if MC >= 1.16.5
+        mouseX: Double,
+        mouseY: Double,
+        //#else
+        //$$ mouseX: Int,
+        //$$ mouseY: Int,
+        //#endif
+        button: Int
+    //#if MC >= 1.16.5
+    ): Boolean {
+    //#endif
         return onMouseClick(OmniMouseButton(button), mouseX, mouseY)
     }
 
-    final override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    final override fun mouseReleased(
+        //#if MC >= 1.16.5
+        mouseX: Double,
+        mouseY: Double,
+        //#else
+        //$$ mouseX: Int,
+        //$$ mouseY: Int,
+        //#endif
+        button: Int
+    //#if MC >= 1.16.5
+    ): Boolean {
+    //#endif
         return onMouseRelease(OmniMouseButton(button), mouseX, mouseY)
     }
 
-    final override fun mouseDragged(mouseX: Double, mouseY: Double, button: Int, deltaX: Double, deltaY: Double): Boolean {
+    //#if MC >= 1.16.5
+    final override fun mouseDragged(
+        mouseX: Double,
+        mouseY: Double,
+        button: Int,
+        deltaX: Double,
+        deltaY: Double
+    ): Boolean {
+        //#if MC >= 1.16.5
         val clickTime = if (button == OmniMouseButtons.LEFT.code) {
             OmniClientRuntime.nowMillis - prevClickTime
         } else {
@@ -251,7 +339,18 @@ public abstract class OmniScreen @JvmOverloads public constructor(
 
         return onMouseDrag(OmniMouseButton(button), mouseX, mouseY, deltaX, deltaY, clickTime)
     }
+    //#else
+    //$$ final override fun mouseClickMove(
+    //$$     mouseX: Int,
+    //$$     mouseY: Int,
+    //$$     button: Int,
+    //$$     clickTime: Long,
+    //$$ ) {
+    //$$     onMouseDrag(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble(), 0.0, 0.0, clickTime)
+    //$$ }
+    //#endif
 
+    //#if MC >= 1.16.5
     final override fun mouseScrolled(
         mouseX: Double,
         mouseY: Double,
@@ -269,6 +368,17 @@ public abstract class OmniScreen @JvmOverloads public constructor(
             //#endif
         )
     }
+    //#else
+    //$$ final override fun handleMouseInput() {
+    //$$     super.handleMouseInput()
+    //$$     val scrollDelta = Mouse.getEventDWheel()
+    //$$     if (scrollDelta != 0) {
+    //$$         val mouseX = OmniMouse.scaledX
+    //$$         val mouseY = OmniMouse.scaledY
+    //$$         onMouseScroll(mouseX, mouseY, scrollDelta.toDouble(), 0.0)
+    //$$     }
+    //$$ }
+    //#endif
 
     final override fun tick() {
         onTick()
@@ -294,9 +404,16 @@ public abstract class OmniScreen @JvmOverloads public constructor(
             //#endif
         )
 
+        //#if MC >= 1.21.6
+        isBackgroundSuppressed = false
+        //#endif
         onRender(context, mouseX, mouseY, tickDelta)
+        //#if MC >= 1.21.6
+        isBackgroundSuppressed = true
+        //#endif
     }
 
+    //#if MC >= 1.16.5
     final override fun renderBackground(
         //#if MC >= 1.20.1
         ctx: DrawContext,
@@ -315,4 +432,13 @@ public abstract class OmniScreen @JvmOverloads public constructor(
 
         onBackgroundRender(context, mouseX, mouseY, tickDelta)
     }
+    //#else
+    //$$ final override fun drawWorldBackground(tint: Int) {
+    //$$     val context = OmniRenderingContext.from()
+    //$$     val mouseX = OmniMouse.scaledX
+    //$$     val mouseY = OmniMouse.scaledY
+    //$$     val tickDelta = OmniRenderTicks.get()
+    //$$     onBackgroundRender(context, mouseX, mouseY, tickDelta)
+    //$$ }
+    //#endif
 }
