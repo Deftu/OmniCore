@@ -1,40 +1,41 @@
-@file:JvmName("OmniProfiler")
+@file:JvmName("OmniClientProfiler")
 
 package dev.deftu.omnicore.api
 
+import net.minecraft.server.MinecraftServer
 import net.minecraft.util.profiler.Profiler
 
 //#if MC >= 1.21.2
 import net.minecraft.util.profiler.Profilers
 //#endif
 
-public inline val profiler: Profiler
+public inline val MinecraftServer.builtinProfiler: Profiler
     @JvmName("get")
     get() {
         //#if MC >= 1.21.2
         return Profilers.get()
         //#else
-        //$$ return OmniClient.getInstance().profiler
+        //$$ return profiler
         //#endif
     }
 
 @JvmName("start")
-public fun startProfiler(name: String) {
-    profiler.push(name)
+public fun MinecraftServer.startProfiler(name: String) {
+    builtinProfiler.push(name)
 }
 
 @JvmName("end")
-public fun endProfiler() {
-    profiler.pop()
+public fun MinecraftServer.endProfiler() {
+    builtinProfiler.pop()
 }
 
 @JvmName("swap")
-public fun swapProfiler(name: String) {
-    profiler.swap(name)
+public fun MinecraftServer.swapProfiler(name: String) {
+    builtinProfiler.swap(name)
 }
 
 @JvmName("withProfiler")
-public inline fun profiled(name: String, crossinline block: () -> Unit) {
+public inline fun MinecraftServer.profiled(name: String, crossinline block: () -> Unit) {
     try {
         try {
             swapProfiler(name)
@@ -49,7 +50,7 @@ public inline fun profiled(name: String, crossinline block: () -> Unit) {
 }
 
 @JvmName("withProfiler")
-public fun profiled(name: String, block: Runnable) {
+public fun MinecraftServer.profiled(name: String, block: Runnable) {
     try {
         try {
             swapProfiler(name)
@@ -64,7 +65,7 @@ public fun profiled(name: String, block: Runnable) {
 }
 
 @JvmName("withProfiler")
-public inline fun <T> profiled(name: String, crossinline block: () -> T): T {
+public inline fun <T> MinecraftServer.profiled(name: String, crossinline block: () -> T): T {
     return try {
         try {
             swapProfiler(name)

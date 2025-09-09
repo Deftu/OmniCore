@@ -21,7 +21,7 @@ import net.minecraft.client.render.BufferBuilder
 //#endif
 
 @ApiStatus.Internal
-public class OmniVertexConsumerImpl(
+public open class OmniVertexConsumerImpl(
     //#if MC >= 1.16.5
     private val value: BufferBuilder,
     //#else

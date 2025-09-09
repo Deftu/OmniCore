@@ -14,7 +14,7 @@ import java.util.function.Function
 import java.util.regex.Pattern
 
 //#if MC <= 1.19.2
-//$$ import dev.deftu.omnicore.common.OmniIdentifier
+//$$ import dev.deftu.omnicore.api.identifierOrThrow
 //#endif
 
 //#if MC < 1.16.5
@@ -41,7 +41,7 @@ public object OmniCodecs {
         //$$ Codec.STRING.comapFlatMap<ResourceLocation>(
         //$$     {
         //$$         try {
-        //$$             DataResult.success(OmniIdentifier.create(it))
+        //$$             DataResult.success(identifierOrThrow(it))
         //$$         } catch (e: Exception) {
         //$$             DataResult.error("Not a valid resource location: $it ${e.message}")
         //$$         }

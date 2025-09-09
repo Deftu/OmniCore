@@ -7,8 +7,10 @@ import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.16.5
-import dev.deftu.omnicore.internals.mixins.client.Mixin_NativeImage_Accessor
+import dev.deftu.omnicore.internal.mixins.client.Mixin_NativeImageAllocation
 import net.minecraft.client.texture.NativeImage
+//#else
+//$$ import org.lwjgl.BufferUtils
 //#endif
 
 @ApiStatus.Internal
@@ -38,7 +40,7 @@ public object ImageInternals {
         //$$         val g = buffer.get(index + 1).toInt() and 0xFF
         //$$         val b = buffer.get(index + 2).toInt() and 0xFF
         //$$         val a = buffer.get(index + 3).toInt() and 0xFF
-        //$$         setPixel(x, y, (a shl 24) or (r shl 16) or (g shl 8) or b)
+        //$$         image[x, y] = (a shl 24) or (r shl 16) or (g shl 8) or b
         //$$     }
         //$$ }
         //#endif
@@ -58,7 +60,7 @@ public object ImageInternals {
 
     @JvmStatic
     public fun checkAllocated(image: NativeImage) {
-        (this as Mixin_NativeImage_Accessor).invokeCheckAllocated()
+        (image as Mixin_NativeImageAllocation).invokeCheckAllocated()
     }
 
     @JvmStatic

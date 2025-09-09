@@ -5,7 +5,12 @@ package dev.deftu.omnicore.api.client.screen
 import dev.deftu.omnicore.api.client.client
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.gui.screen.Screen
+
+//#if MC >= 1.16.5
 import net.minecraft.client.gui.screen.ingame.HandledScreen
+//#else
+//$$ import net.minecraft.client.gui.inventory.GuiContainer
+//#endif
 
 public var currentScreen: Screen?
     get() = client.currentScreen

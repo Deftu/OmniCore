@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.internal.client.image
 
 import dev.deftu.omnicore.api.client.image.OmniImage
+import dev.deftu.omnicore.api.color.ColorFormat
 import java.io.File
 import java.nio.file.Path
 import kotlin.use
@@ -11,6 +12,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 //#else
 //$$ import java.awt.image.BufferedImage
+//$$ import javax.imageio.ImageIO
 //#endif
 
 public class OmniImageImpl(override val width: Int, override val height: Int) : OmniImage {
@@ -23,11 +25,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
     override operator fun get(x: Int, y: Int): Int {
         //#if MC >= 1.21.2
         val color = native.getColorArgb(x, y)
-        val red = OmniColor.Argb.getRed(color)
-        val green = OmniColor.Argb.getGreen(color)
-        val blue = OmniColor.Argb.getBlue(color)
-        val alpha = OmniColor.Argb.getAlpha(color)
-        return OmniColor.Rgba.getRgba(red, green, blue, alpha)
+        return ColorFormat.ARGB.convertTo(ColorFormat.RGBA, color)
         //#elseif MC >= 1.16.5
         //$$ return native.getColor(x, y)
         //#else
@@ -37,12 +35,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
 
     override operator fun set(x: Int, y: Int, color: Int) {
         //#if MC >= 1.21.2
-        val red = OmniColor.Rgba.getRed(color)
-        val green = OmniColor.Rgba.getGreen(color)
-        val blue = OmniColor.Rgba.getBlue(color)
-        val alpha = OmniColor.Rgba.getAlpha(color)
-        val color = OmniColor.Argb.getArgb(red, green, blue, alpha)
-        native.setColorArgb(x, y, color)
+        native.setColorArgb(x, y, ColorFormat.RGBA.convertTo(ColorFormat.ARGB, color))
         //#elseif MC >= 1.16.5
         //$$ native.setColor(x, y, color)
         //#else
@@ -123,7 +116,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
         copy.native.copyFrom(native)
         return copy
         //#else
-        //$$ val copy = OmniImage(width, height)
+        //$$ val copy = OmniImageImpl(width, height)
         //$$ val graphics = copy.native.createGraphics()
         //$$ graphics.drawImage(native, 0, 0, null)
         //$$ graphics.dispose()

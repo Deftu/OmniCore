@@ -1,5 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
+import dev.deftu.omnicore.api.client.client
+
 public object OmniVideoSettings {
     public object Capabilities {
         @JvmStatic
@@ -163,7 +165,7 @@ public object OmniVideoSettings {
 
     @JvmStatic
     public val fov: Int
-        get() = unwrap(options.fov)
+        get() = unwrap(options.fov).toInt()
 
     @JvmStatic
     public val isHudHidden: Boolean
@@ -173,7 +175,7 @@ public object OmniVideoSettings {
     public val isDebugRendering: Boolean
         get() {
             //#if MC >= 1.20.4
-            return OmniClient.getInstance().debugHud.shouldShowDebugHud()
+            return client.debugHud.shouldShowDebugHud()
             //#else
             //$$ return options.renderDebug
             //#endif

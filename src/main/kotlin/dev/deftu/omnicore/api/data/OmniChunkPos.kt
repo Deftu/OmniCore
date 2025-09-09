@@ -11,8 +11,14 @@ import kotlin.math.min
 public inline val ChunkPos.startBlock: BlockPos
     get() = BlockPos(this.startX, 0, this.startZ)
 
+public inline val ChunkPos.middleX: Int
+    get() = this.innerOffsetX(CHUNK_SIZE / 2)
+
+public inline val ChunkPos.middleZ: Int
+    get() = this.innerOffsetZ(CHUNK_SIZE / 2)
+
 public inline val ChunkPos.centerBlock: BlockPos
-    get() = BlockPos(this.centerX, 0, this.centerZ)
+    get() = BlockPos(this.middleX, 0, this.middleZ)
 
 public inline val ChunkPos.endBlock: BlockPos
     get() = BlockPos(this.endX, 0, this.endZ)
@@ -35,6 +41,14 @@ public fun ChunkPos.withX(x: Int): ChunkPos {
 
 public fun ChunkPos.withZ(z: Int): ChunkPos {
     return ChunkPos(this.x, z)
+}
+
+public fun ChunkPos.innerOffsetX(x: Int): Int {
+    return blockToChunkCoord(this.x) + x
+}
+
+public fun ChunkPos.innerOffsetZ(z: Int): Int {
+    return blockToChunkCoord(this.z) + z
 }
 
 public fun ChunkPos.moved(dx: Int, dz: Int): ChunkPos {
@@ -83,7 +97,13 @@ public fun ChunkPos.packIntoLong(): Long {
 }
 
 public fun Long.unpackToChunkPos(): ChunkPos {
+    //#if MC >= 1.16.5
     return ChunkPos(this)
+    //#else
+    //$$ val x = this.toInt()
+    //$$ val z = (this ushr 32).toInt()
+    //$$ return ChunkPos(x, z)
+    //#endif
 }
 
 public fun forEachChunk(min: ChunkPos, max: ChunkPos, action: Consumer<ChunkPos>) {

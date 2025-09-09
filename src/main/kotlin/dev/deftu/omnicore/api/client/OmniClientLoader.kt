@@ -8,7 +8,7 @@ import java.io.InputStream
 import kotlin.jvm.optionals.getOrNull
 
 public fun ModInfo.getIconResourcePath(size: Int): String? {
-    val container = container.orElseThrow()
+    val container = container.getOrNull() ?: throw IllegalStateException("ModInfo is not loaded from a container")
 
     //#if FABRIC
     return container.metadata.getIconPath(size).getOrNull()

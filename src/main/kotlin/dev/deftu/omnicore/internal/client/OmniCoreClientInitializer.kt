@@ -1,10 +1,11 @@
 package dev.deftu.omnicore.internal.client
 
+import dev.deftu.omnicore.api.VERSION
 import dev.deftu.omnicore.api.client.input.keybindings.MCKeyBinding
 import dev.deftu.omnicore.api.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.api.client.render.OmniFrameClock
 import dev.deftu.omnicore.api.client.render.OmniRenderTicks
-import dev.deftu.omnicore.internal.VERSION
+import dev.deftu.omnicore.internal.client.commands.ClientCommandInternals
 import dev.deftu.omnicore.internal.client.events.ClientEventForwarding
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
@@ -28,7 +29,7 @@ public object OmniCoreClientInitializer {
         MCKeyBinding.initialize()
         OmniFrameClock.initialize()
         OmniRenderTicks.initialize()
-        OmniClientCommands.initialize()
+        ClientCommandInternals.initialize()
 
         isInitialized = true
     }

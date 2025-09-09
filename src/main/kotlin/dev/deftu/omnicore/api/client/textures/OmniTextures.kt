@@ -42,7 +42,9 @@ public object OmniTextures {
         //$$ texture: ITextureObject,
         //#endif
     ): WrappedTexture {
-        return wrap(texture.glTextureView)
+        //#if MC >= 1.21.5
+        return wrap(texture.glTexture)
+        //#endif
     }
 
     @JvmStatic

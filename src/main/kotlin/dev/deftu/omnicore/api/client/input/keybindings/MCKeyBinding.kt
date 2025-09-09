@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.client.input.keybindings
 
+import dev.deftu.omnicore.api.client.OmniLocalization
 import dev.deftu.omnicore.api.client.input.OmniInputCode
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import net.minecraft.client.option.KeyBinding
@@ -9,7 +10,7 @@ import net.minecraft.client.option.KeyBinding
 //#endif
 
 //#if MC >= 1.16.5
-import dev.deftu.omnicore.internals.mixins.client.Mixin_KeyBinding_AccessorBoundKey
+import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessBoundKey
 //#endif
 
 //#if FABRIC
@@ -59,16 +60,16 @@ public interface MCKeyBinding : OmniKeyBinding {
     public val translatedName: String
         get() {
             //#if MC >= 1.16.5
-            return OmniClient.translate(this.vanillaKeyBinding.translationKey)
+            return OmniLocalization[this.vanillaKeyBinding.translationKey]
             //#else
-            //$$ return OmniClient.translate(this.vanillaKeyBinding.keyDescription)
+            //$$ return OmniLocalization[this.vanillaKeyBinding.keyDescription]
             //#endif
         }
 
     override var boundValue: OmniInputCode
         get() {
             //#if MC >= 1.16.5
-            return (this.vanillaKeyBinding as Mixin_KeyBinding_AccessorBoundKey).boundKey?.code?.let(type::code) ?: OmniKeys.KEY_NONE
+            return (this.vanillaKeyBinding as Mixin_AccessBoundKey).boundKey?.code?.let(type::code) ?: OmniKeys.KEY_NONE
             //#else
             //$$ return type.code(this.vanillaKeyBinding.keyCode)
             //#endif
@@ -86,7 +87,7 @@ public interface MCKeyBinding : OmniKeyBinding {
             //#if MC >= 1.16.5
             return this.vanillaKeyBinding.isDefault
             //#else
-            //$$ return this.vanillaKeyBinding.keyCode == this.defaultValue
+            //$$ return this.vanillaKeyBinding.keyCode == this.defaultValue.code
             //#endif
         }
 
@@ -95,7 +96,7 @@ public interface MCKeyBinding : OmniKeyBinding {
             //#if MC >= 1.16.5
             return this.vanillaKeyBinding.isUnbound
             //#else
-            //$$ return this.vanillaKeyBinding.keyCode == OmniKeyboard.KEY_NONE
+            //$$ return this.vanillaKeyBinding.keyCode == OmniKeys.KEY_NONE.code
             //#endif
         }
 

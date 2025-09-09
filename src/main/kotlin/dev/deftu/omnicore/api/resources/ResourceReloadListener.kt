@@ -43,7 +43,7 @@ public interface ResourceReloadListener
     }
     //#else
     //$$ override fun getFabricId(): net.legacyfabric.fabric.api.util.Identifier {
-    //$$     return net.legacyfabric.fabric.api.util.Identifier(this.reloadIdentifier.namespace, this.reloadIdentifier.path)
+    //$$     return net.legacyfabric.fabric.api.util.Identifier(this.location.namespace, this.location.path)
     //$$ }
     //$$
     //$$ override fun getFabricDependencies(): Collection<net.legacyfabric.fabric.api.util.Identifier> {

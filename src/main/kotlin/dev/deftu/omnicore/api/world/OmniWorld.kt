@@ -11,7 +11,11 @@ import net.minecraft.util.math.Box
 import net.minecraft.world.World
 import java.util.UUID
 
-public val World.isClientSide: Boolean
+//#if MC < 1.16.5
+//$$ import com.google.common.base.Predicate
+//#endif
+
+public val World.isClientWorld: Boolean
     get() = this.isClient
 
 public val World.spawnPosition: BlockPos

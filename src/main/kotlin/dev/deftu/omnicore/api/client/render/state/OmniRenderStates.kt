@@ -101,12 +101,12 @@ public object OmniRenderStates {
         //#if MC <= 1.16.5
         //$$ val enabled = AlphaStateInternals.isEnabled
         //$$ if (enabled) {
-        //$$     AlphaStateInternals.enableAlpha()
+        //$$     AlphaStateInternals.enable()
         //$$     val func = AlphaStateInternals.func
         //$$     val ref  = AlphaStateInternals.ref
-        //$$     AlphaStateInternals.alphaFunc(func, ref)
+        //$$     AlphaStateInternals.configure(func, ref)
         //$$ } else {
-        //$$     AlphaStateInternals.disableAlpha()
+        //$$     AlphaStateInternals.disable()
         //$$ }
         //#endif
     }

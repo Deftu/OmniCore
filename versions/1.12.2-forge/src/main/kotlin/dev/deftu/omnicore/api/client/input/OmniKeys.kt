@@ -1,10 +1,7 @@
 package dev.deftu.omnicore.api.client.input
 
-import dev.deftu.omnicore.annotations.GameSide
-import dev.deftu.omnicore.annotations.Side
 import org.lwjgl.input.Keyboard
 
-@GameSide(Side.CLIENT)
 public object OmniKeys {
     // --- Special / Unknown ---
     @JvmField public val KEY_NONE: OmniKey = OmniKey(Keyboard.KEY_NONE)

@@ -51,7 +51,7 @@ public object HudRenderEventForwarding {
         //$$     //#endif
         //$$     OmniCore.eventBus.post(HudRenderEvent(context, tickDelta))
         //$$ }
-        //#elseif MC >= 1.16.5
+        //#elseif FORGE-LIKE && MC >= 1.16.5
         //$$ forgeEventBus.addListener<Event> { event ->
         //$$     val matrixStack = OmniMatrixStacks.vanilla(
         //#if MC >= 1.20.1
@@ -75,7 +75,7 @@ public object HudRenderEventForwarding {
         //#endif
         //$$     OmniCore.eventBus.post(HudRenderEvent(context, tickDelta))
         //$$ }
-        //#else
+        //#elseif FORGE
         //$$ MinecraftForge.EVENT_BUS.register(this)
         //#endif
     }

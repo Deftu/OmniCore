@@ -3,6 +3,10 @@ package dev.deftu.omnicore.api.serialization
 import com.mojang.datafixers.util.Either
 import com.mojang.serialization.Codec
 
+//#if MC < 1.20.6
+//$$ import java.util.function.Function
+//#endif
+
 public object OmniCodecOps {
     @JvmStatic
     public fun <T> unwrapEither(either: Either<out T, out T>): T {

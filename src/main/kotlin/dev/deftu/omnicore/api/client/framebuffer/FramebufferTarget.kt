@@ -3,8 +3,13 @@ package dev.deftu.omnicore.api.client.framebuffer
 import org.lwjgl.opengl.ARBFramebufferObject
 import org.lwjgl.opengl.EXTFramebufferBlit
 import org.lwjgl.opengl.EXTFramebufferObject
-import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30
+
+//#if MC >= 1.16.5
+import org.lwjgl.opengl.GL
+//#else
+//$$ import org.lwjgl.opengl.GLContext
+//#endif
 
 public enum class FramebufferTarget {
     READ_WRITE,
@@ -13,7 +18,11 @@ public enum class FramebufferTarget {
 
     public val code: Int
         get() {
+            //#if MC >= 1.16.5
             val caps = GL.getCapabilities()
+            //#else
+            //$$ val caps = GLContext.getCapabilities()
+            //#endif
             if (caps.OpenGL30) {
                 return when (this) {
                     READ -> GL30.GL_READ_FRAMEBUFFER

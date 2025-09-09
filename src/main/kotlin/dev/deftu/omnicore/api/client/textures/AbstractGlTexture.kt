@@ -86,7 +86,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         FramebufferHelper.attachColor(internalReadFramebuffer, id, FramebufferTarget.READ)
         ensureFloatBufferCapacity(width * height * 4)
         FramebufferHelper.with(FramebufferTarget.READ, internalReadFramebuffer) {
-            GL30.glReadPixels(
+            GL11.glReadPixels(
                 x, y, width, height,
                 GL11.GL_RGBA, GL11.GL_FLOAT, internalFloatBuffer
             )
@@ -112,7 +112,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         FramebufferHelper.attachColor(internalReadFramebuffer, id, FramebufferTarget.READ)
         ensureFloatBufferCapacity(4)
         FramebufferHelper.with(FramebufferTarget.READ, internalReadFramebuffer) {
-            GL30.glReadPixels(
+            GL11.glReadPixels(
                 x, y, 1, 1,
                 GL11.GL_RGBA, GL11.GL_FLOAT, internalFloatBuffer
             )
@@ -131,7 +131,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         FramebufferHelper.attachDepth(internalReadFramebuffer, id, target = FramebufferTarget.READ)
         ensureFloatBufferCapacity(width * height)
         FramebufferHelper.with(FramebufferTarget.READ, internalReadFramebuffer) {
-            GL30.glReadPixels(
+            GL11.glReadPixels(
                 x, y, width, height,
                 GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, internalFloatBuffer
             )
@@ -150,7 +150,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         FramebufferHelper.attachDepth(internalReadFramebuffer, id, target = FramebufferTarget.READ)
         ensureFloatBufferCapacity(1)
         FramebufferHelper.with(FramebufferTarget.READ, internalReadFramebuffer) {
-            GL30.glReadPixels(
+            GL11.glReadPixels(
                 x, y, 1, 1,
                 GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, internalFloatBuffer
             )

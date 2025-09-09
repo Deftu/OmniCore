@@ -2,6 +2,12 @@ package dev.deftu.omnicore.api.client.render
 
 import net.minecraft.client.MinecraftClient
 
+//#if MC <= 1.12.2
+//$$ import net.minecraft.client.gui.ScaledResolution
+//$$
+//$$ private typealias ScreenResolution = ScaledResolution
+//#endif
+
 public object OmniResolution {
     public object Window {
         public val width: Int
@@ -24,14 +30,6 @@ public object OmniResolution {
     }
 
     public object Viewport {
-        //#if MC <= 1.12.2
-        //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val isUnicode: Boolean)
-        //$$
-        //$$ private var cachedScaledRes: CachedScaledResolution? = null
-        //$$
-        //$$ private var scaledRes: ScaledResolution? = null
-        //#endif
-
         public val width: Int
             get() {
                 //#if MC >= 1.16.5
@@ -52,6 +50,13 @@ public object OmniResolution {
     }
 
     public object Scaled {
+        //#if MC <= 1.12.2
+        //$$ private data class CachedScaledResolution(val width: Int, val height: Int, val scale: Int, val isUnicode: Boolean)
+        //$$
+        //$$ private var cachedScaledRes: CachedScaledResolution? = null
+        //$$ private var scaledRes: ScreenResolution? = null
+        //#endif
+
         public val width: Int
             get() {
                 //#if MC >= 1.16.5
@@ -83,7 +88,7 @@ public object OmniResolution {
             }
 
         //#if MC <= 1.12.2
-        //$$ private fun getScaledRes(): ScaledResolution {
+        //$$ private fun getScaledRes(): ScreenResolution {
         //$$     val client = Minecraft.getMinecraft()
         //$$     val cached = CachedScaledResolution(
         //$$         client.displayWidth,
@@ -94,7 +99,7 @@ public object OmniResolution {
         //$$
         //$$     if (cached != cachedScaledRes) {
         //$$         cachedScaledRes = cached
-        //$$         scaledRes = ScaledResolution(client)
+        //$$         scaledRes = ScreenResolution(client)
         //$$     }
         //$$
         //$$     return scaledRes!!

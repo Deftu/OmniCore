@@ -1,8 +1,23 @@
 package dev.deftu.omnicore.api.client.render.provider
 
 import com.mojang.blaze3d.vertex.VertexFormat
+
+//#if MC >= 1.21.5
 import net.minecraft.client.gl.UniformType
 import net.minecraft.util.Identifier
+//#else
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniBlendState
+//$$ import dev.deftu.omnicore.client.shaders.OmniShader
+//#endif
+
+//#if MC >= 1.17.1 && MC < 1.21.5
+//$$ import com.mojang.blaze3d.systems.RenderSystem
+//$$ import dev.deftu.omnicore.client.shaders.MinecraftShader
+//$$ import net.minecraft.client.renderer.CompiledShaderProgram
+//$$ import java.util.function.Supplier
+//#else
+import dev.deftu.omnicore.client.shaders.GlShader
+//#endif
 
 public sealed interface ShaderProvider {
     public class Compatible(
@@ -15,7 +30,7 @@ public sealed interface ShaderProvider {
         //$$ internal lateinit var shader: OmniShader
         //$$     private set
         //$$
-        //$$ override fun bind(blendState: OmniManagedBlendState) {
+        //$$ override fun bind(blendState: OmniBlendState) {
         //$$     if (!::shader.isInitialized) {
         //$$         shader = OmniShader.fromLegacyShader(vertexSource, fragmentSource, blendState, vertexFormat)
         //$$     }
@@ -60,7 +75,7 @@ public sealed interface ShaderProvider {
         //#endif
     ) : ShaderProvider {
         //#if MC < 1.21.5
-        //$$ override fun bind(blendState: OmniManagedBlendState) {
+        //$$ override fun bind(blendState: OmniBlendState) {
             //#if MC >= 1.21.2
             //$$ RenderSystem.setShader(supplier.get())
             //#else
@@ -80,8 +95,7 @@ public sealed interface ShaderProvider {
     //#endif
 
     //#if MC < 1.21.5
-    //$$ public fun bind(blendState: OmniManagedBlendState)
-    //$$
+    //$$ public fun bind(blendState: OmniBlendState)
     //$$ public fun unbind()
     //#endif
 }

@@ -2,7 +2,7 @@ package dev.deftu.omnicore.api.client.events
 
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
-import dev.deftu.omnicore.common.events.CancellableEvent
+import dev.deftu.omnicore.api.events.CancellableEvent
 import net.minecraft.client.gui.screen.Screen
 
 public sealed interface ScreenEvent {

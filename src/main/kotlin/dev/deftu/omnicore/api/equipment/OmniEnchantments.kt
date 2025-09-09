@@ -2,7 +2,6 @@
 
 package dev.deftu.omnicore.api.equipment
 
-import dev.deftu.omnicore.common.OmniEquipment.EnchantmentInfo
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.EnchantmentHelper
 import net.minecraft.item.ItemStack

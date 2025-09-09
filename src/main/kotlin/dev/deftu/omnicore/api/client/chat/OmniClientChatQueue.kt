@@ -2,6 +2,7 @@ package dev.deftu.omnicore.api.client.chat
 
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.api.client.events.ClientTickEvent
+import dev.deftu.omnicore.api.eventBus
 import dev.deftu.omnicore.client.OmniClientPlayer
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -12,7 +13,7 @@ public object OmniClientChatQueue {
     private var tickCounter = 0L
 
     public fun initialize() {
-        OmniCore.eventBus.on<ClientTickEvent.Pre> {
+        eventBus.on<ClientTickEvent.Pre> {
             tickCounter++
             if (queue.isEmpty()) {
                 tickCounter = 0
@@ -25,7 +26,14 @@ public object OmniClientChatQueue {
                 return@on
             }
 
+            //#if MC >= 1.19.4
             player.networkHandler?.sendChatMessage(entry.message)
+            //#elseif MC >= 1.19.2
+            //$$ player.chatSigned(entry.message, null)
+            //#else
+            //$$ player.sendChatMessage(entry.message)
+            //#endif
+
             queue.remove()
             tickCounter = 0
         }

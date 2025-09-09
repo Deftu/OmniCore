@@ -122,7 +122,11 @@ public fun BlockPos.radius3D(
 }
 
 public fun BlockPos.packIntoLong(): Long {
+    //#if MC >= 1.16.5
     return BlockPos.asLong(this.x, this.y, this.z)
+    //#else
+    //$$ return this.toLong()
+    //#endif
 }
 
 public fun Long.unpackToBlockPos(): BlockPos {

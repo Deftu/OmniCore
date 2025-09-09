@@ -14,8 +14,8 @@ public interface OmniScreenController {
     public fun onMouseRelease(button: OmniMouseButton, x: Double, y: Double): Boolean
     public fun onMouseDrag(button: OmniMouseButton, x: Double, y: Double, deltaX: Double, deltaY: Double, clickTime: Long): Boolean
     public fun onMouseScroll(x: Double, y: Double, amount: Double, horizontalAmount: Double): Boolean
-    public fun onTick()
-    public fun onClose()
+    public fun onScreenTick()
+    public fun onScreenClose()
     public fun onRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float)
     public fun onBackgroundRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float)
 }

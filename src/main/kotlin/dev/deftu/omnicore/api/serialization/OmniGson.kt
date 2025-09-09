@@ -5,6 +5,11 @@ package dev.deftu.omnicore.api.serialization
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 
+//#if MC < 1.18.2
+//$$ import com.google.gson.FieldNamingStrategy
+//$$ import com.google.gson.TypeAdapterFactory
+//#endif
+
 public val Gson.asBuilder: GsonBuilder
     get() = newGsonBuilder()
 

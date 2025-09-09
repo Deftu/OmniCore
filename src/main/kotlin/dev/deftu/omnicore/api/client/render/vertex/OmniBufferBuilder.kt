@@ -8,7 +8,7 @@ import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
 import dev.deftu.omnicore.internal.client.render.vertex.OmniVertexConsumerImpl
 
-public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexConsumer by OmniVertexConsumerImpl(value) {
+public class OmniBufferBuilder(private val value: BufferBuilder) : OmniVertexConsumer, OmniVertexConsumerImpl(value) {
     //#if MC >= 1.21.1
     public fun build(): OmniBuiltBuffer? {
         return value.endNullable()?.let(::OmniBuiltBufferImpl)

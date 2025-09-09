@@ -5,8 +5,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.exceptions.CommandSyntaxException
 import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommandSource
-import dev.deftu.omnicore.api.profiled
+import dev.deftu.omnicore.api.client.profiled
 import dev.deftu.omnicore.internal.commands.CommandOps
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import org.apache.logging.log4j.LogManager
@@ -81,7 +82,7 @@ public object ClientCommandInternals {
     @JvmStatic
     public fun execute(command: String): Boolean {
         val results = dispatcher.parse(command, OmniClientCommandSource)
-        return profiled<Boolean>("omnicore_command___$command") {
+        return client.profiled<Boolean>("omnicore_command___$command") {
             try {
                 dispatcher.execute(results)
                 true

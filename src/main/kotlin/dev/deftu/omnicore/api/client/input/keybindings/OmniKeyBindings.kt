@@ -2,16 +2,18 @@ package dev.deftu.omnicore.api.client.input.keybindings
 
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.api.annotations.VersionedAbove
-import dev.deftu.omnicore.client.events.InputEvent
-import dev.deftu.omnicore.client.events.InputEventType
-import dev.deftu.omnicore.client.events.InputState
+import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.events.input.InputEvent
+import dev.deftu.omnicore.api.client.events.input.InputEventType
+import dev.deftu.omnicore.api.client.events.input.InputState
+import dev.deftu.omnicore.api.eventBus
 import net.minecraft.client.option.GameOptions
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 
 public object OmniKeyBindings {
     internal inline val options: GameOptions
-        get() = OmniClient.getInstance().options
+        get() = client.options
 
     @JvmStatic
     public val forward: OmniKeyBinding by lazy {
@@ -165,13 +167,13 @@ public object OmniKeyBindings {
 
     @JvmStatic
     public fun on(keyBinding: OmniKeyBinding, action: BiConsumer<InputEventType, InputState>): () -> Unit {
-        val keyEventCallback = OmniCore.eventBus.on<InputEvent.Key> {
+        val keyEventCallback = eventBus.on<InputEvent.Key> {
             if (keyBinding.matchesKey(key.code, scanCode)) {
                 action.accept(InputEventType.KEY, state)
             }
         }
 
-        val mouseEventCallback = OmniCore.eventBus.on<InputEvent.MouseButton> {
+        val mouseEventCallback = eventBus.on<InputEvent.MouseButton> {
             if (keyBinding.matchesMouse(button)) {
                 action.accept(InputEventType.MOUSE, state)
             }
@@ -185,7 +187,7 @@ public object OmniKeyBindings {
 
     @JvmStatic
     public fun onKey(keyBinding: OmniKeyBinding, action: Consumer<InputState>): () -> Unit {
-        return OmniCore.eventBus.on<InputEvent.Key> {
+        return eventBus.on<InputEvent.Key> {
             if (keyBinding.matchesKey(key.code, scanCode)) {
                 action.accept(state)
             }
@@ -194,7 +196,7 @@ public object OmniKeyBindings {
 
     @JvmStatic
     public fun onMouse(keyBinding: OmniKeyBinding, action: Consumer<InputState>): () -> Unit {
-        return OmniCore.eventBus.on<InputEvent.MouseButton> {
+        return eventBus.on<InputEvent.MouseButton> {
             if (keyBinding.matchesMouse(button)) {
                 action.accept(state)
             }

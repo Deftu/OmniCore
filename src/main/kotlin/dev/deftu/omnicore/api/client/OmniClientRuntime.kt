@@ -1,9 +1,10 @@
 package dev.deftu.omnicore.api.client
 
-import com.mojang.blaze3d.systems.RenderSystem
-
 //#if MC >= 1.16.5
+import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.util.GlfwUtil
+//#else
+//$$ import net.minecraft.client.Minecraft
 //#endif
 
 public object OmniClientRuntime {
@@ -23,7 +24,13 @@ public object OmniClientRuntime {
 
     @JvmStatic
     public val isOnRenderThread: Boolean
-        get() = RenderSystem.isOnRenderThread()
+        get() {
+            //#if MC >= 1.16.5
+            return RenderSystem.isOnRenderThread()
+            //#else
+            //$$ return isOnMainThread
+            //#endif
+        }
 
     @JvmStatic
     public fun runOnMain(block: Runnable) {
@@ -32,6 +39,10 @@ public object OmniClientRuntime {
 
     @JvmStatic
     public fun runOnRender(block: Runnable) {
+        //#if MC >= 1.16.5
         RenderSystem.queueFencedTask(block)
+        //#else
+        //$$ runOnMain(block)
+        //#endif
     }
 }

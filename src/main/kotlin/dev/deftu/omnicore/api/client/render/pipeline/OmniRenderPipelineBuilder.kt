@@ -1,19 +1,22 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
 import com.mojang.blaze3d.opengl.GlStateManager
-import com.mojang.blaze3d.pipeline.BlendFunction
-import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.platform.DepthTestFunction
-import com.mojang.blaze3d.platform.LogicOp
-import com.mojang.blaze3d.shaders.ShaderType
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
-import net.minecraft.client.gl.GlCommandEncoder
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
+
+//#if MC >= 1.21.5
+import com.mojang.blaze3d.pipeline.BlendFunction
+import com.mojang.blaze3d.pipeline.RenderPipeline
+import com.mojang.blaze3d.platform.DepthTestFunction
+import com.mojang.blaze3d.platform.LogicOp
+import com.mojang.blaze3d.shaders.ShaderType
+import net.minecraft.client.gl.GlCommandEncoder
+//#endif
 
 public class OmniRenderPipelineBuilder internal constructor(
     private val location: Identifier,
@@ -143,6 +146,10 @@ public class OmniRenderPipelineBuilder internal constructor(
 
     public fun setColorLogic(mode: OmniRenderPipeline.ColorLogic): OmniRenderPipelineBuilder {
         this.colorLogic = mode; return this
+    }
+
+    public fun setBlendState(state: OmniBlendState): OmniRenderPipelineBuilder {
+        this.blendState = state; return this
     }
 
     public fun setColorMask(writeRgb: Boolean, writeAlpha: Boolean): OmniRenderPipelineBuilder {

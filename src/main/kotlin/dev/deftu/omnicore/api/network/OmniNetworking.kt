@@ -10,7 +10,7 @@ import net.minecraft.util.Identifier
 import java.util.function.BiConsumer
 
 //#if MC >= 1.19.4
-import dev.deftu.omnicore.internals.mixins.Mixin_ConnectionAccessor
+import dev.deftu.omnicore.internal.mixins.Mixin_ConnectionAccessor
 //#endif
 
 public object OmniNetworking {

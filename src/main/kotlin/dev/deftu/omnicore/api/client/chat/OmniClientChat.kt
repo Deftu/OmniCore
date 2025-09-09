@@ -2,10 +2,15 @@ package dev.deftu.omnicore.api.client.chat
 
 import dev.deftu.omnicore.api.chat.MessageSurface
 import dev.deftu.omnicore.api.chat.OmniChat
+import dev.deftu.omnicore.api.client.player
 import dev.deftu.omnicore.api.client.playerHud
-import dev.deftu.omnicore.client.OmniClientPlayer
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextHolder
+
+//#if MC <= 1.12.2
+//$$ import dev.deftu.omnicore.api.client.client
+//$$ import net.minecraft.network.play.server.SPacketChat
+//#endif
 
 public object OmniClientChat {
     @JvmStatic
@@ -26,12 +31,11 @@ public object OmniClientChat {
 
     @JvmStatic
     public fun displayChatMessage(text: MCTextHolder<*>) {
-        val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
         player
             //#if MC >= 1.16.5
-            .sendMessage(text.asVanilla(), false)
+            ?.sendMessage(text.asVanilla(), false)
             //#else
-            //$$ .sendMessage(text.asVanilla())
+            //$$ ?.sendMessage(text.asVanilla())
             //#endif
     }
 
@@ -55,10 +59,11 @@ public object OmniClientChat {
     @JvmStatic
     public fun displayActionBar(text: MCTextHolder<*>) {
         //#if MC >= 1.16.5
-        val player = OmniClientPlayer.getInstance() ?: throw IllegalStateException("Player is null")
-        player.sendMessage(text.asVanilla(), true)
+        player?.sendMessage(text.asVanilla(), true)
+        //#elseif MC >= 1.12.2
+        //$$ player?.sendStatusMessage(text.asVanilla(), true)
         //#else
-        //$$ networkHandler?.handleChat(S02PacketChat(text.asVanilla(), 2))
+        //$$ client.connection?.handleChat(SPacketChat(text.asVanilla(), 2))
         //#endif
     }
 
@@ -85,7 +90,11 @@ public object OmniClientChat {
         }
         //#else
         //$$ val hud = playerHud ?: return
+        //#if MC >= 1.16.5
         //$$ hud.setTitles(title.asVanilla(), subtitle?.asVanilla(), fadeIn, stay, fadeOut)
+        //#else
+        //$$ hud.displayTitle(title.asString(), subtitle?.asString(), fadeIn, stay, fadeOut)
+        //#endif
         //#endif
     }
 

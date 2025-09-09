@@ -1,8 +1,11 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
-import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.util.Identifier
+
+//#if MC >= 1.21.5
+import com.mojang.blaze3d.pipeline.RenderPipeline
+//#endif
 
 public interface OmniRenderPipeline {
     public enum class DepthTest {

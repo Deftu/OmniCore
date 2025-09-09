@@ -7,14 +7,14 @@ import net.minecraft.util.Identifier
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
-public class VanillaCustomPayload(public val id: Identifier, public val buf: PacketByteBuf) : CustomPayload {
+public class VanillaCustomPayload(public val id: Identifier, public val data: PacketByteBuf) : CustomPayload {
     public companion object {
         @JvmField
         public val CODEC: PacketCodec<PacketByteBuf, VanillaCustomPayload> =
-            CustomPayload.codecOf(VanillaCustomPayload::write, { buf ->
+            CustomPayload.codecOf(VanillaCustomPayload::write) { buf ->
                 val id = buf.readIdentifier()
                 VanillaCustomPayload(id, buf)
-            })
+            }
     }
 
     //#if MC >= 1.20.6
@@ -24,11 +24,11 @@ public class VanillaCustomPayload(public val id: Identifier, public val buf: Pac
     //#endif
     fun write(buf: PacketByteBuf) {
         // write our id first
-        this.buf.writeIdentifier(this.id)
+        this.data.writeIdentifier(this.id)
 
         // copy the data from our buf to the provided buf
-        val bytes = ByteArray(this.buf.readableBytes())
-        this.buf.readBytes(bytes)
+        val bytes = ByteArray(this.data.readableBytes())
+        this.data.readBytes(bytes)
         buf.writeBytes(bytes)
     }
 

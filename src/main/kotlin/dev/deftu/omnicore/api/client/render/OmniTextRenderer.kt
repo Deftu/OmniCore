@@ -3,6 +3,10 @@ package dev.deftu.omnicore.api.client.render
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.textile.minecraft.MCTextHolder
 
+//#if MC >= 1.20.1 && MC < 1.21.6
+//$$ import net.minecraft.client.font.TextRenderer
+//#endif
+
 public object OmniTextRenderer {
     private inline val textRenderer
         get() = client.textRenderer
@@ -30,26 +34,26 @@ public object OmniTextRenderer {
         textRenderer.prepare(text, x, y, color, shadow, 0).draw(drawer)
         drawer.flush()
         //#elseif MC >= 1.20.1
-        //$$ fontRenderer.draw(
+        //$$ textRenderer.draw(
         //$$     text,
         //$$     x,
         //$$     y,
         //$$     color,
         //$$     shadow,
-        //$$     context.matrixStack.vanilla.peek().positionMatrix,
-        //$$     OmniClient.getInstance().bufferBuilders.entityVertexConsumers,
+        //$$     context.matrices.vanilla.peek().positionMatrix,
+        //$$     client.bufferBuilders.entityVertexConsumers,
         //$$     TextRenderer.TextLayerType.NORMAL,
         //$$     0,
         //$$     15728880
         //$$ )
         //#elseif MC >= 1.16.5
         //$$ if (shadow) {
-        //$$     fontRenderer.drawWithShadow(context.matrixStack.vanilla, text, x, y, color)
+        //$$     textRenderer.drawWithShadow(context.matrices.vanilla, text, x, y, color)
         //$$ } else {
-        //$$     fontRenderer.draw(context.matrixStack.vanilla, text, x, y, color)
+        //$$     textRenderer.draw(context.matrices.vanilla, text, x, y, color)
         //$$ }
         //#else
-        //$$ fontRenderer.drawString(
+        //$$ textRenderer.drawString(
         //$$     text,
         //$$     x,
         //$$     y,
@@ -78,7 +82,11 @@ public object OmniTextRenderer {
 
     @JvmStatic
     public fun width(text: MCTextHolder<*>): Int {
+        //#if MC >= 1.16.5
         return textRenderer.getWidth(text.asVanilla())
+        //#else
+        //$$ return width(text.asString())
+        //#endif
     }
 
     @JvmStatic
@@ -88,6 +96,10 @@ public object OmniTextRenderer {
 
     @JvmStatic
     public fun height(text: MCTextHolder<*>, maxWidth: Int): Int {
+        //#if MC >= 1.19.2
         return textRenderer.getWrappedLinesHeight(text.asVanilla(), maxWidth)
+        //#else
+        //$$ return height(text.asString(), maxWidth)
+        //#endif
     }
 }

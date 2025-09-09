@@ -1,11 +1,10 @@
 package dev.deftu.omnicore.api.client.render.state
 
+import dev.deftu.omnicore.api.client.utils.GlConstEnum
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.platform.SourceFactor
-import dev.deftu.omnicore.api.client.utils.GlConstEnum
-
 //#endif
 
 public enum class SrcFactor(

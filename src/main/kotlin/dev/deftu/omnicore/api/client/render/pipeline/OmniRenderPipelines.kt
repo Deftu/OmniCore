@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
 import com.mojang.blaze3d.vertex.VertexFormat
+import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
@@ -9,9 +10,18 @@ import net.minecraft.util.Identifier
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.internal.client.render.DefaultShaders
 import net.minecraft.client.gl.UniformType
+//#else
+//#if MC >= 1.21.2
+//$$ import dev.deftu.omnicore.api.client.client
+//$$ import net.minecraft.client.gl.ShaderProgram
+//$$ import java.util.function.Supplier
+//#endif
+//$$
+//#if MC >= 1.17.1
+//$$ import net.minecraft.client.renderer.CompiledShaderProgram
+//#endif
 //#endif
 
 public object OmniRenderPipelines {
@@ -52,7 +62,7 @@ public object OmniRenderPipelines {
     //#if MC >= 1.21.2
     //$$ @JvmStatic
     //$$ public fun builder(
-    //$$     location: Identifier,
+    //$$     location: ResourceLocation,
     //$$     vertexFormat: VertexFormat,
     //$$     drawMode: DrawMode,
     //$$     program: ShaderProgram?,
@@ -73,7 +83,7 @@ public object OmniRenderPipelines {
     //#if MC >= 1.17.1
     //$$ @JvmStatic
     //$$ public fun builder(
-    //$$     location: Identifier,
+    //$$     location: ResourceLocation,
     //$$     vertexFormat: VertexFormat,
     //$$     drawMode: DrawMode,
     //$$     supplier: Supplier<CompiledShaderProgram>?,

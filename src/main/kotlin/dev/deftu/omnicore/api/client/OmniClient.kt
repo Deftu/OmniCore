@@ -12,6 +12,10 @@ import net.minecraft.entity.Entity
 import net.minecraft.resource.ResourceManager
 import net.minecraft.server.integrated.IntegratedServer
 
+//#if MC >= 1.16.5
+import net.minecraft.client.util.Window
+//#endif
+
 public inline val client: MinecraftClient
     @JvmName("get")
     get() = MinecraftClient.getInstance()
@@ -42,3 +46,11 @@ public inline val serverInfo: ServerInfo?
 
 public inline val resourceManager: ResourceManager
     get() = client.resourceManager
+
+//#if MC >= 1.16.5
+public inline val window: Window
+    get() = client.window
+
+public inline val windowHandle: Long
+    get() = window.handle
+//#endif

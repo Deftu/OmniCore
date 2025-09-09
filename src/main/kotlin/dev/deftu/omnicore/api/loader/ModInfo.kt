@@ -1,8 +1,21 @@
 package dev.deftu.omnicore.api.loader
 
-import net.fabricmc.loader.api.ModContainer
 import java.nio.file.Path
 import java.util.Optional
+
+//#if FABRIC
+import net.fabricmc.loader.api.ModContainer
+//#elseif FORGE
+//#if MC >= 1.16.5
+//$$ import net.minecraftforge.fml.ModList
+//$$ import net.minecraftforge.fml.ModContainer
+//#else
+//$$ import net.minecraftforge.fml.common.ModContainer
+//#endif
+//#else
+//$$ import net.neoforged.fml.ModList
+//$$ import net.neoforged.fml.ModContainer
+//#endif
 
 public data class ModInfo(
     val id: String,

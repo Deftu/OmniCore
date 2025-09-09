@@ -1,5 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
+import dev.deftu.omnicore.api.client.client
+
 //#if MC >= 1.16.5
 import net.minecraft.client.option.Perspective
 //#endif
@@ -69,16 +71,16 @@ public enum class OmniPerspective(
         public var rawCurrentPerspective: Int
             get() {
                 //#if MC >= 1.16.2
-                return OmniClient.getInstance().options.perspective.ordinal
+                return client.options.perspective.ordinal
                 //#else
-                //$$ return OmniClient.getInstance().gameSettings.thirdPersonView
+                //$$ return client.gameSettings.thirdPersonView
                 //#endif
             }
             set(value) {
                 //#if MC >= 1.16.2
-                OmniClient.getInstance().options.perspective = Perspective.values()[value]
+                client.options.perspective = Perspective.values()[value]
                 //#else
-                //$$ OmniClient.getInstance().gameSettings.thirdPersonView = value
+                //$$ client.gameSettings.thirdPersonView = value
                 //#endif
             }
 

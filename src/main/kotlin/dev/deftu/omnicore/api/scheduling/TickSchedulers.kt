@@ -1,8 +1,11 @@
 package dev.deftu.omnicore.api.scheduling
 
 import dev.deftu.eventbus.on
+import dev.deftu.omnicore.api.client.events.ClientTickEvent
+import dev.deftu.omnicore.api.client.events.RenderTickEvent
+import dev.deftu.omnicore.api.eventBus
+import dev.deftu.omnicore.api.events.ServerTickEvent
 import dev.deftu.omnicore.internal.scheduling.DefaultTickScheduler
-import dev.deftu.omnicore.common.events.TickEvent
 
 public object TickSchedulers {
     @JvmStatic
@@ -21,15 +24,15 @@ public object TickSchedulers {
         get
 
     public fun initialize() {
-        OmniCore.eventBus.on<TickEvent.Server.Post> {
+        eventBus.on<ServerTickEvent.Post> {
             (this@TickSchedulers.server as DefaultTickScheduler).tick()
         }
 
-        OmniCore.eventBus.on<TickEvent.Client.Post> {
+        eventBus.on<ClientTickEvent.Post> {
             (this@TickSchedulers.client as DefaultTickScheduler).tick()
         }
 
-        OmniCore.eventBus.on<RenderTickEvent.Post> {
+        eventBus.on<RenderTickEvent.Post> {
             (this@TickSchedulers.render as DefaultTickScheduler).tick()
         }
     }

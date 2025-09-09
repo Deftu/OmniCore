@@ -20,10 +20,10 @@ public data class OmniAlphaState(
         //$$ }
         //$$
         //$$ if (isEnabled) {
-        //$$     AlphaStateInternals.enableAlpha()
-        //$$     AlphaStateInternals.alphaFunc(func, ref)
+        //$$     AlphaStateInternals.enable()
+        //$$     AlphaStateInternals.configure(func, ref)
         //$$ } else {
-        //$$     AlphaStateInternals.disableAlpha()
+        //$$     AlphaStateInternals.disable()
         //$$ }
         //#endif
     }

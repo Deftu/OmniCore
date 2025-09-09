@@ -3,8 +3,8 @@
 package dev.deftu.omnicore.api.client.network
 
 import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.screen.currentScreen
 import dev.deftu.omnicore.api.client.world
-import dev.deftu.omnicore.client.OmniScreen
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen
 import net.minecraft.client.network.ServerAddress
@@ -68,7 +68,7 @@ public fun connectTo(entry: OmniServerInfo) {
     //#if MC >= 1.17.1
     val serverAddress = ServerAddress.parse(entry.address)
     ConnectScreen.connect(
-        MultiplayerScreen(OmniScreen.currentScreen),
+        MultiplayerScreen(currentScreen),
         client,
         serverAddress,
         serverInfo,
@@ -80,7 +80,7 @@ public fun connectTo(entry: OmniServerInfo) {
         //#endif
     )
     //#else
-    //$$ OmniScreen.currentScreen = ConnectScreen(MultiplayerScreen(OmniScreen.currentScreen), client, serverInfo)
+    //$$ currentScreen = ConnectScreen(MultiplayerScreen(currentScreen), client, serverInfo)
     //#endif
 }
 

@@ -30,27 +30,43 @@ public fun Vec3i.withZ(z: Int): Vec3i {
 }
 
 public operator fun Vec3i.plus(other: Vec3i): Vec3i {
+    //#if MC >= 1.17.1
     return this.add(other)
+    //#else
+    //$$ return vec3i(this.x + other.x, this.y + other.y, this.z + other.z)
+    //#endif
 }
 
 public operator fun Vec3i.plus(other: Vec3d): Vec3i {
-    return this.add(vec3i(other.x, other.y, other.z))
+    return this.plus(vec3i(other.x, other.y, other.z))
 }
 
 public operator fun Vec3i.plus(other: Int): Vec3i {
+    //#if MC >= 1.17.1
     return this.add(other, other, other)
+    //#else
+    //$$ return vec3i(this.x + other, this.y + other, this.z + other)
+    //#endif
 }
 
 public operator fun Vec3i.minus(other: Vec3i): Vec3i {
+    //#if MC >= 1.17.1
     return this.subtract(other)
+    //#else
+    //$$ return vec3i(this.x - other.x, this.y - other.y, this.z - other.z)
+    //#endif
 }
 
 public operator fun Vec3i.minus(other: Vec3d): Vec3i {
-    return this.subtract(vec3i(other.x, other.y, other.z))
+    return this.minus(vec3i(other.x, other.y, other.z))
 }
 
 public operator fun Vec3i.minus(other: Int): Vec3i {
+    //#if MC >= 1.17.1
     return this.subtract(vec3i(other, other, other))
+    //#else
+    //$$ return vec3i(this.x - other, this.y - other, this.z - other)
+    //#endif
 }
 
 public operator fun Vec3i.times(other: Vec3i): Vec3i {

@@ -1,13 +1,16 @@
 package dev.deftu.omnicore.api.client.framebuffer
 
+import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
+import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniResolution
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.state.OmniManagedScissorState
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import dev.deftu.omnicore.internal.identifierOf
@@ -25,13 +28,11 @@ public interface OmniFramebuffer : AutoCloseable {
     public companion object {
         @JvmStatic
         public val defaultPipeline: OmniRenderPipeline by lazy {
-            OmniRenderPipeline.builderWithDefaultShader(
-                identifier = identifierOf("framebuffer"),
-                vertexFormat = VertexFormats.POSITION_TEXTURE_COLOR,
-                mode = DrawModes.QUADS,
-            ).apply {
-                blendState = OmniManagedBlendState.ALPHA
-            }.build()
+            OmniRenderPipelines.builderWithDefaultShader(
+                location = identifierOf("framebuffer"),
+                vertexFormat = DefaultVertexFormats.POSITION_TEXTURE_COLOR,
+                drawMode = DrawMode.QUADS,
+            ).setBlendState(OmniBlendState.ALPHA).build()
         }
     }
 
@@ -69,10 +70,6 @@ public interface OmniFramebuffer : AutoCloseable {
 
     public fun <T> usingToRender(block: (matrixStack: OmniMatrixStack, width: Int, height: Int) -> T): T {
         return this.using {
-            // Prepare our framebuffer by ensuring that scissor state is disabled
-            val prevScissorState = OmniManagedScissorState.active()
-            OmniManagedScissorState.disable()
-
             // Define our GL viewport as only being within our framebuffer's bounds
             GL11.glViewport(0, 0, width, height)
 
@@ -86,7 +83,6 @@ public interface OmniFramebuffer : AutoCloseable {
 
             // Restore all GL states and reset the viewport
             GL11.glViewport(0, 0, OmniResolution.viewportWidth, OmniResolution.viewportHeight)
-            prevScissorState.activate()
 
             // Return the result
             result
@@ -137,7 +133,7 @@ public interface OmniFramebuffer : AutoCloseable {
         stack.push()
         stack.scale(1f, 1f, 50f)
 
-        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
+        val buffer = OmniBufferBuilder.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_TEXTURE_COLOR)
         buffer
             .vertex(stack, x.toDouble(), (y + height).toDouble(), 0.0)
             .texture(0.0, 0.0)
