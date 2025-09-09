@@ -24,6 +24,7 @@ public fun ModInfo.getIconResourcePath(size: Int): String? {
     //#else
     //$$ return container.metadata?.logoFile
     //#endif
+    //#endif
 }
 
 public fun ModInfo.getIconResource(size: Int): InputStream? {
