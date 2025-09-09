@@ -1,8 +1,10 @@
 package dev.deftu.omnicore.api.client.input
 
+import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.render.OmniResolution
 import kotlin.math.max
 
-//#if MC >= 1.15
+//#if MC >= 1.16.5
 import org.lwjgl.glfw.GLFW
 //#elseif MC <= 1.12.2
 //$$ import org.lwjgl.input.Mouse
@@ -13,7 +15,7 @@ public object OmniMouse {
     public val rawX: Double
         get() {
             //#if MC >= 1.14
-            return OmniClient.getInstance().mouse.x
+            return client.mouse.x
             //#else
             //$$ return Mouse.getX().toDouble()
             //#endif
@@ -23,7 +25,7 @@ public object OmniMouse {
     public val rawY: Double
         get() {
             //#if MC >= 1.14
-            return OmniClient.getInstance().mouse.y
+            return client.mouse.y
             //#else
             //$$ return OmniResolution.windowHeight - Mouse.getY().toDouble() - 1
             //#endif
@@ -41,7 +43,7 @@ public object OmniMouse {
     public var isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.16.5
-            return OmniClient.getInstance().mouse.isCursorLocked
+            return client.mouse.isCursorLocked
             //#else
             //$$ return Mouse.isGrabbed()
             //#endif
@@ -49,9 +51,9 @@ public object OmniMouse {
         set(value) {
             //#if MC >= 1.16.5
             if (value) {
-                OmniClient.getInstance().mouse.lockCursor()
+                client.mouse.lockCursor()
             } else {
-                OmniClient.getInstance().mouse.unlockCursor()
+                client.mouse.unlockCursor()
             }
             //#else
             //$$ Mouse.setGrabbed(value)
@@ -74,7 +76,7 @@ public object OmniMouse {
         }
 
         //#if MC >= 1.16.5
-        val handle = OmniClient.getInstance().window.handle
+        val handle = client.window.handle
         val state = GLFW.glfwGetMouseButton(handle, code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else
