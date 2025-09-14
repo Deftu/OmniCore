@@ -27,7 +27,7 @@ public class OmniRenderPipelineImpl(
         //#if MC >= 1.21.6
         renderPass.drawIndexed(0, 0, builtBuffer.drawParameters.comp_751, 1)
         //#else
-        //$$ renderPass.drawIndexed(0, builtBuffers.drawParameters.comp_751)
+        //$$ renderPass.drawIndexed(0, builtBuffer.drawParameters.comp_751)
         //#endif
     }
 

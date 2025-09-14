@@ -44,7 +44,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         public const val INVALID_CHAR: Char = '\u0000'
     }
 
-    public open val isPauseScreen: Boolean
+    public open val isPause: Boolean
         get() = super.shouldPause()
 
     public val previousScreen: Screen?
@@ -401,8 +401,8 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#endif
     ) {
         //#if MC < 1.20.4
-        //$$ val mouseX = OmniMouse.scaledX
-        //$$ val mouseY = OmniMouse.scaledY
+        //$$ val mouseX = OmniMouse.scaledX.toInt()
+        //$$ val mouseY = OmniMouse.scaledY.toInt()
         //$$ val tickDelta = OmniRenderTicks.get()
         //#endif
 
@@ -490,6 +490,6 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     //#endif
 
     final override fun shouldPause(): Boolean {
-        return isPauseScreen
+        return isPause
     }
 }

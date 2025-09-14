@@ -4,7 +4,9 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.identifierOrThrow
 import net.minecraft.client.render.VertexFormats
 import net.minecraft.util.Identifier
+import org.jetbrains.annotations.ApiStatus
 
+@ApiStatus.Internal
 public object DefaultShaders {
     private val defaults: Map<VertexFormat, Identifier> by lazy {
         mapOf(

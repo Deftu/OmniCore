@@ -58,6 +58,13 @@ public object ImageInternals {
         }
     }
 
+    //#if MC < 1.21.5
+    //$$ @JvmStatic
+    //$$ public fun pointer(image: NativeImage): Long {
+    //$$     return (image as Mixin_NativeImageAllocation).pixels
+    //$$ }
+    //#endif
+
     @JvmStatic
     public fun checkAllocated(image: NativeImage) {
         (image as Mixin_NativeImageAllocation).invokeCheckAllocated()

@@ -19,7 +19,13 @@ data class TestPacketPayload(val message: String) : PacketPayload {
         val TYPE = PacketType(ID, CODEC)
     }
 
-    private constructor(buf: PacketByteBuf) : this(buf.readString())
+    private constructor(buf: PacketByteBuf) : this(
+        //#if MC >= 1.16.5
+        buf.readString()
+        //#else
+        //$$ buf.readString(32767)
+        //#endif
+    )
 
     fun write(buf: PacketByteBuf) {
         buf.writeString(message)

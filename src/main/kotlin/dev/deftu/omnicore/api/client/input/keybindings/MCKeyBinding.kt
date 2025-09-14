@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.client.input.OmniKeys
 import net.minecraft.client.option.KeyBinding
 
 //#if FORGE-LIKE && MC >= 1.19.2
-//$$ import dev.deftu.omnicore.common.OmniLoader
+//$$ import dev.deftu.omnicore.internal.modEventBus
 //#endif
 
 //#if MC >= 1.16.5
@@ -44,7 +44,7 @@ public interface MCKeyBinding : OmniKeyBinding {
         @JvmStatic // Just so that we don't have that ugly `.Companion` suggestion when referencing `MCKeyBinding`.
         public fun initialize() {
             //#if FORGE-LIKE && MC >= 1.19.2
-            //$$ OmniLoader.modEventBus.addListener(::registerAll)
+            //$$ modEventBus.addListener(::registerAll)
             //#endif
         }
 

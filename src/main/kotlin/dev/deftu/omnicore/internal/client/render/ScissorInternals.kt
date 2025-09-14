@@ -9,12 +9,57 @@ import net.minecraft.client.gui.DrawContext
 //$$ import com.mojang.blaze3d.systems.RenderSystem
 //#elseif MC >= 1.17.1
 //$$ import com.mojang.blaze3d.platform.GlStateManager
-//#else
+//#endif
+
+//#if MC < 1.21.5
+//$$ import java.nio.ByteBuffer
 //$$ import org.lwjgl.opengl.GL11
 //#endif
 
 @ApiStatus.Internal
 public object ScissorInternals {
+    //#if MC < 1.21.6
+    //$$ @JvmStatic
+    //$$ public val activeScissorState: OmniRenderingContext.ScissorBox?
+    //$$     get() {
+            //#if MC >= 1.21.5
+            //$$ if (!RenderSystem.SCISSOR_STATE.isEnabled) {
+            //$$     return null
+            //$$ }
+            //$$
+            //$$ val state = RenderSystem.SCISSOR_STATE
+            //$$ return OmniRenderingContext.ScissorBox(
+            //$$     x = state.x,
+            //$$     y = state.y,
+            //$$     width = state.width,
+            //$$     height = state.height
+            //$$ )
+            //#else
+            //$$ if (!GL11.glIsEnabled(GL11.GL_SCISSOR_TEST)) {
+            //$$     return null
+            //$$ }
+            //$$
+            //$$ val buffer = ByteBuffer.allocateDirect(16 * Int.SIZE_BYTES).asIntBuffer()
+            //$$ val params = buffer.also { buffer ->
+                //#if MC >= 1.16.5
+                //$$ GL11.glGetIntegerv(GL11.GL_SCISSOR_BOX, buffer)
+                //#else
+                //$$ GL11.glGetInteger(GL11.GL_SCISSOR_BOX, buffer)
+                //#endif
+            //$$ }.let { _ ->
+            //$$     List(4) { buffer[it] }.toIntArray()
+            //$$ }
+            //$$
+            //$$ return OmniRenderingContext.ScissorBox(
+            //$$     x = params[0],
+            //$$     y = params[1],
+            //$$     width = params[2],
+            //$$     height = params[3]
+            //$$ )
+            //#endif
+    //$$     }
+    //#endif
+
     @JvmStatic
     public fun applyScissor(
         //#if MC >= 1.21.6
@@ -31,7 +76,7 @@ public object ScissorInternals {
         //$$ GlStateManager._scissorBox(box.x, box.y, box.width, box.height)
         //#else
         //$$ GL11.glEnable(GL11.GL_SCISSOR_TEST)
-        //$$ GL11.glScissor(box.x, box.y, box.width, box.height
+        //$$ GL11.glScissor(box.x, box.y, box.width, box.height)
         //#endif
     }
 

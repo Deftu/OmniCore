@@ -1,8 +1,16 @@
 package dev.deftu.omnicore.api.equipment
 
+//#if MC >= 1.12.2
 import net.minecraft.entity.EquipmentSlot
+//#endif
 
 public sealed interface EquipmentType {
+    public val isHand: Boolean
+        get() = this is MainHand || this is OffHand
+
+    public val isArmor: Boolean
+        get() = this is Armor
+
     public data object MainHand : EquipmentType
     public data object OffHand : EquipmentType
     public data class Armor(

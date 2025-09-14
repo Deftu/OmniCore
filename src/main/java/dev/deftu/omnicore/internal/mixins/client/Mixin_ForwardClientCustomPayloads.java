@@ -5,8 +5,13 @@ package dev.deftu.omnicore.internal.mixins.client;
 // but this is Fabric, so the mappings end up breaking
 
 //#if FABRIC || MC >= 1.16.5
-import dev.deftu.omnicore.api.client.network.OmniClientNetworking;
+//#if MC >= 1.16.5
 import net.minecraft.network.ClientConnection;
+//#else
+//$$ import net.minecraft.network.ClientConnection;
+//#endif
+
+import dev.deftu.omnicore.api.client.network.OmniClientNetworking;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +39,7 @@ import net.minecraft.network.packet.UnknownCustomPayload;
 //$$ @Mixin(ClientPacketListener.class)
 //#endif
 //#else
-//$$ import dev.deftu.omnicore.common.OmniIdentifier;
+//$$ import dev.deftu.omnicore.api.OmniIdentifier;
 //$$ import net.minecraft.util.Identifier;
 //$$ import net.minecraft.util.PacketByteBuf;
 //$$ import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -43,7 +48,11 @@ import net.minecraft.network.packet.UnknownCustomPayload;
 //$$ @Mixin(ClientPlayNetworkHandler.class)
 //#endif
 public class Mixin_ForwardClientCustomPayloads {
+    //#if MC >= 1.16.5
     @Shadow @Final protected ClientConnection connection;
+    //#else
+    //$$ @Shadow @Final private ClientConnection connection;
+    //#endif
 
     @Inject(
             //#if MC >= 1.20.4
@@ -85,7 +94,7 @@ public class Mixin_ForwardClientCustomPayloads {
         //$$ ResourceLocation channel = packet.getIdentifier();
         //$$ FriendlyByteBuf buf = packet.getData();
         //#else
-        //$$ Identifier channel = OmniIdentifier.create(packet.getChannel());
+        //$$ Identifier channel = OmniIdentifier.createOrNull(packet.getChannel());
         //$$ PacketByteBuf buf = packet.getPayload();
         //#endif
         OmniClientNetworking.handle(channel, buf, this.connection);

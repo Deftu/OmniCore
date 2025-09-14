@@ -34,13 +34,25 @@ public object OmniClientRuntime {
 
     @JvmStatic
     public fun runOnMain(block: Runnable) {
+        if (isOnMainThread) {
+            block.run()
+            return
+        }
+
         client.execute(block)
     }
 
     @JvmStatic
     public fun runOnRender(block: Runnable) {
-        //#if MC >= 1.16.5
+        if (isOnRenderThread) {
+            block.run()
+            return
+        }
+
+        //#if MC >= 1.21.5
         RenderSystem.queueFencedTask(block)
+        //#elseif MC >= 1.16.5
+        //$$ RenderSystem.recordRenderCall { block.run() }
         //#else
         //$$ runOnMain(block)
         //#endif

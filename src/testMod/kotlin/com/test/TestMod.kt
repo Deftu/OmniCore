@@ -4,26 +4,28 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.commands.argument
 import dev.deftu.omnicore.api.client.commands.command
-import dev.deftu.omnicore.client.*
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBindings
 import dev.deftu.omnicore.api.client.network.OmniClientNetworking
+import dev.deftu.omnicore.api.client.player
 import dev.deftu.omnicore.api.client.resources.OmniClientResources
 import dev.deftu.omnicore.api.client.sound.OmniClientSound
+import dev.deftu.omnicore.api.client.world
 import dev.deftu.omnicore.api.loader.OmniLoader
 import dev.deftu.omnicore.api.network.OmniNetworking
+import dev.deftu.omnicore.api.player.biomeData
+import dev.deftu.omnicore.api.player.chunkData
 import dev.deftu.omnicore.api.sound.OmniSounds
-import dev.deftu.omnicore.common.*
+import dev.deftu.omnicore.api.world.isClearWeather
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextFormat
+import net.minecraft.server.network.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
-import net.minecraft.server.network.ServerPlayerEntity
-
 //#elseif FORGE
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.fml.common.Mod
@@ -81,6 +83,7 @@ class TestMod
     fun onInitialize() {
         //#if FABRIC && MC >= 1.16.5
         println("Hello Fabric world!")
+        // TestItems.initialize()
         OmniNetworking.register(TestPacketPayload.TYPE) { payload ->
             logger.info("Received test packet on the server with message: ${payload.message}")
 
@@ -117,7 +120,7 @@ class TestMod
 
         OmniKeyBindings.on(exampleKeyBinding) { type, state ->
             if (type.isKey && state.isPressed) {
-                if (OmniClientPlayer.hasPlayer) {
+                if (player != null) {
                     OmniClientChat.displayChatMessage("Example KeyBinding pressed! (keycode: ${exampleKeyBinding.boundValue}) [should be: ${OmniKeys.KEY_B}]")
                 }
 
@@ -127,7 +130,7 @@ class TestMod
 
         OmniClientNetworking.register(TestPacketPayload.TYPE) { payload ->
             logger.info("Received test packet with message: ${payload.message}")
-            if (OmniClientPlayer.hasPlayer) {
+            if (player != null) {
                 OmniClientChat.displayChatMessage("Received test packet with message: ${payload.message}")
             }
         }
@@ -169,13 +172,12 @@ class TestMod
 
             command("world") {
                 runs { ctx ->
-                    val world = OmniClient.currentWorld
-                    val playerChunk = OmniClientPlayer.currentChunk
-                    val playerBiome = OmniClientPlayer.currentBiome
+                    val world = world
+                    val playerChunk = player?.chunkData
+                    val playerBiome = player?.biomeData
 
                     ctx.source.replyChat("""
                         Is day? ${world?.isDay}
-                        Is night? ${world?.isNight}
                         Is raining? ${world?.isRaining}
                         Is thundering? ${world?.isThundering}
                         Is clear weather? ${world?.isClearWeather}
@@ -183,7 +185,6 @@ class TestMod
                         Dimension: ${playerChunk?.dimension}
                         
                         Biome name: ${playerBiome?.name}
-                        Translated biome name: ${playerBiome?.translatedName}
                         Biome identifier: ${playerBiome?.identifier}
                         Biome water color: ${playerBiome?.waterColor}
                     """.trimIndent())

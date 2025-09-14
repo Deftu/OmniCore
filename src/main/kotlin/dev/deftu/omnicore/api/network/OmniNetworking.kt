@@ -76,7 +76,7 @@ public object OmniNetworking {
         //#if MC >= 1.19.4
         val connection = (player.networkHandler as Mixin_ConnectionAccessor).connection
         //#else
-        //$$ val connection = player.networkHandler.connection
+        //$$ val connection = player.connection.connection
         //#endif
         val context = NetworkContext(Side.SERVER, connection, player)
         entry.handler.accept(context, payload)

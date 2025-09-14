@@ -4,24 +4,28 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
+import dev.deftu.omnicore.api.client.render.shader.ShaderSchema
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
 import net.minecraft.util.Identifier
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.vertex.VertexFormatElement
-import dev.deftu.omnicore.internal.client.render.DefaultShaders
 import net.minecraft.client.gl.UniformType
 //#else
 //#if MC >= 1.21.2
 //$$ import dev.deftu.omnicore.api.client.client
-//$$ import net.minecraft.client.gl.ShaderProgram
-//$$ import java.util.function.Supplier
+//$$ import net.minecraft.client.renderer.ShaderProgram
 //#endif
 //$$
 //#if MC >= 1.17.1
 //$$ import net.minecraft.client.renderer.CompiledShaderProgram
+//$$ import java.util.function.Supplier
 //#endif
+//#endif
+
+//#if MC >= 1.17.1
+import dev.deftu.omnicore.internal.client.render.DefaultShaders
 //#endif
 
 public object OmniRenderPipelines {
@@ -92,7 +96,7 @@ public object OmniRenderPipelines {
     //$$         location = location,
     //$$         vertexFormat = vertexFormat,
     //$$         drawMode = drawMode,
-    //$$         shaderProvider = supplier?.let(:: ShaderProvider.Vanilla)
+    //$$         shaderProvider = supplier?.let { ShaderProvider.Vanilla(it) }
     //$$     )
     //$$ }
     //#endif
@@ -184,6 +188,7 @@ public object OmniRenderPipelines {
         drawMode: DrawMode,
         vertexSource: String,
         fragmentSource: String,
+        schema: ShaderSchema,
     ): OmniRenderPipelineBuilder {
         return OmniRenderPipelineBuilder(
             location = location,
@@ -192,7 +197,8 @@ public object OmniRenderPipelines {
             ShaderProvider.Compatible(
                 vertexFormat = vertexFormat,
                 vertexSource = vertexSource,
-                fragmentSource = fragmentSource
+                fragmentSource = fragmentSource,
+                schema = schema
             )
         )
     }
@@ -204,13 +210,15 @@ public object OmniRenderPipelines {
         drawMode: DrawMode,
         vertexSource: String,
         fragmentSource: String,
+        schema: ShaderSchema,
     ): OmniRenderPipelineBuilder {
         return builderWithCompatibleShader(
             location = location,
             vertexFormat = vertexFormat.vanilla,
             drawMode = drawMode,
             vertexSource = vertexSource,
-            fragmentSource = fragmentSource
+            fragmentSource = fragmentSource,
+            schema = schema
         )
     }
 }

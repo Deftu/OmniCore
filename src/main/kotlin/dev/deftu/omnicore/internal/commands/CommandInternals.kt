@@ -4,11 +4,42 @@ import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.deftu.omnicore.api.commands.OmniCommandSource
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
-import net.minecraft.server.command.CommandOutput
-import net.minecraft.server.command.ServerCommandSource
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
+
+//#if MC >= 1.16.5
+import net.minecraft.server.command.ServerCommandSource
+import net.minecraft.server.command.CommandOutput
+//#endif
+
+//#if FABRIC && MC >= 1.16.5
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
+//#endif
+
+//#if FORGE-LIKE && MC >= 1.18.2
+//$$ import dev.deftu.omnicore.internal.forgeEventBus
+//#if FORGE
+//$$ import net.minecraftforge.event.RegisterCommandsEvent
+//#else
+//$$ import net.neoforged.neoforge.event.RegisterCommandsEvent
+//#endif
+//#endif
+
+//#if MC <= 1.12.2
+//$$ import com.mojang.brigadier.exceptions.CommandSyntaxException
+//$$ import com.mojang.brigadier.suggestion.Suggestion
+//$$ import dev.deftu.omnicore.api.profiled
+//$$ import dev.deftu.textile.minecraft.MCTextFormat
+//$$ import net.minecraft.command.ICommandSender
+//$$ import net.minecraft.server.MinecraftServer
+//#if FORGE
+//$$ import net.minecraft.command.ServerCommandManager
+//$$ import net.minecraftforge.fml.server.FMLServerHandler
+//#else
+//$$ import net.legacyfabric.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
+//$$ import net.minecraft.server.command.CommandManager
+//#endif
+//#endif
 
 @ApiStatus.Internal
 public object CommandInternals {
@@ -71,7 +102,7 @@ public object CommandInternals {
         //#elseif FORGE-LIKE && MC >= 1.18.2
         //$$ forgeEventBus.addListener<RegisterCommandsEvent> { event ->
         //$$     CommandOps.copyCommandsWithMapper(event.dispatcher, this.dispatcher) { src ->
-        //$$         OmniServerCommandSource(src.server, src.output, src.level)
+        //$$         OmniCommandSource(src.server, src.output, src.level)
         //$$     }
         //$$ }
         //#endif
@@ -84,10 +115,12 @@ public object CommandInternals {
         dispatcher.root.addChild(node)
 
         //#if FORGE && MC <= 1.12.2
-        //$$ ClientCommandHandler.instance.registerCommand(LegacyCommandBridge(
+        //$$ val server = FMLServerHandler.instance().server
+        //$$ val commandManager = server.commandManager as ServerCommandManager
+        //$$ commandManager.registerCommand(LegacyCommandBridge(
         //$$     node = node,
-        //$$     executor = { _, command -> execute(command) },
-        //$$     completer = { _, command -> retrieveAutoComplete(command).toMutableList() }
+        //$$     executor = { sender, command -> execute(server, sender, command) },
+        //$$     completer = { sender, command -> retrieveAutoComplete(server, sender, command) }
         //$$ ))
         //#endif
     }
@@ -102,7 +135,7 @@ public object CommandInternals {
     //$$     val context = OmniCommandSource(server, sender)
     //$$     val results = dispatcher.parse(command, context)
     //$$
-    //$$     return profiled("omnicore_command___$command") {
+    //$$     return server.profiled("omnicore_command___$command") {
     //$$         try {
     //$$             dispatcher.execute(results)
     //$$         } catch (e: CommandSyntaxException) {
@@ -111,7 +144,7 @@ public object CommandInternals {
     //$$
     //$$             if (!isIgnored) {
     //$$                 logger.warn(message, e)
-    //$$                 context.displayError(e)
+    //$$                 context.replyError(e)
     //$$            } else {
     //$$                logger.debug(message, e)
     //$$           }

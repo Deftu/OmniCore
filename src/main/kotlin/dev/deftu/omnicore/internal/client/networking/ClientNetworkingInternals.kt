@@ -1,19 +1,30 @@
 package dev.deftu.omnicore.internal.client.networking
 
 import dev.deftu.omnicore.api.client.client
-import dev.deftu.omnicore.internal.networking.VanillaCustomPayload
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket
 import net.minecraft.util.Identifier
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
 
+//#if MC >= 1.20.4
+import dev.deftu.omnicore.internal.networking.VanillaCustomPayload
+//#endif
+
+//#if FORGE && MC <= 1.12.2
+//$$ import dev.deftu.omnicore.api.client.network.OmniClientNetworking
+//$$ import dev.deftu.omnicore.internal.forgeEventBus
+//$$ import dev.deftu.omnicore.internal.networking.NetworkingInternals
+//$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+//$$ import net.minecraftforge.fml.common.network.FMLNetworkEvent
+//#endif
+
 @ApiStatus.Internal
 public object ClientNetworkingInternals {
     private val logger = LogManager.getLogger(ClientNetworkingInternals::class.java)
 
     //#if FORGE && MC <= 1.12.2
-    //$$ public var isInitialized = false
+    //$$ public var isInitialized: Boolean = false
     //$$     private set
     //#endif
 
@@ -32,11 +43,11 @@ public object ClientNetworkingInternals {
         val packet = CustomPayloadC2SPacket(
             //#if MC >= 1.20.4
             VanillaCustomPayload(id, buf),
-            //#elseif MC == 1.16.5
+            //#elseif MC >= 1.16.5
             //$$ id,
-            //#elseif MC <= 1.12.2
-            //$$ id.toString(),
+            //$$ buf,
             //#else
+            //$$ id.toString(),
             //$$ buf,
             //#endif
         )
@@ -53,17 +64,17 @@ public object ClientNetworkingInternals {
     //$$ public fun setupForgeListener() {
     //$$     if (isInitialized) return
     //$$
-    //$$     MinecraftForge.EVENT_BUS.register(this)
+    //$$     forgeEventBus.register(this)
     //$$     isInitialized = true
     //$$ }
     //$$
     //$$ @SubscribeEvent
     //$$ public fun onClientConnectedToServer(event: FMLNetworkEvent.ClientConnectedToServerEvent) {
     //$$     val networkManager = event.manager
-    //$$     OmniPackets.setupCustomPacketHandler(
+    //$$     NetworkingInternals.setupCustomPacketHandler(
     //$$         networkManager,
     //$$         OmniClientPacketHandler { buf ->
-    //$$             val id = buf.readIdentifier()
+    //$$             val id = NetworkingInternals.readIdentifier(buf)
     //$$             OmniClientNetworking.handle(id, buf, networkManager)
     //$$         }
     //$$     )

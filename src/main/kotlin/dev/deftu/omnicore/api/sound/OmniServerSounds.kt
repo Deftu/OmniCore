@@ -11,7 +11,7 @@ public object OmniServerSounds {
             //#if MC >= 1.12.2
             sound.event,
             //#else
-            //$$ sound.identifier,
+            //$$ sound.location,
             //#endif
             volume,
             pitch

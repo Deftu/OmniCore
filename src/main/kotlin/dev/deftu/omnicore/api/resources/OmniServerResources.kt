@@ -2,6 +2,10 @@ package dev.deftu.omnicore.api.resources
 
 import dev.deftu.omnicore.api.annotations.VersionedAbove
 
+//#if FORGE-LIKE && MC >= 1.16.5
+//$$ import dev.deftu.omnicore.internal.forgeEventBus
+//#endif
+
 //#if MC >= 1.16.5
 //#if FABRIC
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
@@ -35,7 +39,7 @@ public object OmniServerResources {
         //#elseif FORGE-LIKE && MC >= 1.16.5
         //#if MC >= 1.21.4
         //$$ forgeEventBus.addListener<AddServerReloadListenersEvent> { event ->
-        //$$     event.addListener(listener.reloadIdentifier, listener)
+        //$$     event.addListener(listener.location, listener)
         //$$ }
         //#else
         //$$ forgeEventBus.addListener<AddReloadListenerEvent> { event ->

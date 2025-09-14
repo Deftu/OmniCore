@@ -2,7 +2,7 @@ package dev.deftu.omnicore.internal.mixins.client;
 
 //#if FABRIC && MC >= 1.16.5 && MC <= 1.18.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
 //$$ import com.mojang.brigadier.CommandDispatcher;
-//$$ import dev.deftu.omnicore.client.OmniClientCommands;
+//$$ import dev.deftu.omnicore.internal.client.commands.ClientCommandInternals;
 //$$ import org.spongepowered.asm.mixin.Mixin;
 //$$ import org.spongepowered.asm.mixin.Shadow;
 //$$ import org.spongepowered.asm.mixin.injection.At;
@@ -49,7 +49,7 @@ package dev.deftu.omnicore.internal.mixins.client;
 //#endif
 //$$             CallbackInfo ci
 //$$     ) {
-//$$         OmniClientCommands.copyClientCommands$OmniCore(
+//$$         ClientCommandInternals.copyClientCommands(
 //#if MC >= 1.18.2
 //$$             this.commandDispatcher
 //#else

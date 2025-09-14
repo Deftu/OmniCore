@@ -6,10 +6,19 @@ import dev.deftu.omnicore.api.client.events.HudRenderEvent
 import dev.deftu.omnicore.api.client.render.OmniRenderTicks
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.eventBus
 import org.jetbrains.annotations.ApiStatus
 
 //#if FABRIC && MC <= 1.21.3
+//#if MC >= 1.16.5
 //$$ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
+//#else
+//$$ import net.legacyfabric.fabric.api.client.rendering.v1.HudRenderCallback
+//#endif
+//#endif
+
+//#if FORGE && MC <= 1.12.2
+//$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 //#endif
 
 //#if FORGE-LIKE
@@ -26,11 +35,11 @@ import org.jetbrains.annotations.ApiStatus
 //#endif
 //$$
 //$$ private typealias Event =
-//#if MC >= 1.19.2
-//$$     RenderGuiEvent.Post
-//#else
-//$$     RenderGameOverlayEvent.Post
-//#endif
+    //#if MC >= 1.19.2
+    //$$ RenderGuiEvent.Post
+    //#else
+    //$$ RenderGameOverlayEvent.Post
+    //#endif
 //#endif
 
 @ApiStatus.Internal
@@ -38,45 +47,54 @@ public object HudRenderEventForwarding {
     public fun initialize() {
         //#if FABRIC && MC <= 1.21.3
         //$$ HudRenderCallback.EVENT.register { ctx, tickDelta ->
-        //$$     val matrixStack = OmniMatrixStacks.vanilla(ctx)
+        //$$     val matrixStack = OmniMatrixStacks.vanilla(
+                    //#if MC >= 1.16.5
+                    //$$ ctx,
+                    //#endif
+        //$$     )
+        //$$
         //$$     val context = OmniRenderingContext(
-        //$$         //#if MC >= 1.20.1
-        //$$         ctx,
-        //$$         //#endif
+                    //#if MC >= 1.20.1
+                    //$$ ctx,
+                    //#endif
         //$$         matrixStack,
         //$$     )
         //$$
-        //$$     //#if MC >= 1.21.1
-        //$$     val tickDelta = OmniRenderTicks.get(renderTickCounter = tickDelta)
-        //$$     //#endif
-        //$$     OmniCore.eventBus.post(HudRenderEvent(context, tickDelta))
+                //#if MC >= 1.21.1
+                //$$ val tickDelta = OmniRenderTicks.get(renderTickCounter = tickDelta)
+                //#endif
+        //$$     eventBus.post(HudRenderEvent(context, tickDelta))
         //$$ }
         //#elseif FORGE-LIKE && MC >= 1.16.5
         //$$ forgeEventBus.addListener<Event> { event ->
         //$$     val matrixStack = OmniMatrixStacks.vanilla(
-        //#if MC >= 1.20.1
-        //$$         event.guiGraphics,
-        //#else
-        //$$         event.poseStack,
-        //#endif
+                    //#if MC >= 1.20.1
+                    //$$ event.guiGraphics,
+                    //#elseif MC >= 1.19.2
+                    //$$ event.poseStack
+                    //#else
+                    //$$ event.matrixStack
+                    //#endif
         //$$     )
         //$$
         //$$     val context = OmniRenderingContext(
-        //#if MC >= 1.20.1
-        //$$         event.guiGraphics,
-        //#endif
+                //#if MC >= 1.20.1
+                //$$ event.guiGraphics,
+                //#endif
         //$$         matrixStack,
         //$$     )
         //$$
-        //#if MC >= 1.21.1
-        //$$     val tickDelta = OmniRenderTicks.get(renderTickCounter = event.partialTick)
-        //#else
-        //$$     val tickDelta = event.partialTick
-        //#endif
-        //$$     OmniCore.eventBus.post(HudRenderEvent(context, tickDelta))
+                //#if MC >= 1.21.1
+                //$$ val tickDelta = OmniRenderTicks.get(renderTickCounter = event.partialTick)
+                //#elseif MC >= 1.19.2
+                //$$ val tickDelta = event.partialTick
+                //#else
+                //$$ val tickDelta = event.partialTicks
+                //#endif
+        //$$     eventBus.post(HudRenderEvent(context, tickDelta))
         //$$ }
         //#elseif FORGE
-        //$$ MinecraftForge.EVENT_BUS.register(this)
+        //$$ forgeEventBus.register(this)
         //#endif
     }
 
@@ -86,7 +104,7 @@ public object HudRenderEventForwarding {
     //$$     val matrixStack = OmniMatrixStacks.vanilla()
     //$$     val context = OmniRenderingContext(matrixStack)
     //$$     val tickDelta = event.partialTicks
-    //$$     OmniCore.eventBus.post(HudRenderEvent(context, tickDelta))
+    //$$     eventBus.post(HudRenderEvent(context, tickDelta))
     //$$ }
     //#endif
 }

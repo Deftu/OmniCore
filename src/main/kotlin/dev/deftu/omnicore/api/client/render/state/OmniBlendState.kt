@@ -43,15 +43,15 @@ public data class OmniBlendState(
     //$$
     //$$     override fun enable() {
     //$$         super.enable()
-    //$$         this@OmniManagedBlendState.applyGlobally()
+    //$$         this@OmniBlendState.applyGlobally()
     //$$     }
     //$$ }
     //$$
     //$$ public val vanilla: GlBlendState = if (isEnabled) {
     //$$     if (function.isSeparate) {
-    //$$         VanillaBlendState(function.srcColor.value, function.dstColor.value, function.srcAlpha.value, function.dstAlpha.value, equation.value)
+    //$$         VanillaBlendState(function.srcColor.const, function.dstColor.const, function.srcAlpha.const, function.dstAlpha.const, equation.const)
     //$$     } else {
-    //$$         VanillaBlendState(function.srcColor.value, function.dstColor.value, equation.value)
+    //$$         VanillaBlendState(function.srcColor.const, function.dstColor.const, equation.const)
     //$$     }
     //$$ } else {
     //$$     VanillaBlendState()

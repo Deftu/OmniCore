@@ -18,7 +18,7 @@ public object OmniClientSound {
             //#if MC >= 1.12.2
             event = sound.event,
             //#else
-            //$$ event = sound.identifier,
+            //$$ event = sound.location,
             //#endif
             volume = volume,
             pitch = pitch

@@ -1,7 +1,14 @@
 package dev.deftu.omnicore.api.items
 
-import net.minecraft.component.type.FoodComponent
 import net.minecraft.item.Item
+
+//#if MC >= 1.16.5
+import net.minecraft.component.type.FoodComponent
+//#else
+//$$ import net.minecraft.item.EnumAction
+//$$ import net.minecraft.item.ItemFood
+//$$ import net.minecraft.item.ItemStack
+//#endif
 
 public data class OmniItemSettings(
     val maxStackSize: Int = 64,
@@ -63,7 +70,7 @@ public data class OmniItemSettings(
     }
 
     public fun create(): Item {
-        //#if MC >= 1.19.4
+        //#if MC >= 1.16.5
         return Item(Item.Settings()
             .maxCount(maxStackSize)
             .maxDamage(if (maxDurability > 0) maxDurability else 0)
@@ -81,7 +88,9 @@ public data class OmniItemSettings(
                                 alwaysEdible()
                             }
                         }.build(),
+                        //#if MC >= 1.21.2
                         food.consumableType.component
+                        //#endif
                     )
                 }
             }
@@ -89,7 +98,35 @@ public data class OmniItemSettings(
             tab?.append(item)
         }
         //#else
-        //$$ // TODO
+        //$$ val item = if (food != null) {
+        //$$     val isDrink = food.consumableType is OmniConsumableType.Drink
+        //$$     object : ItemFood(food.nutrition, food.saturation, false) {
+        //$$         override fun getItemUseAction(stack: ItemStack): EnumAction? {
+        //$$             return if (isDrink) EnumAction.DRINK else EnumAction.EAT
+        //$$         }
+        //$$     }.apply {
+        //$$         if (food.isAlwaysEdible) {
+        //$$             setAlwaysEdible()
+        //$$         }
+        //$$     }
+        //$$ } else {
+        //$$     Item()
+        //$$ }.apply {
+        //$$     setMaxStackSize(this@OmniItemSettings.maxStackSize)
+        //$$     if (this@OmniItemSettings.maxDurability > 0) {
+                //#if FORGE
+                //$$ setMaxDamage(this@OmniItemSettings.maxDurability)
+                //#else
+                //$$ val method = Item::class.java.getDeclaredMethod("setMaxDamage", Int::class.javaPrimitiveType)
+                //$$ method.isAccessible = true
+                //$$ method.invoke(this, this@OmniItemSettings.maxDurability)
+                //#endif
+        //$$     }
+        //$$ }
+        //$$
+        //$$ return item.also { item ->
+        //$$     tab?.append(item)
+        //$$ }
         //#endif
     }
 }

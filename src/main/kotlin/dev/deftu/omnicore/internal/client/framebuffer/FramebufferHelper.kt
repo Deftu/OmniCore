@@ -51,7 +51,7 @@ public object FramebufferHelper {
             GL30.glFramebufferTexture2D(
                 target.code,
                 GL30.GL_COLOR_ATTACHMENT0,
-                GL30.GL_TEXTURE_2D,
+                GL11.GL_TEXTURE_2D,
                 texture,
                 0
             )
@@ -70,7 +70,7 @@ public object FramebufferHelper {
             GL30.glFramebufferTexture2D(
                 target.code,
                 attachment.attachment,
-                GL30.GL_TEXTURE_2D,
+                GL11.GL_TEXTURE_2D,
                 texture,
                 0
             )

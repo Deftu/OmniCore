@@ -3,6 +3,7 @@ package dev.deftu.omnicore.internal
 import dev.deftu.omnicore.api.VERSION
 import dev.deftu.omnicore.api.scheduling.TickSchedulers
 import dev.deftu.omnicore.internal.events.EventForwarding
+import dev.deftu.omnicore.internal.items.CreativeTabInternals
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
 
@@ -43,6 +44,7 @@ public object OmniCoreInitializer {
 
         EventForwarding.initialize()
         TickSchedulers.initialize()
+        CreativeTabInternals.initialize()
 
         //#if FABRIC
         ServerLifecycleEvents.SERVER_STARTING.register { server ->

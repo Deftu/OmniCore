@@ -7,11 +7,8 @@ import dev.deftu.omnicore.api.client.render.state.DstFactor
 import dev.deftu.omnicore.api.client.render.state.SrcFactor
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL20
-
-//#if MC <= 1.16.5 || MC >= 1.21.5
 import org.lwjgl.opengl.GL14
-//#endif
+import org.lwjgl.opengl.GL20
 
 //#if MC >= 1.16.5 && MC < 1.21.5
 //$$ import com.mojang.blaze3d.systems.RenderSystem

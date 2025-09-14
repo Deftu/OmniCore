@@ -1,22 +1,24 @@
 package dev.deftu.omnicore.api.client.render.provider
 
 import com.mojang.blaze3d.vertex.VertexFormat
+import dev.deftu.omnicore.api.client.render.shader.ShaderSchema
 
 //#if MC >= 1.21.5
 import net.minecraft.client.gl.UniformType
 import net.minecraft.util.Identifier
 //#else
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniBlendState
-//$$ import dev.deftu.omnicore.client.shaders.OmniShader
+//$$ import dev.deftu.omnicore.api.client.render.shader.OmniShader
+//$$ import dev.deftu.omnicore.api.client.render.shader.OmniShaders
 //#endif
 
 //#if MC >= 1.17.1 && MC < 1.21.5
 //$$ import com.mojang.blaze3d.systems.RenderSystem
-//$$ import dev.deftu.omnicore.client.shaders.MinecraftShader
+//$$ import dev.deftu.omnicore.internal.client.render.shader.VanillaShader
 //$$ import net.minecraft.client.renderer.CompiledShaderProgram
 //$$ import java.util.function.Supplier
 //#else
-import dev.deftu.omnicore.client.shaders.GlShader
+import dev.deftu.omnicore.internal.client.render.shader.CompatibleShader
 //#endif
 
 public sealed interface ShaderProvider {
@@ -25,6 +27,7 @@ public sealed interface ShaderProvider {
 
         public val vertexSource: String,
         public val fragmentSource: String,
+        public val schema: ShaderSchema,
     ) : ShaderProvider {
         //#if MC < 1.21.5
         //$$ internal lateinit var shader: OmniShader
@@ -32,18 +35,18 @@ public sealed interface ShaderProvider {
         //$$
         //$$ override fun bind(blendState: OmniBlendState) {
         //$$     if (!::shader.isInitialized) {
-        //$$         shader = OmniShader.fromLegacyShader(vertexSource, fragmentSource, blendState, vertexFormat)
+        //$$         shader = OmniShaders.create(vertexSource, fragmentSource, vertexFormat, schema, blendState)
         //$$     }
         //$$
             //#if MC >= 1.17.1
-            //$$ val vanillaShader = (shader as MinecraftShader).shader
+            //$$ val vanillaShader = (shader as VanillaShader).program
             //#if MC >= 1.21.2
             //$$ RenderSystem.setShader(vanillaShader)
             //#else
             //$$ RenderSystem.setShader { vanillaShader }
             //#endif
             //#else
-            //$$ (shader as GlShader).bind()
+            //$$ (shader as CompatibleShader).bind()
             //#endif
         //$$ }
         //$$
@@ -57,7 +60,7 @@ public sealed interface ShaderProvider {
             //#elseif MC >= 1.17.1
             //$$ RenderSystem.setShader { null }
             //#else
-            //$$ (shader as GlShader).unbind()
+            //$$ (shader as CompatibleShader).unbind()
             //#endif
         //$$ }
         //#endif

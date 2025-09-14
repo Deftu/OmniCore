@@ -3,6 +3,7 @@ package dev.deftu.omnicore.api.client.render
 import com.mojang.blaze3d.systems.ProjectionType
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.eventbus.on
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.events.RenderTickEvent
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
@@ -69,7 +70,7 @@ public object ImmediateScreenRenderer {
         RenderSystem.setProjectionMatrix(prevProjectionBuffer, prevProjectionType)
 
         val identifier = identifierOf("__temporary_screen_render__")
-        OmniTextureManager.Companion.INSTANCE.registerTexture(identifier, object : AbstractTexture() {
+        client.textureManager.registerTexture(identifier, object : AbstractTexture() {
             init { glTextureView = textureAllocation.colorTextureView }
 
             override fun close() {
@@ -94,6 +95,6 @@ public object ImmediateScreenRenderer {
         )
 
         ctx.graphics.matrices.popMatrix()
-        OmniTextureManager.INSTANCE.destroyTexture(identifier)
+        client.textureManager.destroyTexture(identifier)
     }
 }

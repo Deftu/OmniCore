@@ -20,12 +20,14 @@ import net.fabricmc.api.ClientModInitializer
 //#endif
 
 //#if FORGE-LIKE
+//$$ import dev.deftu.omnicore.api.ID
+//$$ import dev.deftu.omnicore.api.VERSION
 //#if MC >= 1.16.5
-//$$ import dev.deftu.omnicore.common.OmniLoader
+//$$ import dev.deftu.omnicore.api.loader.OmniLoader
 //$$
-//$$ @Mod(OmniCore.ID)
+//$$ @Mod(ID)
 //#else
-//$$ @Mod(modid = OmniCore.ID, version = OmniCore.VERSION)
+//$$ @Mod(modid = ID, version = VERSION)
 //#endif
 //#endif
 public class OmniCoreEntrypoint

@@ -2,11 +2,14 @@ package dev.deftu.omnicore.internal.client.render.stack
 
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import org.joml.Matrix3f
-import org.joml.Matrix3x2f
 import org.joml.Matrix4f
 import org.joml.Quaternionf
 import java.util.ArrayDeque
 import java.util.Deque
+
+//#if MC >= 1.21.6
+import org.joml.Matrix3x2f
+//#endif
 
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
@@ -22,9 +25,17 @@ import net.minecraft.util.math.MathHelper
 //#endif
 
 //#if MC <= 1.16.5
+//$$ import com.mojang.blaze3d.platform.GlStateManager
 //$$ import net.minecraft.client.util.GlAllocationUtils
+//$$ import org.lwjgl.opengl.GL11
 //$$ import java.nio.FloatBuffer
 //$$ import java.nio.Buffer
+//#endif
+
+//#if MC < 1.16.5
+//$$ import org.lwjgl.util.vector.Vector3f
+//$$ import kotlin.math.cos
+//$$ import kotlin.math.sin
 //#endif
 
 public class OmniMatrixStackImpl private constructor(private val stack: Deque<OmniMatrixStack.Entry>) : OmniMatrixStack {
@@ -183,7 +194,7 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
             positionMatrix.rotate(quaternion)
             normalMatrix.rotate(quaternion)
             //#elseif MC >= 1.14
-            //$$ positionMatrix.multiply(Quaternion(x, y, z, radians))
+            //$$ positionMatrix.multiply(Quaternion(axisX, axisY, axisZ, radians))
             //#else
             //$$ val axis = Vector3f(axisX, axisY, axisZ)
             //$$ Matrix4f.rotate(radians, axis, positionMatrix, positionMatrix)
@@ -226,36 +237,45 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
             //#elseif MC >= 1.14
             //$$ positionMatrix.multiply(quaternion)
             //#else
-            //$$ val axis = Vector3f()
-            //$$ val angle = quaternion.getAxisAngle(axis)
-            //$$ Matrix4f.rotate(angle, axis, positionMatrix, positionMatrix)
+            //$$ val aa = org.lwjgl.util.vector.Vector4f()
+            //$$ quaternion.normalise(null) // ensure unit quaternion
+            //$$ quaternion.setFromAxisAngle(aa)  // aa.xyz = axis, aa.w = angle (radians)
             //$$
-            //$$ fun createRotationMatrix(angle: Float, axis: Vector3f) = Matrix3f().apply {
-            //$$     val c = cos(angle)
-            //$$     val s = sin(angle)
-            //$$     val oneMinusC = 1 - c
-            //$$     val xx = axis.x * axis.x
-            //$$     val xy = axis.x * axis.y
-            //$$     val xz = axis.x * axis.z
-            //$$     val yy = axis.y * axis.y
-            //$$     val yz = axis.y * axis.z
-            //$$     val zz = axis.z * axis.z
-            //$$     val xs = axis.x * s
-            //$$     val ys = axis.y * s
-            //$$     val zs = axis.z * s
+            //$$ val axis = Vector3f(aa.x, aa.y, aa.z)
+            //$$ if (axis.lengthSquared() > 0f) {
+            //$$     axis.normalise()
+            //$$     val angle = aa.w
             //$$
-            //$$     m00 = xx * oneMinusC + c
-            //$$     m01 = xy * oneMinusC + zs
-            //$$     m02 = xz * oneMinusC - ys
-            //$$     m10 = xy * oneMinusC - zs
-            //$$     m11 = yy * oneMinusC + c
-            //$$     m12 = yz * oneMinusC + xs
-            //$$     m20 = xz * oneMinusC + ys
-            //$$     m21 = yz * oneMinusC - xs
-            //$$     m22 = zz * oneMinusC + c
+            //$$     // position: M = M * R
+            //$$     Matrix4f.rotate(angle, axis, positionMatrix, positionMatrix)
+            //$$
+            //$$     // normal: N = N * R3x3
+            //$$     fun createRotationMatrix(angleRad: Float, axisN: Vector3f): Matrix3f {
+            //$$         val c = kotlin.math.cos(angleRad.toDouble()).toFloat()
+            //$$         val s = kotlin.math.sin(angleRad.toDouble()).toFloat()
+            //$$         val oneMinusC = 1f - c
+            //$$
+            //$$         val x = axisN.x; val y = axisN.y; val z = axisN.z
+            //$$         val xx = x * x; val xy = x * y; val xz = x * z
+            //$$         val yy = y * y; val yz = y * z; val zz = z * z
+            //$$         val xs = x * s; val ys = y * s; val zs = z * s
+            //$$
+            //$$         return Matrix3f().apply {
+            //$$             m00 = xx * oneMinusC + c
+            //$$             m01 = xy * oneMinusC + zs
+            //$$             m02 = xz * oneMinusC - ys
+            //$$             m10 = xy * oneMinusC - zs
+            //$$             m11 = yy * oneMinusC + c
+            //$$             m12 = yz * oneMinusC + xs
+            //$$             m20 = xz * oneMinusC + ys
+            //$$             m21 = yz * oneMinusC - xs
+            //$$             m22 = zz * oneMinusC + c
+            //$$         }
+            //$$     }
+            //$$
+            //$$     val r3 = createRotationMatrix(angle, axis)
+            //$$     Matrix3f.mul(normalMatrix, r3, normalMatrix) // N = N * R
             //$$ }
-            //$$
-            //$$ Matrix3f.mul(normalMatrix, createRotationMatrix(angle, axis), normalMatrix)
             //#endif
         }
     }

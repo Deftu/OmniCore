@@ -9,9 +9,12 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommandSource
 import dev.deftu.omnicore.api.client.profiled
 import dev.deftu.omnicore.internal.commands.CommandOps
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
+
+//#if FABRIC && MC >= 1.19.2
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
+//#endif
 
 //#if FORGE && MC <= 1.12.2
 //$$ import dev.deftu.omnicore.internal.commands.LegacyCommandBridge
@@ -24,6 +27,7 @@ import org.jetbrains.annotations.ApiStatus
 //#endif
 
 //#if FORGE-LIKE && MC >= 1.18.2
+//$$ import dev.deftu.omnicore.internal.forgeEventBus
 //#if FORGE
 //$$ import net.minecraftforge.client.event.RegisterClientCommandsEvent
 //#else
@@ -48,13 +52,13 @@ public object ClientCommandInternals {
             return
         }
 
-        //#if FABRIC && MC >= 1.19
+        //#if FABRIC && MC >= 1.19.2
         ClientCommandRegistrationCallback.EVENT.register { dispatcher, _ ->
-            CommandOps.copyCommands(dispatcher, this.dispatcher, OmniClientCommandSource)
+            copyClientCommands(dispatcher)
         }
         //#elseif FORGE-LIKE && MC >= 1.18.2
         //$$ forgeEventBus.addListener<RegisterClientCommandsEvent> { event ->
-        //$$     CommandInternals.copyCommands(event.dispatcher, this.dispatcher, OmniClientCommandSource)
+        //$$     copyClientCommands(event.dispatcher)
         //$$ }
         //#endif
 
@@ -105,7 +109,7 @@ public object ClientCommandInternals {
     //#if MC <= 1.12.2
     //$$ @JvmStatic
     //$$ public fun retrieveAutoComplete(command: String): Set<String> {
-    //$$     val results = dispatcher.parse(command, OmniClientCommandSource.UNIT)
+    //$$     val results = dispatcher.parse(command, OmniClientCommandSource)
     //$$     return dispatcher.getCompletionSuggestions(results)
     //$$         .join()
     //$$         .list
@@ -114,4 +118,21 @@ public object ClientCommandInternals {
     //$$         .toSet()
     //$$ }
     //#endif
+
+    /**
+     * !!! NOTE !!!
+     *
+     * This does not actually copy command EXECUTION, only command structuring for auto-completion purposes.
+     *
+     * Please see [execute] usages for actual command execution implementation.
+     */
+    @JvmStatic
+    @Suppress("MemberVisibilityCanBePrivate")
+    public fun <T> copyClientCommands(targetDispatcher: CommandDispatcher<T>) {
+        CommandOps.copyCommands(
+            targetDispatcher,
+            this.dispatcher,
+            OmniClientCommandSource
+        )
+    }
 }

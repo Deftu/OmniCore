@@ -1,6 +1,8 @@
 package dev.deftu.omnicore.api.client.textures
 
 import org.lwjgl.opengl.GL30
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL14
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.textures.TextureFormat
@@ -19,6 +21,16 @@ public enum class OmniTextureFormat(public val isColor: Boolean = false) {
         }
 
     public companion object {
+        @JvmStatic
+        public fun from(internalFormat: Int): OmniTextureFormat {
+            return when (internalFormat) {
+                GL11.GL_RGBA8 -> RGBA8
+                GL30.GL_DEPTH24_STENCIL8 -> DEPTH24_STENCIL8
+                GL14.GL_DEPTH_COMPONENT32 -> DEPTH32
+                else -> throw IllegalArgumentException("Invalid internal format: $internalFormat")
+            }
+        }
+
         //#if MC >= 1.21.5
         @JvmStatic
         public fun from(format: TextureFormat): OmniTextureFormat {

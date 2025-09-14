@@ -45,9 +45,9 @@ public object FramebufferInternals {
         //#if MC >= 1.17.1
         GL30.glBindFramebuffer(target.code, id)
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.bindFramebuffer(target.code, fbo)
+        //$$ GlStateManager.bindFramebuffer(target.code, id)
         //#else
-        //$$ OpenGlHelper.glBindFramebuffer(target.code, fbo)
+        //$$ OpenGlHelper.glBindFramebuffer(target.code, id)
         //#endif
     }
 
@@ -72,9 +72,9 @@ public object FramebufferInternals {
         //#if MC >= 1.17.1
         GL30.glDeleteFramebuffers(id)
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.deleteFramebuffers(fbo)
+        //$$ GlStateManager.deleteFramebuffers(id)
         //#else
-        //$$ OpenGlHelper.glDeleteFramebuffers(fbo)
+        //$$ OpenGlHelper.glDeleteFramebuffers(id)
         //#endif
     }
 

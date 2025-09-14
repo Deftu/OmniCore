@@ -57,9 +57,14 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
                     val leftOffset = i * rowSize + k * channelCount
                     val rightOffset = i * rowSize + right * channelCount
 
-                    MemoryUtil.memCopy(native.imageId() + leftOffset, rowBuffer, rowSize.toLong())
-                    MemoryUtil.memCopy(native.imageId() + rightOffset, native.imageId() + leftOffset, rowSize.toLong())
-                    MemoryUtil.memCopy(rowBuffer, native.imageId() + rightOffset, rowSize.toLong())
+                    //#if MC >= 1.21.5
+                    val pointer = native.imageId()
+                    //#else
+                    //$$ val pointer = ImageInternals.pointer(native)
+                    //#endif
+                    MemoryUtil.memCopy(pointer + leftOffset, rowBuffer, rowSize.toLong())
+                    MemoryUtil.memCopy(pointer + rightOffset, pointer + leftOffset, rowSize.toLong())
+                    MemoryUtil.memCopy(rowBuffer, pointer + rightOffset, rowSize.toLong())
                 }
             }
         }
@@ -81,9 +86,14 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
             for (i in 0..<height / 2) {
                 val bottom = height - 1 - i
 
-                MemoryUtil.memCopy(native.imageId() + i * rowSize, rowBuffer, rowSize.toLong())
-                MemoryUtil.memCopy(native.imageId() + bottom * rowSize, native.imageId() + i * rowSize, rowSize.toLong())
-                MemoryUtil.memCopy(rowBuffer, native.imageId() + bottom * rowSize, rowSize.toLong())
+                //#if MC >= 1.21.5
+                val pointer = native.imageId()
+                //#else
+                //$$ val pointer = ImageInternals.pointer(native)
+                //#endif
+                MemoryUtil.memCopy(pointer + i * rowSize, rowBuffer, rowSize.toLong())
+                MemoryUtil.memCopy(pointer + bottom * rowSize, pointer + i * rowSize, rowSize.toLong())
+                MemoryUtil.memCopy(rowBuffer, pointer + bottom * rowSize, rowSize.toLong())
             }
         }
         //#else

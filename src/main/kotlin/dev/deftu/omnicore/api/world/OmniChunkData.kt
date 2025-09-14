@@ -5,7 +5,6 @@ import dev.deftu.omnicore.api.translationKey
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import net.minecraft.world.World
-import java.util.Optional
 
 //#if MC == 1.16.5
 //$$ import net.minecraft.util.math.ChunkSectionPos
@@ -33,7 +32,6 @@ public data class OmniChunkData(
 
     private val posInvoker: (x: Int, y: Int, z: Int) -> BlockPos
 ) {
-
     public companion object {
         @JvmStatic
         public fun from(
@@ -60,7 +58,7 @@ public data class OmniChunkData(
                 posInvoker = { x, y, z ->
                     require(x in 0..15) { "x must be between 0 and 15 (inclusive), got $x" }
                     require(z in 0..15) { "z must be between 0 and 15 (inclusive), got $z" }
-                    require(y in 0..world.worldHeight) { "y must be between 0 and ${world.height} (inclusive), got $y" }
+                    require(y in 0..world.maxWorldHeight) { "y must be between 0 and ${world.maxWorldHeight} (inclusive), got $y" }
 
                     //#if MC >= 1.17.1
                     chunkPos.getBlockPos(x, y, z)
@@ -84,7 +82,7 @@ public data class OmniChunkData(
     public fun getBlockPosOf(x: Int, y: Int, z: Int): BlockPos {
         require(x in 0..15) { "x must be between 0 and 15 (inclusive), got $x" }
         require(z in 0..15) { "z must be between 0 and 15 (inclusive), got $z" }
-        require(y in 0..world.worldHeight) { "y must be between 0 and ${world.height} (inclusive), got $y" }
+        require(y in 0..world.maxWorldHeight) { "y must be between 0 and ${world.maxWorldHeight} (inclusive), got $y" }
 
         return this.posInvoker(x, y, z)
     }
@@ -171,5 +169,4 @@ public data class OmniChunkData(
     public fun getBiomeAt(x: Int, y: Int, z: Int): OmniBiomeData? {
         return getBiomeAt(blockPos(x, y, z))
     }
-
 }

@@ -1,6 +1,11 @@
 package dev.deftu.omnicore.api.client.input
 
 //#if MC >= 1.16.5
+//#if MC < 1.19.3
+//$$ import dev.deftu.omnicore.api.client.client
+//#endif
+
+import dev.deftu.omnicore.api.client.windowHandle
 import org.lwjgl.glfw.GLFW
 //#else
 //$$ import org.lwjgl.input.Keyboard
@@ -28,7 +33,7 @@ public object OmniKeyboard {
         //#if MC >= 1.19.3
         // This function was removed in 1.19.3. Repeat events are permanently enabled.
         //#elseif MC >= 1.16.5
-        //$$ OmniClient.getInstance().keyboardHandler.setSendRepeatsToGui(enabled)
+        //$$ client.keyboardHandler.setSendRepeatsToGui(enabled)
         //#else
         //$$ Keyboard.enableRepeatEvents(enabled)
         //#endif
@@ -50,8 +55,7 @@ public object OmniKeyboard {
         }
 
         //#if MC >= 1.16.5
-        val handle = OmniClient.getInstance().window.handle
-        val state = GLFW.glfwGetKey(handle, code)
+        val state = GLFW.glfwGetKey(windowHandle, code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else
         //$$ return Keyboard.isKeyDown(code)

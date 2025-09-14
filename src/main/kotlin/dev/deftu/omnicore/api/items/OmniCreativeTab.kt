@@ -1,53 +1,24 @@
 package dev.deftu.omnicore.api.items
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
-import net.minecraft.item.ItemStack
-import net.minecraft.registry.Registries
-import net.minecraft.registry.Registry
-import net.minecraft.registry.RegistryKey
-import net.minecraft.registry.RegistryKeys
-import net.minecraft.text.Text
 import net.minecraft.util.Identifier
+import org.jetbrains.annotations.ApiStatus
 
-public data class OmniCreativeTab @JvmOverloads public constructor(
-    val id: Identifier,
-    val icon: Item,
-    val titleKey: String = "itemGroup.${id.namespace}.${id.path}",
-) {
-    private val entries = mutableListOf<Item>()
-
-    public var isBuiltin: Boolean = false
-        private set
-
-    public val iconStack: ItemStack
-        get() = ItemStack(icon)
-
-    public val group: ItemGroup = FabricItemGroup.builder()
-        .icon(::iconStack)
-        .displayName(Text.translatable(titleKey))
-        .build()
-
-    public fun append(item: Item) {
-        entries += item
+@ApiStatus.Experimental
+public interface OmniCreativeTab {
+    public companion object {
+        public const val DEFAULT_TITLE_KEY: String = "itemGroup.%s.%s"
     }
 
-    public fun register(): OmniCreativeTab {
-        val key = RegistryKey.of(RegistryKeys.ITEM_GROUP, id)
-        Registry.register(Registries.ITEM_GROUP, key, group)
-        ItemGroupEvents.modifyEntriesEvent(key).register { groupEntries ->
-            for (item in entries) {
-                groupEntries.add(item)
-            }
-        }
+    public val isBuiltin: Boolean
 
-        return this
-    }
+    public val id: Identifier
+    public val icon: () -> Item
+    public val titleKey: String
 
-    internal fun builtin(): OmniCreativeTab {
-        isBuiltin = true
-        return this
-    }
+    public val vanilla: ItemGroup?
+
+    public fun append(vararg items: Item): OmniCreativeTab
+    public fun register(): OmniCreativeTab
 }

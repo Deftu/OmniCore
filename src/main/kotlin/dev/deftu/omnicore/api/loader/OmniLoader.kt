@@ -1,13 +1,45 @@
 package dev.deftu.omnicore.api.loader
 
 import dev.deftu.omnicore.api.Side
-import net.fabricmc.api.EnvType
-import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.ModContainer
 import java.io.InputStream
 import java.nio.file.Files
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
+
+//#if FABRIC
+import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.ModContainer
+import net.fabricmc.api.EnvType
+//#elseif FORGE
+//#if MC >= 1.15.2
+//$$ import net.minecraftforge.fml.ModList
+//$$ import net.minecraftforge.fml.ModLoadingContext
+//$$ import net.minecraftforge.fml.ModContainer
+//$$ import net.minecraftforge.fml.loading.FMLEnvironment
+//$$ import net.minecraftforge.fml.loading.FMLLoader
+//$$ import net.minecraftforge.fml.loading.FMLPaths
+//$$ import net.minecraftforge.api.distmarker.Dist
+//#else
+//$$ import net.minecraftforge.fml.common.Loader
+//$$ import net.minecraftforge.fml.common.ModContainer
+//$$ import net.minecraftforge.fml.common.FMLCommonHandler
+//$$ import net.minecraftforge.fml.relauncher.Side as ForgeSide
+//$$ import net.minecraft.launchwrapper.Launch
+//#endif
+//#else
+//$$ import net.neoforged.fml.ModList
+//$$ import net.neoforged.fml.ModLoadingContext
+//$$ import net.neoforged.fml.ModContainer
+//$$ import net.neoforged.fml.loading.FMLEnvironment
+//$$ import net.neoforged.fml.loading.FMLLoader
+//$$ import net.neoforged.fml.loading.FMLPaths
+//$$ import net.neoforged.api.distmarker.Dist
+//#endif
+
+//#if FORGE-LIKE && MC >= 1.15.2
+//$$ import java.util.stream.Collectors
+//$$ import kotlin.io.path.inputStream
+//#endif
 
 public object OmniLoader {
     @JvmStatic
@@ -46,14 +78,14 @@ public object OmniLoader {
             //#else
             //#if MC >= 1.15.2
             //$$ return when (FMLEnvironment.dist) {
-            //$$     Dist.CLIENT -> PhysicalSide.CLIENT
-            //$$     Dist.DEDICATED_SERVER -> PhysicalSide.SERVER
+            //$$     Dist.CLIENT -> Side.CLIENT
+            //$$     Dist.DEDICATED_SERVER -> Side.SERVER
             //$$     else -> throw IllegalStateException("Unknown physical side")
             //$$ }
             //#else
             //$$ return when (FMLCommonHandler.instance().side) {
-            //$$     ForgeSide.CLIENT -> PhysicalSide.CLIENT
-            //$$     ForgeSide.SERVER -> PhysicalSide.SERVER
+            //$$     ForgeSide.CLIENT -> Side.CLIENT
+            //$$     ForgeSide.SERVER -> Side.SERVER
             //$$     else -> throw IllegalStateException("Unknown physical side")
             //$$ }
             //#endif
@@ -123,7 +155,7 @@ public object OmniLoader {
     }
 
     @JvmStatic
-    public fun findContainer(id: String): Optional<ModContainer> {
+    public fun findContainer(id: String): Optional<out ModContainer> {
         //#if FABRIC
         return FabricLoader.getInstance().getModContainer(id)
         //#else

@@ -10,6 +10,11 @@ public object OmniLocalization {
 
     @JvmStatic
     public operator fun contains(key: String): Boolean {
+        //#if MC >= 1.12.2
         return I18n.hasTranslation(key)
+        //#else
+        //$$ val translated = I18n.translate(key)
+        //$$ return translated != key
+        //#endif
     }
 }

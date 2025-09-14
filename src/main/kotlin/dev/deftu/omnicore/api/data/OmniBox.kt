@@ -91,11 +91,19 @@ public fun Box.contract(x: Double, y: Double, z: Double): Box {
 }
 
 public fun Box.contract(vec: Vec3d): Box {
+    //#if MC >= 1.12.2
     return contract(vec.x, vec.y, vec.z)
+    //#else
+    //$$ return expand(-vec.x, -vec.y, -vec.z)
+    //#endif
 }
 
 public fun Box.contract(amount: Double): Box {
+    //#if MC >= 1.12.2
     return contract(amount, amount, amount)
+    //#else
+    //$$ return expand(-amount, -amount, -amount)
+    //#endif
 }
 
 public fun Box.translate(x: Double, y: Double, z: Double): Box {

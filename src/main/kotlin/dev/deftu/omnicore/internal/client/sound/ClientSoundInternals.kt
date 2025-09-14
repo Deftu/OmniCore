@@ -2,8 +2,16 @@ package dev.deftu.omnicore.internal.client.sound
 
 import net.minecraft.client.sound.PositionedSoundInstance
 import net.minecraft.client.sound.SoundManager
-import net.minecraft.sound.SoundEvent
 import org.jetbrains.annotations.ApiStatus
+
+//#if MC >= 1.12.2
+import net.minecraft.sound.SoundEvent
+//#else
+//$$ import net.minecraft.client.sound.SoundInstance
+//$$ import net.minecraft.util.Identifier
+//$$ import java.lang.invoke.MethodHandle
+//$$ import java.lang.invoke.MethodHandles
+//#endif
 
 @ApiStatus.Internal
 public object ClientSoundInternals {

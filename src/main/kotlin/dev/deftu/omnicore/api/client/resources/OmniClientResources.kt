@@ -52,7 +52,7 @@ public object OmniClientResources {
         //#if MC >= 1.21.4
         //$$         AddClientReloadListenersEvent
         //$$     > { event ->
-        //$$         event.addListener(listener.reloadIdentifier, listener)
+        //$$         event.addListener(listener.location, listener)
         //$$     }
         //#else
         //$$         RegisterClientReloadListenersEvent

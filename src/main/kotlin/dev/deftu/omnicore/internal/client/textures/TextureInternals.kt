@@ -74,13 +74,12 @@ public object TextureInternals {
         //#if MC >= 1.21.6
         RenderSystem.setShaderTexture(unit, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
         //#elseif MC >= 1.21.5
-        //$$ RenderSystem.setShaderTexture(unit, VanillaWrappedGlTexture(id))
+        //$$ RenderSystem.setShaderTexture(unit, WrappedGlTexture(id))
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.setShaderTexture(unit, id)
         //#else
-        //$$ configureTextureUnit(index) {
-        //$$     bindTexture(id)
-        //$$ }
+        //$$ activeUnit = GL13.GL_TEXTURE0 + unit
+        //$$ active = id
         //#endif
     }
 

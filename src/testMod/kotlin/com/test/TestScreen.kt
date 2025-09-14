@@ -1,24 +1,22 @@
 package com.test
 
-import dev.deftu.omnicore.client.OmniScreen
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
-import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
+import dev.deftu.omnicore.api.client.render.DrawMode
+import dev.deftu.omnicore.api.client.render.OmniRenderingContext
+import dev.deftu.omnicore.api.client.render.OmniTextRenderer
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
+import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
+import dev.deftu.omnicore.api.client.screen.OmniScreen
+import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import java.awt.Color
 
-//#if MC <= 1.12.2
-//$$ import net.minecraft.client.renderer.BufferBuilder
-//$$ import net.minecraft.client.renderer.Tessellator
-//#endif
-
 class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
-
     private val pipeline by lazy {
-        OmniRenderPipeline.builderWithDefaultShader(
-            identifier = OmniIdentifier.create("testmod", "custom"),
-            vertexFormat = VertexFormats.POSITION_COLOR,
-            mode = DrawModes.QUADS
+        OmniRenderPipelines.builderWithDefaultShader(
+            location = identifierOrThrow("testmod", "custom"),
+            vertexFormat = DefaultVertexFormats.POSITION_COLOR,
+            drawMode = DrawMode.QUADS
         ).build()
     }
 
@@ -32,17 +30,14 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
     private val renderWidth = 100.0
     private val renderHeight = 100.0
 
-    override fun handleRender(stack: OmniMatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-        super.handleRender(stack, mouseX, mouseY, tickDelta) // Render vanilla screen
+    override fun onRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
+        super.onRender(ctx, mouseX, mouseY, tickDelta) // Render vanilla screen
 
-        render(stack)
-        //#if MC <= 1.12.2
-        //$$ renderVanilla()
-        //#endif
+        render(ctx)
 
         val text = "Hello, OmniCore!"
-        OmniGameRendering.drawCenteredText(
-            stack = stack,
+        OmniTextRenderer.renderCentered(
+            context = ctx,
             text = text,
             x = (width / 2f),
             y = 25f,
@@ -50,56 +45,24 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
         )
     }
 
-    private fun render(stack: OmniMatrixStack) {
-        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
+    private fun render(ctx: OmniRenderingContext) {
+        val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_COLOR)
         buffer
-            .vertex(stack, renderX, renderY, 0.0)
+            .vertex(ctx.matrices, renderX, renderY, 0.0)
             .color(topLeftColor)
             .next()
         buffer
-            .vertex(stack, renderX + renderWidth, renderY, 0.0)
+            .vertex(ctx.matrices, renderX + renderWidth, renderY, 0.0)
             .color(topRightColor)
             .next()
         buffer
-            .vertex(stack, renderX + renderWidth, renderY + renderHeight, 0.0)
+            .vertex(ctx.matrices, renderX + renderWidth, renderY + renderHeight, 0.0)
             .color(bottomRightColor)
             .next()
         buffer
-            .vertex(stack, renderX, renderY + renderHeight, 0.0)
+            .vertex(ctx.matrices, renderX, renderY + renderHeight, 0.0)
             .color(bottomLeftColor)
             .next()
-        buffer.build()?.drawWithCleanup(pipeline)
+        buffer.buildOrNull()?.drawAndClose(pipeline)
     }
-
-    //#if MC <= 1.12.2
-    //$$ private fun renderVanilla() {
-    //$$     val renderX = renderX + renderWidth + 50.0
-    //$$
-    //$$     val tessellator = Tessellator.getInstance()
-    //$$     val buffer = tessellator.buffer
-    //$$     buffer.begin(DrawModes.QUADS.vanilla, VertexFormats.POSITION_COLOR.vanilla)
-    //$$     buffer
-    //$$         .pos(renderX, renderY, 0.0)
-    //$$         .color(topLeftColor)
-    //$$         .endVertex()
-    //$$     buffer
-    //$$         .pos(renderX + renderWidth, renderY, 0.0)
-    //$$         .color(topRightColor)
-    //$$         .endVertex()
-    //$$     buffer
-    //$$         .pos(renderX + renderWidth, renderY + renderHeight, 0.0)
-    //$$         .color(bottomRightColor)
-    //$$         .endVertex()
-    //$$     buffer
-    //$$         .pos(renderX, renderY + renderHeight, 0.0)
-    //$$         .color(bottomLeftColor)
-    //$$         .endVertex()
-    //$$     tessellator.draw()
-    //$$ }
-    //$$
-    //$$ private fun BufferBuilder.color(color: Color): BufferBuilder {
-    //$$     return color(color.red, color.green, color.blue, color.alpha)
-    //$$ }
-    //#endif
-
 }

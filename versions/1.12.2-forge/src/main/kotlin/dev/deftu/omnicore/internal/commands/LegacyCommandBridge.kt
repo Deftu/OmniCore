@@ -1,6 +1,5 @@
 package dev.deftu.omnicore.internal.commands
 
-//#if FORGE
 import com.mojang.brigadier.tree.CommandNode
 import net.minecraft.command.CommandBase
 import net.minecraft.command.ICommandSender
@@ -57,4 +56,3 @@ internal class LegacyCommandBridge<S>(
         return true
     }
 }
-//#endif

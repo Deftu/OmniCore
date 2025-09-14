@@ -8,7 +8,7 @@ import dev.deftu.omnicore.internal.client.render.ScissorInternals
 import net.minecraft.client.gui.DrawContext
 //#endif
 
-//#if MC >= 1.16.5
+//#if MC >= 1.16.5 && MC < 1.20.1
 //$$ import net.minecraft.client.util.math.MatrixStack
 //#endif
 
@@ -28,8 +28,10 @@ public data class OmniRenderingContext(
             //#endif
         ): OmniRenderingContext {
             val stack = OmniMatrixStacks.vanilla(
-                //#if MC >= 1.16.5
+                //#if MC >= 1.20.1
                 ctx
+                //#elseif MC >= 1.16.5
+                //$$ matrices
                 //#endif
             )
 

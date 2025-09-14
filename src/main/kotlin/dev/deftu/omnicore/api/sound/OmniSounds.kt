@@ -11,7 +11,7 @@ import net.minecraft.entity.passive.WolfSoundVariants
 //#if MC >= 1.12.2
 import net.minecraft.sound.SoundEvents
 //#else
-//$$ import dev.deftu.omnicore.common.OmniIdentifier
+//$$ import dev.deftu.omnicore.api.identifierOrThrow
 //#endif
 
 public object OmniSounds {
@@ -30,7 +30,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("gui.button.press")
+            //$$ identifierOrThrow("gui.button.press")
             //#endif
         )
     }
@@ -41,7 +41,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP
             //#else
-            //$$ OmniIdentifier.create("random.orb")
+            //$$ identifierOrThrow("random.orb")
             //#endif
         )
     }
@@ -52,7 +52,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_ITEM_PICKUP
             //#else
-            //$$ OmniIdentifier.create("random.pop")
+            //$$ identifierOrThrow("random.pop")
             //#endif
         )
     }
@@ -63,7 +63,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_PLAYER_LEVELUP
             //#else
-            //$$ OmniIdentifier.create("random.levelup")
+            //$$ identifierOrThrow("random.levelup")
             //#endif
         )
     }
@@ -77,7 +77,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("random.break")
+            //$$ identifierOrThrow("random.break")
             //#endif
         )
     }
@@ -90,7 +90,7 @@ public object OmniSounds {
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_AMBIENT
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.ambient")
+            //$$ identifierOrThrow("entity.wolf.ambient")
             //#endif
         )
     }
@@ -103,7 +103,7 @@ public object OmniSounds {
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_DEATH
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.death")
+            //$$ identifierOrThrow("entity.wolf.death")
             //#endif
         )
     }
@@ -116,7 +116,7 @@ public object OmniSounds {
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_GROWL
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.growl")
+            //$$ identifierOrThrow("entity.wolf.growl")
             //#endif
         )
     }
@@ -131,7 +131,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             //$$ SoundEvents.WOLF_HOWL
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.howl")
+            //$$ identifierOrThrow("entity.wolf.howl")
             //#endif
         //$$ )
         //#endif
@@ -145,7 +145,7 @@ public object OmniSounds {
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_HURT
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.hurt")
+            //$$ identifierOrThrow("entity.wolf.hurt")
             //#endif
         )
     }
@@ -158,7 +158,7 @@ public object OmniSounds {
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_PANT
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.pant")
+            //$$ identifierOrThrow("entity.wolf.pant")
             //#endif
         )
     }
@@ -169,7 +169,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_SHAKE
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.shake")
+            //$$ identifierOrThrow("entity.wolf.shake")
             //#endif
         )
     }
@@ -180,7 +180,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_WOLF_STEP
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.step")
+            //$$ identifierOrThrow("entity.wolf.step")
             //#endif
         )
     }
@@ -193,7 +193,7 @@ public object OmniSounds {
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_WHINE
             //#else
-            //$$ OmniIdentifier.create("entity.wolf.whine")
+            //$$ identifierOrThrow("entity.wolf.whine")
             //#endif
         )
     }
@@ -207,7 +207,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("note.bd")
+            //$$ identifierOrThrow("note.bd")
             //#endif
         )
     }
@@ -221,7 +221,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("note.bass")
+            //$$ identifierOrThrow("note.bass")
             //#endif
         )
     }
@@ -235,7 +235,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("note.harp")
+            //$$ identifierOrThrow("note.harp")
             //#endif
         )
     }
@@ -249,7 +249,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("note.hat")
+            //$$ identifierOrThrow("note.hat")
             //#endif
         )
     }
@@ -263,7 +263,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("note.pling")
+            //$$ identifierOrThrow("note.pling")
             //#endif
         )
     }
@@ -277,7 +277,7 @@ public object OmniSounds {
                 .comp_349()
                 //#endif
             //#else
-            //$$ OmniIdentifier.create("note.snare")
+            //$$ identifierOrThrow("note.snare")
             //#endif
         )
     }

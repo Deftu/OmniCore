@@ -8,7 +8,7 @@ import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
-import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder
+import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
@@ -133,7 +133,7 @@ public interface OmniFramebuffer : AutoCloseable {
         stack.push()
         stack.scale(1f, 1f, 50f)
 
-        val buffer = OmniBufferBuilder.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_TEXTURE_COLOR)
+        val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_TEXTURE_COLOR)
         buffer
             .vertex(stack, x.toDouble(), (y + height).toDouble(), 0.0)
             .texture(0.0, 0.0)
@@ -154,7 +154,7 @@ public interface OmniFramebuffer : AutoCloseable {
             .texture(0.0, 1.0)
             .color(color)
             .next()
-        buffer.build()?.drawAndClose(pipeline) {
+        buffer.buildOrNull()?.drawAndClose(pipeline) {
             texture(0, texture.id)
         }
 

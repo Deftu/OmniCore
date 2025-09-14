@@ -2,8 +2,8 @@ package dev.deftu.omnicore.api.client.chat
 
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.api.client.events.ClientTickEvent
+import dev.deftu.omnicore.api.client.player
 import dev.deftu.omnicore.api.eventBus
-import dev.deftu.omnicore.client.OmniClientPlayer
 import java.util.concurrent.ConcurrentLinkedQueue
 
 public object OmniClientChatQueue {
@@ -20,7 +20,7 @@ public object OmniClientChatQueue {
                 return@on
             }
 
-            val player = OmniClientPlayer.getInstance() ?: return@on
+            val player = player ?: return@on
             val entry = queue.peek() ?: return@on
             if (entry.delay % tickCounter != 0L) {
                 return@on

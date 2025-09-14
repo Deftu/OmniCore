@@ -21,7 +21,7 @@ internal class OmniRenderPass : AutoCloseable {
             //#if MC < 1.21.5
             //$$ renderPass = this,
             //#endif
-            renderPipeline = pipeline,
+            renderPipeline = pipeline as OmniRenderPipelineImpl,
             builtBuffer = builtBuffer
         )
 
@@ -31,7 +31,7 @@ internal class OmniRenderPass : AutoCloseable {
 
     override fun close() {
         //#if MC < 1.21.5
-        //$$ prevRenderState.apply(activeRenderState)
+        //$$ prevRenderState.applyTo(activeRenderState)
         //#endif
     }
 }

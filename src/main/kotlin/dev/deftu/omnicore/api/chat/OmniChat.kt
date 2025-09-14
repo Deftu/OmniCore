@@ -9,9 +9,13 @@ import dev.deftu.textile.minecraft.MCTextHolder
 import net.minecraft.server.command.CommandOutput
 import net.minecraft.server.network.ServerPlayerEntity
 
+//#if MC <= 1.8.9
+//$$ import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket
+//#endif
+
 public object OmniChat {
     //#if MC >= 1.16.5 && MC < 1.19.2
-    //$$ private val NULL_UUID = java.util.UUID(0, 0)
+    //$$ internal val NULL_UUID = java.util.UUID(0, 0)
     //#endif
 
     @JvmStatic
@@ -64,8 +68,11 @@ public object OmniChat {
     public fun displayActionBar(player: ServerPlayerEntity, text: MCTextHolder<*>) {
         //#if MC >= 1.19.2
         player.sendMessage(text.asVanilla(), true)
-        //#else
+        //#elseif MC >= 1.12.2
         //$$ player.sendMessage(text.asVanilla(), true)
+        //#else
+        //$$ val packet = ChatMessageS2CPacket(text.asVanilla() , 2.toByte())
+        //$$ player.networkHandler.sendPacket(packet)
         //#endif
     }
 

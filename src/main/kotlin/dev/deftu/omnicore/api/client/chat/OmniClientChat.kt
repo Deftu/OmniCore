@@ -32,8 +32,10 @@ public object OmniClientChat {
     @JvmStatic
     public fun displayChatMessage(text: MCTextHolder<*>) {
         player
-            //#if MC >= 1.16.5
+            //#if MC >= 1.19.2
             ?.sendMessage(text.asVanilla(), false)
+            //#elseif MC >= 1.16.5
+            //$$ ?.sendSystemMessage(text.asVanilla(), OmniChat.NULL_UUID)
             //#else
             //$$ ?.sendMessage(text.asVanilla())
             //#endif
@@ -58,12 +60,14 @@ public object OmniClientChat {
 
     @JvmStatic
     public fun displayActionBar(text: MCTextHolder<*>) {
-        //#if MC >= 1.16.5
+        //#if MC >= 1.19.2
         player?.sendMessage(text.asVanilla(), true)
+        //#elseif MC >= 1.16.5
+        //$$ player?.sendMessage(text.asVanilla(), true)
         //#elseif MC >= 1.12.2
         //$$ player?.sendStatusMessage(text.asVanilla(), true)
         //#else
-        //$$ client.connection?.handleChat(SPacketChat(text.asVanilla(), 2))
+        //$$ client.networkHandler?.onChatMessage(ChatMessageS2CPacket(text.asVanilla(), 2))
         //#endif
     }
 

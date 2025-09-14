@@ -1,6 +1,5 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
-import com.mojang.blaze3d.opengl.GlStateManager
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
@@ -10,12 +9,22 @@ import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.5
+import com.mojang.blaze3d.opengl.GlStateManager
 import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.platform.DepthTestFunction
 import com.mojang.blaze3d.platform.LogicOp
 import com.mojang.blaze3d.shaders.ShaderType
 import net.minecraft.client.gl.GlCommandEncoder
+//#else
+//$$ import dev.deftu.omnicore.api.client.render.state.CullFace
+//$$ import dev.deftu.omnicore.api.client.render.state.DepthFunction
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniAlphaState
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniColorMask
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniCullState
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniDepthState
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniPolygonOffset
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniRenderState
 //#endif
 
 public class OmniRenderPipelineBuilder internal constructor(
@@ -132,7 +141,42 @@ public class OmniRenderPipelineBuilder internal constructor(
 
         return OmniRenderPipelineImpl(location, vertexFormat, vanilla, shaderSourcesFunction)
         //#else
-        //$$ TODO("Support for MC versions below 1.21.5")
+        //$$ return OmniRenderPipelineImpl(
+        //$$     location = location,
+        //$$     vertexFormat = vertexFormat,
+        //$$     shaderProvider = shaderProvider,
+        //$$     activeRenderState = OmniRenderState(
+        //$$         alphaState = OmniAlphaState(true, GL11.GL_ALWAYS, 0.0f),
+        //$$         blendState = blendState,
+        //$$         depthState = OmniDepthState(
+        //$$             isEnabled = depthTest != OmniRenderPipeline.DepthTest.DISABLED,
+        //$$             function = when (depthTest) {
+        //$$                 OmniRenderPipeline.DepthTest.DISABLED -> DepthFunction.LESS
+        //$$                 OmniRenderPipeline.DepthTest.ALWAYS -> DepthFunction.ALWAYS
+        //$$                 OmniRenderPipeline.DepthTest.EQUAL -> DepthFunction.EQUAL
+        //$$                 OmniRenderPipeline.DepthTest.LESS_OR_EQUAL -> DepthFunction.LESS_OR_EQUAL
+        //$$                 OmniRenderPipeline.DepthTest.LESS -> DepthFunction.LESS
+        //$$                 OmniRenderPipeline.DepthTest.GREATER -> DepthFunction.GREATER
+        //$$             },
+        //$$             mask = depthMask
+        //$$         ),
+        //$$         cullState = OmniCullState(
+        //$$             isEnabled = culling,
+        //$$             mode = CullFace.BACK
+        //$$         ),
+        //$$         colorMaskState = OmniColorMask(
+        //$$             red = colorMask.first,
+        //$$             green = colorMask.first,
+        //$$             blue = colorMask.first,
+        //$$             alpha = colorMask.second
+        //$$         ),
+        //$$         polygonOffsetState = OmniPolygonOffset(
+        //$$             isEnabled = polygonOffset.first != 0f || polygonOffset.second != 0f,
+        //$$             factor = polygonOffset.first,
+        //$$             units = polygonOffset.second
+        //$$         )
+        //$$     ),
+        //$$ )
         //#endif
     }
 

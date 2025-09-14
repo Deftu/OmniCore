@@ -33,7 +33,7 @@ public val World.spawnPosition: BlockPos
         //#endif
     }
 
-public val World.worldHeight: Int
+public val World.maxWorldHeight: Int
     get() {
         //#if MC >= 1.16.5
         return this.height
@@ -137,7 +137,7 @@ public fun World.getClosestPlayerTo(
     //$$
     //$$ var closestDistanceTo = -1.0
     //$$ var closestPlayer: PlayerEntity? = null
-    //$$ for (player in players) {
+    //$$ for (player in playerEntities) {
     //$$     if (!filter(player)) {
     //$$         continue
     //$$     }
@@ -147,7 +147,7 @@ public fun World.getClosestPlayerTo(
     //$$         continue
     //$$     }
     //$$
-    //$$     if (closestDistanceTo < 0 || distanceTo < closestDistanceTo) {
+    //$$     if (closestDistanceTo !in 0.0..distanceTo) {
     //$$         closestDistanceTo = distanceTo
     //$$         closestPlayer = player
     //$$     }

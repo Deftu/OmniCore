@@ -29,7 +29,7 @@ public class OmniBuiltBufferImpl(override val vanilla: VanillaBuiltBuffer) : Omn
         //$$ vanilla.release()
         //#else
         //$$ vanilla.reset()
-        //$$ OmniBufferBuilder.bufferPool.add(vanilla)
+        //$$ OmniBufferBuilderImpl.bufferPool.add(vanilla)
         //#endif
 
         isClosed = true
@@ -38,7 +38,7 @@ public class OmniBuiltBufferImpl(override val vanilla: VanillaBuiltBuffer) : Omn
     override fun markClosed() {
         isClosed = true
         //#if MC < 1.19.2
-        //$$ OmniBufferBuilder.bufferPool.add(vanilla)
+        //$$ OmniBufferBuilderImpl.bufferPool.add(vanilla)
         //#endif
     }
 }

@@ -18,15 +18,21 @@ public class OmniCommandSource(
         get() = output as? ServerPlayerEntity
 
     //#if MC <= 1.12.2
-    //$ internal constructor(server: MinecraftServer, output: ICommandSender) : this(
-    //$     server,
-    //$     output,
-    //$     output.entityWorld as WorldServer
-    //$ )
+    //$$ internal constructor(server: MinecraftServer, output: ICommandSender) : this(
+    //$$     server,
+    //$$     output,
+    //$$     output.entityWorld as WorldServer
+    //$$ )
     //#endif
 
     public fun replyChat(text: MCTextHolder<*>): Int {
-        output.sendMessage(text.asVanilla())
+        output.sendMessage(
+            text.asVanilla(),
+            //#if MC >= 1.16.5 && MC < 1.19.2
+            //$$ OmniChat.NULL_UUID
+            //#endif
+        )
+
         return Command.SINGLE_SUCCESS
     }
 
@@ -36,13 +42,25 @@ public class OmniCommandSource(
 
     @JvmOverloads
     public fun replyError(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true): Int {
-        output.sendMessage(OmniChat.buildErrorMessage(content, throwable, isDetailed).asVanilla())
+        output.sendMessage(
+            OmniChat.buildErrorMessage(content, throwable, isDetailed).asVanilla(),
+            //#if MC >= 1.16.5 && MC < 1.19.2
+            //$$ OmniChat.NULL_UUID
+            //#endif
+        )
+
         return Command.SINGLE_SUCCESS
     }
 
     @JvmOverloads
     public fun replyError(error: Throwable, isDetailed: Boolean = true): Int {
-        output.sendMessage(OmniChat.buildErrorMessage(error, isDetailed).asVanilla())
+        output.sendMessage(
+            OmniChat.buildErrorMessage(error, isDetailed).asVanilla(),
+            //#if MC >= 1.16.5 && MC < 1.19.2
+            //$$ OmniChat.NULL_UUID
+            //#endif
+        )
+
         return Command.SINGLE_SUCCESS
     }
 

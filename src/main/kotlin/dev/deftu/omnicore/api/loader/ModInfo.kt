@@ -22,7 +22,7 @@ public data class ModInfo(
     val name: String,
     val version: String,
     val file: Path?,
-    var container: Optional<ModContainer> = OmniLoader.findContainer(id),
+    var container: Optional<out ModContainer> = OmniLoader.findContainer(id),
 ) {
     public companion object {
         @JvmField

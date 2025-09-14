@@ -2,8 +2,11 @@ package dev.deftu.omnicore.internal.world
 
 import dev.deftu.omnicore.api.world.DimensionId
 import dev.deftu.omnicore.api.world.OmniDimension
-import net.minecraft.world.dimension.DimensionTypes
 import org.jetbrains.annotations.ApiStatus
+
+//#if MC >= 1.16.5
+import net.minecraft.world.dimension.DimensionTypes
+//#endif
 
 @ApiStatus.Internal
 public object DimensionInternals {

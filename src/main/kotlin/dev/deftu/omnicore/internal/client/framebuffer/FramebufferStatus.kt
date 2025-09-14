@@ -2,8 +2,13 @@ package dev.deftu.omnicore.internal.client.framebuffer
 
 import org.lwjgl.opengl.ARBFramebufferObject
 import org.lwjgl.opengl.EXTFramebufferObject
-import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL30
+
+//#if MC >= 1.16.5
+import org.lwjgl.opengl.GL
+//#else
+//$$ import org.lwjgl.opengl.GLContext
+//#endif
 
 public enum class FramebufferStatus {
     COMPLETE,
@@ -19,7 +24,11 @@ public enum class FramebufferStatus {
 
     public val code: Int
         get() {
+            //#if MC >= 1.16.5
             val caps = GL.getCapabilities()
+            //#else
+            //$$ val caps = GLContext.getCapabilities()
+            //#endif
             if (caps.OpenGL30) return when (this) {
                 COMPLETE -> GL30.GL_FRAMEBUFFER_COMPLETE
                 INCOMPLETE_ATTACHMENT -> GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT

@@ -2,7 +2,6 @@ package dev.deftu.omnicore.internal.client.render.pipeline
 
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
-import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
 import dev.deftu.omnicore.internal.client.textures.WrappedGlTexture
@@ -13,6 +12,10 @@ import kotlin.use
 import com.mojang.blaze3d.buffers.GpuBuffer
 import org.joml.Vector4f
 import org.lwjgl.system.MemoryStack
+//#endif
+
+//#if MC < 1.21.5
+//$$ import dev.deftu.omnicore.internal.client.render.ScissorInternals
 //#endif
 
 //#if MC >= 1.21.5
@@ -27,7 +30,7 @@ public class RenderPassEncoderImpl internal constructor(
     //#if MC < 1.21.5
     //$$ private val renderPass: OmniRenderPass,
     //#endif
-    private val renderPipeline: OmniRenderPipeline,
+    private val renderPipeline: OmniRenderPipelineImpl,
     private val builtBuffer: OmniBuiltBuffer
 ) : RenderPassEncoder {
     //#if MC >= 1.21.6
@@ -98,7 +101,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#elseif MC >= 1.21.5
         //$$ vanilla.bindSampler(name, WrappedGlTexture(id))
         //#else
-        //$$ pipeline.texture(name, id)
+        //$$ renderPipeline.texture(name, id)
         //#endif
         return this
     }
@@ -133,7 +136,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#elseif MC >= 1.21.5
         //$$ vanilla.setUniform(name, *values)
         //#else
-        //$$ pipeline.uniform(name, *values)
+        //$$ renderPipeline.uniform(name, *values)
         //#endif
         return this
     }
@@ -155,7 +158,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#elseif MC >= 1.21.5
         //$$ vanilla.setUniform(name, *values)
         //#else
-        //$$ pipeline.uniform(name, *values)
+        //$$ renderPipeline.uniform(name, *values)
         //#endif
         return this
     }
@@ -188,7 +191,7 @@ public class RenderPassEncoderImpl internal constructor(
             vanilla.disableScissor()
         }
 
-        (renderPipeline as OmniRenderPipelineImpl).draw(vanilla, builtBuffer.vanilla)
+        renderPipeline.draw(vanilla, builtBuffer.vanilla)
         vanilla.close()
         //#if MC >= 1.21.6
         internalBuffers.forEach(GpuBuffer::close)
@@ -196,17 +199,17 @@ public class RenderPassEncoderImpl internal constructor(
         //#else
         //$$ if (renderPass.activePipeline != renderPipeline) {
         //$$     renderPass.activePipeline = renderPipeline
-        //$$     renderPipeline.activeRenderState.apply(renderPass.activeRenderState)
+        //$$     renderPipeline.activeRenderState.applyTo(renderPass.activeRenderState)
         //$$ }
         //$$
-        //$$ var previousScissorState: OmniManagedScissorState? = null
-        //$$ if (this.scissorState != null) {
-        //$$     previousScissorState = OmniManagedScissorState.active()
-        //$$     this.scissorState?.activate()
+        //$$ var previousScissorBox: OmniRenderingContext.ScissorBox? = null
+        //$$ if (this.scissorBox != null) {
+        //$$     previousScissorBox = ScissorInternals.activeScissorState
+        //$$     this.scissorBox?.let(ScissorInternals::applyScissor)
         //$$ }
         //$$
-        //$$ (renderPipeline as OmniRenderPipelineImpl).draw(builtBuffer)
-        //$$ previousScissorState?.activate()
+        //$$ renderPipeline.draw(builtBuffer)
+        //$$ previousScissorBox?.let(ScissorInternals::applyScissor) ?: ScissorInternals.disableScissor()
         //$$ renderPipeline.unbind()
         //#endif
     }

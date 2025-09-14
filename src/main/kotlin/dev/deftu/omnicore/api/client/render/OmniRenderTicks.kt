@@ -8,7 +8,7 @@ import net.minecraft.client.render.RenderTickCounter
 
 //#if MC == 1.8.9
 //#if FABRIC
-//$$ import dev.deftu.omnicore.mixins.client.Mixin_MinecraftClient_TimerAccessor
+//$$ import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessDeltaTickTracker
 //#endif
 //$$
 //$$ import net.minecraft.client.render.ClientTickTracker
@@ -23,7 +23,7 @@ public object OmniRenderTicks {
     //#endif
     //$$ private val MinecraftClient.deltaTickTracker: ClientTickTracker by lazy {
     //#if FABRIC
-    //$$     (client as Mixin_MinecraftClient_TimerAccessor).ticker
+    //$$     (client as Mixin_AccessDeltaTickTracker).ticker
     //#else
     //$$     for (fieldName in timerFieldNames) {
     //$$         try {
@@ -45,7 +45,8 @@ public object OmniRenderTicks {
         // Force-init the deltaTickTracker property on MC 1.8.9
 
         //#if MC == 1.8.9
-        //$$ val _ = client.deltaTickTracker
+        //$$ @Suppress("unused")
+        //$$ val a = client.deltaTickTracker
         //#endif
     }
 

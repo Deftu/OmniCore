@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
 import java.util.function.Consumer
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.min
 
 public inline val ChunkPos.startBlock: BlockPos
@@ -34,6 +35,16 @@ public inline val ChunkPos.neighbors: Sequence<ChunkPos>
             }
         }
     }
+
+@JvmName("create")
+public fun chunkPos(x: Int, z: Int): ChunkPos {
+    return ChunkPos(x, z)
+}
+
+@JvmName("create")
+public fun chunkPos(x: Double, z: Double): ChunkPos {
+    return ChunkPos(floor(x).toInt(), floor(z).toInt())
+}
 
 public fun ChunkPos.withX(x: Int): ChunkPos {
     return ChunkPos(x, this.z)

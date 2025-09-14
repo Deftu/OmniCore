@@ -19,5 +19,7 @@ package dev.deftu.omnicore.internal
 //#endif
 //$$
 //$$ internal inline val forgeEventBus get() = Forge.EVENT_BUS
-//$$ internal inline lateinit var modEventBus: IEventBus
+//#if MC >= 1.16.5
+//$$ internal lateinit var modEventBus: IEventBus
+//#endif
 //#endif

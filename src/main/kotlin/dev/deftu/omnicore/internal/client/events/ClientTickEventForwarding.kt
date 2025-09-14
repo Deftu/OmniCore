@@ -2,8 +2,20 @@ package dev.deftu.omnicore.internal.client.events
 
 import dev.deftu.omnicore.api.client.events.ClientTickEvent
 import dev.deftu.omnicore.api.eventBus
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import org.jetbrains.annotations.ApiStatus
+
+//#if FABRIC
+//#if MC >= 1.16.5
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+//#else
+//$$ import net.legacyfabric.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+//#endif
+//#else
+//$$ import dev.deftu.omnicore.internal.forgeEventBus
+//#if MC < 1.16.5
+//$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+//#endif
+//#endif
 
 @ApiStatus.Internal
 public object ClientTickEventForwarding {
@@ -24,18 +36,18 @@ public object ClientTickEventForwarding {
         }
         //#elseif MC >= 1.16.5
         //#if MC >= 1.20.6
-        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.client.event.ClientTickEvent.Pre> { event ->
-        //$$     OmniCore.eventBus.post(TickEvent.Client.Pre)
+        //$$ forgeEventBus.addListener<net.neoforged.neoforge.client.event.ClientTickEvent.Pre> { event ->
+        //$$     eventBus.post(ClientTickEvent.Pre)
         //$$ }
         //$$
-        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.client.event.ClientTickEvent.Post> { event ->
-        //$$     OmniCore.eventBus.post(TickEvent.Client.Post)
+        //$$ forgeEventBus.addListener<net.neoforged.neoforge.client.event.ClientTickEvent.Post> { event ->
+        //$$     eventBus.post(ClientTickEvent.Post)
         //$$ }
         //#elseif MC >= 1.16.5
-        //$$ EventHolder.EVENT_BUS.addListener<net.neoforged.neoforge.event.TickEvent.ClientTickEvent> { event ->
+        //$$ forgeEventBus.addListener<net.neoforged.neoforge.event.TickEvent.ClientTickEvent> { event ->
         //$$         when (event.phase) {
-        //$$             net.neoforged.neoforge.event.TickEvent.Phase.START -> OmniCore.eventBus.post(TickEvent.Client.Pre)
-        //$$             net.neoforged.neoforge.event.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Client.Post)
+        //$$             net.neoforged.neoforge.event.TickEvent.Phase.START -> eventBus.post(ClientTickEvent.Pre)
+        //$$             net.neoforged.neoforge.event.TickEvent.Phase.END -> eventBus.post(ClientTickEvent.Post)
         //$$         }
         //$$     }
         //#endif
@@ -50,8 +62,8 @@ public object ClientTickEventForwarding {
     //$$ @SubscribeEvent
     //$$ public fun onClientTick(event: net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent) {
     //$$     when (event.phase) {
-    //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.START -> OmniCore.eventBus.post(TickEvent.Client.Pre)
-    //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END -> OmniCore.eventBus.post(TickEvent.Client.Post)
+    //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.START -> eventBus.post(ClientTickEvent.Pre)
+    //$$         net.minecraftforge.fml.common.gameevent.TickEvent.Phase.END -> eventBus.post(ClientTickEvent.Post)
     //$$         else -> {
     //$$             // no-op
     //$$         }

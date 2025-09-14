@@ -1,4 +1,5 @@
 com.mojang.blaze3d.platform.TextureUtil net.minecraft.client.texture.TextureUtil
+com.mojang.blaze3d.platform.GlStateManager _pixelStore() pixelStore()
 com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
 com.mojang.blaze3d.platform.GlStateManager _clearStencil() clearStencil()
 com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
@@ -29,3 +30,5 @@ com.mojang.blaze3d.platform.GlStateManager glCompileShader() compileShader()
 com.mojang.blaze3d.platform.GlStateManager glGetShaderi() getShader()
 com.mojang.blaze3d.platform.GlStateManager glGetShaderInfoLog() getShaderInfoLog()
 com.mojang.blaze3d.platform.GlStateManager glAttachShader() attachShader()
+com.mojang.blaze3d.platform.GlStateManager glDeleteProgram() deleteProgram()
+com.mojang.blaze3d.platform.GlStateManager _glGetUniformLocation() getUniformLocation()

@@ -5,6 +5,7 @@ import dev.deftu.omnicore.api.client.render.OmniResolution
 import kotlin.math.max
 
 //#if MC >= 1.16.5
+import dev.deftu.omnicore.api.client.windowHandle
 import org.lwjgl.glfw.GLFW
 //#elseif MC <= 1.12.2
 //$$ import org.lwjgl.input.Mouse
@@ -76,8 +77,7 @@ public object OmniMouse {
         }
 
         //#if MC >= 1.16.5
-        val handle = client.window.handle
-        val state = GLFW.glfwGetMouseButton(handle, code)
+        val state = GLFW.glfwGetMouseButton(windowHandle, code)
         return state == GLFW.GLFW_PRESS || state == GLFW.GLFW_REPEAT
         //#else
         //$$ return Mouse.isButtonDown(code + 100)

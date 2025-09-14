@@ -7,9 +7,15 @@ import net.minecraft.util.Identifier
 import org.jetbrains.annotations.ApiStatus
 
 //#if FORGE && MC <= 1.12.2
+//$$ import dev.deftu.omnicore.api.network.OmniNetworking
 //$$ import dev.deftu.omnicore.internal.forgeEventBus
+//$$ import net.minecraft.network.NetworkManager
 //$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 //$$ import net.minecraftforge.fml.common.gameevent.PlayerEvent
+//#endif
+
+//#if MC <= 1.8.9
+//$$ import dev.deftu.omnicore.api.identifierOrThrow
 //#endif
 
 @ApiStatus.Internal
@@ -36,11 +42,11 @@ public object NetworkingInternals {
         val packet = CustomPayloadS2CPacket(
             //#if MC >= 1.20.4
             VanillaCustomPayload(id, buf),
-            //#elseif MC == 1.16.5
+            //#elseif MC >= 1.16.5
             //$$ id,
-            //#elseif MC <= 1.12.2
-            //$$ id.toString(),
+            //$$ buf,
             //#else
+            //$$ id.toString(),
             //$$ buf,
             //#endif
         )
@@ -53,21 +59,30 @@ public object NetworkingInternals {
         //#endif
     }
 
+    @JvmStatic
+    public fun readIdentifier(buf: PacketByteBuf): Identifier {
+        //#if MC >= 1.12.2
+        return buf.readIdentifier()
+        //#else
+        //$$ return identifierOrThrow(buf.readString(Short.MAX_VALUE.toInt()))
+        //#endif
+    }
+
     //#if FORGE && MC <= 1.12.2
     //$$ @SubscribeEvent
     //$$ public fun onPlayerJoinedServer(event: PlayerEvent.PlayerLoggedInEvent) {
     //$$     val player = event.player as? EntityPlayerMP ?: return
     //$$     val networkManager =
-    //#if MC >= 1.12.2
-    //$$         player.connection.networkManager
-    //#else
-    //$$         player.playerNetServerHandler.netManager
-    //#endif
+            //#if MC >= 1.12.2
+            //$$ player.connection.networkManager
+            //#else
+            //$$ player.playerNetServerHandler.netManager
+            //#endif
     //$$     setupCustomPacketHandler(
     //$$         networkManager = networkManager,
-    //$$         handler = OmniServerPacketHandler { buf ->
-    //$$             val id = buf.readIdentifier()
-    //$$             OmniNetwork.handle(id, buf, player)
+    //$$         packetHandler = OmniServerPacketHandler(player) { buf ->
+    //$$             val id = readIdentifier(buf)
+    //$$             OmniNetworking.handle(id, buf, player)
     //$$         }
     //$$     )
     //$$ }
@@ -78,7 +93,7 @@ public object NetworkingInternals {
     //$$     packetHandler: OmniPacketHandler
     //$$ ) {
     //$$     val pipeline = networkManager.channel().pipeline()
-    //$$     if (pipeline.any { (_, handler) -> handler is OmniPacketHandler })
+    //$$     if (pipeline.any { (_, handler) -> handler is OmniPacketHandler }) {
     //$$         return
     //$$     }
     //$$
