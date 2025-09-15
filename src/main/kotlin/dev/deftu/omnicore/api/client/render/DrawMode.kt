@@ -26,26 +26,21 @@ public enum class DrawMode {
             }
         }
 
-    @Suppress("JoinDeclarationAndAssignment")
     //#if MC >= 1.17.1
     public val vanilla: VertexFormat.DrawMode
+        get() {
+            return when (const) {
+                GL11.GL_LINES -> VertexFormat.DrawMode.LINES
+                GL11.GL_LINE_STRIP -> VertexFormat.DrawMode.LINE_STRIP
+                GL11.GL_TRIANGLES -> VertexFormat.DrawMode.TRIANGLES
+                GL11.GL_TRIANGLE_STRIP -> VertexFormat.DrawMode.TRIANGLE_STRIP
+                GL11.GL_TRIANGLE_FAN -> VertexFormat.DrawMode.TRIANGLE_FAN
+                GL11.GL_QUADS -> VertexFormat.DrawMode.QUADS
+                else -> DrawModes.die(const)
+            }
+        }
     //#else
     //$$ public val vanilla: Int
+    //$$     get() = const
     //#endif
-
-    init {
-        //#if MC >= 1.17.1
-        vanilla = when (const) {
-            GL11.GL_LINES -> VertexFormat.DrawMode.LINES
-            GL11.GL_LINE_STRIP -> VertexFormat.DrawMode.LINE_STRIP
-            GL11.GL_TRIANGLES -> VertexFormat.DrawMode.TRIANGLES
-            GL11.GL_TRIANGLE_STRIP -> VertexFormat.DrawMode.TRIANGLE_STRIP
-            GL11.GL_TRIANGLE_FAN -> VertexFormat.DrawMode.TRIANGLE_FAN
-            GL11.GL_QUADS -> VertexFormat.DrawMode.QUADS
-            else -> DrawModes.die(const)
-        }
-        //#else
-        //$$ vanilla = const
-        //#endif
-    }
 }

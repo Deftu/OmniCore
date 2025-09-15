@@ -8,6 +8,7 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.server.network.ServerPlayerEntity
 import net.minecraft.util.Identifier
 import java.util.function.BiConsumer
+import org.apache.logging.log4j.LogManager
 
 //#if MC >= 1.19.4
 import dev.deftu.omnicore.internal.mixins.Mixin_ConnectionAccessor
@@ -80,5 +81,10 @@ public object OmniNetworking {
         //#endif
         val context = NetworkContext(Side.SERVER, connection, player)
         entry.handler.accept(context, payload)
+    }
+
+    @JvmStatic
+    public fun isRegisteredChannel(id: Identifier): Boolean {
+        return entries.containsKey(id)
     }
 }

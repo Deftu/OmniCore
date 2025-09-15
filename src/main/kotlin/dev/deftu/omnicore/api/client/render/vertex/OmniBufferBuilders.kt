@@ -4,11 +4,8 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBufferBuilderImpl
+import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
-
-//#if MC < 1.19.2
-//$$ import net.minecraft.client.render.BufferBuilder
-//#endif
 
 public object OmniBufferBuilders {
     @JvmStatic
@@ -29,5 +26,10 @@ public object OmniBufferBuilders {
     @JvmStatic
     public fun create(drawMode: DrawMode, format: DefaultVertexFormats): OmniBufferBuilder {
         return create(drawMode, format.vanilla)
+    }
+
+    @JvmStatic
+    public fun wrap(vanilla: BufferBuilder): OmniBufferBuilder {
+        return OmniBufferBuilderImpl(vanilla)
     }
 }

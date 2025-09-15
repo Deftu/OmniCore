@@ -76,4 +76,9 @@ public object OmniClientNetworking {
         val context = NetworkContext(Side.CLIENT, connection, client.player)
         entry.handler.accept(context, payload)
     }
+
+    @JvmStatic
+    public fun isChannelRegistered(id: Identifier): Boolean {
+        return entries.containsKey(id)
+    }
 }

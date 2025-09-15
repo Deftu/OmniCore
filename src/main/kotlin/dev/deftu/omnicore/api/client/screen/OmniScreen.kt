@@ -6,6 +6,7 @@ import dev.deftu.omnicore.api.client.input.OmniKey
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
+import dev.deftu.omnicore.api.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextHolder
@@ -44,7 +45,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         public const val INVALID_CHAR: Char = '\u0000'
     }
 
-    public open val isPause: Boolean
+    public open val isPausingScreen: Boolean
         get() = super.shouldPause()
 
     public val previousScreen: Screen?
@@ -78,9 +79,9 @@ public abstract class OmniScreen @JvmOverloads public constructor(
 
     public override fun onResize(width: Int, height: Int) {
         //#if MC >= 1.16.5
-        super.resize(client, width, height)
+        super.resize(dev.deftu.omnicore.api.client.client, width, height)
         //#else
-        //$$ super.setWorldAndResolution(mc, width, height)
+        //$$ super.setWorldAndResolution(dev.deftu.omnicore.api.client.client, width, height)
         //#endif
     }
 
@@ -381,7 +382,9 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#if MC >= 1.21.6
         isBackgroundSuppressed = false
         //#endif
-        onRender(context, mouseX, mouseY, tickDelta)
+        ImmediateScreenRenderer.render(context) {
+            onRender(context, mouseX, mouseY, tickDelta)
+        }
         //#if MC >= 1.21.6
         isBackgroundSuppressed = true
         //#endif
@@ -490,6 +493,6 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     //#endif
 
     final override fun shouldPause(): Boolean {
-        return isPause
+        return isPausingScreen
     }
 }

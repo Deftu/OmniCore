@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.world
 
-import dev.deftu.omnicore.api.data.blockPos
+import dev.deftu.omnicore.api.data.pos.OmniBlockPos
 import dev.deftu.omnicore.api.translationKey
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.ChunkPos
@@ -109,7 +109,7 @@ public data class OmniChunkData(
             precipitationInvoker = { x, y, z ->
                 //#if MC >= 1.19.4
                 val precipitation = value.getPrecipitation(
-                    blockPos(x, y, z),
+                    OmniBlockPos(x, y, z).vanilla,
                     //#if MC >= 1.21.2
                     y
                     //#endif
@@ -151,7 +151,7 @@ public data class OmniChunkData(
         //#if MC >= 1.16.5
         //$$         biome.getGrassColor(x, z)
         //#else
-        //$$         biome.getGrassColorAtPos(blockPos(x.toInt(), pos.y, z.toInt()))
+        //$$         biome.getGrassColorAtPos(OmniBlockPos(x.toInt(), pos.y, z.toInt()).vanilla)
         //#endif
         //$$     },
         //$$     precipitationInvoker = { x, y, z ->
@@ -167,6 +167,6 @@ public data class OmniChunkData(
     }
 
     public fun getBiomeAt(x: Int, y: Int, z: Int): OmniBiomeData? {
-        return getBiomeAt(blockPos(x, y, z))
+        return getBiomeAt(OmniBlockPos(x, y, z).vanilla)
     }
 }

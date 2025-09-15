@@ -43,7 +43,7 @@ public object ImmediateScreenRenderer {
         isInitialized = true
     }
 
-    public fun render(ctx: OmniRenderingContext, block: (OmniMatrixStack) -> Unit) {
+    public fun render(ctx: OmniRenderingContext, block: () -> Unit) {
         val scaleFactor = OmniResolution.scaleFactor.toFloat()
         val width = OmniResolution.viewportWidth
         val height = OmniResolution.viewportHeight
@@ -59,10 +59,8 @@ public object ImmediateScreenRenderer {
         RenderSystem.outputColorTextureOverride = textureAllocation.colorTextureView
         RenderSystem.outputDepthTextureOverride = textureAllocation.depthTextureView
 
-        val stack = OmniMatrixStacks.create()
-        stack.translate(0f, 0f, -10_000f) // Render on the same layer as everything else on the screen
-        stack.scale(1f / scaleFactor, 1f / scaleFactor, 0f) // Undo Minecraft's GUI scaling to provide a more accurate rendering context
-        block(stack)
+        ctx.matrices.translate(0f, 0f, -10_000f) // Render on the same layer as everything else on the screen
+        block()
 
         RenderSystem.outputColorTextureOverride = prevColorOverride
         RenderSystem.outputDepthTextureOverride = prevDepthOverride
@@ -79,6 +77,7 @@ public object ImmediateScreenRenderer {
         })
 
         ctx.graphics.matrices.pushMatrix()
+        ctx.graphics.matrices.scale(1f / scaleFactor, 1f / scaleFactor)
         ctx.graphics.drawTexture(
             RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA,
             identifier,

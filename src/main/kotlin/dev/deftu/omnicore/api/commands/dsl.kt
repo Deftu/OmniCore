@@ -8,8 +8,8 @@ import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import java.util.concurrent.CompletableFuture
 
-public fun command(name: String, block: CommandBuilder.() -> Unit): CommandBuilder {
-    val rootNode = LiteralArgumentBuilder.literal<OmniCommandSource>(name)
+public fun OmniCommands.command(name: String, block: CommandBuilder.() -> Unit): CommandBuilder {
+    val rootNode = literal(name)
     val builder = CommandBuilder(rootNode)
     builder.block()
     return builder

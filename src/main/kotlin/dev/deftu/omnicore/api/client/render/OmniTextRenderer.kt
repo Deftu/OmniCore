@@ -64,6 +64,27 @@ public object OmniTextRenderer {
     }
 
     @JvmStatic
+    public fun render(
+        context: OmniRenderingContext,
+        text: String,
+        x: Float, y: Float,
+        color: Int,
+        type: TextShadowType
+    ) {
+        when (type) {
+            is TextShadowType.None -> render(context, text, x, y, color, shadow = false)
+            is TextShadowType.Drop -> render(context, text, x, y, color, shadow = true)
+            is TextShadowType.Outline -> {
+                render(context, text, x - 1, y, type.color, shadow = false)
+                render(context, text, x + 1, y, type.color, shadow = false)
+                render(context, text, x, y - 1, type.color, shadow = false)
+                render(context, text, x, y + 1, type.color, shadow = false)
+                render(context, text, x, y, color, shadow = false)
+            }
+        }
+    }
+
+    @JvmStatic
     public fun renderCentered(
         context: OmniRenderingContext,
         text: String,
@@ -73,6 +94,18 @@ public object OmniTextRenderer {
     ) {
         val width = width(text)
         render(context, text, x - width / 2f, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        context: OmniRenderingContext,
+        text: String,
+        x: Float, y: Float,
+        color: Int,
+        type: TextShadowType
+    ) {
+        val width = width(text)
+        render(context, text, x - width / 2f, y, color, type)
     }
 
     @JvmStatic

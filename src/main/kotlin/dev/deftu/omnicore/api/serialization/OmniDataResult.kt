@@ -89,4 +89,18 @@ public object OmniDataResult {
             DataResult.success(limitedStream)
         }
     }
+
+    @JvmStatic
+    public fun <T> decodeFixedLengthList(list: List<T>, length: Int): DataResult<List<T>> {
+        return if (list.size != length) {
+            val errorMessage = "Input is not a list of $length elements"
+            if (list.size >= length) {
+                error(errorMessage, list.subList(0, length))
+            } else {
+                error(errorMessage)
+            }
+        } else {
+            DataResult.success(list)
+        }
+    }
 }

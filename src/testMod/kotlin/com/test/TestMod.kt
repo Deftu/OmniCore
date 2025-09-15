@@ -2,6 +2,7 @@ package com.test
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
+import dev.deftu.omnicore.api.client.commands.OmniClientCommands
 import dev.deftu.omnicore.api.client.commands.argument
 import dev.deftu.omnicore.api.client.commands.command
 import dev.deftu.omnicore.api.client.input.OmniKeys
@@ -81,9 +82,8 @@ class TestMod
     override
     //#endif
     fun onInitialize() {
-        //#if FABRIC && MC >= 1.16.5
-        println("Hello Fabric world!")
-        // TestItems.initialize()
+        println("Hello common world!")
+        TestItems.initialize()
         OmniNetworking.register(TestPacketPayload.TYPE) { payload ->
             logger.info("Received test packet on the server with message: ${payload.message}")
 
@@ -92,7 +92,6 @@ class TestMod
                 OmniNetworking.send(player as ServerPlayerEntity, payload)
             }
         }
-        //#endif
     }
 
     //#if FABRIC
@@ -108,6 +107,7 @@ class TestMod
         //#endif
     ) {
         //#if FORGE && MC <= 1.12.2
+        //$$ onInitialize() // Common init
         //$$ if (!event.side.isClient) {
         //$$     return
         //$$ }
@@ -135,7 +135,7 @@ class TestMod
             }
         }
 
-        command("testmod") {
+        OmniClientCommands.command("testmod") {
             runs {
                 val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
 
@@ -148,7 +148,6 @@ class TestMod
                 OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
 
                 OmniClientChat.displayChatMessage("TestMod base command executed!")
-                sendTestPacket()
 
                 1
             }
@@ -162,7 +161,7 @@ class TestMod
                 }
             }
 
-            command("screen") {
+            then("screen") {
                 requires { src -> src.world != null }
 
                 runs { ctx ->
@@ -170,7 +169,7 @@ class TestMod
                 }
             }
 
-            command("world") {
+            then("world") {
                 runs { ctx ->
                     val world = world
                     val playerChunk = player?.chunkData
@@ -190,17 +189,25 @@ class TestMod
                     """.trimIndent())
                 }
             }
-        }.register()
 
-        //#if FABRIC && MC >= 1.16.5
-        net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.JOIN.register { handler, sender, client ->
-            println("Joined server!")
-            sendTestPacket()
-        }
-        //#endif
+            then("packets") {
+                runs { ctx ->
+                    sendTestPacket()
+                    ctx.source.replyChat("Sent test packet to the server!")
+                }
+
+                argument("message", StringArgumentType.greedyString()) {
+                    runs { ctx ->
+                        val message = ctx.argument<String>("message")
+                        sendTestPacket(message)
+                        ctx.source.replyChat("Sent test packet to the server with custom message: $message")
+                    }
+                }
+            }
+        }.register()
     }
 
-    private fun sendTestPacket() {
-        OmniClientNetworking.send(TestPacketPayload("Hello from the client!"))
+    private fun sendTestPacket(message: String = "Hello from the client!") {
+        OmniClientNetworking.send(TestPacketPayload(message))
     }
 }

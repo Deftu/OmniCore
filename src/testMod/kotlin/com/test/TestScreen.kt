@@ -3,7 +3,7 @@ package com.test
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
-import dev.deftu.omnicore.api.client.render.OmniTextRenderer
+import dev.deftu.omnicore.api.client.render.TextShadowType
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.screen.OmniScreen
@@ -36,12 +36,12 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
         render(ctx)
 
         val text = "Hello, OmniCore!"
-        OmniTextRenderer.renderCentered(
-            context = ctx,
+        ctx.renderTextCentered(
             text = text,
             x = (width / 2f),
             y = 25f,
-            color = Color.WHITE.rgb
+            color = Color.WHITE.rgb,
+            type = TextShadowType.Outline(Color.BLACK.rgb)
         )
     }
 
@@ -63,6 +63,6 @@ class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
             .vertex(ctx.matrices, renderX, renderY + renderHeight, 0.0)
             .color(bottomLeftColor)
             .next()
-        buffer.buildOrNull()?.drawAndClose(pipeline)
+        buffer.buildOrThrow().drawAndClose(pipeline)
     }
 }

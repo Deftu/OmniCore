@@ -3,7 +3,7 @@
 package dev.deftu.omnicore.api.player
 
 import dev.deftu.omnicore.api.OmniGameMode
-import dev.deftu.omnicore.api.data.vec3d
+import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.equipment.EquipmentType
 import dev.deftu.omnicore.api.world.OmniBiomeData
 import dev.deftu.omnicore.api.world.OmniChunkData
@@ -15,11 +15,12 @@ import net.minecraft.util.math.Vec3d
 import java.util.UUID
 
 //#if MC <= 1.16.5
-import dev.deftu.omnicore.api.data.chunkPos
+//$$ import dev.deftu.omnicore.api.data.pos.OmniBlockPos
+//$$ import dev.deftu.omnicore.api.data.pos.OmniChunkPos
 //#endif
 
 //#if MC <= 1.12.2
-//$$ import dev.deftu.omnicore.api.data.blockPos
+//$$ import kotlin.math.floor
 //#endif
 
 //#if MC >= 1.12.2
@@ -45,7 +46,7 @@ public val PlayerEntity.chunkData: OmniChunkData?
             //#if MC >= 1.17.1
             chunkPos = chunkPos
             //#else
-            //$$ chunkPos = chunkPos(chunkX, chunkZ)
+            //$$ chunkPos = OmniChunkPos(chunkX, chunkZ).vanilla
             //#endif
         )
     }
@@ -56,7 +57,7 @@ public val PlayerEntity.biomeData: OmniBiomeData?
             //#if MC >= 1.16.5
             pos = blockPos
             //#else
-            //$$ pos = blockPos(posX, posY, posZ)
+            //$$ pos = OmniBlockPos(floor(posX).toInt(), floor(posY).toInt(), floor(posZ).toInt()).vanilla
             //#endif
         )
     }
@@ -214,7 +215,7 @@ public var PlayerEntity.pos: Vec3d
     }
 
 public var PlayerEntity.prevPos: Vec3d
-    get() = vec3d(prevPosX, prevPosY, prevPosZ)
+    get() = OmniVec3d(prevPosX, prevPosY, prevPosZ).vanilla
     set(value) {
         //#if MC >= 1.16.5
         lastX = value.x

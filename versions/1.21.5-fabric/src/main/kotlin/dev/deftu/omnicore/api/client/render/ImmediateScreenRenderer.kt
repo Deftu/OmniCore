@@ -1,7 +1,6 @@
 package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
@@ -21,26 +20,14 @@ import net.minecraft.client.gui.DrawContext
  * you please. Use it as you wish elsewhere should you need to.
  */
 public object ImmediateScreenRenderer {
-
     public fun initialize() {
         // no-op below 1.21.6
     }
 
     public fun render(
-        //#if MC >= 1.20.1
-        ctx: DrawContext,
-        //#elseif MC >= 1.16.5
-        //$$ ctx: MatrixStack,
-        //#endif
-        block: (OmniMatrixStack) -> Unit
+        context: OmniRenderingContext,
+        block: () -> Unit
     ) {
-        val stack = OmniMatrixStacks.vanilla(
-            //#if MC >= 1.16.5
-            ctx
-            //#endif
-        )
-
-        block(stack)
+        block()
     }
-
 }

@@ -22,11 +22,20 @@ import dev.deftu.omnicore.internal.networking.VanillaCustomPayload
 @ApiStatus.Internal
 public object ClientNetworkingInternals {
     private val logger = LogManager.getLogger(ClientNetworkingInternals::class.java)
+    private var isInitialized: Boolean = false
 
-    //#if FORGE && MC <= 1.12.2
-    //$$ public var isInitialized: Boolean = false
-    //$$     private set
-    //#endif
+    @JvmStatic
+    public fun initialize() {
+        if (isInitialized) {
+            return
+        }
+
+        //#if MC <= 1.12.2 && FORGE
+        //$$ forgeEventBus.register(this)
+        //#endif
+
+        isInitialized = true
+    }
 
     @JvmStatic
     public fun send(id: Identifier, buf: PacketByteBuf) {
@@ -37,7 +46,7 @@ public object ClientNetworkingInternals {
         }
 
         //#if FORGE && MC <= 1.12.2
-        //$$ setupForgeListener()
+        //$$ initialize()
         //#endif
 
         val packet = CustomPayloadC2SPacket(
@@ -60,23 +69,12 @@ public object ClientNetworkingInternals {
     }
 
     //#if FORGE && MC <= 1.12.2
-    //$$ @JvmStatic
-    //$$ public fun setupForgeListener() {
-    //$$     if (isInitialized) return
-    //$$
-    //$$     forgeEventBus.register(this)
-    //$$     isInitialized = true
-    //$$ }
-    //$$
     //$$ @SubscribeEvent
     //$$ public fun onClientConnectedToServer(event: FMLNetworkEvent.ClientConnectedToServerEvent) {
     //$$     val networkManager = event.manager
     //$$     NetworkingInternals.setupCustomPacketHandler(
     //$$         networkManager,
-    //$$         OmniClientPacketHandler { buf ->
-    //$$             val id = NetworkingInternals.readIdentifier(buf)
-    //$$             OmniClientNetworking.handle(id, buf, networkManager)
-    //$$         }
+    //$$         OmniClientPacketHandler(networkManager)
     //$$     )
     //$$ }
     //#endif

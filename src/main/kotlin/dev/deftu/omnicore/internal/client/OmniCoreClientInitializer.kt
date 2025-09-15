@@ -7,6 +7,7 @@ import dev.deftu.omnicore.api.client.render.OmniFrameClock
 import dev.deftu.omnicore.api.client.render.OmniRenderTicks
 import dev.deftu.omnicore.internal.client.commands.ClientCommandInternals
 import dev.deftu.omnicore.internal.client.events.ClientEventForwarding
+import dev.deftu.omnicore.internal.client.networking.ClientNetworkingInternals
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
 
@@ -30,6 +31,7 @@ public object OmniCoreClientInitializer {
         OmniFrameClock.initialize()
         OmniRenderTicks.initialize()
         ClientCommandInternals.initialize()
+        ClientNetworkingInternals.initialize()
 
         isInitialized = true
     }

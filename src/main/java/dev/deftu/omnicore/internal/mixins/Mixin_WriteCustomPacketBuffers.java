@@ -2,7 +2,6 @@ package dev.deftu.omnicore.internal.mixins;
 
 //#if MC >= 1.20.6
 import dev.deftu.omnicore.internal.networking.VanillaCustomPayload;
-import net.fabricmc.fabric.mixin.networking.CustomPayloadC2SPacketMixin;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.CustomPayload;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,11 +13,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class Mixin_WriteCustomPacketBuffers<B extends PacketByteBuf> {
 
     @Inject(
-//#if FORGE-LIKE
-//$$         method = "encode(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V",
-//#else
+        //#if FORGE-LIKE
+        //$$ method = "encode(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V",
+        //#else
         method = "encode(Lnet/minecraft/network/PacketByteBuf;Lnet/minecraft/network/packet/CustomPayload;)V",
-//#endif
+        //#endif
         at = @At("HEAD"),
         cancellable = true
     )
@@ -27,10 +26,11 @@ public class Mixin_WriteCustomPacketBuffers<B extends PacketByteBuf> {
             return;
         }
 
-        CustomPayloadC2SPacketMixin
         VanillaCustomPayload payload = (VanillaCustomPayload) customPayload;
+        buf.writeIdentifier(payload.getIdentifier());
         System.out.println("OmniCore: Writing custom payload " + payload.getIdentifier());
-        payload.write$OmniCore(buf);
+        payload.write(buf);
+        ci.cancel();
     }
 
 }

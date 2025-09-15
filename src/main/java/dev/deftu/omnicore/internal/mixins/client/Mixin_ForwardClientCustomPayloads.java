@@ -6,6 +6,7 @@ package dev.deftu.omnicore.internal.mixins.client;
 
 //#if FABRIC || MC >= 1.16.5
 //#if MC >= 1.16.5
+import dev.deftu.omnicore.internal.networking.UnknownPayloadDataSmuggler;
 import net.minecraft.network.ClientConnection;
 //#else
 //$$ import net.minecraft.network.ClientConnection;
@@ -25,7 +26,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 
 //#if MC >= 1.20.4
-import dev.deftu.omnicore.internal.networking.VanillaCustomPayload;
 import net.minecraft.client.network.ClientCommonNetworkHandler;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.network.packet.UnknownCustomPayload;
@@ -62,7 +62,8 @@ public class Mixin_ForwardClientCustomPayloads {
             //#else
             //$$ method = "onCustomPayload",
             //#endif
-            at = @At("HEAD")
+            at = @At("HEAD"),
+            cancellable = true
     )
     private void omnicore$captureCustomPayloads(
             //#if MC >= 1.16.5
@@ -74,30 +75,40 @@ public class Mixin_ForwardClientCustomPayloads {
     ) {
         //#if MC >= 1.20.4
         CustomPayload payload = packet.comp_1646();
+        //#if MC >= 1.20.6
+        Identifier channel = payload.getId().comp_2242();
+        //#else
+        //$$ Identifier channel = payload.comp_1678();
+        //#endif
+        if (!OmniClientNetworking.isChannelRegistered(channel)) {
+            return;
+        }
+
+        // Guard against stealing other mods' packets... Weird that they've taken up the same channel, though.
         if (!(payload instanceof UnknownCustomPayload)) {
             return;
         }
 
-        @SuppressWarnings("PatternVariableCanBeUsed")
-        UnknownCustomPayload discardedPayload = (UnknownCustomPayload) payload;
-        //noinspection ConstantValue
-        if (!(payload instanceof VanillaCustomPayload)) {
-            return;
-        }
-
-        @SuppressWarnings("PatternVariableCanBeUsed")
-        VanillaCustomPayload holder = (VanillaCustomPayload) payload;
-
-        Identifier channel = discardedPayload.comp_1678();
-        PacketByteBuf buf = holder.getData();
+        PacketByteBuf buf = ((UnknownPayloadDataSmuggler) payload).omnicore$getData();
         //#elseif MC >= 1.16.5
         //$$ ResourceLocation channel = packet.getIdentifier();
-        //$$ FriendlyByteBuf buf = packet.getData();
+        //$$ if (!OmniClientNetworking.isChannelRegistered(channel)) {
+        //$$     return;
+        //$$ }
+        //$$
+        //$$ FriendlyByteBuf packetData = packet.getData();
+        //$$ FriendlyByteBuf buf = new FriendlyByteBuf(packetData.copy());
         //#else
         //$$ Identifier channel = OmniIdentifier.createOrNull(packet.getChannel());
-        //$$ PacketByteBuf buf = packet.getPayload();
+        //$$ if (channel == null || !OmniClientNetworking.isChannelRegistered(channel)) {
+        //$$     return;
+        //$$ }
+        //$$
+        //$$ PacketByteBuf packetData = packet.getPayload();
+        //$$ PacketByteBuf buf = new PacketByteBuf(packetData.copy());
         //#endif
         OmniClientNetworking.handle(channel, buf, this.connection);
+        ci.cancel();
     }
 }
 //#endif

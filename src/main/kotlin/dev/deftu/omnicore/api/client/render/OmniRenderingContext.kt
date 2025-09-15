@@ -61,6 +61,44 @@ public data class OmniRenderingContext(
 
     private val scissorStack = ArrayDeque<ScissorBox>()
 
+    @JvmOverloads
+    public fun renderText(
+        text: String,
+        x: Float, y: Float,
+        color: Int,
+        shadow: Boolean = true
+    ) {
+        OmniTextRenderer.render(this, text, x, y, color, shadow)
+    }
+
+    public fun renderText(
+        text: String,
+        x: Float, y: Float,
+        color: Int,
+        type: TextShadowType
+    ) {
+        OmniTextRenderer.render(this, text, x, y, color, type)
+    }
+
+    @JvmOverloads
+    public fun renderTextCentered(
+        text: String,
+        x: Float, y: Float,
+        color: Int,
+        shadow: Boolean = true,
+    ) {
+        OmniTextRenderer.renderCentered(this, text, x, y, color, shadow)
+    }
+
+    public fun renderTextCentered(
+        text: String,
+        x: Float, y: Float,
+        color: Int,
+        type: TextShadowType
+    ) {
+        OmniTextRenderer.renderCentered(this, text, x, y, color, type)
+    }
+
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */
     public fun pushScissor(x: Int, y: Int, width: Int, height: Int) {
         val newBox = ScissorBox(x, y, width, height)

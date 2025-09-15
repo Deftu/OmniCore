@@ -2,7 +2,7 @@
 
 package dev.deftu.omnicore.api.world
 
-import dev.deftu.omnicore.api.data.blockPos
+import dev.deftu.omnicore.api.data.pos.OmniBlockPos
 import net.minecraft.block.Block
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
@@ -84,7 +84,7 @@ public fun World.isBlockLoadedAt(pos: BlockPos): Boolean {
 }
 
 public fun World.isBlockLoadedAt(x: Int, y: Int, z: Int): Boolean {
-    return isBlockLoadedAt(blockPos(x, y, z))
+    return isBlockLoadedAt(OmniBlockPos(x, y, z).vanilla)
 }
 
 public fun World.getBlockTypeAt(pos: BlockPos): Block? {
@@ -92,7 +92,7 @@ public fun World.getBlockTypeAt(pos: BlockPos): Block? {
 }
 
 public fun World.getBlockTypeAt(x: Int, y: Int, z: Int): Block? {
-    return getBlockTypeAt(blockPos(x, y, z))
+    return getBlockTypeAt(OmniBlockPos(x, y, z).vanilla)
 }
 
 public fun World.getPlayerFromUuid(uuid: UUID): PlayerEntity? {

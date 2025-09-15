@@ -8,7 +8,7 @@ import net.minecraft.client.render.BufferBuilder
 //$$ import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 //#endif
 
-public class OmniBufferBuilderImpl(private val value: BufferBuilder) : OmniBufferBuilder, OmniVertexConsumerImpl(value) {
+public class OmniBufferBuilderImpl(override val vanilla: BufferBuilder) : OmniBufferBuilder, OmniVertexConsumerImpl(vanilla) {
     public companion object {
         //#if MC < 1.19.2
         //$$ internal val bufferPool = mutableListOf<BufferBuilder>()
@@ -17,22 +17,22 @@ public class OmniBufferBuilderImpl(private val value: BufferBuilder) : OmniBuffe
 
     //#if MC >= 1.21.1
     override fun buildOrNull(): OmniBuiltBuffer? {
-        return value.endNullable()?.let(::OmniBuiltBufferImpl)
+        return vanilla.endNullable()?.let(::OmniBuiltBufferImpl)
     }
     //#elseif MC >= 1.19.2
     //$$ override fun buildOrNull(): OmniBuiltBuffer? {
-    //$$     return value.endOrDiscardIfEmpty()?.let(::OmniBuiltBufferImpl)
+    //$$     return vanilla.endOrDiscardIfEmpty()?.let(::OmniBuiltBufferImpl)
     //$$ }
     //#else
     //$$ private var vertexCount = 0
     //$$
     //$$ override fun buildOrNull(): OmniBuiltBuffer? {
-    //$$     value.end()
+    //$$     vanilla.end()
     //$$     return if (vertexCount > 0) {
-    //$$         OmniBuiltBufferImpl(value)
+    //$$         OmniBuiltBufferImpl(vanilla)
     //$$     } else {
-    //$$         value.reset()
-    //$$         bufferPool.add(value)
+    //$$         vanilla.reset()
+    //$$         bufferPool.add(vanilla)
     //$$         null
     //$$     }
     //$$ }

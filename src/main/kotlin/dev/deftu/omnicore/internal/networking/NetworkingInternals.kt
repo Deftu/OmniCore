@@ -20,18 +20,20 @@ import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
 public object NetworkingInternals {
-    //#if FORGE && MC <= 1.12.2
-    //$$ private var isInitialized = false
-    //$$
-    //$$ @JvmStatic
-    //$$ public fun initialize() {
-    //$$     if (isInitialized) {
-    //$$         return
-    //$$     }
-    //$$
-    //$$     forgeEventBus.register(this)
-    //$$ }
-    //#endif
+    private var isInitialized = false
+
+    @JvmStatic
+    public fun initialize() {
+        if (isInitialized) {
+            return
+        }
+
+        //#if MC <= 1.12.2 && FORGE
+        //$$ forgeEventBus.register(this)
+        //#endif
+
+        isInitialized = true
+    }
 
     @JvmStatic
     public fun send(
@@ -39,6 +41,10 @@ public object NetworkingInternals {
         id: Identifier,
         buf: PacketByteBuf
     ) {
+        //#if MC <= 1.12.2
+        //$$ initialize()
+        //#endif
+
         val packet = CustomPayloadS2CPacket(
             //#if MC >= 1.20.4
             VanillaCustomPayload(id, buf),
@@ -80,10 +86,7 @@ public object NetworkingInternals {
             //#endif
     //$$     setupCustomPacketHandler(
     //$$         networkManager = networkManager,
-    //$$         packetHandler = OmniServerPacketHandler(player) { buf ->
-    //$$             val id = readIdentifier(buf)
-    //$$             OmniNetworking.handle(id, buf, player)
-    //$$         }
+    //$$         packetHandler = OmniServerPacketHandler(player)
     //$$     )
     //$$ }
     //$$

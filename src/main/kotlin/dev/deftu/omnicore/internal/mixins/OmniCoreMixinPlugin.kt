@@ -18,10 +18,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#endif
 
             //#if MC <= 1.12.2
-            //$$ result.add("client.Mixin_ScreenEvent\$Init")
-            //$$ result.add("client.Mixin_ScreenEvent\$Key")
-            //$$ result.add("client.Mixin_ScreenEvent\$MouseButton")
-            //$$ result.add("client.Mixin_ScreenEvent\$Render")
+            //$$ result.add("client.events.Mixin_ScreenEvent\$Init")
+            //$$ result.add("client.events.Mixin_ScreenEvent\$Key")
+            //$$ result.add("client.events.Mixin_ScreenEvent\$MouseButton")
+            //$$ result.add("client.events.Mixin_ScreenEvent\$Render")
             //#endif
 
             result.add("client.events.Mixin_InputEvent\$Key")
@@ -48,7 +48,7 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         result.add("Mixin_ConnectionAccessor")
         //#endif
 
-        //#if FABRIC || MC == 1.16.5
+        //#if MC == 1.16.5
         //$$ result.add("Mixin_CustomPayloadDataAccessor")
         //#endif
 
@@ -69,7 +69,12 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         }
 
         //#if MC >= 1.20.6
+        result.add("Mixin_SetUnknownPayloadData")
         result.add("Mixin_WriteCustomPacketBuffers")
+        //#endif
+
+        //#if MC >= 1.20.4
+        result.add("Mixin_SmuggleUnknownPayloadData")
         //#endif
 
         //#if FABRIC || MC >= 1.16.5
