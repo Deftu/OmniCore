@@ -30,7 +30,7 @@ public object OmniTextures {
         width: Int,
         height: Int,
         format: OmniTextureFormat
-    ): ManagedTexture {
+    ): OmniTextureHandle {
         return ManagedTexture(width, height, format)
     }
 
@@ -40,7 +40,7 @@ public object OmniTextures {
         width: Int,
         height: Int,
         format: OmniTextureFormat
-    ): WrappedTexture {
+    ): OmniTextureHandle {
         return WrappedTexture(id, width, height, format)
     }
 
@@ -51,7 +51,7 @@ public object OmniTextures {
         //#else
         //$$ texture: ITextureObject,
         //#endif
-    ): WrappedTexture {
+    ): OmniTextureHandle {
         //#if MC >= 1.21.5
         return wrap(texture.glTexture)
         //#else
@@ -84,7 +84,7 @@ public object OmniTextures {
 
     //#if MC >= 1.21.5
     @JvmStatic
-    public fun wrap(vanillaTexture: GlTexture): WrappedTexture {
+    public fun wrap(vanillaTexture: GlTexture): OmniTextureHandle {
         return WrappedTexture(
             vanillaTexture.glId,
             vanillaTexture.getWidth(0),
@@ -94,7 +94,7 @@ public object OmniTextures {
     }
 
     @JvmStatic
-    public fun wrap(vanillaTexture: GpuTexture): WrappedTexture {
+    public fun wrap(vanillaTexture: GpuTexture): OmniTextureHandle {
         return wrap(
             vanillaTexture as? GlTexture
                 ?: throw IllegalArgumentException("Provided texture is not a GL texture")
@@ -104,7 +104,7 @@ public object OmniTextures {
 
     //#if MC >= 1.21.6
     @JvmStatic
-    public fun wrap(vanillaTexture: GlTextureView): WrappedTexture {
+    public fun wrap(vanillaTexture: GlTextureView): OmniTextureHandle {
         val texture = vanillaTexture.texture()
         return WrappedTexture(
             texture.glId,
@@ -115,7 +115,7 @@ public object OmniTextures {
     }
 
     @JvmStatic
-    public fun wrap(vanillaTexture: GpuTextureView): WrappedTexture {
+    public fun wrap(vanillaTexture: GpuTextureView): OmniTextureHandle {
         return wrap(
             vanillaTexture as? GlTextureView
                 ?: throw IllegalArgumentException("Provided texture view is not a GL texture view")
