@@ -1,14 +1,18 @@
 package dev.deftu.omnicore.api.client.render
 
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
+import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
+import net.minecraft.util.Identifier
+import java.util.function.Consumer
 
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
-import java.util.function.Consumer
-
 //#endif
 
 //#if MC >= 1.16.5 && MC < 1.20.1
@@ -105,7 +109,55 @@ public data class OmniRenderingContext(
         OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
     }
 
-    // TODO: textures, items, entities, player heads
+    public fun renderTextureRegion(
+        pipeline: OmniRenderPipeline,
+        texture: OmniTextureHandle,
+        x0: Float, y0: Float,
+        x1: Float, y1: Float,
+        u0: Float, v0: Float,
+        u1: Float, v1: Float,
+        color: OmniColor = OmniColors.WHITE,
+    ) {
+        // TODO
+    }
+
+    public fun renderTextureRegion(
+        pipeline: OmniRenderPipeline,
+        location: Identifier,
+        x0: Float, y0: Float,
+        x1: Float, y1: Float,
+        u0: Float, v0: Float,
+        u1: Float, v1: Float,
+        color: OmniColor = OmniColors.WHITE,
+    ) {
+        renderTextureRegion(pipeline, OmniTextures.wrap(location), x0, y0, x1, y1, u0, v0, u1, v1, color)
+    }
+
+    public fun renderTexture(
+        pipeline: OmniRenderPipeline,
+        texture: OmniTextureHandle,
+        x: Float, y: Float,
+        width: Float, height: Float,
+        u0: Float, v0: Float,
+        u1: Float, v1: Float,
+        color: OmniColor = OmniColors.WHITE,
+    ) {
+        renderTextureRegion(pipeline, texture, x, y, x + width, y + height, u0, v0, u1, v1, color)
+    }
+
+    public fun renderTexture(
+        pipeline: OmniRenderPipeline,
+        location: Identifier,
+        x: Float, y: Float,
+        width: Float, height: Float,
+        u0: Float, v0: Float,
+        u1: Float, v1: Float,
+        color: OmniColor = OmniColors.WHITE,
+    ) {
+        renderTextureRegion(pipeline, OmniTextures.wrap(location), x, y, x + width, y + height, u0, v0, u1, v1, color)
+    }
+
+    // TODO: items, entities, player heads
 
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */
     public fun pushScissor(x: Int, y: Int, width: Int, height: Int) {
