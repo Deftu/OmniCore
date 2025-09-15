@@ -7,6 +7,8 @@ import dev.deftu.omnicore.internal.client.render.ScissorInternals
 
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
+import java.util.function.Consumer
+
 //#endif
 
 //#if MC >= 1.16.5 && MC < 1.20.1
@@ -62,6 +64,9 @@ public data class OmniRenderingContext(
 
     private val scissorStack = ArrayDeque<ScissorBox>()
 
+    public val currentScissor: ScissorBox?
+        get() = scissorStack.lastOrNull()
+
     @JvmOverloads
     public fun renderText(
         text: String,
@@ -100,29 +105,33 @@ public data class OmniRenderingContext(
         OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
     }
 
+    // TODO: textures, items, entities, player heads
+
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */
     public fun pushScissor(x: Int, y: Int, width: Int, height: Int) {
-        val newBox = ScissorBox(x, y, width, height)
-        if (newBox.isEmpty) {
-            scissorStack.addLast(newBox)
+        val incoming = ScissorBox(x, y, width, height)
+
+        val effective = scissorStack.lastOrNull()?.let { top ->
+            // We already had scissor; clamp to intersection
+            top.intersection(incoming) ?: ScissorBox(0, 0, 0, 0) // <- collapsed to empty
+        } ?: incoming // No previous scissor; use new box as-is
+
+        scissorStack.addLast(effective)
+
+        if (effective.isEmpty) {
+            ScissorInternals.disableScissor(
+                //#if MC >= 1.21.6
+                graphics
+                //#endif
+            )
+        } else {
             ScissorInternals.applyScissor(
                 //#if MC >= 1.21.6
                 graphics,
                 //#endif
-                newBox
+                effective
             )
-
-            return
         }
-
-        val effectiveBox = scissorStack.lastOrNull()?.intersection(newBox) ?: newBox
-        scissorStack.addLast(effectiveBox)
-        ScissorInternals.applyScissor(
-            //#if MC >= 1.21.6
-            graphics,
-            //#endif
-            effectiveBox
-        )
     }
 
     /** Pops the current scissor; restores previous or disables when empty. */
@@ -153,6 +162,12 @@ public data class OmniRenderingContext(
                y >= current.y && y < current.y + current.height
     }
 
+    public fun isClippedOut(x: Int, y: Int, width: Int, height: Int): Boolean {
+        val current = scissorStack.lastOrNull() ?: return false
+        return x + width <= current.x || x >= current.x + current.width ||
+               y + height <= current.y || y >= current.y + current.height
+    }
+
     public fun withScissor(x: Int, y: Int, width: Int, height: Int, runnable: Runnable) {
         pushScissor(x, y, width, height)
 
@@ -163,7 +178,43 @@ public data class OmniRenderingContext(
         }
     }
 
+    public fun <T> withScissor(x: Int, y: Int, width: Int, height: Int, supplier: () -> T): T {
+        pushScissor(x, y, width, height)
+
+        return try {
+            supplier()
+        } finally {
+            popScissor()
+        }
+    }
+
+    public fun withMatrices(consumer: Consumer<OmniMatrixStack>) {
+        matrices.push()
+        try {
+            consumer.accept(matrices)
+        } finally {
+            matrices.pop()
+        }
+    }
+
+    public fun <T> withMatrices(supplier: () -> T): T {
+        matrices.push()
+        return try {
+            supplier()
+        } finally {
+            matrices.pop()
+        }
+    }
+
     /** Submits any necessary closing rendering operations. */
     override fun close() {
+        if (scissorStack.isNotEmpty()) {
+            scissorStack.clear()
+            ScissorInternals.disableScissor(
+                //#if MC >= 1.21.6
+                graphics
+                //#endif
+            )
+        }
     }
 }
