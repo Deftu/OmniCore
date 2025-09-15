@@ -2,6 +2,7 @@ package dev.deftu.omnicore.internal.client.image
 
 import dev.deftu.omnicore.api.client.image.OmniImage
 import dev.deftu.omnicore.api.color.ColorFormat
+import dev.deftu.omnicore.api.color.OmniColor
 import java.io.File
 import java.nio.file.Path
 import kotlin.use
@@ -22,24 +23,24 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
     //$$ override val native: BufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
     //#endif
 
-    override operator fun get(x: Int, y: Int): Int {
+    override operator fun get(x: Int, y: Int): OmniColor {
         //#if MC >= 1.21.2
         val color = native.getColorArgb(x, y)
-        return ColorFormat.ARGB.convertTo(ColorFormat.RGBA, color)
+        return OmniColor(ColorFormat.ARGB, color)
         //#elseif MC >= 1.16.5
-        //$$ return native.getColor(x, y)
+        //$$ return OmniColor(ColorFormat.ARGB, native.getColor(x, y))
         //#else
-        //$$ return native.getRGB(x, y)
+        //$$ return OmniColor(ColorFormat.ARGB, native.getRGB(x, y))
         //#endif
     }
 
-    override operator fun set(x: Int, y: Int, color: Int) {
+    override operator fun set(x: Int, y: Int, color: OmniColor) {
         //#if MC >= 1.21.2
-        native.setColorArgb(x, y, ColorFormat.RGBA.convertTo(ColorFormat.ARGB, color))
+        native.setColorArgb(x, y, color.pack(ColorFormat.ARGB))
         //#elseif MC >= 1.16.5
-        //$$ native.setColor(x, y, color)
+        //$$ native.setColor(x, y, color.pack(ColorFormat.ARGB))
         //#else
-        //$$ native.setRGB(x, y, color)
+        //$$ native.setRGB(x, y, color.pack(ColorFormat.ARGB))
         //#endif
     }
 

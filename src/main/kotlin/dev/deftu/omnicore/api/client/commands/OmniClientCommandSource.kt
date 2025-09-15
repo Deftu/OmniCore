@@ -2,6 +2,8 @@ package dev.deftu.omnicore.api.client.commands
 
 import com.mojang.brigadier.Command
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
+import dev.deftu.omnicore.api.client.network.OmniClientNetworking
+import dev.deftu.omnicore.api.network.PacketPayload
 import dev.deftu.omnicore.api.scheduling.TickSchedulers
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextHolder
@@ -84,5 +86,10 @@ public object OmniClientCommandSource {
             stay,
             fadeOut
         )
+    }
+
+    public fun replyPacket(payload: PacketPayload): Int {
+        OmniClientNetworking.send(payload)
+        return Command.SINGLE_SUCCESS
     }
 }

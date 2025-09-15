@@ -61,10 +61,6 @@ public open class OmniVertexConsumerImpl(
         return this
     }
 
-    override fun color(color: Color): OmniVertexConsumer {
-        return color(color.red, color.green, color.blue, color.alpha)
-    }
-
     override fun color(color: Int): OmniVertexConsumer {
         val red = (color shr 16 and 0xFF) / 255f
         val green = (color shr 8 and 0xFF) / 255f

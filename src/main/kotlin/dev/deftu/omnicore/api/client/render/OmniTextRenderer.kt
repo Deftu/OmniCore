@@ -1,6 +1,9 @@
 package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.color.ColorFormat
+import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.textile.minecraft.MCTextFormat
 import dev.deftu.textile.minecraft.MCTextHolder
 
 //#if MC >= 1.20.1 && MC < 1.21.6
@@ -12,6 +15,20 @@ public object OmniTextRenderer {
         get() = client.textRenderer
 
     @JvmStatic
+    public val outlineOffsets: FloatArray by lazy(LazyThreadSafetyMode.PUBLICATION) {
+        buildList(5 * 5 * 2) {
+            for (dx in -2..2) {
+                for (dy in -2..2) {
+                    if (dx * dx != dy * dy) {
+                        add(dx / 2f)
+                        add(dy / 2f)
+                    }
+                }
+            }
+        }.toFloatArray()
+    }
+
+    @JvmStatic
     public val lineHeight: Int
         get() = textRenderer.fontHeight
 
@@ -20,25 +37,19 @@ public object OmniTextRenderer {
         context: OmniRenderingContext,
         text: String,
         x: Float, y: Float,
-        color: Int,
+        color: OmniColor,
         shadow: Boolean = true,
     ) {
-        val color = if (color and 0xFF000000.toInt() == 0) {
-            color or 0xFF000000.toInt()
-        } else {
-            color
-        }
-
         //#if MC >= 1.21.6
         val drawer = ImmediateGlyphDrawer(context.matrices.current.positionMatrix)
-        textRenderer.prepare(text, x, y, color, shadow, 0).draw(drawer)
+        textRenderer.prepare(text, x, y, color.pack(ColorFormat.ARGB), shadow, 0).draw(drawer)
         drawer.flush()
         //#elseif MC >= 1.20.1
         //$$ textRenderer.draw(
         //$$     text,
         //$$     x,
         //$$     y,
-        //$$     color,
+        //$$     color.pack(ColorFormat.ARGB),
         //$$     shadow,
         //$$     context.matrices.vanilla.peek().positionMatrix,
         //$$     client.bufferBuilders.entityVertexConsumers,
@@ -48,16 +59,16 @@ public object OmniTextRenderer {
         //$$ )
         //#elseif MC >= 1.16.5
         //$$ if (shadow) {
-        //$$     textRenderer.drawWithShadow(context.matrices.vanilla, text, x, y, color)
+        //$$     textRenderer.drawWithShadow(context.matrices.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
         //$$ } else {
-        //$$     textRenderer.draw(context.matrices.vanilla, text, x, y, color)
+        //$$     textRenderer.draw(context.matrices.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
         //$$ }
         //#else
         //$$ textRenderer.drawString(
         //$$     text,
         //$$     x,
         //$$     y,
-        //$$     color,
+        //$$     color.pack(ColorFormat.ARGB),
         //$$     shadow
         //$$ )
         //#endif
@@ -68,17 +79,28 @@ public object OmniTextRenderer {
         context: OmniRenderingContext,
         text: String,
         x: Float, y: Float,
-        color: Int,
-        type: TextShadowType
+        color: OmniColor,
+        shadowType: TextShadowType
     ) {
-        when (type) {
+        when (shadowType) {
             is TextShadowType.None -> render(context, text, x, y, color, shadow = false)
             is TextShadowType.Drop -> render(context, text, x, y, color, shadow = true)
             is TextShadowType.Outline -> {
-                render(context, text, x - 1, y, type.color, shadow = false)
-                render(context, text, x + 1, y, type.color, shadow = false)
-                render(context, text, x, y - 1, type.color, shadow = false)
-                render(context, text, x, y + 1, type.color, shadow = false)
+                val outlineColor = shadowType.color
+
+                // If the outline isn't going to be visible anyway, don't waste draw calls
+                if (outlineColor.alpha <= 3) {
+                    render(context, text, x, y, color, shadow = false)
+                    return
+                }
+
+                val strippedText = MCTextFormat.strip(text)
+                for (i in outlineOffsets.indices step 2) {
+                    val dx = outlineOffsets[i]
+                    val dy = outlineOffsets[i + 1]
+                    render(context, strippedText, x + dx, y + dy, outlineColor, shadow = false)
+                }
+
                 render(context, text, x, y, color, shadow = false)
             }
         }
@@ -89,7 +111,7 @@ public object OmniTextRenderer {
         context: OmniRenderingContext,
         text: String,
         x: Float, y: Float,
-        color: Int,
+        color: OmniColor,
         shadow: Boolean = true,
     ) {
         val width = width(text)
@@ -101,11 +123,11 @@ public object OmniTextRenderer {
         context: OmniRenderingContext,
         text: String,
         x: Float, y: Float,
-        color: Int,
-        type: TextShadowType
+        color: OmniColor,
+        shadowType: TextShadowType
     ) {
         val width = width(text)
-        render(context, text, x - width / 2f, y, color, type)
+        render(context, text, x - width / 2f, y, color, shadowType)
     }
 
     @JvmStatic

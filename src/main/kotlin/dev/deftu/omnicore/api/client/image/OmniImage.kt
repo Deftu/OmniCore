@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.client.image
 
+import dev.deftu.omnicore.api.color.OmniColor
 import java.io.File
 import java.nio.file.Path
 
@@ -19,8 +20,8 @@ public interface OmniImage : AutoCloseable {
     //$$ public val native: BufferedImage
     //#endif
 
-    public operator fun get(x: Int, y: Int): Int
-    public operator fun set(x: Int, y: Int, color: Int)
+    public operator fun get(x: Int, y: Int): OmniColor
+    public operator fun set(x: Int, y: Int, color: OmniColor)
 
     public fun flipX()
     public fun flipY()

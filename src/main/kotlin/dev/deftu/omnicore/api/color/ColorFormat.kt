@@ -1,14 +1,19 @@
 package dev.deftu.omnicore.api.color
 
+import com.mojang.serialization.Codec
+import kotlin.math.roundToInt
+
 public enum class ColorFormat(
+    public val id: String,
     public val redShift: Int,
     public val greenShift: Int,
     public val blueShift: Int,
     public val alphaShift: Int
 ) {
-    RGBA(24, 16, 8, 0),
-    ARGB(16, 8, 0, 24),
-    ABGR(0, 8, 16, 24);
+    RGBA("rgba", 24, 16, 8, 0),
+    ARGB("argb", 16, 8, 0, 24),
+    ABGR("abgr", 0, 8, 16, 24),
+    BGRA("bgra", 8, 16, 24, 0);
 
     // Precomputed masks for each channel
     private val redMask = 0xFF shl redShift
@@ -22,19 +27,19 @@ public enum class ColorFormat(
     private val invAlphaMask = alphaMask.inv()
 
     public fun red(color: Int): Int {
-        return color and redMask ushr redShift
+        return (color and redMask) ushr redShift
     }
 
     public fun green(color: Int): Int {
-        return color and greenMask ushr greenShift
+        return (color and greenMask) ushr greenShift
     }
 
     public fun blue(color: Int): Int {
-        return color and blueMask ushr blueShift
+        return (color and blueMask) ushr blueShift
     }
 
     public fun alpha(color: Int): Int {
-        return color and alphaMask ushr alphaShift
+        return (color and alphaMask) ushr alphaShift
     }
 
     public fun overwriteRed(color: Int, red: Int): Int {
@@ -68,10 +73,11 @@ public enum class ColorFormat(
     }
 
     public fun pack(red: Int, green: Int, blue: Int, alpha: Int = 0xFF): Int {
-        return (red and 0xFF) shl redShift or
-            (green and 0xFF) shl greenShift or
-            (blue and 0xFF) shl blueShift or
-            (alpha and 0xFF) shl alphaShift
+        val r = ((red   and 0xFF) shl redShift)
+        val g = ((green and 0xFF) shl greenShift)
+        val b = ((blue  and 0xFF) shl blueShift)
+        val a = ((alpha and 0xFF) shl alphaShift)
+        return r or g or b or a
     }
 
     public fun opaque(red: Int, green: Int, blue: Int): Int {
@@ -83,7 +89,7 @@ public enum class ColorFormat(
             (red(first) + red(second)) / 2,
             (green(first) + green(second)) / 2,
             (blue(first) + blue(second)) / 2,
-            (alpha(first) * alpha(second)) / 2
+            (alpha(first) + alpha(second)) / 2
         )
     }
 
@@ -98,6 +104,25 @@ public enum class ColorFormat(
 
     private fun lerp0(progress: Float, start: Int, end: Int): Int {
         val clampedProgress = progress.coerceIn(0f, 1f)
-        return (start + (end - start) * clampedProgress).toInt()
+        return (start + (end - start) * clampedProgress).roundToInt()
+    }
+
+    public companion object {
+        @JvmField
+        @Suppress("EnumValuesSoftDeprecate")
+        public val ALL: List<ColorFormat> = ColorFormat.values().toList()
+
+        @JvmField
+        public val CODEC: Codec<ColorFormat> = Codec.STRING.xmap(
+            {
+                from(it) ?: throw IllegalArgumentException("Unknown color format id: $it")
+            },
+            { it.id }
+        )
+
+        @JvmStatic
+        public fun from(id: String): ColorFormat? {
+            return ALL.firstOrNull { it.id == id }
+        }
     }
 }

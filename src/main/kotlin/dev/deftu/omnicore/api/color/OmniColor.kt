@@ -1,0 +1,92 @@
+@file:JvmName("OmniColor")
+
+package dev.deftu.omnicore.api.color
+
+import com.mojang.serialization.Codec
+import com.mojang.serialization.codecs.RecordCodecBuilder
+import java.awt.Color
+
+public data class OmniColor(
+    public val format: ColorFormat,
+    public val value: Int,
+) {
+    public companion object {
+        @JvmField
+        public val CODEC: Codec<OmniColor> = RecordCodecBuilder.create { instance ->
+            instance.group(
+                ColorFormat.CODEC.fieldOf("format").forGetter(OmniColor::format),
+                Codec.INT.fieldOf("value").forGetter(OmniColor::value)
+            ).apply(instance, ::OmniColor)
+        }
+    }
+
+    @JvmOverloads
+    public constructor(red: Int, green: Int, blue: Int, alpha: Int = 255)
+            : this(ColorFormat.RGBA, ColorFormat.RGBA.pack(red, green, blue, alpha))
+
+    public constructor(value: Int) : this(ColorFormat.RGBA, value)
+
+    public val red: Int get() = format.red(value)
+    public val green: Int get() = format.green(value)
+    public val blue: Int get() = format.blue(value)
+    public val alpha: Int get() = format.alpha(value)
+
+    public val awt: Color
+        get() = Color(red, green, blue, alpha)
+
+    public fun pack(target: ColorFormat = this.format): Int {
+        return if (target == this.format) {
+            value
+        } else {
+            format.convertTo(target, value)
+        }
+    }
+
+    public fun convertTo(target: ColorFormat): OmniColor {
+        return if (target == this.format) {
+            this
+        } else {
+            OmniColor(target, format.convertTo(target, value))
+        }
+    }
+
+    public fun asOpaque(): OmniColor {
+        return withAlpha(0xFF)
+    }
+
+    public fun mix(other: OmniColor): OmniColor {
+        val otherValue = other.pack(this.format)
+        val newValue = format.mix(value, otherValue)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun lerp(progress: Float, other: OmniColor): OmniColor {
+        val otherValue = other.pack(this.format)
+        val newValue = format.lerp(progress, value, otherValue)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun withRed(red: Int): OmniColor {
+        val newValue = format.overwriteRed(value, red)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun withGreen(green: Int): OmniColor {
+        val newValue = format.overwriteGreen(value, green)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun withBlue(blue: Int): OmniColor {
+        val newValue = format.overwriteBlue(value, blue)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun withAlpha(alpha: Int): OmniColor {
+        val newValue = format.overwriteAlpha(value, alpha)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    override fun toString(): String {
+        return "OmniColor(format=$format, value=${String.format("#%08X", value)}, r=$red, g=$green, b=$blue, a=$alpha)"
+    }
+}

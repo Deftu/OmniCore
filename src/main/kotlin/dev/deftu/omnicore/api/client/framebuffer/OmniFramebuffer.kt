@@ -11,6 +11,7 @@ import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
+import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import dev.deftu.omnicore.internal.identifierOf
@@ -94,7 +95,7 @@ public interface OmniFramebuffer : AutoCloseable {
         stack: OmniMatrixStack,
         x: Float, y: Float,
         width: Float, height: Float,
-        color: Int
+        color: OmniColor
     ) {
         this.drawTexture(
             pipeline,
@@ -110,7 +111,7 @@ public interface OmniFramebuffer : AutoCloseable {
         stack: OmniMatrixStack,
         x: Float, y: Float,
         width: Float, height: Float,
-        color: Int
+        color: OmniColor
     ) {
         this.drawTexture(
             defaultPipeline,
@@ -128,7 +129,7 @@ public interface OmniFramebuffer : AutoCloseable {
         stack: OmniMatrixStack,
         x: Float, y: Float,
         width: Float, height: Float,
-        color: Int
+        color: OmniColor
     ) {
         stack.push()
         stack.scale(1f, 1f, 50f)

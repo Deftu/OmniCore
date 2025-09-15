@@ -2,6 +2,8 @@ package dev.deftu.omnicore.api.commands
 
 import com.mojang.brigadier.Command
 import dev.deftu.omnicore.api.chat.OmniChat
+import dev.deftu.omnicore.api.network.OmniNetworking
+import dev.deftu.omnicore.api.network.PacketPayload
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextHolder
 import net.minecraft.server.MinecraftServer
@@ -100,5 +102,11 @@ public class OmniCommandSource(
             stay,
             fadeOut
         )
+    }
+
+    public fun replyPacket(payload: PacketPayload): Int {
+        val player = player ?: return 0 // failure
+        OmniNetworking.send(player, payload)
+        return Command.SINGLE_SUCCESS
     }
 }

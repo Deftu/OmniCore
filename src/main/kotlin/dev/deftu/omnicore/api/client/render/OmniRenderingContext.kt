@@ -2,6 +2,7 @@ package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
 
 //#if MC >= 1.20.1
@@ -65,7 +66,7 @@ public data class OmniRenderingContext(
     public fun renderText(
         text: String,
         x: Float, y: Float,
-        color: Int,
+        color: OmniColor,
         shadow: Boolean = true
     ) {
         OmniTextRenderer.render(this, text, x, y, color, shadow)
@@ -74,17 +75,17 @@ public data class OmniRenderingContext(
     public fun renderText(
         text: String,
         x: Float, y: Float,
-        color: Int,
-        type: TextShadowType
+        color: OmniColor,
+        shadowType: TextShadowType
     ) {
-        OmniTextRenderer.render(this, text, x, y, color, type)
+        OmniTextRenderer.render(this, text, x, y, color, shadowType)
     }
 
     @JvmOverloads
     public fun renderTextCentered(
         text: String,
         x: Float, y: Float,
-        color: Int,
+        color: OmniColor,
         shadow: Boolean = true,
     ) {
         OmniTextRenderer.renderCentered(this, text, x, y, color, shadow)
@@ -93,10 +94,10 @@ public data class OmniRenderingContext(
     public fun renderTextCentered(
         text: String,
         x: Float, y: Float,
-        color: Int,
-        type: TextShadowType
+        color: OmniColor,
+        shadowType: TextShadowType
     ) {
-        OmniTextRenderer.renderCentered(this, text, x, y, color, type)
+        OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
     }
 
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */

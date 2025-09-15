@@ -83,7 +83,7 @@ class TestMod
     //#endif
     fun onInitialize() {
         println("Hello common world!")
-        TestItems.initialize()
+        // TestItems.initialize()
         OmniNetworking.register(TestPacketPayload.TYPE) { payload ->
             logger.info("Received test packet on the server with message: ${payload.message}")
 
