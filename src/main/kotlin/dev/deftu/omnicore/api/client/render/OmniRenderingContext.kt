@@ -109,6 +109,7 @@ public data class OmniRenderingContext(
         OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
     }
 
+    @JvmOverloads
     public fun renderTextureRegion(
         pipeline: OmniRenderPipeline,
         texture: OmniTextureHandle,
@@ -121,6 +122,7 @@ public data class OmniRenderingContext(
         // TODO
     }
 
+    @JvmOverloads
     public fun renderTextureRegion(
         pipeline: OmniRenderPipeline,
         location: Identifier,
@@ -133,6 +135,7 @@ public data class OmniRenderingContext(
         renderTextureRegion(pipeline, OmniTextures.wrap(location), x0, y0, x1, y1, u0, v0, u1, v1, color)
     }
 
+    @JvmOverloads
     public fun renderTexture(
         pipeline: OmniRenderPipeline,
         texture: OmniTextureHandle,
@@ -145,6 +148,7 @@ public data class OmniRenderingContext(
         renderTextureRegion(pipeline, texture, x, y, x + width, y + height, u0, v0, u1, v1, color)
     }
 
+    @JvmOverloads
     public fun renderTexture(
         pipeline: OmniRenderPipeline,
         location: Identifier,

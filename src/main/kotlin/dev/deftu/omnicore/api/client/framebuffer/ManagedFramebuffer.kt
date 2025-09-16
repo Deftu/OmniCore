@@ -79,8 +79,8 @@ public class ManagedFramebuffer(
 
     private fun initialize() {
         this.id = FramebufferInternals.create()
-        this.colorTexture = OmniTextures.create(width, height, colorFormat)
-        this.depthStencilTexture = OmniTextures.create(width, height, depthFormat)
+        this.colorTexture = OmniTextures.create(width, height, colorFormat) as AbstractGlTexture
+        this.depthStencilTexture = OmniTextures.create(width, height, depthFormat) as AbstractGlTexture
         this.using {
             FramebufferHelper.attachColor(this.id, this.colorTexture.id)
             FramebufferInternals.checkStatus()

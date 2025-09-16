@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11
 import dev.deftu.omnicore.internal.mixins.client.Mixin_NativeImageAllocation
 import net.minecraft.client.texture.NativeImage
 //#else
+//$$ import dev.deftu.omnicore.api.color.OmniColor
 //$$ import org.lwjgl.BufferUtils
 //#endif
 
@@ -40,7 +41,7 @@ public object ImageInternals {
         //$$         val g = buffer.get(index + 1).toInt() and 0xFF
         //$$         val b = buffer.get(index + 2).toInt() and 0xFF
         //$$         val a = buffer.get(index + 3).toInt() and 0xFF
-        //$$         image[x, y] = (a shl 24) or (r shl 16) or (g shl 8) or b
+        //$$         image[x, y] = OmniColor(r, g, b, a)
         //$$     }
         //$$ }
         //#endif

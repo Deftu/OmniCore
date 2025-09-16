@@ -57,8 +57,8 @@ public object OmniFramebuffers {
             width = framebuffer.viewportWidth,
             height = framebuffer.viewportHeight,
             //#if MC >= 1.21.5
-            colorTexture = OmniTextures.wrap(colorTexture),
-            depthStencilTexture = depthTexture?.let(OmniTextures::wrap)
+            colorTexture = OmniTextures.wrap(colorTexture) as AbstractGlTexture,
+            depthStencilTexture = depthTexture?.let(OmniTextures::wrap) as AbstractGlTexture
             //#else
             //$$ colorTexture = OmniTextures.wrap(colorTexture, framebuffer.width, framebuffer.height, OmniTextureFormat.RGBA8),
             //$$ depthStencilTexture = if (depthTexture != null) {
@@ -71,7 +71,7 @@ public object OmniFramebuffers {
                         //#else
                         //$$ OmniTextureFormat.DEPTH32
                         //#endif
-            //$$    )
+            //$$    ) as AbstractGlTexture
             //$$ } else {
             //$$     null
             //$$ }
