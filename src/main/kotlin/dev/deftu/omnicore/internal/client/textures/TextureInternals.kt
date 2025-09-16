@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.internal.client.textures
 
 import com.mojang.blaze3d.opengl.GlStateManager
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -19,20 +20,34 @@ public object TextureInternals {
     public var active: Int
         get() = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
         set(value) {
-            bind0(value)
+            //#if MC >= 1.17.1
+            GlStateManager._bindTexture(value)
+            //#else
+            //$$ GlStateManager.bindTexture(value)
+            //#endif
         }
 
     @JvmStatic
-    public var activeUnit: Int
-        get() = GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)
+    public var activeUnit: OmniTextureUnit
+        get() = OmniTextureUnit.gl(GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)) ?: OmniTextureUnit.TEXTURE0
         set(value) {
             //#if MC >= 1.17
-            GlStateManager._activeTexture(value)
+            GlStateManager._activeTexture(value.const)
             //#elseif MC >= 1.14
-            //$$ GlStateManager.activeTexture(value)
+            //$$ GlStateManager.activeTexture(value.const)
             //#else
-            //$$ GlStateManager.setActiveTexture(value)
+            //$$ GlStateManager.setActiveTexture(value.const)
             //#endif
+        }
+
+    @JvmStatic
+    public val states: Map<OmniTextureUnit, Boolean>
+        get() {
+            return buildMap {
+                for (unit in OmniTextureUnit.ALL) {
+                    put(unit, isEnabled(unit))
+                }
+            }
         }
 
     @JvmStatic
@@ -47,26 +62,12 @@ public object TextureInternals {
     }
 
     @JvmStatic
-    public fun bound(): Int {
-        return GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
-    }
-
-    @JvmStatic
-    public fun boundOnUnit(unit: Int): Int {
+    public fun boundOnUnit(unit: OmniTextureUnit): Int {
         val prevActiveTexture = activeUnit
-        activeUnit = GL13.GL_TEXTURE0 + unit
-        val bound = bound()
+        activeUnit = unit
+        val bound = active
         activeUnit = prevActiveTexture
         return bound
-    }
-
-    @JvmStatic
-    public fun bind0(id: Int) {
-        //#if MC >= 1.17.1
-        GlStateManager._bindTexture(id)
-        //#else
-        //$$ GlStateManager.bindTexture(id)
-        //#endif
     }
 
     @JvmStatic
@@ -78,26 +79,26 @@ public object TextureInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.setShaderTexture(unit, id)
         //#else
-        //$$ activeUnit = GL13.GL_TEXTURE0 + unit
+        //$$ activeUnit = OmniTextureUnit.from(unit) ?: throw IllegalArgumentException("Invalid texture unit: $unit")
         //$$ active = id
         //#endif
     }
 
     @JvmStatic
     public fun bind(id: Int): () -> Unit {
-        val prevBoundTexture = bound()
-        bind0(id)
+        val prevBoundTexture = active
+        active = id
         return {
-            bind0(prevBoundTexture)
+            active = prevBoundTexture
         }
     }
 
     @JvmStatic
-    public fun bindOnUnit(unit: Int, id: Int): () -> Unit {
+    public fun bindOnUnit(unit: OmniTextureUnit, id: Int): () -> Unit {
         val prevBoundTexture = boundOnUnit(unit)
-        bindOnUnit0(unit, id)
+        bindOnUnit0(unit.id, id)
         return {
-            bindOnUnit0(unit, prevBoundTexture)
+            bindOnUnit0(unit.id, prevBoundTexture)
         }
     }
 
@@ -107,7 +108,7 @@ public object TextureInternals {
     }
 
     @JvmStatic
-    public fun unbindOnUnit(unit: Int) {
+    public fun unbindOnUnit(unit: OmniTextureUnit) {
         bindOnUnit(unit, GL11.GL_NONE)
     }
 
@@ -117,6 +118,53 @@ public object TextureInternals {
         GlStateManager._deleteTexture(id)
         //#else
         //$$ GlStateManager.deleteTexture(id)
+        //#endif
+    }
+
+    @JvmStatic
+    public fun isEnabled(unit: OmniTextureUnit): Boolean {
+        //#if MC >= 1.18.2
+        return true
+        //#elseif MC >= 1.17.1
+        //$$ return RenderSystem.getTextureId(unit.id) != 0
+        //#else
+        //$$ val prevActiveUnit = activeUnit
+        //$$ activeUnit = unit
+        //$$ val enabled = GL11.glIsEnabled(GL11.GL_TEXTURE_2D)
+        //$$ activeUnit = prevActiveUnit
+        //$$ return enabled
+        //#endif
+    }
+
+    @JvmStatic
+    public fun enable(unit: OmniTextureUnit) {
+        //#if MC <= 1.19.2
+        //$$ val prevActiveUnit = activeUnit
+        //$$ activeUnit = unit
+        //#if MC >= 1.17.1
+        //$$ RenderSystem.enableTexture()
+        //#elseif MC >= 1.16.5
+        //$$ GlStateManager.enableTexture()
+        //#else
+        //$$ GlStateManager.enableTexture2D()
+        //#endif
+        //$$ activeUnit = prevActiveUnit
+        //#endif
+    }
+
+    @JvmStatic
+    public fun disable(unit: OmniTextureUnit) {
+        //#if MC <= 1.19.2
+        //$$ val prevActiveUnit = activeUnit
+        //$$ activeUnit = unit
+        //#if MC >= 1.17.1
+        //$$ RenderSystem.disableTexture()
+        //#elseif MC >= 1.16.5
+        //$$ GlStateManager.disableTexture()
+        //#else
+        //$$ GlStateManager.disableTexture2D()
+        //#endif
+        //$$ activeUnit = prevActiveUnit
         //#endif
     }
 }

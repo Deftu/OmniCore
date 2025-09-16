@@ -23,6 +23,22 @@ public data class OmniPolygonOffset(
         }
     }
 
+    public fun asEnabled(): OmniPolygonOffset {
+        return if (isEnabled) this else copy(isEnabled = true)
+    }
+
+    public fun asDisabled(): OmniPolygonOffset {
+        return if (!isEnabled) this else copy(isEnabled = false)
+    }
+
+    public fun withFactor(factor: Float): OmniPolygonOffset {
+        return if (this.factor == factor) this else copy(factor = factor)
+    }
+
+    public fun withUnits(units: Float): OmniPolygonOffset {
+        return if (this.units == units) this else copy(units = units)
+    }
+
     public companion object {
         @JvmField public val DEFAULT: OmniPolygonOffset = OmniPolygonOffset(false, 0f, 0f)
         @JvmField public val DISABLED: OmniPolygonOffset = DEFAULT

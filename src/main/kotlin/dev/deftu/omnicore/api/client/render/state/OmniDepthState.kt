@@ -24,16 +24,23 @@ public data class OmniDepthState(
         }
     }
 
+    public fun asEnabled(): OmniDepthState {
+        return if (isEnabled) this else copy(isEnabled = true)
+    }
+
+    public fun asDisabled(): OmniDepthState {
+        return if (!isEnabled) this else copy(isEnabled = false)
+    }
+
+    public fun withFunction(function: DepthFunction): OmniDepthState {
+        return if (this.function == function) this else copy(function = function)
+    }
+
+    public fun withMask(mask: Boolean): OmniDepthState {
+        return if (this.mask == mask) this else copy(mask = mask)
+    }
+
     public companion object {
         @JvmField public val DISABLED: OmniDepthState = OmniDepthState(false, DepthFunction.LESS, false)
-
-        @JvmStatic
-        @JvmOverloads
-        public fun asEnabled(
-            function: DepthFunction = DepthStateInternals.func,
-            mask: Boolean = true
-        ): OmniDepthState {
-            return OmniDepthState(true, function, mask)
-        }
     }
 }

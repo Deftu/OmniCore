@@ -4,6 +4,7 @@ import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import dev.deftu.omnicore.api.client.render.ClearMask
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.state.OmniColorMask
 import dev.deftu.omnicore.internal.client.render.GlInternals
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
@@ -27,9 +28,8 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         }
     }
 
-    override fun bind(unit: Int) {
+    override fun bind(unit: OmniTextureUnit) {
         val prevUnit = TextureInternals.activeUnit
-        val prevTexture = TextureInternals.active
         if (prevUnit != unit) {
             TextureInternals.activeUnit = unit
         }
@@ -41,9 +41,8 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         }
     }
 
-    override fun unbind(unit: Int) {
+    override fun unbind(unit: OmniTextureUnit) {
         val prevUnit = TextureInternals.activeUnit
-        val prevTexture = TextureInternals.active
         if (prevUnit != unit) {
             TextureInternals.activeUnit = unit
         }

@@ -1,12 +1,14 @@
 package dev.deftu.omnicore.api.client.render.state
 
+import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderState
+
 public class OmniRenderState(
-    @JvmField public var alphaState: OmniAlphaState,
     @JvmField public var blendState: OmniBlendState,
     @JvmField public var depthState: OmniDepthState,
     @JvmField public var cullState: OmniCullState,
     @JvmField public var colorMaskState: OmniColorMask,
     @JvmField public var polygonOffsetState: OmniPolygonOffset,
+    @JvmField public var legacyState: OmniLegacyRenderState,
 ) : TrackedState<OmniRenderState> {
     override var prevState: OmniRenderState? = null
         private set
@@ -16,7 +18,6 @@ public class OmniRenderState(
             prevState = OmniRenderStates.current
         }
 
-        alphaState.submit(saveLast)
         blendState.submit(saveLast)
         depthState.submit(saveLast)
         cullState.submit(saveLast)
@@ -25,10 +26,6 @@ public class OmniRenderState(
     }
 
     public fun applyTo(other: OmniRenderState) {
-        if (other.alphaState != alphaState) {
-            other.setAlphaState(alphaState)
-        }
-
         if (other.blendState != blendState) {
             other.setBlendState(blendState)
         }
@@ -48,12 +45,10 @@ public class OmniRenderState(
         if (other.polygonOffsetState != polygonOffsetState) {
             other.setPolygonOffsetState(polygonOffsetState)
         }
-    }
 
-    public fun setAlphaState(state: OmniAlphaState): OmniRenderState {
-        alphaState = state
-        state.submit(true)
-        return this
+        if (other.legacyState != legacyState) {
+            other.setLegacyState(legacyState)
+        }
     }
 
     public fun setBlendState(state: OmniBlendState): OmniRenderState {
@@ -82,6 +77,12 @@ public class OmniRenderState(
 
     public fun setPolygonOffsetState(state: OmniPolygonOffset): OmniRenderState {
         polygonOffsetState = state
+        state.submit(true)
+        return this
+    }
+
+    public fun setLegacyState(state: OmniLegacyRenderState): OmniRenderState {
+        legacyState = state
         state.submit(true)
         return this
     }

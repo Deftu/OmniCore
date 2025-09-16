@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.internal.client.render.state
+package dev.deftu.omnicore.internal.client.render.state.legacy
 
 import org.jetbrains.annotations.ApiStatus
 

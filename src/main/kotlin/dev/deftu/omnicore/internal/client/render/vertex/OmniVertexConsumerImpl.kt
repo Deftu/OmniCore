@@ -28,7 +28,6 @@ public open class OmniVertexConsumerImpl(
     //$$ private val value: BufferBuilder,
     //#endif
 ) : OmniVertexConsumer {
-
     override fun vertex(stack: OmniMatrixStack, x: Double, y: Double, z: Double): OmniVertexConsumer {
         if (stack == OmniMatrixStacks.UNIT) {
             //#if MC >= 1.21.1
@@ -121,5 +120,4 @@ public open class OmniVertexConsumerImpl(
         //#endif
         return this
     }
-
 }

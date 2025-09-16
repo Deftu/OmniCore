@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
 import com.mojang.blaze3d.vertex.VertexFormat
+import com.mojang.blaze3d.vertex.VertexFormatElement
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
@@ -10,7 +11,6 @@ import net.minecraft.util.Identifier
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.blaze3d.vertex.VertexFormatElement
 import net.minecraft.client.gl.UniformType
 //#else
 //#if MC >= 1.21.2
@@ -134,7 +134,7 @@ public object OmniRenderPipelines {
             //#endif
 
         //#if MC >= 1.21.5
-        val samplers = List(vertexFormat.elements.count(VertexFormatElement.Usage.UV::equals)) { "Sampler$it" }
+        val samplers = List(vertexFormat.elements.map(VertexFormatElement::usage).count(VertexFormatElement.Usage.UV::equals)) { "Sampler$it" }
         val uniforms = mapOf(
             //#if MC >= 1.21.6
             "DynamicTransforms" to UniformType.UNIFORM_BUFFER,

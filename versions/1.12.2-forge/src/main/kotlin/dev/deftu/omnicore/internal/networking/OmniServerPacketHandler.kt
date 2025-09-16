@@ -22,14 +22,8 @@ public class OmniServerPacketHandler(private val player: EntityPlayerMP) : OmniP
         //$$ val customPayloadPacket = packet as? C17PacketCustomPayload ?: return
         //#endif
         val channelName = customPayloadPacket.channelName
-        val channel = identifierOrNull(channelName)
-        if (channel == null) {
-            println("Received packet on unknown channel: $channelName")
-            return
-        }
-
+        val channel = identifierOrNull(channelName) ?: return
         if (!OmniNetworking.isRegisteredChannel(channel)) {
-            println("Received packet on unregistered channel: $channel")
             return
         }
 

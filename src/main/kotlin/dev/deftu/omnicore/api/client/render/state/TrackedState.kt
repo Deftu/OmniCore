@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.render.state
 
-public sealed interface TrackedState<T : TrackedState<T>> {
+public interface TrackedState<T : TrackedState<T>> {
     public val prevState: T?
 
     public fun submit(saveLast: Boolean = true)

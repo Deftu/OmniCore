@@ -32,3 +32,5 @@ com.mojang.blaze3d.platform.GlStateManager glGetShaderInfoLog() getShaderInfoLog
 com.mojang.blaze3d.platform.GlStateManager glAttachShader() attachShader()
 com.mojang.blaze3d.platform.GlStateManager glDeleteProgram() deleteProgram()
 com.mojang.blaze3d.platform.GlStateManager _glGetUniformLocation() getUniformLocation()
+com.mojang.blaze3d.platform.GlStateManager _texParameter() texParameter()
+com.mojang.blaze3d.platform.GlStateManager _texSubImage2D() texSubImage2D()

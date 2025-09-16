@@ -3,6 +3,7 @@ package dev.deftu.omnicore.api.client.framebuffer
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniResolution
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
@@ -156,7 +157,7 @@ public interface OmniFramebuffer : AutoCloseable {
             .color(color)
             .next()
         buffer.buildOrNull()?.drawAndClose(pipeline) {
-            texture(0, texture.id)
+            texture(OmniTextureUnit.TEXTURE0, texture.id)
         }
 
         stack.pop()

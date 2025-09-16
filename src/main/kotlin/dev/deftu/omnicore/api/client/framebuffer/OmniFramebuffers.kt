@@ -60,7 +60,7 @@ public object OmniFramebuffers {
             colorTexture = OmniTextures.wrap(colorTexture) as AbstractGlTexture,
             depthStencilTexture = depthTexture?.let(OmniTextures::wrap) as AbstractGlTexture
             //#else
-            //$$ colorTexture = OmniTextures.wrap(colorTexture, framebuffer.width, framebuffer.height, OmniTextureFormat.RGBA8),
+            //$$ colorTexture = OmniTextures.wrap(colorTexture, framebuffer.width, framebuffer.height, OmniTextureFormat.RGBA8) as AbstractGlTexture,
             //$$ depthStencilTexture = if (depthTexture != null) {
             //$$     OmniTextures.wrap(
             //$$         depthTexture,

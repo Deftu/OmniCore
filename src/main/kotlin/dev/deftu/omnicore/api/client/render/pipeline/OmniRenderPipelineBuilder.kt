@@ -7,6 +7,7 @@ import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
 import net.minecraft.util.Identifier
 import org.lwjgl.opengl.GL11
+import java.util.function.Consumer
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.opengl.GlStateManager
@@ -19,12 +20,14 @@ import net.minecraft.client.gl.GlCommandEncoder
 //#else
 //$$ import dev.deftu.omnicore.api.client.render.state.CullFace
 //$$ import dev.deftu.omnicore.api.client.render.state.DepthFunction
-//$$ import dev.deftu.omnicore.api.client.render.state.OmniAlphaState
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniColorMask
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniCullState
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniDepthState
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniPolygonOffset
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniRenderState
+//$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyLightingState
+//$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderState
+//$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyTextureState
 //#endif
 
 public class OmniRenderPipelineBuilder internal constructor(
@@ -44,7 +47,9 @@ public class OmniRenderPipelineBuilder internal constructor(
     @JvmField public var colorMask: Pair<Boolean, Boolean> = true to true // rgb and alpha
     @JvmField public var depthMask: Boolean = true
     @JvmField public var polygonOffset: Pair<Float, Float> = 0f to 0f // factor and units
-    // TODO: lighting, alpha
+
+    // legacy
+    @JvmField public var legacyEffects: LegacyEffects = LegacyEffects()
 
     public fun build(): OmniRenderPipeline {
         //#if MC >= 1.21.5
@@ -146,7 +151,6 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$     vertexFormat = vertexFormat,
         //$$     shaderProvider = shaderProvider,
         //$$     activeRenderState = OmniRenderState(
-        //$$         alphaState = OmniAlphaState(true, GL11.GL_ALWAYS, 0.0f),
         //$$         blendState = blendState,
         //$$         depthState = OmniDepthState(
         //$$             isEnabled = depthTest != OmniRenderPipeline.DepthTest.DISABLED,
@@ -174,7 +178,14 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$             isEnabled = polygonOffset.first != 0f || polygonOffset.second != 0f,
         //$$             factor = polygonOffset.first,
         //$$             units = polygonOffset.second
-        //$$         )
+        //$$         ),
+        //$$         legacyState = OmniLegacyRenderState(
+        //$$             alphaState = legacyEffects.alpha,
+        //$$             lightingState = OmniLegacyLightingState(legacyEffects.lighting),
+        //$$             textureStates = legacyEffects.textureStates.map { (unit, state) ->
+        //$$                 OmniLegacyTextureState(unit, state)
+        //$$             }
+        //$$         ),
         //$$     ),
         //$$ )
         //#endif
@@ -206,5 +217,19 @@ public class OmniRenderPipelineBuilder internal constructor(
 
     public fun setPolygonOffset(factor: Float, units: Float): OmniRenderPipelineBuilder {
         this.polygonOffset = factor to units; return this
+    }
+
+    public fun setLegacyEffects(effects: LegacyEffects): OmniRenderPipelineBuilder {
+        this.legacyEffects = effects; return this
+    }
+
+    public fun configureLegacyEffects(configure: Consumer<LegacyEffects.Builder>): OmniRenderPipelineBuilder {
+        this.legacyEffects = LegacyEffects.Builder().apply(configure::accept).build()
+        return this
+    }
+
+    public fun configureLegacyEffects(configure: LegacyEffects.Builder.() -> Unit): OmniRenderPipelineBuilder {
+        this.legacyEffects = LegacyEffects.Builder().apply(configure).build()
+        return this
     }
 }

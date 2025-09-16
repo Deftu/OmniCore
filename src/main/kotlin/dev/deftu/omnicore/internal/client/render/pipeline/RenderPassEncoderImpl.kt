@@ -2,6 +2,7 @@ package dev.deftu.omnicore.internal.client.render.pipeline
 
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
 import dev.deftu.omnicore.internal.client.textures.WrappedGlTexture
@@ -107,14 +108,14 @@ public class RenderPassEncoderImpl internal constructor(
     }
 
     override fun texture(
-        index: Int,
+        unit: OmniTextureUnit,
         id: Int
     ): RenderPassEncoder {
         //#if MC >= 1.21.5
-        val samplerName = renderPipeline.vanilla.samplers[index]
+        val samplerName = renderPipeline.vanilla.samplers[unit.id]
         texture(samplerName, id)
         //#else
-        //$$ renderPipeline.texture(index, id)
+        //$$ renderPipeline.texture(unit, id)
         //#endif
         return this
     }

@@ -21,4 +21,16 @@ public data class OmniCullState(
             CullStateInternals.disable()
         }
     }
+
+    public fun asEnabled(): OmniCullState {
+        return if (isEnabled) this else OmniCullState(true, mode)
+    }
+
+    public fun asDisabled(): OmniCullState {
+        return if (!isEnabled) this else OmniCullState(false, mode)
+    }
+
+    public fun withMode(mode: CullFace): OmniCullState {
+        return if (this.mode == mode) this else OmniCullState(isEnabled, mode)
+    }
 }

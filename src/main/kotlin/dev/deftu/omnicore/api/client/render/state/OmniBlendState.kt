@@ -83,6 +83,22 @@ public data class OmniBlendState(
         }
     }
 
+    public fun asEnabled(): OmniBlendState {
+        return if (isEnabled) this else copy(isEnabled = true)
+    }
+
+    public fun asDisabled(): OmniBlendState {
+        return if (!isEnabled) this else copy(isEnabled = false)
+    }
+
+    public fun withEquation(equation: BlendEquation): OmniBlendState {
+        return if (this.equation == equation) this else copy(equation = equation)
+    }
+
+    public fun withFunction(function: BlendFunction): OmniBlendState {
+        return if (this.function == function) this else copy(function = function)
+    }
+
     public companion object {
         @JvmField public val DISABLED: OmniBlendState = OmniBlendState(false, BlendEquation.ADD, BlendFunction.DISABLED)
         @JvmField public val NORMAL: OmniBlendState = OmniBlendState(true, BlendEquation.ADD, BlendFunction.DEFAULT)

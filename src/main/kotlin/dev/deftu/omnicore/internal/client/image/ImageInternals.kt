@@ -2,9 +2,18 @@ package dev.deftu.omnicore.internal.client.image
 
 import com.mojang.blaze3d.opengl.GlStateManager
 import dev.deftu.omnicore.api.client.image.OmniImage
+import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
+import dev.deftu.omnicore.api.client.textures.OmniTextures
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
+
+//#if MC >= 1.21.5
+import java.nio.IntBuffer
+//#else
+//$$ import com.mojang.blaze3d.platform.TextureUtil
+//#endif
 
 //#if MC >= 1.16.5
 import dev.deftu.omnicore.internal.mixins.client.Mixin_NativeImageAllocation
@@ -44,6 +53,69 @@ public object ImageInternals {
         //$$         image[x, y] = OmniColor(r, g, b, a)
         //$$     }
         //$$ }
+        //#endif
+    }
+
+    @JvmStatic
+    public fun loadTextureFrom(image: OmniImage): OmniTextureHandle {
+        val texture = OmniTextures.create(image.width, image.height, OmniTextureFormat.RGBA8)
+        prepareImage(texture.id, image.width, image.height, GL11.GL_RGBA)
+        uploadTexture(image, texture.id, image.width, image.height)
+        return texture
+    }
+
+    @JvmStatic
+    public fun prepareImage(id: Int, width: Int, height: Int, format: Int) {
+        //#if MC >= 1.21.5
+        val unbind = TextureInternals.bind(id)
+        GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, format, width, height, 0, format, GL11.GL_UNSIGNED_BYTE, null as IntBuffer?)
+        unbind()
+        //#elseif MC >= 1.17.1
+        //$$ TextureUtil.prepareImage(id, width, height)
+        //#elseif MC >= 1.16.5
+        //$$ TextureUtil.allocate(id, width, height)
+        //#else
+        //$$ TextureUtil.allocateTexture(id, width, height)
+        //#endif
+    }
+
+    @JvmStatic
+    public fun uploadTexture(image: OmniImage, id: Int, width: Int, height: Int) {
+        //#if MC >= 1.16.5
+        val native = image.native
+        checkAllocated(native)
+
+        val unbind = TextureInternals.bind(id)
+        with(GL11.GL_NEAREST) {
+            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, this)
+            GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, this)
+        }
+
+        val unpackRowLength = if (width == native.width) 0 else width
+        GlStateManager._pixelStore(GL11.GL_UNPACK_ROW_LENGTH, unpackRowLength)
+
+        GlStateManager._pixelStore(GL11.GL_UNPACK_SKIP_PIXELS, 0)
+        GlStateManager._pixelStore(GL11.GL_UNPACK_SKIP_ROWS, 0)
+        setUnpackAlignment(native)
+
+        GlStateManager._texSubImage2D(
+            GL11.GL_TEXTURE_2D,
+            0, 0, 0,
+            width,
+            height,
+            getFormat(native),
+            GL11.GL_UNSIGNED_BYTE,
+            //#if MC >= 1.21.5
+            native.imageId()
+            //#else
+            //$$ pointer(native)
+            //#endif
+        )
+
+        unbind()
+        //#else
+        //$$ val data = image.native.getRGB(0, 0, width, height, null, 0, width)
+        //$$ TextureUtil.uploadTexture(id, data, width, height)
         //#endif
     }
 

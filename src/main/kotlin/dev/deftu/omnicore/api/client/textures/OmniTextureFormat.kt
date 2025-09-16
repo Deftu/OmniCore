@@ -20,6 +20,15 @@ public enum class OmniTextureFormat(public val isColor: Boolean = false) {
             DEPTH32 -> GL30.GL_DEPTH_ATTACHMENT
         }
 
+    //#if MC >= 1.21.5
+    public val vanilla: TextureFormat
+        get() = when (this) {
+            RGBA8 -> TextureFormat.RGBA8
+            DEPTH32 -> TextureFormat.DEPTH32
+            else -> throw IllegalArgumentException("No vanilla TextureFormat for $this")
+        }
+    //#endif
+
     public companion object {
         @JvmStatic
         public fun from(internalFormat: Int): OmniTextureFormat {

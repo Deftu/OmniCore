@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.render.state
 
-import dev.deftu.omnicore.internal.client.render.state.AlphaStateInternals
+import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderStates
 import dev.deftu.omnicore.internal.client.render.state.BlendStateInternals
 import dev.deftu.omnicore.internal.client.render.state.ColorMaskStateInternals
 import dev.deftu.omnicore.internal.client.render.state.CullStateInternals
@@ -8,16 +8,6 @@ import dev.deftu.omnicore.internal.client.render.state.DepthStateInternals
 import dev.deftu.omnicore.internal.client.render.state.PolygonOffsetStateInternals
 
 public object OmniRenderStates {
-    @JvmStatic
-    public val alpha: OmniAlphaState
-        get() {
-            return OmniAlphaState(
-                isEnabled = AlphaStateInternals.isEnabled,
-                func = AlphaStateInternals.func,
-                ref = AlphaStateInternals.ref,
-            )
-        }
-
     @JvmStatic
     public val blend: OmniBlendState
         get() {
@@ -75,40 +65,23 @@ public object OmniRenderStates {
     public val current: OmniRenderState
         get() {
             return OmniRenderState(
-                alphaState = alpha,
                 blendState = blend,
                 depthState = depth,
                 cullState = cull,
                 colorMaskState = colorMask,
                 polygonOffsetState = polygonOffset,
+                legacyState = OmniLegacyRenderStates.current
             )
         }
 
     /** Forcibly syncs Minecraft's GL state tracker to match all global render states. */
     @JvmStatic
     public fun sync() {
-        syncAlpha()
         syncBlend()
         syncDepth()
         syncCull()
         syncColorMask()
         syncPolygonOffset()
-    }
-
-    /** Forcibly syncs Minecraft's GL state tracker to match the global alpha state. */
-    @JvmStatic
-    public fun syncAlpha() {
-        //#if MC <= 1.16.5
-        //$$ val enabled = AlphaStateInternals.isEnabled
-        //$$ if (enabled) {
-        //$$     AlphaStateInternals.enable()
-        //$$     val func = AlphaStateInternals.func
-        //$$     val ref  = AlphaStateInternals.ref
-        //$$     AlphaStateInternals.configure(func, ref)
-        //$$ } else {
-        //$$     AlphaStateInternals.disable()
-        //$$ }
-        //#endif
     }
 
     /** Forcibly syncs Minecraft's GL state tracker to match the global blend state. */

@@ -10,6 +10,10 @@ import dev.deftu.textile.minecraft.MCTextHolder
 //$$ import net.minecraft.client.font.TextRenderer
 //#endif
 
+//#if MC < 1.16.5
+//$$ import dev.deftu.omnicore.api.client.render.state.OmniRenderStates
+//#endif
+
 public object OmniTextRenderer {
     private inline val textRenderer
         get() = client.textRenderer
@@ -64,6 +68,8 @@ public object OmniTextRenderer {
         //$$     textRenderer.draw(context.matrices.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
         //$$ }
         //#else
+        //$$ val blendState = OmniRenderStates.blend.asEnabled()
+        //$$ blendState.submit()
         //$$ textRenderer.drawString(
         //$$     text,
         //$$     x,
@@ -71,6 +77,8 @@ public object OmniTextRenderer {
         //$$     color.pack(ColorFormat.ARGB),
         //$$     shadow
         //$$ )
+        //$$
+        //$$ blendState.restore()
         //#endif
     }
 

@@ -4,12 +4,24 @@ import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
-import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
+import net.minecraft.item.ItemStack
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
+
+//#if MC >= 1.21.6
+import dev.deftu.omnicore.api.color.ColorFormat
+//#else
+//$$ import dev.deftu.omnicore.api.client.client
+//$$ import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+//$$ import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
+//#endif
+
+//#if MC >= 1.21.5 && MC < 1.21.6
+//$$ import net.minecraft.client.texture.GlTexture
+//#endif
 
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.DrawContext
@@ -112,27 +124,86 @@ public data class OmniRenderingContext(
     @JvmOverloads
     public fun renderTextureRegion(
         pipeline: OmniRenderPipeline,
-        texture: OmniTextureHandle,
+        location: Identifier,
         x0: Float, y0: Float,
         x1: Float, y1: Float,
-        u0: Float, v0: Float,
-        u1: Float, v1: Float,
+        width: Int, height: Int,
+        u: Float, v: Float,
         color: OmniColor = OmniColors.WHITE,
     ) {
-        // TODO
+        //#if MC >= 1.21.6
+        graphics.drawTexture(
+            pipeline.vanilla,
+            location,
+            x0.toInt(), y0.toInt(),
+            u, v,
+            (x1 - x0).toInt(), (y1 - y0).toInt(),
+            width, height,
+            color.pack(ColorFormat.ARGB)
+        )
+        //#else
+        //$$ val texture = client.textureManager.getTexture(location)
+        //#if MC <= 1.16.5
+        //$$ if (texture == null) {
+        //$$     throw IllegalArgumentException("Texture $location is not loaded")
+        //$$ }
+        //#endif
+        //$$
+        //$$ val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_TEXTURE_COLOR)
+        //$$ buffer
+        //$$     .vertex(matrices, x0.toDouble(), y0.toDouble(), 0.0)
+        //$$     .texture((u / width).toDouble(), (v / height).toDouble())
+        //$$     .color(color)
+        //$$     .next()
+        //$$ buffer
+        //$$     .vertex(matrices, x1.toDouble(), y0.toDouble(), 0.0)
+        //$$     .texture(((u + (x1 - x0)) / width).toDouble(), (v / height).toDouble())
+        //$$     .color(color)
+        //$$     .next()
+        //$$ buffer
+        //$$     .vertex(matrices, x1.toDouble(), y1.toDouble(), 0.0)
+        //$$     .texture(((u + (x1 - x0)) / width).toDouble(), ((v + (y1 - y0)) / height).toDouble())
+        //$$     .color(color)
+        //$$     .next()
+        //$$ buffer
+        //$$     .vertex(matrices, x0.toDouble(), y1.toDouble(), 0.0)
+        //$$     .texture((u / width).toDouble(), ((v + (y1 - y0)) / height).toDouble())
+        //$$     .color(color)
+        //$$     .next()
+        //$$ buffer.buildOrThrow().drawAndClose(pipeline) {
+        //$$     val id =
+                    //#if MC >= 1.21.5
+                    //$$ (texture.glTexture as GlTexture).glId
+                    //#else
+                    //$$ texture.id
+                    //#endif
+        //$$     texture(OmniTextureUnit.TEXTURE0, id)
+        //$$ }
+        //#endif
     }
 
     @JvmOverloads
     public fun renderTextureRegion(
         pipeline: OmniRenderPipeline,
-        location: Identifier,
+        texture: OmniTextureHandle,
         x0: Float, y0: Float,
         x1: Float, y1: Float,
-        u0: Float, v0: Float,
-        u1: Float, v1: Float,
+        u: Float, v: Float,
         color: OmniColor = OmniColors.WHITE,
     ) {
-        renderTextureRegion(pipeline, OmniTextures.wrap(location), x0, y0, x1, y1, u0, v0, u1, v1, color)
+        renderTextureRegion(pipeline, texture.location, x0, y0, x1, y1, texture.width, texture.height, u, v, color)
+    }
+
+    @JvmOverloads
+    public fun renderTexture(
+        pipeline: OmniRenderPipeline,
+        location: Identifier,
+        x: Float, y: Float,
+        width: Int, height: Int,
+        u: Float, v: Float,
+        color: OmniColor = OmniColors.WHITE,
+    ) {
+        renderTextureRegion(pipeline, location, x, y, x + width, y + height, width, height, u, v, color)
     }
 
     @JvmOverloads
@@ -140,28 +211,14 @@ public data class OmniRenderingContext(
         pipeline: OmniRenderPipeline,
         texture: OmniTextureHandle,
         x: Float, y: Float,
-        width: Float, height: Float,
-        u0: Float, v0: Float,
-        u1: Float, v1: Float,
+        width: Int, height: Int,
+        u: Float, v: Float,
         color: OmniColor = OmniColors.WHITE,
     ) {
-        renderTextureRegion(pipeline, texture, x, y, x + width, y + height, u0, v0, u1, v1, color)
+        renderTextureRegion(pipeline, texture, x, y, x + width, y + height, u, v, color)
     }
 
-    @JvmOverloads
-    public fun renderTexture(
-        pipeline: OmniRenderPipeline,
-        location: Identifier,
-        x: Float, y: Float,
-        width: Float, height: Float,
-        u0: Float, v0: Float,
-        u1: Float, v1: Float,
-        color: OmniColor = OmniColors.WHITE,
-    ) {
-        renderTextureRegion(pipeline, OmniTextures.wrap(location), x, y, x + width, y + height, u0, v0, u1, v1, color)
-    }
-
-    // TODO: items, entities, player heads
+    // TODO: items, entities
 
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */
     public fun pushScissor(x: Int, y: Int, width: Int, height: Int) {

@@ -1,5 +1,8 @@
 package dev.deftu.omnicore.api.client.textures
 
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+import dev.deftu.omnicore.api.identifierOrThrow
+import net.minecraft.util.Identifier
 import java.awt.Color
 
 public interface OmniTextureHandle : AutoCloseable {
@@ -19,15 +22,18 @@ public interface OmniTextureHandle : AutoCloseable {
     public val height: Int
     public val format: OmniTextureFormat
 
-    public fun bind(unit: Int)
-    public fun unbind(unit: Int)
+    public val location: Identifier
+        get() = identifierOrThrow("omnicore", "texture_${id}")
+
+    public fun bind(unit: OmniTextureUnit)
+    public fun unbind(unit: OmniTextureUnit)
 
     public fun bind() {
-        bind(0)
+        bind(OmniTextureUnit.TEXTURE0)
     }
 
     public fun unbind() {
-        unbind(0)
+        unbind(OmniTextureUnit.TEXTURE0)
     }
 
     /** Resizes the texture to the given width and height. */

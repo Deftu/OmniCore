@@ -2,11 +2,13 @@ package dev.deftu.omnicore.internal.client.render.pipeline
 
 import com.mojang.blaze3d.vertex.BufferUploader
 import com.mojang.blaze3d.vertex.VertexFormat
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.shader.uniforms.SamplerTarget
 import dev.deftu.omnicore.api.client.render.state.OmniRenderState
 import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.jetbrains.annotations.ApiStatus
 import net.minecraft.resources.ResourceLocation
 
@@ -60,14 +62,14 @@ public class OmniRenderPipelineImpl(
         }
     }
 
-    public fun texture(index: Int, id: Int) {
+    public fun texture(unit: OmniTextureUnit, id: Int) {
         when (shaderProvider) {
             //#if MC >= 1.17.1
-            is ShaderProvider.Vanilla -> RenderSystem.setShaderTexture(index, id)
+            is ShaderProvider.Vanilla -> RenderSystem.setShaderTexture(unit.id, id)
             //#endif
 
-            is ShaderProvider.Compatible -> shaderProvider.shader.sampler("Sampler$index", SamplerTarget.TEX_2D).setTexture(id)
-            else -> throw IllegalStateException("ShaderProvider is null")
+            is ShaderProvider.Compatible -> shaderProvider.shader.sampler("Sampler${unit.id}", SamplerTarget.TEX_2D).setTexture(id)
+            else -> TextureInternals.bindOnUnit(unit, id)
         }
     }
 

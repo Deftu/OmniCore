@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.internal.client.render.shader
 
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.shader.OmniShader
 import dev.deftu.omnicore.api.client.render.shader.ShaderSchema
 import dev.deftu.omnicore.api.client.render.shader.uniforms.Uniform
@@ -49,7 +50,7 @@ public class CompatibleShader(
 
     override fun unbind() {
         for ((textureUnit, texture) in prevTextureBindings) {
-            TextureInternals.bindOnUnit(GL13.GL_TEXTURE0 + textureUnit, texture)
+            TextureInternals.bindOnUnit(OmniTextureUnit.from(textureUnit) ?: error("Invalid texture unit: $textureUnit"), texture)
         }
 
         prevTextureBindings.clear()
@@ -108,7 +109,7 @@ public class CompatibleShader(
     }
 
     internal fun bindSampler(index: Int, id: Int) {
-        TextureInternals.activeUnit = GL13.GL_TEXTURE0 + index
+        TextureInternals.activeUnit = OmniTextureUnit.from(index) ?: OmniTextureUnit.TEXTURE0
         prevTextureBindings.computeIfAbsent(index) { TextureInternals.active }
         TextureInternals.bind(id)
     }

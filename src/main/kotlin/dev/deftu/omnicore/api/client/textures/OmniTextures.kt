@@ -1,6 +1,10 @@
 package dev.deftu.omnicore.api.client.textures
 
 import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.image.OmniImage
+import dev.deftu.omnicore.internal.client.image.ImageInternals
+import dev.deftu.omnicore.internal.client.textures.HandleBackedTexture
+import net.minecraft.client.texture.AbstractTexture
 import net.minecraft.util.Identifier
 
 //#if MC >= 1.21.6
@@ -18,9 +22,7 @@ import com.mojang.blaze3d.textures.GpuTexture
 //$$ import org.lwjgl.opengl.GL11
 //#endif
 
-//#if MC >= 1.16.5
-import net.minecraft.client.texture.AbstractTexture
-//#else
+//#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.texture.ITextureObject
 //#endif
 
@@ -42,6 +44,11 @@ public object OmniTextures {
         format: OmniTextureFormat
     ): OmniTextureHandle {
         return WrappedTexture(id, width, height, format)
+    }
+
+    @JvmStatic
+    public fun load(image: OmniImage): OmniTextureHandle {
+        return ImageInternals.loadTextureFrom(image)
     }
 
     @JvmStatic
@@ -122,4 +129,15 @@ public object OmniTextures {
         )
     }
     //#endif
+
+    @JvmStatic
+    public fun vanilla(handle: OmniTextureHandle): AbstractTexture {
+        return HandleBackedTexture(handle)
+    }
+
+    @JvmStatic
+    public fun register(location: Identifier, handle: OmniTextureHandle): Identifier {
+        client.textureManager.registerTexture(location, vanilla(handle))
+        return location
+    }
 }
