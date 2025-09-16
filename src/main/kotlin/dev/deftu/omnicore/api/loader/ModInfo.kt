@@ -32,8 +32,8 @@ public data class ModInfo(
         public fun wrap(mod: ModContainer): ModInfo {
             //#if FABRIC
             return ModInfo(
-                mod.metadata.name,
                 mod.metadata.id,
+                mod.metadata.name,
                 mod.metadata.version.friendlyString,
                 mod.rootPaths[0],
                 Optional.of(mod),
@@ -42,16 +42,16 @@ public data class ModInfo(
             //#if MC >= 1.15.2
             //$$ val modFile = ModList.get().getModFileById(mod.modId)
             //$$ return ModInfo(
-            //$$     mod.modInfo.displayName,
             //$$     mod.modId,
+            //$$     mod.modInfo.displayName,
             //$$     mod.modInfo.version.toString(),
             //$$     modFile.file.filePath,
             //$$     Optional.of(mod),
             //$$ )
             //#else
             //$$ return ModInfo(
-            //$$     mod.name,
             //$$     mod.modId,
+            //$$     mod.name,
             //$$     mod.version,
             //$$     mod.source.toPath(),
             //$$     Optional.of(mod),
