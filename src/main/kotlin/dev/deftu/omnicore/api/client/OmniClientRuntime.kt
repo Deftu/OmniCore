@@ -57,4 +57,14 @@ public object OmniClientRuntime {
         //$$ runOnMain(block)
         //#endif
     }
+
+    @JvmStatic
+    public fun assertMainThread() {
+        check(isOnMainThread) { "Not on main thread" }
+    }
+
+    @JvmStatic
+    public fun assertRenderThread() {
+        check(isOnRenderThread) { "Not on render thread" }
+    }
 }

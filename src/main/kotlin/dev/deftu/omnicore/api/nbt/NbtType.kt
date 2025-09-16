@@ -39,7 +39,7 @@ public enum class NbtType(public val id: Byte, typeName: String? = null) {
         @JvmField
         @Suppress("EnumValuesSoftDeprecate")
         public val ALL: List<NbtType> = values().toList()
-        
+
         @JvmField
         public val ID_MAPPINGS: Map<Byte, NbtType> = ALL.associateBy(NbtType::id)
 
