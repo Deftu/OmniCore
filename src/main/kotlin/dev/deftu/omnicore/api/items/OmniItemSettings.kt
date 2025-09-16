@@ -10,6 +10,7 @@ import net.minecraft.component.type.FoodComponent
 //$$ import net.minecraft.item.ItemStack
 //#endif
 
+@Deprecated(message = "Unstable API. Do not use until further notice.", level = DeprecationLevel.WARNING)
 public data class OmniItemSettings(
     val maxStackSize: Int = 64,
     val maxDurability: Int = 0,

@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Experimental
+@Deprecated(message = "Unstable API. Do not use until further notice.", level = DeprecationLevel.WARNING)
 public interface OmniCreativeTab {
     public companion object {
         public const val DEFAULT_TITLE_KEY: String = "itemGroup.%s.%s"

@@ -5,6 +5,7 @@ import net.minecraft.component.type.ConsumableComponent
 import net.minecraft.component.type.ConsumableComponents
 //#endif
 
+@Deprecated(message = "Unstable API. Do not use until further notice.", level = DeprecationLevel.WARNING)
 public sealed interface OmniConsumableType {
     public data object Food : OmniConsumableType {
         //#if MC >= 1.21.2

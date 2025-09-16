@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.items
 
+@Deprecated(message = "Unstable API. Do not use until further notice.", level = DeprecationLevel.WARNING)
 public data class OmniFoodProperties(
     public val nutrition: Int,
     public val saturation: Float,
