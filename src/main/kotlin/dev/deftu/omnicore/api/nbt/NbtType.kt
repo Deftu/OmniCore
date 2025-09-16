@@ -39,10 +39,16 @@ public enum class NbtType(public val id: Byte, typeName: String? = null) {
         @JvmField
         @Suppress("EnumValuesSoftDeprecate")
         public val ALL: List<NbtType> = values().toList()
+        
+        @JvmField
+        public val ID_MAPPINGS: Map<Byte, NbtType> = ALL.associateBy(NbtType::id)
+
+        @JvmField
+        public val ID_MAPPINGS_INVERSE: Map<NbtType, Byte> = ID_MAPPINGS.entries
+            .associate { (key, value) -> value to key }
 
         public fun from(id: Byte): NbtType {
-            return ALL.associateBy(NbtType::id)[id]
-                ?: throw IllegalArgumentException("Unknown NBT type ID: $id")
+            return ID_MAPPINGS[id] ?: throw IllegalArgumentException("Unknown NBT type id: $id")
         }
     }
 }
