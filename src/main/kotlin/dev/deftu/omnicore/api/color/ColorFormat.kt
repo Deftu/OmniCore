@@ -93,6 +93,25 @@ public enum class ColorFormat(
         )
     }
 
+    public fun mix(first: Int, second: Int, weight: Float): Int {
+        val clampedWeight = weight.coerceIn(0f, 1f)
+        return pack(
+            lerp0(clampedWeight, red(first), red(second)),
+            lerp0(clampedWeight, green(first), green(second)),
+            lerp0(clampedWeight, blue(first), blue(second)),
+            lerp0(clampedWeight, alpha(first), alpha(second))
+        )
+    }
+
+    public fun invert(color: Int): Int {
+        return pack(
+            0xFF - red(color),
+            0xFF - green(color),
+            0xFF - blue(color),
+            alpha(color) // Preserve alpha
+        )
+    }
+
     public fun lerp(progress: Float, start: Int, end: Int): Int {
         return pack(
             lerp0(progress, red(start), red(end)),

@@ -1,10 +1,15 @@
 package dev.deftu.omnicore.api.client.image
 
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
+import dev.deftu.omnicore.api.resources.findFirstOrNull
+import dev.deftu.omnicore.api.resources.readBytes
 import dev.deftu.omnicore.internal.client.image.OmniImageImpl
 import dev.deftu.omnicore.internal.client.image.ImageInternals
+import net.minecraft.util.Identifier
 import java.io.File
+import java.io.InputStream
 import java.nio.file.Path
 
 //#if MC >= 1.21.6
@@ -74,11 +79,20 @@ public object OmniImages {
     //#endif
 
     @JvmStatic
+    public fun read(inputStream: InputStream): OmniImage {
+        //#if MC >= 1.16.5
+        return from(NativeImage.read(inputStream))
+        //#else
+        //$$ return from(ImageIO.read(inputStream))
+        //#endif
+    }
+
+    @JvmStatic
     public fun read(path: Path): OmniImage {
         //#if MC >= 1.16.5
         val data = Files.readAllBytes(path)
         val inputStream = ByteArrayInputStream(data)
-        return from(NativeImage.read(inputStream))
+        return read(inputStream)
         //#else
         //$$ return from(ImageIO.read(path.toFile()))
         //#endif
@@ -89,9 +103,18 @@ public object OmniImages {
         //#if MC >= 1.16.5
         val data = file.readBytes()
         val inputStream = ByteArrayInputStream(data)
-        return from(NativeImage.read(inputStream))
+        return read(inputStream)
         //#else
         //$$ return from(ImageIO.read(file))
         //#endif
+    }
+
+    @JvmStatic
+    public fun resource(location: Identifier): OmniImage? {
+        val inputStream = client.resourceManager.findFirstOrNull(location)
+            ?.readBytes()
+            ?.let(::ByteArrayInputStream)
+            ?: return null
+        return read(inputStream)
     }
 }

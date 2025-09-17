@@ -24,7 +24,20 @@ public data class OmniColor(
     public constructor(red: Int, green: Int, blue: Int, alpha: Int = 255)
             : this(ColorFormat.RGBA, ColorFormat.RGBA.pack(red, green, blue, alpha))
 
+    @JvmOverloads
+    public constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this(
+        ColorFormat.RGBA,
+        ColorFormat.RGBA.pack(
+            (red * 255.0f).toInt().coerceIn(0, 255),
+            (green * 255.0f).toInt().coerceIn(0, 255),
+            (blue * 255.0f).toInt().coerceIn(0, 255),
+            (alpha * 255.0f).toInt().coerceIn(0, 255)
+        )
+    )
+
     public constructor(value: Int) : this(ColorFormat.RGBA, value)
+
+    public constructor(other: Color) : this(other.red, other.green, other.blue, other.alpha)
 
     public val red: Int get() = format.red(value)
     public val green: Int get() = format.green(value)
@@ -54,9 +67,20 @@ public data class OmniColor(
         return withAlpha(0xFF)
     }
 
+    public fun invert(): OmniColor {
+        val newValue = format.invert(value)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
     public fun mix(other: OmniColor): OmniColor {
         val otherValue = other.pack(this.format)
         val newValue = format.mix(value, otherValue)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun mix(other: OmniColor, weight: Float): OmniColor {
+        val otherValue = other.pack(this.format)
+        val newValue = format.mix(value, otherValue, weight)
         return if (newValue == value) this else OmniColor(format, newValue)
     }
 
@@ -64,6 +88,10 @@ public data class OmniColor(
         val otherValue = other.pack(this.format)
         val newValue = format.lerp(progress, value, otherValue)
         return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun deepCopy(): OmniColor {
+        return OmniColor(format, value)
     }
 
     public fun withRed(red: Int): OmniColor {

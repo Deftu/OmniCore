@@ -11,6 +11,6 @@ public class WrappedTexture(
     }
 
     override fun close() {
-        throw UnsupportedOperationException("Cannot close a wrapped texture")
+        // no-op. not owned.
     }
 }

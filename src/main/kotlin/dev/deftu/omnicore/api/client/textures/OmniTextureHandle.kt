@@ -1,9 +1,11 @@
 package dev.deftu.omnicore.api.client.textures
 
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.identifierOrThrow
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import net.minecraft.util.Identifier
-import java.awt.Color
+import java.util.UUID
 
 public interface OmniTextureHandle : AutoCloseable {
     public data class CopyOp(
@@ -23,17 +25,11 @@ public interface OmniTextureHandle : AutoCloseable {
     public val format: OmniTextureFormat
 
     public val location: Identifier
-        get() = identifierOrThrow("omnicore", "texture_${id}")
 
-    public fun bind(unit: OmniTextureUnit)
-    public fun unbind(unit: OmniTextureUnit)
+    public fun bind(unit: OmniTextureUnit): () -> Unit
 
-    public fun bind() {
-        bind(OmniTextureUnit.TEXTURE0)
-    }
-
-    public fun unbind() {
-        unbind(OmniTextureUnit.TEXTURE0)
+    public fun bind(): () -> Unit {
+        return bind(OmniTextureUnit.TEXTURE0)
     }
 
     /** Resizes the texture to the given width and height. */
@@ -51,10 +47,16 @@ public interface OmniTextureHandle : AutoCloseable {
         y: Int,
         width: Int,
         height: Int,
-    ): Array<Color>
+    ): Array<OmniColor>
 
     /** Provides a single color value for the given pixel in the texture. */
-    public fun readColor(x: Int, y: Int): Color
+    public fun readColor(x: Int, y: Int): OmniColor
+
+    /** Writes an array of color values to the given region of the texture. */
+    public fun writeColor(x: Int, y: Int, width: Int, height: Int, data: Array<OmniColor>)
+
+    /** Writes a single color value to the given pixel in the texture. */
+    public fun writeColor(x: Int, y: Int, color: OmniColor)
 
     /** Provides an array of depth values for the given region of the texture. */
     public fun readDepth(
@@ -66,6 +68,12 @@ public interface OmniTextureHandle : AutoCloseable {
 
     /** Provides a single depth value for the given pixel in the texture. */
     public fun readDepth(x: Int, y: Int): Float
+
+    /** Writes an array of depth values to the given region of the texture. */
+    public fun writeDepth(x: Int, y: Int, width: Int, height: Int, data: Array<Float>)
+
+    /** Writes a single depth value to the given pixel in the texture. */
+    public fun writeDepth(x: Int, y: Int, depth: Float)
 
     /**
      * Performs the provided copy operations from the sources in said options to this texture.
@@ -105,7 +113,7 @@ public interface OmniTextureHandle : AutoCloseable {
     }
 
     public fun using(block: () -> Unit) {
-        bind()
+        val unbind = bind()
         try {
             block()
         } finally {
@@ -114,7 +122,7 @@ public interface OmniTextureHandle : AutoCloseable {
     }
 
     public fun <T> using(block: () -> T): T {
-        bind()
+        val unbind = bind()
         try {
             return block()
         } finally {

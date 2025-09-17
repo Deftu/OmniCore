@@ -1,5 +1,6 @@
 package com.test
 
+import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.commands.OmniClientCommands
@@ -166,6 +167,15 @@ class TestMod
 
                 runs { ctx ->
                     ctx.source.openScreen(TestScreen())
+                }
+
+                argument("create", BoolArgumentType.bool()) {
+                    requires { src -> src.world != null }
+
+                    runs { ctx ->
+                        val create = ctx.argument<Boolean>("create")
+                        ctx.source.openScreen(TestScreen(createsTexture = create))
+                    }
                 }
             }
 

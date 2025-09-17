@@ -31,7 +31,7 @@ public object OmniTextures {
     public fun create(
         width: Int,
         height: Int,
-        format: OmniTextureFormat
+        format: OmniTextureFormat = OmniTextureFormat.RGBA8
     ): OmniTextureHandle {
         return ManagedTexture(width, height, format)
     }
@@ -41,7 +41,7 @@ public object OmniTextures {
         id: Int,
         width: Int,
         height: Int,
-        format: OmniTextureFormat
+        format: OmniTextureFormat = OmniTextureFormat.RGBA8
     ): OmniTextureHandle {
         return WrappedTexture(id, width, height, format)
     }
@@ -139,5 +139,10 @@ public object OmniTextures {
     public fun register(location: Identifier, handle: OmniTextureHandle): Identifier {
         client.textureManager.registerTexture(location, vanilla(handle))
         return location
+    }
+
+    @JvmStatic
+    public fun destroy(location: Identifier) {
+        client.textureManager.destroyTexture(location)
     }
 }
