@@ -67,7 +67,7 @@ public sealed class GuiScale : TrackedState<GuiScale> {
         public fun from(value: Int): GuiScale {
             return when (value) {
                 0 -> Auto
-                else -> Sized(value) // self validates
+                else -> Sized(value)
             }
         }
     }
