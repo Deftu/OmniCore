@@ -22,6 +22,31 @@ public object ScreenEventForwarding {
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
             eventBus.post(ScreenEvent.Init.Pre(screen))
 
+            //#if MC >= 1.21.9
+            //$$ ScreenKeyboardEvents.allowKeyPress(screen).register { _, event ->
+            //$$     val event = ScreenEvent.KeyPress.Pre(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     eventBus.post(event)
+            //$$     !event.isCancelled
+            //$$ }
+            //$$
+            //$$ ScreenKeyboardEvents.allowKeyRelease(screen).register { _, event ->
+            //$$     val event = ScreenEvent.KeyRelease.Pre(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     eventBus.post(event)
+            //$$     !event.isCancelled
+            //$$ }
+            //$$
+            //$$ ScreenMouseEvents.allowMouseClick(screen).register { _, event ->
+            //$$     val event = ScreenEvent.MouseClick.Pre(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     eventBus.post(event)
+            //$$     !event.isCancelled
+            //$$ }
+            //$$
+            //$$ ScreenMouseEvents.allowMouseRelease(screen).register { _, event ->
+            //$$     val event = ScreenEvent.MouseRelease.Pre(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     eventBus.post(event)
+            //$$     !event.isCancelled
+            //$$ }
+            //#else
             ScreenKeyboardEvents.allowKeyPress(screen).register { _, keyCode, scancode, modifiers ->
                 val event = ScreenEvent.KeyPress.Pre(screen, keyCode, scancode, KeyboardModifiers.wrap(modifiers))
                 eventBus.post(event)
@@ -45,6 +70,7 @@ public object ScreenEventForwarding {
                 eventBus.post(event)
                 !event.isCancelled
             }
+            //#endif
 
             ScreenEvents.beforeRender(screen).register { _, ctx, _, _, tickDelta ->
                 val matrixStack = OmniMatrixStacks.vanilla(ctx)
@@ -64,6 +90,29 @@ public object ScreenEventForwarding {
         ScreenEvents.AFTER_INIT.register { _, screen, _, _ ->
             eventBus.post(ScreenEvent.Init.Post(screen))
 
+            //#if MC >= 1.21.9
+            //$$ ScreenKeyboardEvents.afterKeyPress(screen).register { _, event ->
+            //$$     val event = ScreenEvent.KeyPress.Post(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     eventBus.post(event)
+            //$$ }
+            //$$
+            //$$ ScreenKeyboardEvents.afterKeyRelease(screen).register { _, event ->
+            //$$     val event = ScreenEvent.KeyRelease.Post(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     eventBus.post(event)
+            //$$ }
+            //$$
+            //$$ ScreenMouseEvents.afterMouseClick(screen).register { _, event, _ ->
+            //$$     val event = ScreenEvent.MouseClick.Post(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     eventBus.post(event)
+            //$$     true
+            //$$ }
+            //$$
+            //$$ ScreenMouseEvents.afterMouseRelease(screen).register { _, event, _ ->
+            //$$     val event = ScreenEvent.MouseRelease.Post(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     eventBus.post(event)
+            //$$     true
+            //$$ }
+            //#else
             ScreenKeyboardEvents.afterKeyPress(screen).register { _, keyCode, scancode, modifiers ->
                 val event = ScreenEvent.KeyPress.Post(screen, keyCode, scancode, KeyboardModifiers.wrap(modifiers))
                 eventBus.post(event)
@@ -83,6 +132,7 @@ public object ScreenEventForwarding {
                 val event = ScreenEvent.MouseRelease.Post(screen, button, x, y)
                 eventBus.post(event)
             }
+            //#endif
 
             ScreenEvents.afterRender(screen).register { _, ctx, _, _, tickDelta ->
                 val matrixStack = OmniMatrixStacks.vanilla(ctx)
