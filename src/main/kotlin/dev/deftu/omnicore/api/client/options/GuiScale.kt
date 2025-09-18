@@ -65,9 +65,10 @@ public sealed class GuiScale : TrackedState<GuiScale> {
          */
         @JvmStatic
         public fun from(value: Int): GuiScale {
-            return when (value) {
-                0 -> Auto
-                else -> Sized(value)
+            return when {
+                value == 0 -> Auto
+                value > 0 -> Sized(value)
+                else -> throw IllegalArgumentException("GuiScale id must be greater than or equal to 0, got $value")
             }
         }
     }
@@ -75,9 +76,21 @@ public sealed class GuiScale : TrackedState<GuiScale> {
     public data object Auto : GuiScale() {
         override val id: Int
             get() = 0
+
+        override fun toString(): String {
+            return "Auto"
+        }
     }
 
-    public data class Sized(override val id: Int) : GuiScale()
+    public data class Sized(override val id: Int) : GuiScale() {
+        init {
+            require(id > 0) { "GuiScale id must be greater than 0 for Sized, got $id" }
+        }
+
+        override fun toString(): String {
+            return "${id}x"
+        }
+    }
 
     final override var prevState: GuiScale? = null
         private set
@@ -90,10 +103,5 @@ public sealed class GuiScale : TrackedState<GuiScale> {
         }
 
         rawCurrentScale = id
-    }
-
-    override fun restore() {
-        super.restore()
-        prevState = null // reset since these are used as global states most of the time
     }
 }
