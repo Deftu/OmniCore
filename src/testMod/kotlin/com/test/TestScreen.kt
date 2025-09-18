@@ -1,6 +1,9 @@
 package com.test
 
 import dev.deftu.omnicore.api.client.image.OmniImages
+import dev.deftu.omnicore.api.client.input.KeyboardModifiers
+import dev.deftu.omnicore.api.client.input.OmniMouseButton
+import dev.deftu.omnicore.api.client.input.OmniMouseButtons
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
@@ -18,20 +21,25 @@ import kotlin.io.path.Path
 import kotlin.math.abs
 
 class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
-    private val pipeline by lazy {
-        OmniRenderPipelines.builderWithDefaultShader(
-            location = identifierOrThrow("testmod", "custom"),
-            vertexFormat = DefaultVertexFormats.POSITION_COLOR,
-            drawMode = DrawMode.QUADS
-        ).build()
-    }
+    companion object {
+        private const val MESSAGE_1 = "Hello, OmniCore!"
+        private const val MESSAGE_2 = "This is a test screen."
 
-    private val imagePipeline by lazy {
-        OmniRenderPipelines.builderWithDefaultShader(
-            location = identifierOrThrow("testmod", "image"),
-            vertexFormat = DefaultVertexFormats.POSITION_TEXTURE_COLOR,
-            drawMode = DrawMode.QUADS,
-        ).setBlendState(OmniBlendState.ALPHA).build()
+        private val pipeline by lazy {
+            OmniRenderPipelines.builderWithDefaultShader(
+                location = identifierOrThrow("testmod", "custom"),
+                vertexFormat = DefaultVertexFormats.POSITION_COLOR,
+                drawMode = DrawMode.QUADS
+            ).build()
+        }
+
+        private val imagePipeline by lazy {
+            OmniRenderPipelines.builderWithDefaultShader(
+                location = identifierOrThrow("testmod", "image"),
+                vertexFormat = DefaultVertexFormats.POSITION_TEXTURE_COLOR,
+                drawMode = DrawMode.QUADS,
+            ).setBlendState(OmniBlendState.ALPHA).build()
+        }
     }
 
     private val topLeftColor = OmniColors.RED
@@ -44,6 +52,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     private val renderWidth = 100.0
     private val renderHeight = 100.0
 
+    private var text = MESSAGE_1
     private var texture: OmniTextureHandle? = null
 
     override fun onInitialize(width: Int, height: Int) {
@@ -75,7 +84,6 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
         render(ctx)
 
-        val text = "Hello, OmniCore!"
         ctx.renderTextCentered(
             text = text,
             x = (width / 2f),
@@ -96,6 +104,15 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
                 v = 0f,
             )
         }
+    }
+
+    override fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean {
+        if (button == OmniMouseButtons.LEFT) {
+            text = if (text == MESSAGE_1) MESSAGE_2 else MESSAGE_1
+            return true
+        }
+
+        return super.onMouseClick(button, x, y, modifiers)
     }
 
     private fun loadResourceTexture() {

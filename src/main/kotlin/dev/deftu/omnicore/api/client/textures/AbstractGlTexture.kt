@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
+import java.nio.Buffer
 import java.nio.FloatBuffer
 import java.util.UUID
 import kotlin.math.max
@@ -31,7 +32,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
                 internalFloatBuffer = BufferUtils.createFloatBuffer(newCap)
             }
 
-            internalFloatBuffer.clear()
+            internalFloatBuffer.clear0()
         }
 
         private fun nextPow2(x: Int): Int {
@@ -44,18 +45,17 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             return v + 1
         }
 
-        private fun <T> flipRowsTopToBottom(src: Array<T>, width: Int, height: Int): Array<T> {
-            val out = java.lang.reflect.Array.newInstance(src.javaClass.componentType, src.size) as Array<T>
-            var dst = 0
-            for (row in 0 until height) {
-                val srcRowStart = (height - 1 - row) * width
-                System.arraycopy(src, srcRowStart, out, dst, width)
-                dst += width
-            }
-
-            return out
+        private fun FloatBuffer.clear0() {
+            (this as Buffer).clear()
         }
 
+        private fun FloatBuffer.position0(newPosition: Int) {
+            (this as Buffer).position(newPosition)
+        }
+
+        private fun FloatBuffer.limit0(newLimit: Int) {
+            (this as Buffer).limit(newLimit)
+        }
     }
 
     override val location: Identifier = identifierOrThrow("omnicore", "texture_${UUID.randomUUID()}")
@@ -130,7 +130,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             output[i] = OmniColor(r, g, b, a)
         }
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
         return output
     }
 
@@ -153,7 +153,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         val b = internalFloatBuffer.get(2)
         val a = internalFloatBuffer.get(3)
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
         return OmniColor(r, g, b, a)
     }
 
@@ -175,8 +175,8 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
 
         using {
             GlInternals.withUnpackState(width, 4, 4) {
-                internalFloatBuffer.position(0)
-                internalFloatBuffer.limit(bytesNeeded)
+                internalFloatBuffer.position0(0)
+                internalFloatBuffer.limit0(bytesNeeded)
                 GL11.glTexSubImage2D(
                     GL11.GL_TEXTURE_2D, 0,
                     x, y, width, height,
@@ -186,7 +186,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             }
         }
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
     }
 
     override fun writeColor(x: Int, y: Int, color: OmniColor) {
@@ -200,8 +200,8 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
 
         using {
             GlInternals.withUnpackState(1, 4, 4) {
-                internalFloatBuffer.position(0)
-                internalFloatBuffer.limit(4)
+                internalFloatBuffer.position0(0)
+                internalFloatBuffer.limit0(4)
                 GL11.glTexSubImage2D(
                     GL11.GL_TEXTURE_2D, 0,
                     x, y, 1, 1,
@@ -211,7 +211,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             }
         }
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
     }
 
     override fun readDepth(x: Int, y: Int, width: Int, height: Int): Array<Float> {
@@ -231,7 +231,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             output[i] = internalFloatBuffer.get(i)
         }
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
         return output
     }
 
@@ -248,7 +248,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         }
 
         val depth = internalFloatBuffer.get(0)
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
         return depth
     }
 
@@ -264,8 +264,8 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
 
         using {
             GlInternals.withUnpackState(width, 1, 4) {
-                internalFloatBuffer.position(0)
-                internalFloatBuffer.limit(bytesNeeded)
+                internalFloatBuffer.position0(0)
+                internalFloatBuffer.limit0(bytesNeeded)
                 GL11.glTexSubImage2D(
                     GL11.GL_TEXTURE_2D, 0,
                     x, y, width, height,
@@ -275,7 +275,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             }
         }
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
     }
 
     override fun writeDepth(x: Int, y: Int, depth: Float) {
@@ -283,8 +283,8 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         internalFloatBuffer.put(0, depth)
         using {
             GlInternals.withUnpackState(1, 1, 4) {
-                internalFloatBuffer.position(0)
-                internalFloatBuffer.limit(1)
+                internalFloatBuffer.position0(0)
+                internalFloatBuffer.limit0(1)
                 GL11.glTexSubImage2D(
                     GL11.GL_TEXTURE_2D, 0,
                     x, y, 1, 1,
@@ -294,7 +294,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
             }
         }
 
-        internalFloatBuffer.clear()
+        internalFloatBuffer.clear0()
     }
 
     override fun copyFrom(operations: Iterable<OmniTextureHandle.CopyOp>) {

@@ -7,7 +7,7 @@ preprocess {
 
     "1.21.9-fabric"(1_21_09, "yarn") {
         "1.21.9-neoforge"(1_21_09, "srg") {
-            "1.21.8-neoforge"(1_21_08, "srg") {
+            "1.21.8-neoforge"(1_21_08, "srg", file("versions/mappings/1.21.9-neoforge+1.21.8-neoforge.txt")) {
                 "1.21.8-fabric"(1_21_08, "yarn") {
                     "1.21.7-fabric"(1_21_07, "yarn") {
                         "1.21.7-neoforge"(1_21_07, "srg") {

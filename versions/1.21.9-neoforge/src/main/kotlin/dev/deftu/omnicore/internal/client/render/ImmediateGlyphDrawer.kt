@@ -6,13 +6,13 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPass
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
-import net.minecraft.client.font.BakedGlyph
-import net.minecraft.client.font.TextRenderer
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.Tessellator
+import net.minecraft.client.gui.Font
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.Tesselator
+import net.minecraft.client.gui.font.TextRenderable
 import org.joml.Matrix4f
 
-internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer.GlyphDrawer {
+internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVisitor {
     private companion object {
         const val LIGHT = 0x00F0_00F0
     }
@@ -33,9 +33,9 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer
         texture = null
         buffer = null
 
-        cachedBuffer!!.endNullable().use { builtBuffer ->
+        cachedBuffer!!.build().use { builtBuffer ->
             builtBuffer ?: return
-            val lightTexture = client.gameRenderer.lightmapTextureManager.glTextureView
+            val lightTexture = client.gameRenderer.lightTexture().textureView
             OmniRenderPass().use { renderPass ->
                 renderPass.draw(
                     builtBuffer = OmniBuiltBufferImpl(builtBuffer),
@@ -48,27 +48,26 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer
         }
     }
 
-    override fun drawGlyph(drawnGlyph: BakedGlyph.DrawnGlyph) {
-        val baked = drawnGlyph.comp_3316
-        if (baked.texture == null) {
+    override fun acceptGlyph(renderable: TextRenderable) {
+        if (renderable.textureView() == null) {
             return
         }
 
-        if (baked.pipeline != renderPipeline || baked.texture != texture) {
+        if (renderable.guiPipeline() != renderPipeline || renderable.textureView() != texture) {
             flush()
-            renderPipeline = baked.pipeline
-            texture = baked.texture
-            buffer = Tessellator.getInstance().begin(renderPipeline!!.vertexFormatMode, renderPipeline!!.vertexFormat)
+            renderPipeline = renderable.guiPipeline()
+            texture = renderable.textureView()
+            buffer = Tesselator.getInstance().begin(renderPipeline!!.vertexFormatMode, renderPipeline!!.vertexFormat)
         }
 
-        baked.draw(drawnGlyph, matrix, buffer, LIGHT, false)
+        if (buffer != null) {
+            renderable.render(matrix, buffer, LIGHT, false)
+        }
     }
 
-    override fun drawRectangle(bakedGlyph: BakedGlyph, rectangle: BakedGlyph.Rectangle) {
-        if (bakedGlyph.texture == null) {
-            return
+    override fun acceptEffect(renderable: TextRenderable) {
+        if (buffer != null) {
+            renderable.render(matrix, buffer, LIGHT, false)
         }
-
-        bakedGlyph.drawRectangle(rectangle, matrix, buffer, LIGHT, false)
     }
 }
