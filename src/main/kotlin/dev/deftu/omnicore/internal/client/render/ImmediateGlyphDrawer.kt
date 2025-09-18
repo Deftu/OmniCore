@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.api.client.render
+package dev.deftu.omnicore.internal.client.render
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.textures.GpuTextureView
@@ -12,7 +12,6 @@ import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
 import org.joml.Matrix4f
-import kotlin.use
 
 internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer.GlyphDrawer {
     private companion object {
@@ -43,7 +42,6 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer
                     builtBuffer = OmniBuiltBufferImpl(builtBuffer),
                     pipeline = OmniRenderPipelines.wrap(cachedPipeline!!)
                 ) { builder ->
-                    (builder as RenderPassEncoderImpl)
                     builder.vanilla.bindSampler("Sampler0", cachedTexture)
                     builder.vanilla.bindSampler("Sampler2", lightTexture)
                 }

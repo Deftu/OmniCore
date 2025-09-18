@@ -54,8 +54,13 @@ public object OmniFramebuffers {
         //#endif
         return wrap(
             id = id,
+            //#if MC >= 1.21.9
+            //$$ width = framebuffer.width,
+            //$$ height = framebuffer.height,
+            //#else
             width = framebuffer.viewportWidth,
             height = framebuffer.viewportHeight,
+            //#endif
             //#if MC >= 1.21.5
             colorTexture = OmniTextures.wrap(colorTexture) as AbstractGlTexture,
             depthStencilTexture = depthTexture?.let(OmniTextures::wrap) as AbstractGlTexture

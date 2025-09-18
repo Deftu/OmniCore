@@ -2,7 +2,15 @@ package dev.deftu.omnicore.api.client.render.pipeline
 
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 
+//#if MC >= 1.21.5
+import com.mojang.blaze3d.systems.RenderPass
+//#endif
+
 public interface RenderPassEncoder {
+    //#if MC >= 1.21.5
+    public val vanilla: RenderPass
+    //#endif
+
     public fun texture(name: String, id: Int): RenderPassEncoder
     public fun texture(unit: OmniTextureUnit, id: Int): RenderPassEncoder
 

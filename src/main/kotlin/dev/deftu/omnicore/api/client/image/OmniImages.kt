@@ -8,6 +8,7 @@ import dev.deftu.omnicore.api.resources.readBytes
 import dev.deftu.omnicore.internal.client.image.OmniImageImpl
 import dev.deftu.omnicore.internal.client.image.ImageInternals
 import net.minecraft.util.Identifier
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Path
@@ -22,7 +23,6 @@ import net.minecraft.client.texture.GlTexture
 
 //#if MC >= 1.16.5
 import net.minecraft.client.texture.NativeImage
-import java.io.ByteArrayInputStream
 import java.nio.file.Files
 //#else
 //$$ import java.awt.image.BufferedImage

@@ -10,9 +10,9 @@ public interface OmniScreenController {
     public fun onResize(width: Int, height: Int)
     public fun onKeyPress(key: OmniKey, scanCode: Int, typedChar: Char, modifiers: KeyboardModifiers, event: KeyPressEvent): Boolean
     public fun onKeyRelease(key: OmniKey, scanCode: Int, modifiers: KeyboardModifiers): Boolean
-    public fun onMouseClick(button: OmniMouseButton, x: Double, y: Double): Boolean
-    public fun onMouseRelease(button: OmniMouseButton, x: Double, y: Double): Boolean
-    public fun onMouseDrag(button: OmniMouseButton, x: Double, y: Double, deltaX: Double, deltaY: Double, clickTime: Long): Boolean
+    public fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean
+    public fun onMouseRelease(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean
+    public fun onMouseDrag(button: OmniMouseButton, x: Double, y: Double, deltaX: Double, deltaY: Double, clickTime: Long, modifiers: KeyboardModifiers): Boolean
     public fun onMouseScroll(x: Double, y: Double, amount: Double, horizontalAmount: Double): Boolean
     public fun onScreenTick()
     public fun onScreenClose()

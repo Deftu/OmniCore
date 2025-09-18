@@ -14,6 +14,7 @@ import dev.deftu.omnicore.api.client.player
 import dev.deftu.omnicore.api.client.resources.OmniClientResources
 import dev.deftu.omnicore.api.client.sound.OmniClientSound
 import dev.deftu.omnicore.api.client.world
+import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.omnicore.api.loader.OmniLoader
 import dev.deftu.omnicore.api.network.OmniNetworking
 import dev.deftu.omnicore.api.player.biomeData
@@ -60,7 +61,7 @@ class TestMod
 
     private val exampleKeyBinding = OmniKeyBinding.create(
         name = "Example KeyBinding",
-        category = "Example Mod",
+        category = identifierOrThrow(ID, "example_category"),
         defaultValue = OmniKeys.KEY_B,
         type = OmniKeyBinding.KeyBindingType.KEY
     )

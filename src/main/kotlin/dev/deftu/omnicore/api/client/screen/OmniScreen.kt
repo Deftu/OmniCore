@@ -14,6 +14,13 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
 
+//#if MC >= 1.21.9
+//$$ import net.minecraft.client.input.CharacterEvent
+//$$ import net.minecraft.client.input.KeyEvent
+//$$ import net.minecraft.client.input.MouseButtonEvent
+//$$ import net.minecraft.client.input.MouseButtonInfo
+//#endif
+
 //#if MC < 1.20.4
 //$$ import dev.deftu.omnicore.api.client.input.OmniMouse
 //$$ import dev.deftu.omnicore.api.client.render.OmniRenderTicks
@@ -62,6 +69,9 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     //#endif
 
     //#if MC >= 1.16.5
+    //#if MC >= 1.21.9
+    //$$ private var prevClickButton: OmniMouseButton? = null
+    //#endif
     private var prevClickTime = 0L
     //#endif
 
@@ -94,11 +104,26 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     ): Boolean {
         //#if MC >= 1.16.5
         if (event == KeyPressEvent.PRESSED) {
-            return super.keyPressed(key.code, 0, modifiers.toMods())
+            return super.keyPressed(
+                //#if MC >= 1.21.9
+                //$$ KeyEvent(key.code, scanCode, modifiers.toMods()),
+                //#else
+                key.code,
+                0,
+                modifiers.toMods(),
+                //#endif
+            )
         }
 
         if (event == KeyPressEvent.TYPED) {
-            return super.charTyped(typedChar, modifiers.toMods())
+            return super.charTyped(
+                //#if MC >= 1.21.9
+                //$$ CharacterEvent(typedChar.code, modifiers.toMods()),
+                //#else
+                typedChar,
+                modifiers.toMods(),
+                //#endif
+            )
         }
         //#else
         //$$ try {
@@ -120,7 +145,15 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#if MC >= 1.16.5
         val code = key.code
         if (code != 0) {
-            return super.keyReleased(code, 0, modifiers.toMods())
+            return super.keyReleased(
+                //#if MC >= 1.21.9
+                //$$ KeyEvent(code, scanCode, modifiers.toMods()),
+                //#else
+                code,
+                0,
+                modifiers.toMods(),
+                //#endif
+            )
         }
         //#endif
 
@@ -131,13 +164,40 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         button: OmniMouseButton,
         x: Double,
         y: Double,
+        modifiers: KeyboardModifiers,
     ): Boolean {
         //#if MC >= 1.16.5
+        //#if MC >= 1.21.9
+        //$$ val clickTime = prevClickTime
+        //#endif
         if (button == OmniMouseButtons.LEFT) {
             prevClickTime = OmniClientRuntime.nowMillis
         }
 
-        return super.mouseClicked(x, y, button.code)
+        //#if MC >= 1.21.9
+        //$$ val prevButton = prevClickButton
+        //$$ prevClickButton = button
+        //$$ val nowMillis = OmniClientRuntime.nowMillis
+        //$$ val isDoubleClick = prevButton == button && nowMillis - clickTime <= 250L
+        //#endif
+
+        return super.mouseClicked(
+            //#if MC >= 1.21.9
+            //$$ MouseButtonEvent(
+            //$$     x,
+            //$$     y,
+            //$$     MouseButtonInfo(
+            //$$         button.code,
+            //$$         modifiers.toMods(),
+            //$$     ),
+            //$$ ),
+            //$$ isDoubleClick,
+            //#else
+            x,
+            y,
+            button.code
+            //#endif
+        )
         //#else
         //$$ return try {
         //$$     super.mouseClicked(x.toInt(), y.toInt(), button.code)
@@ -153,9 +213,25 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         button: OmniMouseButton,
         x: Double,
         y: Double,
+        modifiers: KeyboardModifiers,
     ): Boolean {
         //#if MC >= 1.16.5
-        return super.mouseReleased(x, y, button.code)
+        return super.mouseReleased(
+            //#if MC >= 1.21.9
+            //$$ MouseButtonEvent(
+            //$$     x,
+            //$$     y,
+            //$$     MouseButtonInfo(
+            //$$         button.code,
+            //$$         modifiers.toMods(),
+            //$$     ),
+            //$$ ),
+            //#else
+            x,
+            y,
+            button.code
+            //#endif
+        )
         //#else
         //$$ return try {
         //$$     super.mouseReleased(x.toInt(), y.toInt(), button.code)
@@ -174,9 +250,29 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         deltaX: Double,
         deltaY: Double,
         clickTime: Long,
+        modifiers: KeyboardModifiers,
     ): Boolean {
         //#if MC >= 1.16.5
-        return super.mouseDragged(x, y, button.code, deltaX, deltaY)
+        return super.mouseDragged(
+            //#if MC >= 1.21.9
+            //$$ MouseButtonEvent(
+            //$$     x,
+            //$$     y,
+            //$$     MouseButtonInfo(
+            //$$         button.code,
+            //$$         modifiers.toMods(),
+            //$$     ),
+            //$$ ),
+            //$$ deltaX,
+            //$$ deltaY,
+            //#else
+            x,
+            y,
+            button.code,
+            deltaX,
+            deltaY
+            //#endif
+        )
         //#else
         //$$ return try {
         //$$     super.mouseClickMove(x.toInt(), y.toInt(), button.code, clickTime)
@@ -291,6 +387,38 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         onResize(width, height)
     }
 
+    //#if MC >= 1.21.9
+    //$$ final override fun keyPressed(event: KeyEvent): Boolean {
+    //$$     return onKeyPress(OmniKey(event.key), event.scancode, INVALID_CHAR, KeyboardModifiers.wrap(event.modifiers), KeyPressEvent.PRESSED)
+    //$$ }
+    //$$
+    //$$ final override fun charTyped(event: CharacterEvent): Boolean {
+    //$$     return onKeyPress(OmniKeys.KEY_NONE, 0, event.codepoint.toChar(), KeyboardModifiers.wrap(event.modifiers), KeyPressEvent.TYPED)
+    //$$ }
+    //$$
+    //$$ final override fun keyReleased(event: KeyEvent): Boolean {
+    //$$     return onKeyRelease(OmniKey(event.key), event.scancode, KeyboardModifiers.wrap(event.modifiers))
+    //$$ }
+    //$$
+    //$$ final override fun mouseClicked(event: MouseButtonEvent, doubleClick: Boolean): Boolean {
+    //$$     return onMouseClick(OmniMouseButton(event.buttonInfo.button), event.x, event.y, KeyboardModifiers.wrap(event.buttonInfo.modifiers))
+    //$$ }
+    //$$
+    //$$ final override fun mouseReleased(event: MouseButtonEvent): Boolean {
+    //$$     return onMouseRelease(OmniMouseButton(event.buttonInfo.button), event.x, event.y, KeyboardModifiers.wrap(event.buttonInfo.modifiers))
+    //$$ }
+    //$$
+    //$$ final override fun mouseDragged(event: MouseButtonEvent, deltaX: Double, deltaY: Double): Boolean {
+    //$$     val button = OmniMouseButton(event.buttonInfo.button)
+    //$$     val clickTime = if (button == OmniMouseButtons.LEFT) {
+    //$$         OmniClientRuntime.nowMillis - prevClickTime
+    //$$     } else {
+    //$$         0L
+    //$$     }
+    //$$
+    //$$     return onMouseDrag(button, event.x, event.y, deltaX, deltaY, clickTime, KeyboardModifiers.wrap(event.buttonInfo.modifiers))
+    //$$ }
+    //#else
     final override fun keyPressed(keyCode: Int, scanCode: Int, modifiers: Int): Boolean {
         return onKeyPress(OmniKey(keyCode), scanCode, INVALID_CHAR, KeyboardModifiers.wrap(modifiers), KeyPressEvent.PRESSED)
     }
@@ -308,7 +436,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         mouseY: Double,
         button: Int
     ): Boolean {
-        return onMouseClick(OmniMouseButton(button), mouseX, mouseY)
+        return onMouseClick(OmniMouseButton(button), mouseX, mouseY, KeyboardModifiers.current)
     }
 
     final override fun mouseReleased(
@@ -316,7 +444,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         mouseY: Double,
         button: Int
     ): Boolean {
-        return onMouseRelease(OmniMouseButton(button), mouseX, mouseY)
+        return onMouseRelease(OmniMouseButton(button), mouseX, mouseY, KeyboardModifiers.current)
     }
 
     final override fun mouseDragged(
@@ -326,14 +454,16 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         deltaX: Double,
         deltaY: Double
     ): Boolean {
-        val clickTime = if (button == OmniMouseButtons.LEFT.code) {
+        val button = OmniMouseButton(button)
+        val clickTime = if (button == OmniMouseButtons.LEFT) {
             OmniClientRuntime.nowMillis - prevClickTime
         } else {
             0L
         }
 
-        return onMouseDrag(OmniMouseButton(button), mouseX, mouseY, deltaX, deltaY, clickTime)
+        return onMouseDrag(button, mouseX, mouseY, deltaX, deltaY, clickTime, KeyboardModifiers.current)
     }
+    //#endif
 
     final override fun mouseScrolled(
         mouseX: Double,
@@ -444,11 +574,11 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     //$$ }
     //$$
     //$$ final override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) {
-    //$$     onMouseClick(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble())
+    //$$     onMouseClick(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble(), KeyboardModifiers.current)
     //$$ }
     //$$
     //$$ final override fun mouseReleased(mouseX: Int, mouseY: Int, button: Int) {
-    //$$     onMouseRelease(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble())
+    //$$     onMouseRelease(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble(), KeyboardModifiers.current)
     //$$ }
     //$$
     //$$ final override fun mouseClickMove(
@@ -457,7 +587,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     //$$     button: Int,
     //$$     clickTime: Long,
     //$$ ) {
-    //$$     onMouseDrag(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble(), 0.0, 0.0, clickTime)
+    //$$     onMouseDrag(OmniMouseButton(button), mouseX.toDouble(), mouseY.toDouble(), 0.0, 0.0, clickTime, KeyboardModifiers.current)
     //$$ }
     //$$
     //$$ final override fun handleMouseInput() {

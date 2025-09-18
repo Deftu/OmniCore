@@ -6,6 +6,10 @@ import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.textile.minecraft.MCTextFormat
 import dev.deftu.textile.minecraft.MCTextHolder
 
+//#if MC >= 1.21.6
+import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
+//#endif
+
 //#if MC >= 1.20.1 && MC < 1.21.6
 //$$ import net.minecraft.client.font.TextRenderer
 //#endif

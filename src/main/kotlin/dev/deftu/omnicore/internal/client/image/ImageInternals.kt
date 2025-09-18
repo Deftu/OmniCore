@@ -9,7 +9,9 @@ import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
 
-//#if MC >= 1.21.5
+//#if MC >= 1.21.9
+//$$ import java.nio.ByteBuffer
+//#elseif MC >= 1.21.5
 import java.nio.IntBuffer
 //#else
 //$$ import com.mojang.blaze3d.platform.TextureUtil
@@ -35,7 +37,12 @@ public object ImageInternals {
         //#if MC >= 1.21.5
         checkAllocated(native)
         setPackAlignment(native)
-        GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, getFormat(native), GL11.GL_UNSIGNED_BYTE, native.imageId())
+        GL11.glGetTexImage(
+            GL11.GL_TEXTURE_2D, 0,
+            getFormat(native),
+            GL11.GL_UNSIGNED_BYTE,
+            native.imageId()
+        )
         //#elseif MC >= 1.16.5
         //$$ native.downloadTexture(0, false)
         //#else
@@ -68,7 +75,19 @@ public object ImageInternals {
     public fun prepareImage(id: Int, width: Int, height: Int, format: Int) {
         //#if MC >= 1.21.5
         val unbind = TextureInternals.bind(id)
-        GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, format, width, height, 0, format, GL11.GL_UNSIGNED_BYTE, null as IntBuffer?)
+        GlStateManager._texImage2D(
+            GL11.GL_TEXTURE_2D, 0,
+            format,
+            width, height,
+            0,
+            format,
+            GL11.GL_UNSIGNED_BYTE,
+            //#if MC >= 1.21.9
+            //$$ null as ByteBuffer?
+            //#else
+            null as IntBuffer?
+            //#endif
+        )
         unbind()
         //#elseif MC >= 1.17.1
         //$$ TextureUtil.prepareImage(id, width, height)

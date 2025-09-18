@@ -20,7 +20,7 @@ pluginManagement {
 
     plugins {
         kotlin("jvm") version("2.2.0")
-        id("dev.deftu.gradle.multiversion-root") version("2.44.0")
+        id("dev.deftu.gradle.multiversion-root") version("2.52.0")
     }
 }
 
@@ -86,6 +86,9 @@ listOf(
 
     "1.21.8-neoforge",
     "1.21.8-fabric",
+
+    "1.21.9-neoforge",
+    "1.21.9-fabric",
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {

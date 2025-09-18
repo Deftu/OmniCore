@@ -4,6 +4,7 @@ import dev.deftu.omnicore.api.client.input.OmniInputCode
 import dev.deftu.omnicore.api.client.input.OmniKey
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import net.minecraft.client.option.KeyBinding
+import net.minecraft.util.Identifier
 
 //#if MC >= 1.16.5
 import net.minecraft.client.util.InputUtil
@@ -22,7 +23,7 @@ public interface OmniKeyBinding {
         @JvmOverloads
         public fun create(
             name: String,
-            category: String,
+            category: Identifier,
             defaultValue: OmniInputCode,
             type: KeyBindingType = KeyBindingType.KEY
         ): MCKeyBinding {
@@ -57,7 +58,7 @@ public interface OmniKeyBinding {
 
     public val name: String
 
-    public val category: String
+    public val category: Identifier
 
     public val type: KeyBindingType
 

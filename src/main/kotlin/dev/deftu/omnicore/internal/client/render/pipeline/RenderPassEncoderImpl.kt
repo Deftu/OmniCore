@@ -39,7 +39,7 @@ public class RenderPassEncoderImpl internal constructor(
     //#endif
 
     //#if MC >= 1.21.5
-    public val vanilla: RenderPass
+    override val vanilla: RenderPass
     //#endif
 
     private var scissorBox: OmniRenderingContext.ScissorBox? = null
@@ -49,7 +49,11 @@ public class RenderPassEncoderImpl internal constructor(
         val dynamicUniforms = RenderSystem.getDynamicUniforms().write(
             RenderSystem.getModelViewMatrix(),
             Vector4f(1f, 1f, 1f, 1f),
+            //#if MC >= 1.21.9
+            //$$ org.joml.Vector3f(),
+            //#else
             RenderSystem.getModelOffset(),
+            //#endif
             RenderSystem.getTextureMatrix(),
             RenderSystem.getShaderLineWidth()
         )

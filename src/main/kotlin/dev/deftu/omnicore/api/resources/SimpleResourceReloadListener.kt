@@ -22,6 +22,16 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
     //#endif
 
     //#if MC >= 1.16.5
+    //#if MC >= 1.21.9
+    //$$ override fun reload(
+    //$$     reloadState: PreparableReloadListener.SharedState,
+    //$$     loadHandler: Executor,
+    //$$     synchronizer: PreparableReloadListener.PreparationBarrier,
+    //$$     applyExecutor: Executor
+    //$$ ): CompletableFuture<Void> {
+    //$$     return reloadInternal(synchronizer, reloadState.resourceManager(), loadHandler, applyExecutor)
+    //$$ }
+    //#else
     override fun reload(
         synchronizer: ResourceReloader.Synchronizer,
         resourceManager: ResourceManager,
@@ -34,6 +44,7 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
     ): CompletableFuture<Void> {
         return reloadInternal(synchronizer, resourceManager, loadHandler, applyHandler)
     }
+    //#endif
 
     public fun reloadInternal(
         synchronizer: ResourceReloader.Synchronizer,

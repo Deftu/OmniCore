@@ -20,7 +20,9 @@ public val World.isClientWorld: Boolean
 
 public val World.spawnPosition: BlockPos
     get() {
-        //#if MC >= 1.19.2
+        //#if MC >= 1.21.9
+        //$$ return this.respawnData.pos()
+        //#elseif MC >= 1.19.2
         return this.spawnPos
         //#elseif MC >= 1.16.5
         //$$ return when (this) {
