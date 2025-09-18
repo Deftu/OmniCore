@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.client.render.state.TrackedState
 //$$ import dev.deftu.omnicore.api.client.client
 //#endif
 
-public sealed class GuiScale : TrackedState<GuiScale> {
+public sealed class GuiScale : TrackedState<GuiScale>, Comparable<GuiScale> {
     public companion object {
         @JvmField public val AUTO: GuiScale = Auto
         @JvmField public val SMALL: GuiScale = Sized(1)
@@ -103,5 +103,9 @@ public sealed class GuiScale : TrackedState<GuiScale> {
         }
 
         rawCurrentScale = id
+    }
+
+    override operator fun compareTo(other: GuiScale): Int {
+        return this.id.compareTo(other.id)
     }
 }
