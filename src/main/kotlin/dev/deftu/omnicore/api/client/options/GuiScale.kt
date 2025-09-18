@@ -1,36 +1,18 @@
 package dev.deftu.omnicore.api.client.options
 
+import dev.deftu.omnicore.api.client.render.state.TrackedState
+
 //#if MC >= 1.16.5 && MC < 1.20.5
 //$$ import dev.deftu.omnicore.api.client.client
 //#endif
 
-/**
- * Represents the GUI scales Minecraft provides, which force render operations to be scaled by a certain factor.
- *
- * @since 0.2.1
- * @author Deftu
- */
-public enum class GuiScale {
-    AUTO,
-    SMALL,
-    MEDIUM,
-    LARGE,
-    VERY_LARGE;
-
-    /**
-     * Sets the current GUI scale to this.
-     *
-     * @since 0.19.0
-     * @author Deftu
-     */
-    public fun apply() {
-        rawCurrentScale = ordinal
-    }
-
+public sealed class GuiScale : TrackedState<GuiScale> {
     public companion object {
-        @JvmField
-        @Suppress("EnumValuesSoftDeprecate")
-        public val ALL: List<GuiScale> = values().toList()
+        @JvmField public val AUTO: GuiScale = Auto
+        @JvmField public val SMALL: GuiScale = Sized(1)
+        @JvmField public val MEDIUM: GuiScale = Sized(2)
+        @JvmField public val LARGE: GuiScale = Sized(3)
+        @JvmField public val VERY_LARGE: GuiScale = Sized(4)
 
         /**
          * The raw integer value of the current GUI scale as provided by the Minecraft client.
@@ -73,7 +55,7 @@ public enum class GuiScale {
         @JvmStatic
         public var currentScale: GuiScale
             get() = from(rawCurrentScale)
-            set(value) { rawCurrentScale = value.ordinal }
+            set(value) { rawCurrentScale = value.id }
 
         /**
          * Gets the GUI scale from an integer value.
@@ -83,7 +65,35 @@ public enum class GuiScale {
          */
         @JvmStatic
         public fun from(value: Int): GuiScale {
-            return ALL[value]
+            return when (value) {
+                0 -> Auto
+                else -> Sized(value) // self validates
+            }
         }
+    }
+
+    public data object Auto : GuiScale() {
+        override val id: Int
+            get() = 0
+    }
+
+    public data class Sized(override val id: Int) : GuiScale()
+
+    final override var prevState: GuiScale? = null
+        private set
+
+    public abstract val id: Int
+
+    override fun submit(saveLast: Boolean) {
+        if (saveLast) {
+            prevState = currentScale
+        }
+
+        rawCurrentScale = id
+    }
+
+    override fun restore() {
+        super.restore()
+        prevState = null // reset since these are used as global states most of the time
     }
 }
