@@ -67,11 +67,6 @@ public data class OmniColor(
         return withAlpha(0xFF)
     }
 
-    public fun invert(): OmniColor {
-        val newValue = format.invert(value)
-        return if (newValue == value) this else OmniColor(format, newValue)
-    }
-
     public fun mix(other: OmniColor): OmniColor {
         val otherValue = other.pack(this.format)
         val newValue = format.mix(value, otherValue)
@@ -81,6 +76,16 @@ public data class OmniColor(
     public fun mix(other: OmniColor, weight: Float): OmniColor {
         val otherValue = other.pack(this.format)
         val newValue = format.mix(value, otherValue, weight)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun invert(): OmniColor {
+        val newValue = format.invert(value)
+        return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun grayscale(): OmniColor {
+        val newValue = format.grayscale(value)
         return if (newValue == value) this else OmniColor(format, newValue)
     }
 

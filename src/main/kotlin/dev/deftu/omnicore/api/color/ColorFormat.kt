@@ -112,6 +112,14 @@ public enum class ColorFormat(
         )
     }
 
+    public fun grayscale(color: Int): Int {
+        val r = red(color)
+        val g = green(color)
+        val b = blue(color)
+        val gray = ((r + g + b) / 3).coerceIn(0, 255)
+        return pack(gray, gray, gray, alpha(color)) // Preserve alpha
+    }
+
     public fun lerp(progress: Float, start: Int, end: Int): Int {
         return pack(
             lerp0(progress, red(start), red(end)),
