@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.api.data.pos
 
 import com.mojang.serialization.Codec
-import dev.deftu.omnicore.api.OmniDirectionalAxis
-import dev.deftu.omnicore.api.OmniSpatialDirection
+import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
+import dev.deftu.omnicore.api.direction.OmniSpatialDirection
 import dev.deftu.omnicore.api.data.DistanceMetric
 import dev.deftu.omnicore.api.data.RadiusMetric
 import dev.deftu.omnicore.api.data.vec.OmniVec3d

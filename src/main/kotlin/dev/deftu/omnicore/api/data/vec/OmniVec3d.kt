@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.data.vec
 
 import com.mojang.serialization.Codec
-import dev.deftu.omnicore.api.OmniDirectionalAxis
+import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.OmniMath
 import dev.deftu.omnicore.api.data.DistanceMetric
 import dev.deftu.omnicore.api.serialization.OmniDataResult

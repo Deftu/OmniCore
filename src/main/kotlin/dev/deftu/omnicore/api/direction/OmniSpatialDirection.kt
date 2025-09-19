@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.api
+package dev.deftu.omnicore.api.direction
 
 import net.minecraft.util.math.Direction
 

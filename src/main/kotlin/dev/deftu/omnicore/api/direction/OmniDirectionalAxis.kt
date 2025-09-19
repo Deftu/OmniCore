@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.api
+package dev.deftu.omnicore.api.direction
 
 import net.minecraft.util.math.Direction
 
@@ -56,10 +56,18 @@ public enum class OmniDirectionalAxis(public val id: String) {
         }
     }
 
+    public operator fun unaryMinus(): AxisSpace {
+        return AxisSpace(this, isPositive = false)
+    }
+
+    public operator fun unaryPlus(): AxisSpace {
+        return AxisSpace(this, isPositive = true)
+    }
+
     public companion object {
         @JvmField
         @Suppress("EnumValuesSoftDeprecate")
-        public val ALL: List<OmniDirectionalAxis> = OmniDirectionalAxis.values().toList()
+        public val ALL: List<OmniDirectionalAxis> = values().toList()
 
         @JvmField
         public val HORIZONTAL: Set<OmniDirectionalAxis> = setOf(X, Z)

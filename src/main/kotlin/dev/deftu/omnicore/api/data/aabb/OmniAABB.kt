@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.data.aabb
 
 import com.mojang.serialization.Codec
-import dev.deftu.omnicore.api.OmniDirectionalAxis
+import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.serialization.OmniDataResult
 import net.minecraft.util.math.BlockPos
