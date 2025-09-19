@@ -1,18 +1,17 @@
 package dev.deftu.omnicore.internal.client.render.pipeline
 
-import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
-import dev.deftu.omnicore.internal.client.textures.WrappedGlTexture
 import org.jetbrains.annotations.ApiStatus
-import kotlin.use
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.buffers.GpuBuffer
 import org.joml.Vector4f
 import org.lwjgl.system.MemoryStack
+import kotlin.use
 //#endif
 
 //#if MC < 1.21.5
@@ -21,9 +20,23 @@ import org.lwjgl.system.MemoryStack
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.systems.RenderPass
-import com.mojang.blaze3d.systems.RenderSystem
+import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.internal.client.textures.WrappedGlTexture
 import java.util.OptionalDouble
 import java.util.OptionalInt
+//#endif
+
+//#if MC >= 1.17.1
+import com.mojang.blaze3d.systems.RenderSystem
+//#endif
+
+//#if MC <= 1.16.5
+//$$ import com.mojang.blaze3d.platform.GlStateManager
+//$$ import org.lwjgl.opengl.GL11
+//#endif
+
+//#if MC <= 1.12.2
+//$$ import org.lwjgl.BufferUtils
 //#endif
 
 @ApiStatus.Internal
@@ -36,29 +49,21 @@ public class RenderPassEncoderImpl internal constructor(
 ) : RenderPassEncoder {
     //#if MC >= 1.21.6
     private val internalBuffers = mutableSetOf<GpuBuffer>()
+    private var shaderColor: Vector4f? = null
+    private var shaderLineWidth: Float? = null
     //#endif
 
     //#if MC >= 1.21.5
     override val vanilla: RenderPass
     //#endif
 
+    //#if MC <= 1.21.5
+    //$$ private var prevShaderColor: OmniColor? = null
+    //#endif
+
     private var scissorBox: OmniRenderingContext.ScissorBox? = null
 
     init {
-        //#if MC >= 1.21.6
-        val dynamicUniforms = RenderSystem.getDynamicUniforms().write(
-            RenderSystem.getModelViewMatrix(),
-            Vector4f(1f, 1f, 1f, 1f),
-            //#if MC >= 1.21.9
-            //$$ org.joml.Vector3f(),
-            //#else
-            RenderSystem.getModelOffset(),
-            //#endif
-            RenderSystem.getTextureMatrix(),
-            RenderSystem.getShaderLineWidth()
-        )
-        //#endif
-
         //#if MC >= 1.21.5
         val builtBuffer = builtBuffer.vanilla
         val vertexBuffer = renderPipeline.vertexFormat.uploadImmediateVertexBuffer(builtBuffer.buffer)
@@ -88,10 +93,6 @@ public class RenderPassEncoderImpl internal constructor(
 
         vanilla.setVertexBuffer(0, vertexBuffer)
         vanilla.setIndexBuffer(uploadedIndexBuffer, indexType)
-        //#if MC >= 1.21.6
-        RenderSystem.bindDefaultUniforms(vanilla)
-        vanilla.setUniform("DynamicTransforms", dynamicUniforms)
-        //#endif
         //#else
         //$$ renderPipeline.bind()
         //#endif
@@ -168,6 +169,59 @@ public class RenderPassEncoderImpl internal constructor(
         return this
     }
 
+    override fun getShaderColor(): OmniColor? {
+        //#if MC >= 1.21.6
+        return shaderColor?.let {
+            OmniColor(it.x, it.y, it.z, it.w)
+        }
+        //#elseif MC >= 1.17.1
+        //$$ val shaderColor = RenderSystem.getShaderColor()
+        //$$ return OmniColor(shaderColor[0], shaderColor[1], shaderColor[2], shaderColor[3])
+        //#else
+        //#if MC >= 1.16.5
+        //$$ val shaderColor = FloatArray(4)
+        //$$ GL11.glGetFloatv(GL11.GL_CURRENT_COLOR, shaderColor)
+        //#else
+        //$$ val shaderColor = BufferUtils.createFloatBuffer(4)
+        //$$ GL11.glGetFloat(GL11.GL_CURRENT_COLOR, shaderColor)
+        //#endif
+        //$$ return OmniColor(shaderColor[0], shaderColor[1], shaderColor[2], shaderColor[3])
+        //#endif
+    }
+
+    override fun setShaderColor(red: Float, green: Float, blue: Float, alpha: Float): RenderPassEncoder {
+        //#if MC >= 1.21.6
+        shaderColor = Vector4f(red, green, blue, alpha)
+        //#else
+        //$$ prevShaderColor = getShaderColor()
+        //#if MC >= 1.17.1
+        //$$ RenderSystem.setShaderColor(red, green, blue, alpha)
+        //#elseif MC >= 1.16.5
+        //$$ GlStateManager.color4f(red, green, blue, alpha)
+        //#else
+        //$$ GlStateManager.color(red, green, blue, alpha)
+        //#endif
+        //#endif
+        return this
+    }
+
+    override fun setLineWidth(width: Float): RenderPassEncoder {
+        //#if MC >= 1.21.6
+        shaderLineWidth = width
+        //#else
+        //#if MC >= 1.17.1
+        //$$ RenderSystem.lineWidth(width)
+        //#elseif MC >= 1.16.5
+        //$$ GlStateManager.lineWidth(width)
+        //#elseif MC >= 1.12.2
+        //$$ GlStateManager.glLineWidth(width)
+        //#else
+        //$$ GL11.glLineWidth(width)
+        //#endif
+        //#endif
+        return this
+    }
+
     override fun enableScissor(
         x: Int,
         y: Int,
@@ -185,6 +239,20 @@ public class RenderPassEncoderImpl internal constructor(
 
     override fun submit() {
         //#if MC >= 1.21.5
+        //#if MC >= 1.21.6
+        val dynamicUniforms = RenderSystem.getDynamicUniforms().write(
+            RenderSystem.getModelViewMatrix(),
+            shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
+            //#if MC >= 1.21.9
+            //$$ org.joml.Vector3f(),
+            //#else
+            RenderSystem.getModelOffset(),
+            //#endif
+            RenderSystem.getTextureMatrix(),
+            shaderLineWidth ?: RenderSystem.getShaderLineWidth()
+        )
+        //#endif
+
         if (scissorBox != null) {
             vanilla.enableScissor(
                 scissorBox!!.x,
@@ -196,6 +264,10 @@ public class RenderPassEncoderImpl internal constructor(
             vanilla.disableScissor()
         }
 
+        //#if MC >= 1.21.6
+        RenderSystem.bindDefaultUniforms(vanilla)
+        vanilla.setUniform("DynamicTransforms", dynamicUniforms)
+        //#endif
         renderPipeline.draw(vanilla, builtBuffer.vanilla)
         vanilla.close()
         //#if MC >= 1.21.6
@@ -216,6 +288,9 @@ public class RenderPassEncoderImpl internal constructor(
         //$$ renderPipeline.draw(builtBuffer)
         //$$ previousScissorBox?.let(ScissorInternals::applyScissor) ?: ScissorInternals.disableScissor()
         //$$ renderPipeline.unbind()
+        //$$
+        //$$ prevShaderColor?.let { setShaderColor(it) }
+        //$$ prevShaderColor = null
         //#endif
     }
 }

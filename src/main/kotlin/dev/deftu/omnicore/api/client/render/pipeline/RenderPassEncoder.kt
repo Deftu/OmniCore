@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
+import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 
 //#if MC >= 1.21.5
@@ -16,6 +17,19 @@ public interface RenderPassEncoder {
 
     public fun uniform(name: String, vararg values: Float): RenderPassEncoder
     public fun uniform(name: String, vararg values: Int): RenderPassEncoder
+
+    public fun getShaderColor(): OmniColor?
+    public fun setShaderColor(red: Float, green: Float, blue: Float, alpha: Float): RenderPassEncoder
+
+    public fun setShaderColor(red: Float, green: Float, blue: Float): RenderPassEncoder {
+        return setShaderColor(red, green, blue, 1.0f)
+    }
+
+    public fun setShaderColor(color: OmniColor): RenderPassEncoder {
+        return setShaderColor(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
+    }
+
+    public fun setLineWidth(width: Float): RenderPassEncoder
 
     public fun enableScissor(x: Int, y: Int, width: Int, height: Int): RenderPassEncoder
     public fun disableScissor(): RenderPassEncoder
