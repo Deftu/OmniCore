@@ -4,6 +4,7 @@ package dev.deftu.omnicore.api.color
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import dev.deftu.omnicore.api.serialization.OmniCodecOps
 import java.awt.Color
 
 public data class OmniColor(
@@ -12,12 +13,18 @@ public data class OmniColor(
 ) {
     public companion object {
         @JvmField
-        public val CODEC: Codec<OmniColor> = RecordCodecBuilder.create { instance ->
+        public val FORMAT_AWARE_CODEC: Codec<OmniColor> = RecordCodecBuilder.create { instance ->
             instance.group(
                 ColorFormat.CODEC.fieldOf("format").forGetter(OmniColor::format),
                 Codec.INT.fieldOf("value").forGetter(OmniColor::value)
             ).apply(instance, ::OmniColor)
         }
+
+        @JvmField
+        public val PACKED_CODEC: Codec<OmniColor> = Codec.INT.xmap(::OmniColor, OmniColor::pack)
+
+        @JvmField
+        public val CODEC: Codec<OmniColor> = OmniCodecOps.withAlternative(FORMAT_AWARE_CODEC, PACKED_CODEC)
     }
 
     @JvmOverloads
