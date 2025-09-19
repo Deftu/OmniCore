@@ -12,45 +12,28 @@ import net.minecraft.SharedConstants
 
 private val VERSION_REGEX = "(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?".toRegex()
 
-public var minecraftVersion: String = "unknown"
-    private set
-    get() {
-        if (field != "unknown") {
-            return field
-        }
+public val minecraftVersion: String by lazy {
+    //#if MC >= 1.16.5
+    SharedConstants.getGameVersion().comp_4025()
+    //#else
+    //#if FORGE
+    //$$ ForgeVersion.mcVersion
+    //#else
+    //$$ FabricLoader.getInstance().getModContainer("minecraft").orElseThrow {
+    //$$     RuntimeException("Minecraft mod container not found")
+    //$$ }.metadata.version.friendlyString
+    //#endif
+    //#endif
+}
 
-        //#if MC >= 1.16.5
-        val version = SharedConstants.getGameVersion().comp_4025()
-        //#else
-        //#if FORGE
-        //$$ val version = ForgeVersion.mcVersion
-        //#else
-        //$$ val version = FabricLoader.getInstance().getModContainer("minecraft").orElseThrow {
-        //$$     RuntimeException("Minecraft mod container not found")
-        //$$ }.metadata.version.friendlyString
-        //#endif
-        //#endif
+public val paddedMinecraftVersion: Int by lazy {
+    val version = minecraftVersion
+    val match = VERSION_REGEX.find(version) ?: throw IllegalArgumentException("Invalid version format, could not match to regex: $version")
+    val groups = match.groups
 
-        field = version
-        return version
-    }
+    val major = groups["major"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing major version: $version")
+    val minor = groups["minor"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing minor version: $version")
+    val patch = groups["patch"]?.value?.toInt() ?: 0
 
-public var paddedMinecraftVersion: Int = -1
-    private set
-    get() {
-        if (field != -1) {
-            return field
-        }
-
-        val version = minecraftVersion
-        val match = VERSION_REGEX.find(version) ?: throw IllegalArgumentException("Invalid version format, could not match to regex: $version")
-        val groups = match.groups
-
-        val major = groups["major"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing major version: $version")
-        val minor = groups["minor"]?.value?.toInt() ?: throw IllegalArgumentException("Invalid version format, missing minor version: $version")
-        val patch = groups["patch"]?.value?.toInt() ?: 0
-
-        val finalVersion = major * 10000 + minor * 100 + patch
-        field = finalVersion
-        return finalVersion
-    }
+    major * 10000 + minor * 100 + patch
+}
