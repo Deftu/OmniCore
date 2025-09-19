@@ -36,6 +36,8 @@ com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
 com.mojang.blaze3d.platform.GlStateManager _enableTexture() enableTexture2D()
 com.mojang.blaze3d.platform.GlStateManager _disableTexture() disableTexture2D()
 
+net.minecraft.client.gui.screens.inventory.AbstractContainerScreen net.minecraft.client.gui.inventory.GuiContainer
+
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 com.mojang.math.Quaternion org.lwjgl.util.vector.Quaternion
