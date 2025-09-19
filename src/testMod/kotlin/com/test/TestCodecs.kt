@@ -2,6 +2,7 @@ package com.test
 
 import com.mojang.serialization.Codec
 import com.mojang.serialization.codecs.RecordCodecBuilder
+import dev.deftu.omnicore.api.data.pos.OmniBlockPos
 import dev.deftu.omnicore.api.serialization.OmniCodecs
 
 object TestCodecs {
@@ -16,7 +17,7 @@ object TestCodecs {
             OmniCodecs.UUID_UNDASHED.fieldOf("undashed_uuid").forGetter(TestData::undashedUuid),
             OmniCodecs.UUID_LENIENT.fieldOf("lenient_uuid").forGetter(TestData::lenientUuid),
             OmniCodecs.UUID_LENIENT.fieldOf("other_lenient_uuid").forGetter(TestData::otherLenientUuid),
-            OmniCodecs.BLOCK_POS.fieldOf("block_pos").forGetter(TestData::blockPos),
+            OmniBlockPos.CODEC.fieldOf("block_pos").forGetter(TestData::blockPos),
             OmniCodecs.INSTANT.fieldOf("instant").forGetter(TestData::instant)
         ).apply(instance, ::TestData)
     }
