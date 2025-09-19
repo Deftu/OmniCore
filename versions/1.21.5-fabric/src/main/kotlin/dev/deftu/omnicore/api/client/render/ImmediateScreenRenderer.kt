@@ -1,15 +1,5 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-
-//#if MC >= 1.20.1
-import net.minecraft.client.gui.DrawContext
-//#endif
-
-//#if MC >= 1.16.5 && MC < 1.20.1
-//$$ import net.minecraft.client.util.math.MatrixStack
-//#endif
-
 /**
  * Provides you with a means of bypassing Minecraft's new render layering system as of Minecraft 1.21.6.
  * Done by overriding the current render target's output color and depth buffers with our own texture(s), drawing your content,
@@ -20,14 +10,18 @@ import net.minecraft.client.gui.DrawContext
  * you please. Use it as you wish elsewhere should you need to.
  */
 public object ImmediateScreenRenderer {
+    @JvmStatic
     public fun initialize() {
         // no-op below 1.21.6
     }
 
-    public fun render(
-        context: OmniRenderingContext,
-        block: () -> Unit
-    ) {
+    @JvmStatic
+    public fun render(ctx: OmniRenderingContext, block: () -> Unit) {
         block()
+    }
+
+    @JvmStatic
+    public fun render(ctx: OmniRenderingContext, runnable: Runnable) {
+        runnable.run()
     }
 }

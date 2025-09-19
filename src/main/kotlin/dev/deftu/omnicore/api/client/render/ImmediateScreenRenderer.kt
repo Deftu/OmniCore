@@ -5,8 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.events.RenderTickEvent
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.eventBus
 import dev.deftu.omnicore.internal.client.render.TemporaryTextureAllocator
 import dev.deftu.omnicore.internal.identifierOf
@@ -31,6 +29,7 @@ public object ImmediateScreenRenderer {
         cachedProjectionMatrix = null
     }
 
+    @JvmStatic
     public fun initialize() {
         if (isInitialized) {
             return
@@ -43,6 +42,7 @@ public object ImmediateScreenRenderer {
         isInitialized = true
     }
 
+    @JvmStatic
     public fun render(ctx: OmniRenderingContext, block: () -> Unit) {
         val scaleFactor = OmniResolution.scaleFactor.toFloat()
         val width = OmniResolution.viewportWidth
@@ -95,5 +95,10 @@ public object ImmediateScreenRenderer {
 
         ctx.graphics.matrices.popMatrix()
         client.textureManager.destroyTexture(identifier)
+    }
+
+    @JvmStatic
+    public fun render(ctx: OmniRenderingContext, runnable: Runnable) {
+        render(ctx) { runnable.run() }
     }
 }
