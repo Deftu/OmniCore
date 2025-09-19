@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.internal.data.shape
 
-import dev.deftu.omnicore.api.OmniDirectionalAxis
 import dev.deftu.omnicore.api.data.aabb.OmniAABB
 import dev.deftu.omnicore.api.data.shape.OmniVoxelShape
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
+import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import java.util.function.Consumer
 import kotlin.math.abs
 import kotlin.math.max
