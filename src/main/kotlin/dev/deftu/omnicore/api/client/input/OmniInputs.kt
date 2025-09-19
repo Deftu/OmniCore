@@ -8,6 +8,15 @@ import net.minecraft.client.util.InputUtil
 
 public object OmniInputs {
     @JvmStatic
+    public fun get(code: Int): OmniInputCode {
+        return when {
+            OmniKeyboard.isKeyboardButton(code) -> OmniKey(code)
+            OmniMouse.isMouseButton(code) -> OmniMouseButton(code)
+            else -> throw IllegalArgumentException("Code $code is not a valid key or mouse button")
+        }
+    }
+
+    @JvmStatic
     @JvmOverloads
     public fun getDisplayName(code: Int, scanCode: Int = -1): String {
         val name =
