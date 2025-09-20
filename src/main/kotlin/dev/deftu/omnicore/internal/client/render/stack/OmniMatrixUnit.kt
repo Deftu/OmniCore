@@ -1,12 +1,11 @@
 package dev.deftu.omnicore.internal.client.render.stack
 
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import org.joml.Matrix3f
-import org.joml.Matrix4f
-import org.joml.Quaternionf
+import dev.deftu.omnicore.api.math.OmniMatrix3f
+import dev.deftu.omnicore.api.math.OmniMatrix4f
 
 public data object OmniMatrixUnit : OmniMatrixStack {
-    private val entry = OmniMatrixStack.Entry(Matrix4f(), Matrix3f())
+    private val entry = OmniMatrixStack.Entry(OmniMatrix4f.identity(), OmniMatrix3f.identity())
 
     override val isEmpty: Boolean
         get() = true
@@ -35,10 +34,6 @@ public data object OmniMatrixUnit : OmniMatrixStack {
     }
 
     override fun rotate(angle: Float, axisX: Float, axisY: Float, axisZ: Float, isDegrees: Boolean) {
-        // no-op
-    }
-
-    override fun rotate(quaternion: Quaternionf) {
         // no-op
     }
 

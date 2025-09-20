@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.client.render.pipeline
 
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 
 //#if MC >= 1.21.5
@@ -30,6 +31,12 @@ public interface RenderPassEncoder {
     }
 
     public fun setLineWidth(width: Float): RenderPassEncoder
+
+    public fun setTextureMatrix(matrix: OmniMatrix4f): RenderPassEncoder
+    public fun resetTextureMatrix(): RenderPassEncoder
+
+    public fun setModelViewMatrix(matrix: OmniMatrix4f): RenderPassEncoder
+    public fun resetModelViewMatrix(): RenderPassEncoder
 
     public fun enableScissor(x: Int, y: Int, width: Int, height: Int): RenderPassEncoder
     public fun disableScissor(): RenderPassEncoder

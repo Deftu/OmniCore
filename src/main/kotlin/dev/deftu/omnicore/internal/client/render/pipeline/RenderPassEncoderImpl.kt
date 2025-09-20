@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.internal.client.render.pipeline
 
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
@@ -9,6 +10,7 @@ import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.buffers.GpuBuffer
+import net.minecraft.client.gl.DynamicUniforms
 import org.joml.Vector4f
 import org.lwjgl.system.MemoryStack
 import kotlin.use
@@ -28,15 +30,13 @@ import java.util.OptionalInt
 
 //#if MC >= 1.17.1
 import com.mojang.blaze3d.systems.RenderSystem
+import org.joml.Matrix4f
 //#endif
 
 //#if MC <= 1.16.5
 //$$ import com.mojang.blaze3d.platform.GlStateManager
-//$$ import org.lwjgl.opengl.GL11
-//#endif
-
-//#if MC <= 1.12.2
 //$$ import org.lwjgl.BufferUtils
+//$$ import org.lwjgl.opengl.GL11
 //#endif
 
 @ApiStatus.Internal
@@ -48,8 +48,12 @@ public class RenderPassEncoderImpl internal constructor(
     private val builtBuffer: OmniBuiltBuffer
 ) : RenderPassEncoder {
     //#if MC >= 1.21.6
+    private var dynamicUniforms: DynamicUniforms? = null
     private val internalBuffers = mutableSetOf<GpuBuffer>()
+
+    private var modelViewMatrix: Matrix4f? = null
     private var shaderColor: Vector4f? = null
+    private var textureMatrix: Matrix4f? = null
     private var shaderLineWidth: Float? = null
     //#endif
 
@@ -64,6 +68,21 @@ public class RenderPassEncoderImpl internal constructor(
     private var scissorBox: OmniRenderingContext.ScissorBox? = null
 
     init {
+        //#if MC >= 1.21.6
+        dynamicUniforms = RenderSystem.getDynamicUniforms()
+        val dynamicBuffer = dynamicUniforms?.write(
+            RenderSystem.getModelViewMatrix(),
+            shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
+            //#if MC >= 1.21.9
+            //$$ org.joml.Vector3f(),
+            //#else
+            RenderSystem.getModelOffset(),
+            //#endif
+            RenderSystem.getTextureMatrix(),
+            shaderLineWidth ?: RenderSystem.getShaderLineWidth()
+        )
+        //#endif
+
         //#if MC >= 1.21.5
         val builtBuffer = builtBuffer.vanilla
         val vertexBuffer = renderPipeline.vertexFormat.uploadImmediateVertexBuffer(builtBuffer.buffer)
@@ -93,6 +112,10 @@ public class RenderPassEncoderImpl internal constructor(
 
         vanilla.setVertexBuffer(0, vertexBuffer)
         vanilla.setIndexBuffer(uploadedIndexBuffer, indexType)
+        //#if MC >= 1.21.6
+        RenderSystem.bindDefaultUniforms(vanilla)
+        vanilla.setUniform("DynamicTransforms", dynamicBuffer)
+        //#endif
         //#else
         //$$ renderPipeline.bind()
         //#endif
@@ -222,6 +245,80 @@ public class RenderPassEncoderImpl internal constructor(
         return this
     }
 
+    override fun setTextureMatrix(matrix: OmniMatrix4f): RenderPassEncoder {
+        //#if MC >= 1.21.6
+        textureMatrix = matrix.vanilla
+        //#elseif MC >= 1.17.1
+        //$$ RenderSystem.setTextureMatrix(matrix.vanilla)
+        //#else
+        //$$ GL11.glMatrixMode(GL11.GL_TEXTURE)
+        //$$ val buffer = BufferUtils.createFloatBuffer(16).put(matrix.toArray()).flip()
+        //#if MC >= 1.16.5
+        //$$ GL11.glLoadMatrixf(buffer)
+        //#else
+        //$$ GL11.glLoadMatrix(buffer)
+        //#endif
+        //$$ GL11.glMatrixMode(GL11.GL_MODELVIEW)
+        //#endif
+        return this
+    }
+
+    override fun resetTextureMatrix(): RenderPassEncoder {
+        //#if MC >= 1.21.6
+        textureMatrix = null
+        //#elseif MC >= 1.17.1
+        //$$ RenderSystem.resetTextureMatrix()
+        //#else
+        //$$ GL11.glMatrixMode(GL11.GL_TEXTURE)
+        //$$ GL11.glLoadIdentity()
+        //$$ GL11.glMatrixMode(GL11.GL_MODELVIEW)
+        //#endif
+        return this
+    }
+
+    override fun setModelViewMatrix(matrix: OmniMatrix4f): RenderPassEncoder {
+        //#if MC >= 1.21.6
+        modelViewMatrix = matrix.vanilla
+        //#elseif MC >= 1.17.1
+        //$$ val stack = RenderSystem.getModelViewStack()
+        //#if MC >= 1.20.6
+        //$$ stack.identity()
+        //$$ stack.mul(matrix.vanilla)
+        //#else
+        //$$ stack.loadIdentity()
+        //$$ stack.multiplyPositionMatrix(matrix.vanilla)
+        //$$ RenderSystem.applyModelViewMatrix()
+        //#endif
+        //#else
+        //$$ GL11.glMatrixMode(GL11.GL_MODELVIEW)
+        //$$ val buffer = BufferUtils.createFloatBuffer(16).put(matrix.toArray()).flip()
+        //#if MC >= 1.16.5
+        //$$ GL11.glLoadMatrixf(buffer)
+        //#else
+        //$$ GL11.glLoadMatrix(buffer)
+        //#endif
+        //#endif
+        return this
+    }
+
+    override fun resetModelViewMatrix(): RenderPassEncoder {
+        //#if MC >= 1.21.6
+        modelViewMatrix = null
+        //#elseif MC >= 1.17.1
+        //$$ val stack = RenderSystem.getModelViewStack()
+        //#if MC >= 1.20.6
+        //$$ stack.identity()
+        //#else
+        //$$ stack.loadIdentity()
+        //$$ RenderSystem.applyModelViewMatrix()
+        //#endif
+        //#else
+        //$$ GL11.glMatrixMode(GL11.GL_MODELVIEW)
+        //$$ GL11.glLoadIdentity()
+        //#endif
+        return this
+    }
+
     override fun enableScissor(
         x: Int,
         y: Int,
@@ -240,7 +337,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun submit() {
         //#if MC >= 1.21.5
         //#if MC >= 1.21.6
-        val dynamicUniforms = RenderSystem.getDynamicUniforms().write(
+        dynamicUniforms?.write(
             RenderSystem.getModelViewMatrix(),
             shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
             //#if MC >= 1.21.9
@@ -264,10 +361,6 @@ public class RenderPassEncoderImpl internal constructor(
             vanilla.disableScissor()
         }
 
-        //#if MC >= 1.21.6
-        RenderSystem.bindDefaultUniforms(vanilla)
-        vanilla.setUniform("DynamicTransforms", dynamicUniforms)
-        //#endif
         renderPipeline.draw(vanilla, builtBuffer.vanilla)
         vanilla.close()
         //#if MC >= 1.21.6

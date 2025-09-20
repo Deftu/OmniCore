@@ -158,6 +158,9 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     }
 
     private fun render(ctx: OmniRenderingContext) {
+        ctx.matrices.push()
+        ctx.matrices.rotate(angle = 45f, axisX = 0f, axisY = 0f, axisZ = 1f)
+
         val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_COLOR)
         buffer
             .vertex(ctx.matrices, renderX, renderY, 0.0)
@@ -176,5 +179,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             .color(bottomLeftColor)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline)
+
+        ctx.matrices.pop()
     }
 }

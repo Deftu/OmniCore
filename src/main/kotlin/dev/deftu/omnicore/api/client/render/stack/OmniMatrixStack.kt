@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.api.client.render.stack
 
+import dev.deftu.omnicore.api.math.OmniMatrix3f
+import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
-import org.joml.Matrix3f
-import org.joml.Matrix4f
 import org.joml.Quaternionf
 
 //#if MC >= 1.16.5
@@ -14,30 +14,24 @@ import org.joml.Matrix3x2f
 //#endif
 
 public interface OmniMatrixStack {
-    public data class Entry(val positionMatrix: Matrix4f, val normalMatrix: Matrix3f) {
+    public data class Entry(val positionMatrix: OmniMatrix4f, val normalMatrix: OmniMatrix3f) {
         //#if MC >= 1.16.5
         public val vanilla: MatrixStack
             get() {
                 return MatrixStack().apply {
                     //#if MC >= 1.19.3
-                    peek().positionMatrix.mul(positionMatrix)
-                    peek().normalMatrix.mul(normalMatrix)
+                    peek().positionMatrix.mul(positionMatrix.vanilla)
+                    peek().normalMatrix.mul(normalMatrix.vanilla)
                     //#else
-                    //$$ last().pose().multiply(positionMatrix)
-                    //$$ last().normal().mul(normalMatrix)
+                    //$$ last().pose().multiply(positionMatrix.vanilla)
+                    //$$ last().normal().mul(normalMatrix.vanilla)
                     //#endif
                 }
             }
         //#endif
 
         public fun deepCopy(): Entry {
-            //#if MC >= 1.19.3
-            return Entry(Matrix4f(positionMatrix), Matrix3f(normalMatrix))
-            //#elseif MC >= 1.15
-            //$$ return Entry(positionMatrix.copy(), normalMatrix.copy())
-            //#else
-            //$$ return Entry(Matrix4f.load(positionMatrix, null), Matrix3f.load(normalMatrix, null))
-            //#endif
+            return Entry(positionMatrix.deepCopy(), normalMatrix.deepCopy())
         }
     }
 
@@ -58,12 +52,12 @@ public interface OmniMatrixStack {
     public fun applyTo(dst: Matrix3x2f): Matrix3x2f {
         return dst.apply {
             val matrix = current.positionMatrix
-            m00 = matrix.m00()
-            m01 = matrix.m01()
-            m10 = matrix.m10()
-            m11 = matrix.m11()
-            m20 = matrix.m30()
-            m21 = matrix.m31()
+            m00 = matrix.m00
+            m01 = matrix.m01
+            m10 = matrix.m10
+            m11 = matrix.m11
+            m20 = matrix.m30
+            m21 = matrix.m31
         }
     }
     //#endif
@@ -76,7 +70,6 @@ public interface OmniMatrixStack {
     public fun translate(x: Float, y: Float, z: Float)
     public fun scale(x: Float, y: Float, z: Float)
     public fun rotate(angle: Float, axisX: Float, axisY: Float, axisZ: Float, isDegrees: Boolean = true)
-    public fun rotate(quaternion: Quaternionf)
 
     /**
      * Apply current matrix on top of global model-view matrix.

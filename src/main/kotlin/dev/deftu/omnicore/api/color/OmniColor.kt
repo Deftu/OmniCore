@@ -96,9 +96,9 @@ public data class OmniColor(
         return if (newValue == value) this else OmniColor(format, newValue)
     }
 
-    public fun lerp(progress: Float, other: OmniColor): OmniColor {
+    public fun lerp(other: OmniColor, delta: Float): OmniColor {
         val otherValue = other.pack(this.format)
-        val newValue = format.lerp(progress, value, otherValue)
+        val newValue = format.lerp(value, otherValue, delta)
         return if (newValue == value) this else OmniColor(format, newValue)
     }
 

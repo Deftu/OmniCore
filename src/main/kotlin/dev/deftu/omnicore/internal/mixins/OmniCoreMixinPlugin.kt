@@ -38,6 +38,11 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             //#endif
             //#endif
 
+            //#if MC == 1.16.5
+            //$$ result.add("Mixin_Matrix3fGetters")
+            //$$ result.add("Mixin_Matrix4fSetters")
+            //#endif
+
             //#if MC >= 1.16.5
             result.add("client.Mixin_AccessBoundKey")
             result.add("client.Mixin_NativeImageAllocation")

@@ -4,11 +4,6 @@ import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 import org.jetbrains.annotations.ApiStatus
-import java.awt.Color
-
-//#if MC >= 1.20.6
-import org.joml.Vector3f
-//#endif
 
 //#if MC >= 1.16.5
 import net.minecraft.client.render.BufferBuilder
@@ -41,10 +36,9 @@ public open class OmniVertexConsumerImpl(
         }
 
         //#if MC >= 1.16.5
-        value.vertex(stack.current.positionMatrix, x.toFloat(), y.toFloat(), z.toFloat())
+        value.vertex(stack.current.positionMatrix.vanilla, x.toFloat(), y.toFloat(), z.toFloat())
         //#else
-        //$$ val vector = Vector4f(x.toFloat(), y.toFloat(), z.toFloat(), 1f)
-        //$$ Matrix4f.transform(stack.current.positionMatrix, vector, vector)
+        //$$ val vector = stack.current.positionMatrix.transformDirection(x.toFloat(), y.toFloat(), z.toFloat())
         //$$ value.pos(vector.x.toDouble(), vector.y.toDouble(), vector.z.toDouble())
         //#endif
         return this
@@ -101,16 +95,8 @@ public open class OmniVertexConsumerImpl(
             return this
         }
 
-        //#if MC >= 1.20.6
-        val normal = stack.current.normalMatrix.transform(nx, ny, nz, Vector3f())
+        val normal = stack.current.normalMatrix.transformDirection(nx, ny, nz)
         value.normal(normal.x, normal.y, normal.z)
-        //#elseif MC >= 1.16.5
-        //$$ value.normal(stack.current.normalMatrix, nx, ny, nz)
-        //#else
-        //$$ val vector = Vector3f(nx, ny, nz)
-        //$$ Matrix3f.transform(stack.current.normalMatrix, vector, vector)
-        //$$ value.normal(vector.x, vector.y, vector.z)
-        //#endif
         return this
     }
 

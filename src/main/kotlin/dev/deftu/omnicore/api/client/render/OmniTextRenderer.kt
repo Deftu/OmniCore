@@ -49,7 +49,7 @@ public object OmniTextRenderer {
         shadow: Boolean = true,
     ) {
         //#if MC >= 1.21.6
-        val drawer = ImmediateGlyphDrawer(context.matrices.current.positionMatrix)
+        val drawer = ImmediateGlyphDrawer(context.matrices.current.positionMatrix.vanilla)
         textRenderer.prepare(text, x, y, color.pack(ColorFormat.ARGB), shadow, 0).draw(drawer)
         drawer.flush()
         //#elseif MC >= 1.20.1

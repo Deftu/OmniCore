@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.color
 
 import com.mojang.serialization.Codec
-import kotlin.math.roundToInt
+import dev.deftu.omnicore.api.math.OmniMath
 
 public enum class ColorFormat(
     public val id: String,
@@ -93,13 +93,13 @@ public enum class ColorFormat(
         )
     }
 
-    public fun mix(first: Int, second: Int, weight: Float): Int {
-        val clampedWeight = weight.coerceIn(0f, 1f)
+    public fun mix(first: Int, second: Int, delta: Float): Int {
+        val clampedDelta = delta.coerceIn(0f, 1f)
         return pack(
-            lerp0(clampedWeight, red(first), red(second)),
-            lerp0(clampedWeight, green(first), green(second)),
-            lerp0(clampedWeight, blue(first), blue(second)),
-            lerp0(clampedWeight, alpha(first), alpha(second))
+            OmniMath.lerp(red(first), red(second), clampedDelta),
+            OmniMath.lerp(green(first), green(second), clampedDelta),
+            OmniMath.lerp(blue(first), blue(second), clampedDelta),
+            OmniMath.lerp(alpha(first), alpha(second), clampedDelta)
         )
     }
 
@@ -120,18 +120,13 @@ public enum class ColorFormat(
         return pack(gray, gray, gray, alpha(color)) // Preserve alpha
     }
 
-    public fun lerp(progress: Float, start: Int, end: Int): Int {
+    public fun lerp(start: Int, end: Int, delta: Float): Int {
         return pack(
-            lerp0(progress, red(start), red(end)),
-            lerp0(progress, green(start), green(end)),
-            lerp0(progress, blue(start), blue(end)),
-            lerp0(progress, alpha(start), alpha(end))
+            OmniMath.lerp(red(start), red(end), delta),
+            OmniMath.lerp(green(start), green(end), delta),
+            OmniMath.lerp(blue(start), blue(end), delta),
+            OmniMath.lerp(alpha(start), alpha(end), delta)
         )
-    }
-
-    private fun lerp0(progress: Float, start: Int, end: Int): Int {
-        val clampedProgress = progress.coerceIn(0f, 1f)
-        return (start + (end - start) * clampedProgress).roundToInt()
     }
 
     public companion object {

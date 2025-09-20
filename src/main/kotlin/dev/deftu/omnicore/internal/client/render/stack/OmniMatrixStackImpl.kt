@@ -1,9 +1,8 @@
 package dev.deftu.omnicore.internal.client.render.stack
 
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import org.joml.Matrix3f
-import org.joml.Matrix4f
-import org.joml.Quaternionf
+import dev.deftu.omnicore.api.math.OmniMatrix3f
+import dev.deftu.omnicore.api.math.OmniMatrix4f
 import java.util.ArrayDeque
 import java.util.Deque
 
@@ -56,12 +55,12 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
         get() = stack.isEmpty()
 
     public constructor() : this(ArrayDeque<OmniMatrixStack.Entry>().apply {
-        add(OmniMatrixStack.Entry(Matrix4f(), Matrix3f()))
+        add(OmniMatrixStack.Entry(OmniMatrix4f.identity(), OmniMatrix3f.identity()))
     })
 
     //#if MC >= 1.16.5
     public constructor(stack: MatrixStack.Entry) : this(ArrayDeque<OmniMatrixStack.Entry>().apply {
-        add(OmniMatrixStack.Entry(stack.positionMatrix, stack.normalMatrix))
+        add(OmniMatrixStack.Entry(OmniMatrix4f.from(stack.positionMatrix), OmniMatrix3f.from(stack.normalMatrix)))
     })
 
     public constructor(stack: MatrixStack) : this(stack.peek())
@@ -74,12 +73,14 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
     //#if MC >= 1.21.6
     public constructor(stack: Matrix3x2f) : this() {
         with(current.positionMatrix) {
-            m00(stack.m00)
-            m01(stack.m01)
-            m10(stack.m10)
-            m11(stack.m11)
-            m30(stack.m20)
-            m31(stack.m21)
+            applyFrom(toBuilder().apply {
+                m00(stack.m00)
+                m01(stack.m01)
+                m10(stack.m10)
+                m11(stack.m11)
+                m30(stack.m20)
+                m31(stack.m21)
+            }.build())
         }
     }
     //#endif
@@ -110,13 +111,7 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
         }
 
         with(current) {
-            //#if MC >= 1.19.3
             positionMatrix.translate(x, y, z)
-            //#elseif MC >= 1.14
-            //$$ positionMatrix.multiply(Matrix4f.createTranslateMatrix(x, y, z))
-            //#else
-            //$$ Matrix4f.translate(Vector3f(x, y, z), positionMatrix, positionMatrix)
-            //#endif
         }
     }
 
@@ -130,25 +125,11 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
         }
 
         with(current) {
-            //#if MC >= 1.19.3
             positionMatrix.scale(x, y, z)
-            //#elseif MC >= 1.15
-            //$$ positionMatrix.multiply(Matrix4f.createScaleMatrix(x, y, z))
-            //#elseif MC >= 1.14
-            //$$ positionMatrix.mul(Matrix4f.scale(x, y, z))
-            //#else
-            //$$ Matrix4f.scale(Vector3f(x, y, z), positionMatrix, positionMatrix)
-            //#endif
 
             if (x == y && y == z) {
                 if (0f > x) {
-                    //#if MC >= 1.19.3
                     normalMatrix.scale(-1f)
-                    //#elseif MC >= 1.14
-                    //$$ normalMatrix.mul(-1f)
-                    //#else
-                    //$$ Matrix3f.negate(normalMatrix, normalMatrix)
-                    //#endif
                 }
             } else {
                 val ix = 1f / x
@@ -161,17 +142,7 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
                 //$$ val rt = Math.cbrt((ix * iy * iz).toDouble()).toFloat()
                 //#endif
 
-                //#if MC >= 1.19.3
                 normalMatrix.scale(rt * ix, rt * iy, rt * iz)
-                //#elseif MC >= 1.14
-                //$$ normalMatrix.mul(Matrix3f.createScaleMatrix(rt * ix, rt * iy, rt * iz))
-                //#else
-                //$$ val scale = Matrix3f()
-                //$$ scale.m00 = rt * ix
-                //$$ scale.m11 = rt * iy
-                //$$ scale.m22 = rt * iz
-                //$$ Matrix3f.mul(scale, normalMatrix, normalMatrix)
-                //#endif
             }
         }
     }
@@ -189,94 +160,8 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
 
         with(current) {
             val radians = if (isDegrees) Math.toRadians(angle.toDouble()).toFloat() else angle
-            //#if MC >= 1.19.3
-            val quaternion = Quaternionf().rotateAxis(radians, axisX, axisY, axisZ)
-            positionMatrix.rotate(quaternion)
-            normalMatrix.rotate(quaternion)
-            //#elseif MC >= 1.14
-            //$$ positionMatrix.multiply(Quaternion(axisX, axisY, axisZ, radians))
-            //#else
-            //$$ val axis = Vector3f(axisX, axisY, axisZ)
-            //$$ Matrix4f.rotate(radians, axis, positionMatrix, positionMatrix)
-            //$$
-            //$$ fun createRotationMatrix(angle: Float, axis: Vector3f) = Matrix3f().apply {
-            //$$     val c = cos(angle)
-            //$$     val s = sin(angle)
-            //$$     val oneMinusC = 1 - c
-            //$$     val xx = axis.x * axis.x
-            //$$     val xy = axis.x * axis.y
-            //$$     val xz = axis.x * axis.z
-            //$$     val yy = axis.y * axis.y
-            //$$     val yz = axis.y * axis.z
-            //$$     val zz = axis.z * axis.z
-            //$$     val xs = axis.x * s
-            //$$     val ys = axis.y * s
-            //$$     val zs = axis.z * s
-            //$$
-            //$$     m00 = xx * oneMinusC + c
-            //$$     m01 = xy * oneMinusC + zs
-            //$$     m02 = xz * oneMinusC - ys
-            //$$     m10 = xy * oneMinusC - zs
-            //$$     m11 = yy * oneMinusC + c
-            //$$     m12 = yz * oneMinusC + xs
-            //$$     m20 = xz * oneMinusC + ys
-            //$$     m21 = yz * oneMinusC - xs
-            //$$     m22 = zz * oneMinusC + c
-            //$$ }
-            //$$
-            //$$ Matrix3f.mul(normalMatrix, createRotationMatrix(radians, axis), normalMatrix)
-            //#endif
-        }
-    }
-
-    override fun rotate(quaternion: Quaternionf) {
-        with(current) {
-            //#if MC >= 1.19.3
-            positionMatrix.rotate(quaternion)
-            normalMatrix.rotate(quaternion)
-            //#elseif MC >= 1.14
-            //$$ positionMatrix.multiply(quaternion)
-            //#else
-            //$$ val aa = org.lwjgl.util.vector.Vector4f()
-            //$$ quaternion.normalise(null) // ensure unit quaternion
-            //$$ quaternion.setFromAxisAngle(aa)  // aa.xyz = axis, aa.w = angle (radians)
-            //$$
-            //$$ val axis = Vector3f(aa.x, aa.y, aa.z)
-            //$$ if (axis.lengthSquared() > 0f) {
-            //$$     axis.normalise()
-            //$$     val angle = aa.w
-            //$$
-            //$$     // position: M = M * R
-            //$$     Matrix4f.rotate(angle, axis, positionMatrix, positionMatrix)
-            //$$
-            //$$     // normal: N = N * R3x3
-            //$$     fun createRotationMatrix(angleRad: Float, axisN: Vector3f): Matrix3f {
-            //$$         val c = kotlin.math.cos(angleRad.toDouble()).toFloat()
-            //$$         val s = kotlin.math.sin(angleRad.toDouble()).toFloat()
-            //$$         val oneMinusC = 1f - c
-            //$$
-            //$$         val x = axisN.x; val y = axisN.y; val z = axisN.z
-            //$$         val xx = x * x; val xy = x * y; val xz = x * z
-            //$$         val yy = y * y; val yz = y * z; val zz = z * z
-            //$$         val xs = x * s; val ys = y * s; val zs = z * s
-            //$$
-            //$$         return Matrix3f().apply {
-            //$$             m00 = xx * oneMinusC + c
-            //$$             m01 = xy * oneMinusC + zs
-            //$$             m02 = xz * oneMinusC - ys
-            //$$             m10 = xy * oneMinusC - zs
-            //$$             m11 = yy * oneMinusC + c
-            //$$             m12 = yz * oneMinusC + xs
-            //$$             m20 = xz * oneMinusC + ys
-            //$$             m21 = yz * oneMinusC - xs
-            //$$             m22 = zz * oneMinusC + c
-            //$$         }
-            //$$     }
-            //$$
-            //$$     val r3 = createRotationMatrix(angle, axis)
-            //$$     Matrix3f.mul(normalMatrix, r3, normalMatrix) // N = N * R
-            //$$ }
-            //#endif
+            positionMatrix.rotate(axisX, axisY, axisZ, radians)
+            normalMatrix.rotate(axisX, axisY, axisZ, radians)
         }
     }
 
@@ -297,11 +182,11 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
     private fun applyToGlobalState() {
         //#if MC >= 1.17
         //#if MC >= 1.20.5
-        RenderSystem.getModelViewStack().mul(current.positionMatrix)
+        RenderSystem.getModelViewStack().mul(current.positionMatrix.vanilla)
         //#elseif MC >= 1.17.1
-        //$$ RenderSystem.getModelViewStack().multiplyPositionMatrix(current.positionMatrix)
+        //$$ RenderSystem.getModelViewStack().multiplyPositionMatrix(current.positionMatrix.vanilla)
         //#else
-        //$$ RenderSystem.getModelViewStack().method_34425(current.positionMatrix)
+        //$$ RenderSystem.getModelViewStack().method_34425(current.positionMatrix.vanilla)
         //#endif
         //#if MC <= 1.21.1
         //$$ RenderSystem.applyModelViewMatrix()
@@ -309,12 +194,12 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
         //#else
         //#if MC < 1.16
         //#if MC >= 1.15
-        //$$ current.positionMatrix.writeToBuffer(MATRIX_BUFFER)
+        //$$ current.positionMatrix.vanilla.writeToBuffer(MATRIX_BUFFER)
         //#else
-        //$$ current.positionMatrix.store(MATRIX_BUFFER)
+        //$$ current.positionMatrix.vanilla.store(MATRIX_BUFFER)
         //#endif
         //#else
-        //$$ current.positionMatrix.writeRowFirst(MATRIX_BUFFER)
+        //$$ current.positionMatrix.vanilla.writeRowFirst(MATRIX_BUFFER)
         //#endif
         //$$ // Explicit cast to Buffer required, so we do not use the JDK9+ override in FloatBuffer
         //$$ (MATRIX_BUFFER as Buffer).rewind()
