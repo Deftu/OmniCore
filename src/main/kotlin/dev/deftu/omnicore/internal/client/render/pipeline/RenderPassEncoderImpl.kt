@@ -10,6 +10,7 @@ import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.buffers.GpuBuffer
+import com.mojang.blaze3d.buffers.GpuBufferSlice
 import net.minecraft.client.gl.DynamicUniforms
 import org.joml.Vector4f
 import org.lwjgl.system.MemoryStack
@@ -70,17 +71,7 @@ public class RenderPassEncoderImpl internal constructor(
     init {
         //#if MC >= 1.21.6
         dynamicUniforms = RenderSystem.getDynamicUniforms()
-        val dynamicBuffer = dynamicUniforms?.write(
-            RenderSystem.getModelViewMatrix(),
-            shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
-            //#if MC >= 1.21.9
-            //$$ org.joml.Vector3f(),
-            //#else
-            RenderSystem.getModelOffset(),
-            //#endif
-            RenderSystem.getTextureMatrix(),
-            shaderLineWidth ?: RenderSystem.getShaderLineWidth()
-        )
+        val dynamicBuffer = bindDynamicUniforms()
         //#endif
 
         //#if MC >= 1.21.5
@@ -337,17 +328,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun submit() {
         //#if MC >= 1.21.5
         //#if MC >= 1.21.6
-        dynamicUniforms?.write(
-            RenderSystem.getModelViewMatrix(),
-            shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
-            //#if MC >= 1.21.9
-            //$$ org.joml.Vector3f(),
-            //#else
-            RenderSystem.getModelOffset(),
-            //#endif
-            RenderSystem.getTextureMatrix(),
-            shaderLineWidth ?: RenderSystem.getShaderLineWidth()
-        )
+        bindDynamicUniforms()
         //#endif
 
         if (scissorBox != null) {
@@ -386,4 +367,20 @@ public class RenderPassEncoderImpl internal constructor(
         //$$ prevShaderColor = null
         //#endif
     }
+
+    //#if MC >= 1.21.6
+    private fun bindDynamicUniforms(): GpuBufferSlice? {
+        return dynamicUniforms?.write(
+            modelViewMatrix ?: RenderSystem.getModelViewMatrix(),
+            shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
+            //#if MC >= 1.21.9
+            //$$ org.joml.Vector3f(),
+            //#else
+            RenderSystem.getModelOffset(),
+            //#endif
+            textureMatrix ?: RenderSystem.getTextureMatrix(),
+            shaderLineWidth ?: RenderSystem.getShaderLineWidth()
+        )
+    }
+    //#endif
 }
