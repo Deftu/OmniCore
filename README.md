@@ -42,37 +42,40 @@ maven(url = "https://maven.deftu.dev/releases") {
 <details>
     <summary>Minecraft versions & mod loaders</summary>
 
-- 1.21.8 NeoForge    (1.21.8-neoforge)
-- 1.21.8 Fabric      (1.21.8-fabric)
-- 1.21.7 NeoForge    (1.21.7-neoforge)
-- 1.21.7 Fabric      (1.21.7-fabric)
-- 1.21.6 NeoForge    (1.21.6-neoforge)
-- 1.21.6 Fabric      (1.21.6-fabric)
-- 1.21.5 NeoForge    (1.21.5-neoforge)
-- 1.21.5 Fabric      (1.21.5-fabric)
-- 1.21.4 NeoForge    (1.21.4-neoforge)
-- 1.21.4 Fabric      (1.21.4-fabric)
-- 1.21.1 NeoForge    (1.21.1-neoforge)
-- 1.21.1 Fabric      (1.21.1-fabric)
-- 1.20.6 NeoForge    (1.20.6-neoforge)
-- 1.20.6 Fabric      (1.20.6-fabric)
-- 1.20.4 NeoForge    (1.20.4-neoforge)
-- 1.20.4 Forge       (1.20.4-forge)
-- 1.20.4 Fabric      (1.20.4-fabric)
-- 1.20.1 Forge       (1.20.1-forge)
-- 1.20.1 Fabric      (1.20.1-fabric)
-- 1.19.4 Forge       (1.19.4-forge)
-- 1.19.4 Fabric      (1.19.4-fabric)
-- 1.19.2 Forge       (1.19.2-forge)
-- 1.19.2 Fabric      (1.19.2-fabric)
-- 1.18.2 Forge       (1.18.2-forge)
-- 1.18.2 Fabric      (1.18.2-fabric)
-- 1.17.1 Forge       (1.17.1-forge)
-- 1.17.1 Fabric      (1.17.1-fabric)
-- 1.16.5 Forge       (1.16.5-forge)
-- 1.16.5 Fabric      (1.16.5-fabric)
-- 1.12.2 Forge       (1.12.2-forge)
-- 1.8.9  Forge       (1.8.9-forge)
+| Minecraft Version | Mod Loader | Target ID         |
+| ----------------- | ---------- | ----------------- |
+| 1.21.8            | NeoForge   | `1.21.8-neoforge` |
+| 1.21.8            | Fabric     | `1.21.8-fabric`   |
+| 1.21.7            | NeoForge   | `1.21.7-neoforge` |
+| 1.21.7            | Fabric     | `1.21.7-fabric`   |
+| 1.21.6            | NeoForge   | `1.21.6-neoforge` |
+| 1.21.6            | Fabric     | `1.21.6-fabric`   |
+| 1.21.5            | NeoForge   | `1.21.5-neoforge` |
+| 1.21.5            | Fabric     | `1.21.5-fabric`   |
+| 1.21.4            | NeoForge   | `1.21.4-neoforge` |
+| 1.21.4            | Fabric     | `1.21.4-fabric`   |
+| 1.21.1            | NeoForge   | `1.21.1-neoforge` |
+| 1.21.1            | Fabric     | `1.21.1-fabric`   |
+| 1.20.6            | NeoForge   | `1.20.6-neoforge` |
+| 1.20.6            | Fabric     | `1.20.6-fabric`   |
+| 1.20.4            | NeoForge   | `1.20.4-neoforge` |
+| 1.20.4            | Forge      | `1.20.4-forge`    |
+| 1.20.4            | Fabric     | `1.20.4-fabric`   |
+| 1.20.1            | Forge      | `1.20.1-forge`    |
+| 1.20.1            | Fabric     | `1.20.1-fabric`   |
+| 1.19.4            | Forge      | `1.19.4-forge`    |
+| 1.19.4            | Fabric     | `1.19.4-fabric`   |
+| 1.19.2            | Forge      | `1.19.2-forge`    |
+| 1.19.2            | Fabric     | `1.19.2-fabric`   |
+| 1.18.2            | Forge      | `1.18.2-forge`    |
+| 1.18.2            | Fabric     | `1.18.2-fabric`   |
+| 1.17.1            | Forge      | `1.17.1-forge`    |
+| 1.17.1            | Fabric     | `1.17.1-fabric`   |
+| 1.16.5            | Forge      | `1.16.5-forge`    |
+| 1.16.5            | Fabric     | `1.16.5-fabric`   |
+| 1.12.2            | Forge      | `1.12.2-forge`    |
+| 1.8.9             | Forge      | `1.8.9-forge`     |
+
 
 </details>
 

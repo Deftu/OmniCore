@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "test-mod",
+    "id": "testmod",
     "name": "Test Mod",
     "version": "1.0.0",
     "description": "A test mod for testing purposes.",

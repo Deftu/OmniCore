@@ -1,69 +1,185 @@
 package com.test
 
-import dev.deftu.omnicore.client.OmniScreen
-import dev.deftu.omnicore.client.render.OmniGameRendering
-import dev.deftu.omnicore.client.render.OmniMatrixStack
-import dev.deftu.omnicore.client.render.pipeline.DrawModes
-import dev.deftu.omnicore.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.client.render.pipeline.VertexFormats
-import dev.deftu.omnicore.client.render.vertex.OmniBufferBuilder
-import dev.deftu.omnicore.common.OmniIdentifier
+import dev.deftu.omnicore.api.client.image.OmniImages
+import dev.deftu.omnicore.api.client.input.KeyboardModifiers
+import dev.deftu.omnicore.api.client.input.OmniMouseButton
+import dev.deftu.omnicore.api.client.input.OmniMouseButtons
+import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
+import dev.deftu.omnicore.api.client.render.DrawMode
+import dev.deftu.omnicore.api.client.render.OmniRenderingContext
+import dev.deftu.omnicore.api.client.render.TextShadowType
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
+import dev.deftu.omnicore.api.client.render.state.OmniBlendState
+import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
+import dev.deftu.omnicore.api.client.screen.OmniScreen
+import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
+import dev.deftu.omnicore.api.client.textures.OmniTextures
+import dev.deftu.omnicore.api.color.OmniColors
+import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import java.awt.Color
+import kotlin.io.path.Path
+import kotlin.math.abs
 
-class TestScreen : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
+class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
+    companion object {
+        private const val MESSAGE_1 = "Hello, OmniCore!"
+        private const val MESSAGE_2 = "This is a test screen."
 
-    private val pipeline by lazy {
-        OmniRenderPipeline.builderWithDefaultShader(
-            identifier = OmniIdentifier.create("testmod", "custom"),
-            vertexFormat = VertexFormats.POSITION_COLOR,
-            mode = DrawModes.QUADS
-        ).build()
+        private val pipeline by lazy {
+            OmniRenderPipelines.builderWithDefaultShader(
+                location = identifierOrThrow("testmod", "custom"),
+                vertexFormat = DefaultVertexFormats.POSITION_COLOR,
+                drawMode = DrawMode.QUADS
+            ).build()
+        }
+
+        private val imagePipeline by lazy {
+            OmniRenderPipelines.builderWithDefaultShader(
+                location = identifierOrThrow("testmod", "image"),
+                vertexFormat = DefaultVertexFormats.POSITION_TEXTURE_COLOR,
+                drawMode = DrawMode.QUADS,
+            ).setBlendState(OmniBlendState.ALPHA).build()
+        }
     }
 
-    private val topLeftColor = Color(0xFF0000) // Red
-    private val topRightColor = Color(0x00FF00) // Green
-    private val bottomLeftColor = Color(0x0000FF) // Blue
-    private val bottomRightColor = Color(0xFFFF00) // Yellow
+    private val topLeftColor = OmniColors.RED
+    private val topRightColor = OmniColors.GREEN
+    private val bottomLeftColor = OmniColors.BLUE
+    private val bottomRightColor = OmniColors.YELLOW
 
-    private val renderX1 = 50.0
-    private val renderY1 = 50.0
-    private val renderX2 = 150.0
-    private val renderY2 = 150.0
+    private val renderX = 50.0
+    private val renderY = 50.0
+    private val renderWidth = 100.0
+    private val renderHeight = 100.0
 
-    override fun handleRender(stack: OmniMatrixStack, mouseX: Int, mouseY: Int, tickDelta: Float) {
-        super.handleRender(stack, mouseX, mouseY, tickDelta) // Render vanilla screen
+    private var text = MESSAGE_1
+    private var texture: OmniTextureHandle? = null
 
-        val text = "Hello, OmniCore!"
-        OmniGameRendering.drawCenteredText(
-            stack = stack,
+    override fun onInitialize(width: Int, height: Int) {
+        super.onInitialize(width, height)
+
+        if (texture != null) {
+            OmniTextures.destroy(texture!!.location)
+            texture!!.close()
+            texture = null
+        }
+
+        if (createsTexture) {
+            createCheckerboardTexture()
+        } else {
+            loadResourceTexture()
+        }
+
+        OmniTextures.register(texture!!.location, texture!!)
+    }
+
+    override fun onScreenClose() {
+        super.onScreenClose()
+        texture?.close()
+        OmniTextures.destroy(texture!!.location)
+    }
+
+    override fun onRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
+        super.onRender(ctx, mouseX, mouseY, tickDelta) // Render vanilla screen
+
+        render(ctx)
+
+        ctx.renderTextCentered(
             text = text,
             x = (width / 2f),
             y = 25f,
-            color = Color.WHITE.rgb
+            color = OmniColors.GREEN,
+            shadowType = TextShadowType.Outline(OmniColors.BLUE)
         )
 
-        render(stack)
+        if (texture != null) {
+            ctx.renderTexture(
+                pipeline = imagePipeline,
+                texture = texture!!,
+                x = 200f,
+                y = 50f,
+                width = 128,
+                height = 128,
+                u = 0f,
+                v = 0f,
+            )
+        }
     }
 
-    private fun render(stack: OmniMatrixStack) {
-        val buffer = OmniBufferBuilder.create(DrawModes.QUADS, VertexFormats.POSITION_COLOR)
+    override fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean {
+        if (button == OmniMouseButtons.LEFT) {
+            text = if (text == MESSAGE_1) MESSAGE_2 else MESSAGE_1
+            return true
+        }
+
+        return super.onMouseClick(button, x, y, modifiers)
+    }
+
+    private fun loadResourceTexture() {
+        val id = identifierOrThrow(ID, "textures/test_texture.png")
+        val image = OmniImages.resource(id)
+            ?: throw IllegalStateException("Failed to load test texture from $id")
+        image.saveTo(Path("loaded_test_image.png"))
+
+        val texture = OmniTextures.load(image)
+        OmniImages.from(texture)
+            .saveTo(Path("load_texture.png"))
+
+        this.texture = texture
+    }
+
+    private fun createCheckerboardTexture() {
+        val texture = OmniTextures.create(128, 128)
+
+        // Create a simple checkerboard pattern
+        val lineTarget = texture.width - 1
+        val lineThickness = 5
+        val halvedThickness = lineThickness / 2
+        texture.writeColor(0, 0, 128, 128, Array(128 * 128) { index ->
+            val x = index % 128
+            val y = index / 128
+
+            // Top-right → bottom-left diagonal band (thickness pixels)
+            if (abs((x + y) - lineTarget) <= halvedThickness) {
+                OmniColors.GREEN
+            } else if ((x / 16 + y / 16) % 2 == 0) {
+                OmniColors.WHITE
+            } else {
+                OmniColors.BLACK
+            }
+        })
+
+        // Draw a red square in the center
+        texture.writeColor(48, 48, 32, 32, Array(32 * 32) { OmniColors.RED })
+
+        OmniImages.from(texture)
+            .saveTo(Path("created_texture.png"))
+        this.texture = texture
+    }
+
+    private fun render(ctx: OmniRenderingContext) {
+        ctx.matrices.push()
+        ctx.matrices.rotate(angle = 45f, axisX = 0f, axisY = 0f, axisZ = 1f)
+
+        val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_COLOR)
         buffer
-            .vertex(stack, renderX1, renderY1, 0.0)
+            .vertex(ctx.matrices, renderX, renderY, 0.0)
             .color(topLeftColor)
             .next()
         buffer
-            .vertex(stack, renderX2, renderY1, 0.0)
+            .vertex(ctx.matrices, renderX + renderWidth, renderY, 0.0)
             .color(topRightColor)
             .next()
         buffer
-            .vertex(stack, renderX2, renderY2, 0.0)
+            .vertex(ctx.matrices, renderX + renderWidth, renderY + renderHeight, 0.0)
             .color(bottomRightColor)
             .next()
         buffer
-            .vertex(stack, renderX1, renderY2, 0.0)
+            .vertex(ctx.matrices, renderX, renderY + renderHeight, 0.0)
             .color(bottomLeftColor)
             .next()
-        buffer.build()?.drawWithCleanup(pipeline)
+        buffer.buildOrThrow().drawAndClose(pipeline)
+
+        ctx.matrices.pop()
     }
 }

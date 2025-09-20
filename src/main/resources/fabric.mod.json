@@ -11,10 +11,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-            "dev.deftu.omnicore.OmniCoreEntrypoint"
+            "dev.deftu.omnicore.internal.OmniCoreEntrypoint"
         ],
         "client": [
-            "dev.deftu.omnicore.OmniCoreEntrypoint"
+            "dev.deftu.omnicore.internal.OmniCoreEntrypoint"
         ]
     },
     "mixins": [
