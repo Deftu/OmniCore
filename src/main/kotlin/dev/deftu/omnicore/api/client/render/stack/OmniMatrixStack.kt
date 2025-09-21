@@ -2,6 +2,7 @@ package dev.deftu.omnicore.api.client.render.stack
 
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
+import dev.deftu.omnicore.api.math.OmniVector3f
 import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
 import org.joml.Quaternionf
 
@@ -70,6 +71,14 @@ public interface OmniMatrixStack {
     public fun translate(x: Float, y: Float, z: Float)
     public fun scale(x: Float, y: Float, z: Float)
     public fun rotate(angle: Float, axisX: Float, axisY: Float, axisZ: Float, isDegrees: Boolean = true)
+
+    public fun translate(vector: OmniVector3f) {
+        translate(vector.x, vector.y, vector.z)
+    }
+
+    public fun scale(vector: OmniVector3f) {
+        scale(vector.x, vector.y, vector.z)
+    }
 
     /**
      * Apply current matrix on top of global model-view matrix.

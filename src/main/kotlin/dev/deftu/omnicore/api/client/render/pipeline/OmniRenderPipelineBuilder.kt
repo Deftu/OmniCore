@@ -144,13 +144,14 @@ public class OmniRenderPipelineBuilder internal constructor(
             }
         }
 
-        return OmniRenderPipelineImpl(location, vertexFormat, vanilla, shaderSourcesFunction)
+        return OmniRenderPipelineImpl(location, drawMode, vertexFormat, vanilla, shaderProvider, shaderSourcesFunction)
         //#else
         //$$ return OmniRenderPipelineImpl(
         //$$     location = location,
+        //$$     drawMode = drawMode,
         //$$     vertexFormat = vertexFormat,
         //$$     shaderProvider = shaderProvider,
-        //$$     activeRenderState = OmniRenderState(
+        //$$     requestedRenderState = OmniRenderState(
         //$$         blendState = blendState,
         //$$         depthState = OmniDepthState(
         //$$             isEnabled = depthTest != OmniRenderPipeline.DepthTest.DISABLED,
@@ -189,6 +190,21 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$     ),
         //$$ )
         //#endif
+    }
+
+    public fun applySnippet(vararg snippets: OmniRenderPipeline.Snippet): OmniRenderPipelineBuilder {
+        for (snippet in snippets) {
+            snippet.depthTest?.let { depthTest = it }
+            snippet.culling?.let { culling = it }
+            snippet.colorLogic?.let { colorLogic = it }
+            snippet.blendState?.let { blendState = it }
+            snippet.colorMask?.let { colorMask = it }
+            snippet.depthMask?.let { depthMask = it }
+            snippet.polygonOffset?.let { polygonOffset = it }
+            snippet.legacyEffects?.let { legacyEffects = it }
+        }
+
+        return this
     }
 
     public fun setDepthTest(mode: OmniRenderPipeline.DepthTest): OmniRenderPipelineBuilder {

@@ -1,4 +1,4 @@
-@file:JvmName("OmniClientProfiler")
+@file:JvmName("OmniProfiler")
 
 package dev.deftu.omnicore.api
 

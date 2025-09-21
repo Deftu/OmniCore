@@ -4,13 +4,9 @@ import dev.deftu.omnicore.api.client.image.OmniImages
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
-import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
-import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.TextShadowType
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
-import dev.deftu.omnicore.api.client.render.state.OmniBlendState
-import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.screen.OmniScreen
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
@@ -24,30 +20,29 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     companion object {
         private const val MESSAGE_1 = "Hello, OmniCore!"
         private const val MESSAGE_2 = "This is a test screen."
-
-        private val pipeline by lazy {
-            OmniRenderPipelines.builderWithDefaultShader(
-                location = identifierOrThrow("testmod", "custom"),
-                vertexFormat = DefaultVertexFormats.POSITION_COLOR,
-                drawMode = DrawMode.QUADS
-            ).build()
-        }
-
-        private val imagePipeline by lazy {
-            OmniRenderPipelines.builderWithDefaultShader(
-                location = identifierOrThrow("testmod", "image"),
-                vertexFormat = DefaultVertexFormats.POSITION_TEXTURE_COLOR,
-                drawMode = DrawMode.QUADS,
-            ).setBlendState(OmniBlendState.ALPHA).build()
-        }
     }
 
+    //#if MC >= 1.16.5
+    // We support gradients in quads on 1.16.5+
     private val topLeftColor = OmniColors.RED
     private val topRightColor = OmniColors.GREEN
     private val bottomLeftColor = OmniColors.BLUE
     private val bottomRightColor = OmniColors.YELLOW
 
-    private val renderX = 50.0
+    private val lineLeftColor = OmniColors.CYAN
+    private val lineRightColor = OmniColors.MAGENTA
+    //#else
+    //$$ // Aww... no gradients in quads on 1.12.2 :(
+    //$$ private val topLeftColor = OmniColors.GREEN
+    //$$ private val topRightColor = OmniColors.GREEN
+    //$$ private val bottomLeftColor = OmniColors.GREEN
+    //$$ private val bottomRightColor = OmniColors.GREEN
+    //$$
+    //$$ private val lineLeftColor = OmniColors.YELLOW
+    //$$ private val lineRightColor = OmniColors.YELLOW
+    //#endif
+
+    private val renderX = 250.0
     private val renderY = 50.0
     private val renderWidth = 100.0
     private val renderHeight = 100.0
@@ -82,7 +77,8 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     override fun onRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
         super.onRender(ctx, mouseX, mouseY, tickDelta) // Render vanilla screen
 
-        render(ctx)
+        renderQuad(ctx)
+        renderLine(ctx)
 
         ctx.renderTextCentered(
             text = text,
@@ -94,7 +90,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
         if (texture != null) {
             ctx.renderTexture(
-                pipeline = imagePipeline,
+                pipeline = OmniRenderPipelines.TEXTURED,
                 texture = texture!!,
                 x = 200f,
                 y = 50f,
@@ -157,11 +153,12 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
         this.texture = texture
     }
 
-    private fun render(ctx: OmniRenderingContext) {
+    private fun renderQuad(ctx: OmniRenderingContext) {
         ctx.matrices.push()
         ctx.matrices.rotate(angle = 45f, axisX = 0f, axisY = 0f, axisZ = 1f)
 
-        val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_COLOR)
+        val pipeline = OmniRenderPipelines.POSITION_COLOR
+        val buffer = pipeline.createBufferBuilder()
         buffer
             .vertex(ctx.matrices, renderX, renderY, 0.0)
             .color(topLeftColor)
@@ -179,6 +176,30 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             .color(bottomLeftColor)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline)
+
+        ctx.matrices.pop()
+    }
+
+    /** Draws a horizontally straight white line, [renderWidth] across */
+    private fun renderLine(ctx: OmniRenderingContext) {
+        ctx.matrices.push()
+
+        val pipeline = OmniRenderPipelines.LINES
+        val buffer = pipeline.createBufferBuilder()
+
+        val lineX = renderX + 100.0
+        buffer.vertex(ctx.matrices, lineX, renderY + renderHeight + 10.0, 0.0)
+            .color(lineLeftColor)
+            .normal(ctx.matrices, 1f, 0f, 0f)
+            .next()
+        buffer.vertex(ctx.matrices, lineX + renderWidth, renderY + renderHeight + 10.0, 0.0)
+            .color(lineRightColor)
+            .normal(ctx.matrices, 1f, 0f, 0f)
+            .next()
+
+        buffer.buildOrThrow().drawAndClose(pipeline) {
+            setLineWidth(15.0f) // test setting line width
+        }
 
         ctx.matrices.pop()
     }

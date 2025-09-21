@@ -2,7 +2,7 @@ package dev.deftu.omnicore.api.client.render.state.legacy
 
 import dev.deftu.omnicore.api.client.render.state.TrackedState
 
-public class OmniLegacyRenderState(
+public data class OmniLegacyRenderState(
     @JvmField public var alphaState: OmniLegacyAlphaState,
     @JvmField public var lightingState: OmniLegacyLightingState,
     @JvmField public var textureStates: List<OmniLegacyTextureState>,

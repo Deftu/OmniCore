@@ -149,7 +149,7 @@ public data class OmniRenderingContext(
         //$$ }
         //#endif
         //$$
-        //$$ val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_TEXTURE_COLOR)
+        //$$ val buffer = pipeline.createBufferBuilder()
         //$$ buffer
         //$$     .vertex(matrices, x0.toDouble(), y0.toDouble(), 0.0)
         //$$     .texture((u / width).toDouble(), (v / height).toDouble())

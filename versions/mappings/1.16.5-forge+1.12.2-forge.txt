@@ -40,6 +40,7 @@ net.minecraft.client.gui.screens.inventory.AbstractContainerScreen net.minecraft
 
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
+com.mojang.math.Vector3f org.lwjgl.util.vector.Vector3f
 com.mojang.math.Quaternion org.lwjgl.util.vector.Quaternion
 net.minecraft.client.util.math.Vector4f org.lwjgl.util.vector.Vector4f
 net.minecraft.core.Vec3i net.minecraft.util.math.Vec3i

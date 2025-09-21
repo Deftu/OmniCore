@@ -135,7 +135,7 @@ public interface OmniFramebuffer : AutoCloseable {
         stack.push()
         stack.scale(1f, 1f, 50f)
 
-        val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_TEXTURE_COLOR)
+        val buffer = OmniBufferBuilders.create(pipeline)
         buffer
             .vertex(stack, x.toDouble(), (y + height).toDouble(), 0.0)
             .texture(0.0, 0.0)

@@ -9,6 +9,7 @@ import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
 import net.minecraft.client.gui.Font
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.Tesselator
+import dev.deftu.omnicore.internal.client.render.pipeline.RenderPassEncoderImpl
 import net.minecraft.client.gui.font.TextRenderable
 import org.joml.Matrix4f
 
@@ -41,6 +42,7 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVi
                     builtBuffer = OmniBuiltBufferImpl(builtBuffer),
                     pipeline = OmniRenderPipelines.wrap(cachedPipeline!!)
                 ) { builder ->
+                    (builder as RenderPassEncoderImpl).initialize()
                     builder.vanilla.bindSampler("Sampler0", cachedTexture)
                     builder.vanilla.bindSampler("Sampler2", lightTexture)
                 }

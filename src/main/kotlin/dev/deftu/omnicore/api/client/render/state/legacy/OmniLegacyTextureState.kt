@@ -17,7 +17,7 @@ public data class OmniLegacyTextureState(
     override fun submit(saveLast: Boolean) {
         //#if MC <= 1.19.2
         //$$ if (saveLast) {
-        //$$     prevState = OmniLegacyRenderStates.textures.first { it.unit == unit }
+        //$$     prevState = OmniLegacyRenderStates.texture(unit)
         //$$ }
         //$$
         //$$ if (isEnabled) {

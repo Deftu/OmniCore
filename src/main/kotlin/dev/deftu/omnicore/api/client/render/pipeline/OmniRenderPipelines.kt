@@ -6,11 +6,13 @@ import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.shader.ShaderSchema
+import dev.deftu.omnicore.internal.identifierOf
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
 import net.minecraft.util.Identifier
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.pipeline.RenderPipeline
+import dev.deftu.omnicore.api.client.render.DrawModes
 import net.minecraft.client.gl.UniformType
 //#else
 //#if MC >= 1.21.2
@@ -29,13 +31,33 @@ import dev.deftu.omnicore.internal.client.render.DefaultShaders
 //#endif
 
 public object OmniRenderPipelines {
+    @JvmStatic
+    public val POSITION_COLOR: OmniRenderPipeline = builderWithDefaultShader(
+        location = identifierOf("pipeline/position_color"),
+        snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_COLOR)
+    ).build()
+
+    @JvmStatic
+    public val TEXTURED: OmniRenderPipeline = builderWithDefaultShader(
+        location = identifierOf("pipeline/textured"),
+        snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_TEXTURE_COLOR)
+    ).build()
+
+    @JvmStatic
+    public val LINES: OmniRenderPipeline = builderWithDefaultShader(
+        location = identifierOf("pipeline/lines"),
+        snippets = arrayOf(OmniRenderPipelineSnippets.LINES)
+    ).build()
+
     //#if MC >= 1.21.5
     @JvmStatic
     public fun wrap(vanilla: RenderPipeline): OmniRenderPipeline {
         return OmniRenderPipelineImpl(
             location = vanilla.location,
+            drawMode = DrawModes.from(vanilla.vertexFormatMode),
             vertexFormat = vanilla.vertexFormat,
             vanilla = vanilla,
+            shaderProvider = null,
             shaderSourcesFunction = null
         )
     }
@@ -61,6 +83,47 @@ public object OmniRenderPipelines {
                 uniforms = uniforms
             )
         )
+    }
+
+    @JvmStatic
+    public fun builder(
+        location: Identifier,
+        vertexLocation: Identifier,
+        fragmentLocation: Identifier,
+        samplers: List<String>,
+        uniforms: Map<String, UniformType>,
+        vararg snippets: OmniRenderPipeline.Snippet,
+    ): OmniRenderPipelineBuilder {
+        val (vertexFormat, drawMode) = extractSnippet(snippet(*snippets))
+        return builder(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode,
+            vertexLocation = vertexLocation,
+            fragmentLocation = fragmentLocation,
+            samplers = samplers,
+            uniforms = uniforms
+        ).applySnippet(*snippets)
+    }
+
+    @JvmStatic
+    public fun builder(
+        vertexLocation: Identifier,
+        fragmentLocation: Identifier,
+        samplers: List<String>,
+        uniforms: Map<String, UniformType>,
+        vararg snippets: OmniRenderPipeline.Snippet,
+    ): OmniRenderPipelineBuilder {
+        val (location, vertexFormat, drawMode) = extractAllSnippet(snippet(*snippets))
+        return builder(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode,
+            vertexLocation = vertexLocation,
+            fragmentLocation = fragmentLocation,
+            samplers = samplers,
+            uniforms = uniforms
+        ).applySnippet(*snippets)
     }
     //#else
     //#if MC >= 1.21.2
@@ -122,6 +185,43 @@ public object OmniRenderPipelines {
     }
 
     @JvmStatic
+    public fun builder(
+        location: Identifier,
+        //#if MC >= 1.21.5
+        shaderProvider: ShaderProvider,
+        //#else
+        //$$ shaderProvider: ShaderProvider?,
+        //#endif
+        vararg snippets: OmniRenderPipeline.Snippet,
+    ): OmniRenderPipelineBuilder {
+        val (vertexFormat, drawMode) = extractSnippet(snippet(*snippets))
+        return builder(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode,
+            shaderProvider = shaderProvider
+        ).applySnippet(*snippets)
+    }
+
+    @JvmStatic
+    public fun builder(
+        //#if MC >= 1.21.5
+        shaderProvider: ShaderProvider,
+        //#else
+        //$$ shaderProvider: ShaderProvider?,
+        //#endif
+        vararg snippets: OmniRenderPipeline.Snippet,
+    ): OmniRenderPipelineBuilder {
+        val (location, vertexFormat, drawMode) = extractAllSnippet(snippet(*snippets))
+        return builder(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode,
+            shaderProvider = shaderProvider
+        ).applySnippet(*snippets)
+    }
+
+    @JvmStatic
     public fun builderWithDefaultShader(
         location: Identifier,
         vertexFormat: VertexFormat,
@@ -141,7 +241,7 @@ public object OmniRenderPipelines {
             //#else
             //$$ "ModelViewMat" to UniformType.MATRIX4X4,
             //$$ "ProjMat" to UniformType.MATRIX4X4,
-            //$$ "ModelViewProjMat" to UniformType.VEC4,
+            //$$ "ColorModulator" to UniformType.VEC4,
             //#endif
         )
         //#endif
@@ -179,6 +279,26 @@ public object OmniRenderPipelines {
             vertexFormat = vertexFormat.vanilla,
             drawMode = drawMode
         )
+    }
+
+    @JvmStatic
+    public fun builderWithDefaultShader(location: Identifier, vararg snippets: OmniRenderPipeline.Snippet): OmniRenderPipelineBuilder {
+        val (vertexFormat, drawMode) = extractSnippet(snippet(*snippets))
+        return builderWithDefaultShader(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode
+        ).applySnippet(*snippets)
+    }
+
+    @JvmStatic
+    public fun builderWithDefaultShader(vararg snippets: OmniRenderPipeline.Snippet): OmniRenderPipelineBuilder {
+        val (location, vertexFormat, drawMode) = extractAllSnippet(snippet(*snippets))
+        return builderWithDefaultShader(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode
+        ).applySnippet(*snippets)
     }
 
     @JvmStatic
@@ -220,5 +340,66 @@ public object OmniRenderPipelines {
             fragmentSource = fragmentSource,
             schema = schema
         )
+    }
+
+    @JvmStatic
+    public fun builderWithCompatibleShader(
+        location: Identifier,
+        vertexSource: String,
+        fragmentSource: String,
+        schema: ShaderSchema,
+        vararg snippets: OmniRenderPipeline.Snippet,
+    ): OmniRenderPipelineBuilder {
+        val (vertexFormat, drawMode) = extractSnippet(snippet(*snippets))
+        return builderWithCompatibleShader(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode,
+            vertexSource = vertexSource,
+            fragmentSource = fragmentSource,
+            schema = schema
+        ).applySnippet(*snippets)
+    }
+
+    @JvmStatic
+    public fun builderWithCompatibleShader(
+        vertexSource: String,
+        fragmentSource: String,
+        schema: ShaderSchema,
+        vararg snippets: OmniRenderPipeline.Snippet,
+    ): OmniRenderPipelineBuilder {
+        val (location, vertexFormat, drawMode) = extractAllSnippet(snippet(*snippets))
+        return builderWithCompatibleShader(
+            location = location,
+            vertexFormat = vertexFormat,
+            drawMode = drawMode,
+            vertexSource = vertexSource,
+            fragmentSource = fragmentSource,
+            schema = schema
+        ).applySnippet(*snippets)
+    }
+
+    private fun snippet(vararg snippets: OmniRenderPipeline.Snippet): OmniRenderPipeline.Snippet {
+        val builder = OmniRenderPipelineSnippetBuilder()
+        for (snippet in snippets) {
+            builder.apply(snippet)
+        }
+
+        return builder.build()
+    }
+
+    private fun extractSnippet(snippet: OmniRenderPipeline.Snippet): Pair<VertexFormat, DrawMode> {
+        val vertexFormat = snippet.vertexFormat
+            ?: throw IllegalArgumentException("Snippet must have a vertex format")
+        val drawMode = snippet.drawMode
+            ?: throw IllegalArgumentException("Snippet must have a draw mode")
+        return Pair(vertexFormat, drawMode)
+    }
+
+    private fun extractAllSnippet(snippet: OmniRenderPipeline.Snippet): Triple<Identifier, VertexFormat, DrawMode> {
+        val location = snippet.location
+            ?: throw IllegalArgumentException("Snippet must have a location")
+        val (vertexFormat, drawMode) = extractSnippet(snippet)
+        return Triple(location, vertexFormat, drawMode)
     }
 }

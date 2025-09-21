@@ -3,6 +3,7 @@ package dev.deftu.omnicore.api.client.render.vertex
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBufferBuilderImpl
 import net.minecraft.client.render.BufferBuilder
 import net.minecraft.client.render.Tessellator
@@ -26,6 +27,11 @@ public object OmniBufferBuilders {
     @JvmStatic
     public fun create(drawMode: DrawMode, format: DefaultVertexFormats): OmniBufferBuilder {
         return create(drawMode, format.vanilla)
+    }
+
+    @JvmStatic
+    public fun create(pipeline: OmniRenderPipeline): OmniBufferBuilder {
+        return create(pipeline.drawMode, pipeline.vertexFormat)
     }
 
     @JvmStatic

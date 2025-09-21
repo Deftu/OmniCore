@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.client.render.state.legacy
 
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.internal.client.render.state.legacy.AlphaStateInternals
 import dev.deftu.omnicore.internal.client.render.state.legacy.LightingStateInternals
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
@@ -83,5 +84,12 @@ public object OmniLegacyRenderStates {
         //$$     LightingStateInternals.disable()
         //$$ }
         //#endif
+    }
+
+    public fun texture(unit: OmniTextureUnit): OmniLegacyTextureState {
+        return OmniLegacyTextureState(
+            unit = unit,
+            isEnabled = TextureInternals.isEnabled(unit),
+        )
     }
 }

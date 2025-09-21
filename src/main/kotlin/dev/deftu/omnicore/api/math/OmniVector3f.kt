@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.math
 
 import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
+import org.joml.Vector3f
 import kotlin.math.acos
 import kotlin.math.sqrt
 
@@ -27,6 +28,24 @@ public data class OmniVector3f(
 
     public val lengthSquared: Float
         get() = x * x + y * y + z * z
+
+    public constructor(other: OmniVector3f) : this(other.x, other.y, other.z)
+
+    public constructor(other: Vector3f) : this(
+        //#if MC >= 1.19.4
+        other.x,
+        other.y,
+        other.z
+        //#elseif MC >= 1.16.5
+        //$$ other.x(),
+        //$$ other.y(),
+        //$$ other.z()
+        //#else
+        //$$ other.x,
+        //$$ other.y,
+        //$$ other.z
+        //#endif
+    )
 
     public operator fun get(axis: OmniDirectionalAxis): Float {
         return when (axis) {

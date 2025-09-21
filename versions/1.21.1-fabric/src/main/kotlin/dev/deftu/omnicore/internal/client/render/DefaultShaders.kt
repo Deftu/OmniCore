@@ -8,7 +8,6 @@ import net.minecraft.client.render.VertexFormats
 import org.jetbrains.annotations.ApiStatus
 import java.util.IdentityHashMap
 import java.util.function.Supplier
-import kotlin.reflect.KFunction
 
 @ApiStatus.Internal
 public object DefaultShaders {
@@ -39,7 +38,7 @@ public object DefaultShaders {
         return defaults[format]
     }
 
-    private fun <T> createSupplierNonnull(function: KFunction<T?>): Supplier<T> {
-        return Supplier { function.call() ?: throw IllegalStateException("Shader program returned by $function is null") }
+    private fun <T> createSupplierNonnull(supplier: Supplier<T?>): Supplier<T> {
+        return Supplier { supplier.get() ?: throw IllegalStateException("Shader program returned by $supplier is null") }
     }
 }

@@ -21,10 +21,12 @@ public object OmniCommands {
         CommandInternals.register(builder)
     }
 
+    @JvmStatic
     public fun literal(name: String): LiteralArgumentBuilder<OmniCommandSource> {
         return LiteralArgumentBuilder.literal(name)
     }
 
+    @JvmStatic
     public fun <T> argument(name: String, type: ArgumentType<T>): RequiredArgumentBuilder<OmniCommandSource, T> {
         return RequiredArgumentBuilder.argument(name, type)
     }

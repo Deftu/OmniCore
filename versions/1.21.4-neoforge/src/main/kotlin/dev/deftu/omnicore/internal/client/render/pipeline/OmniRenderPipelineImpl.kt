@@ -2,8 +2,10 @@ package dev.deftu.omnicore.internal.client.render.pipeline
 
 import com.mojang.blaze3d.vertex.BufferUploader
 import com.mojang.blaze3d.vertex.VertexFormat
+import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelineBuilder
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.shader.uniforms.SamplerTarget
 import dev.deftu.omnicore.api.client.render.state.OmniRenderState
@@ -19,9 +21,10 @@ import com.mojang.blaze3d.systems.RenderSystem
 @ApiStatus.Internal
 public class OmniRenderPipelineImpl(
     override val location: ResourceLocation,
+    override val drawMode: DrawMode,
     override val vertexFormat: VertexFormat,
     private val shaderProvider: ShaderProvider?,
-    internal val activeRenderState: OmniRenderState
+    internal val requestedRenderState: OmniRenderState
 ) : OmniRenderPipeline {
     internal fun draw(builtBuffer: OmniBuiltBuffer) {
         val vanillaBuiltBuffer = builtBuffer.vanilla
@@ -41,11 +44,16 @@ public class OmniRenderPipelineImpl(
     }
 
     override fun bind() {
-        shaderProvider?.bind(activeRenderState.blendState)
+        shaderProvider?.bind(requestedRenderState.blendState)
     }
 
     override fun unbind() {
         shaderProvider?.unbind()
+    }
+
+    override fun newBuilder(): OmniRenderPipelineBuilder {
+        checkNotNull(shaderProvider) { "This pipeline was not created with a ShaderProvider, so it cannot be rebuilt." }
+        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
     }
 
     public fun texture(name: String, id: Int) {

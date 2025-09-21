@@ -12,7 +12,7 @@ import java.util.function.Consumer
 internal class OmniRenderPass : AutoCloseable {
     //#if MC < 1.21.5
     //$$ internal val prevRenderState = OmniRenderStates.current
-    //$$ internal val activeRenderState = prevRenderState
+    //$$ internal val activeRenderState = prevRenderState.copy()
     //$$ internal var activePipeline: OmniRenderPipeline? = null
     //#endif
 

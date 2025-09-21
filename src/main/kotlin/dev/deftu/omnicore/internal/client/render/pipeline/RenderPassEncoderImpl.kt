@@ -50,6 +50,7 @@ public class RenderPassEncoderImpl internal constructor(
 ) : RenderPassEncoder {
     //#if MC >= 1.21.6
     private var dynamicUniforms: DynamicUniforms? = null
+    private var dynamicBufferSlice: GpuBufferSlice? = null
     private val internalBuffers = mutableSetOf<GpuBuffer>()
 
     private var modelViewMatrix: Matrix4f? = null
@@ -59,7 +60,13 @@ public class RenderPassEncoderImpl internal constructor(
     //#endif
 
     //#if MC >= 1.21.5
-    override val vanilla: RenderPass
+    private val namedSamplers = hashMapOf<String, Int>()
+    private val unitSamplers = hashMapOf<OmniTextureUnit, Int>()
+    private val uniformsf = hashMapOf<String, FloatArray>()
+    private val uniformsi = hashMapOf<String, IntArray>()
+
+    override lateinit var vanilla: RenderPass
+        private set
     //#endif
 
     //#if MC <= 1.21.5
@@ -71,10 +78,20 @@ public class RenderPassEncoderImpl internal constructor(
     init {
         //#if MC >= 1.21.6
         dynamicUniforms = RenderSystem.getDynamicUniforms()
-        val dynamicBuffer = bindDynamicUniforms()
+        dynamicBufferSlice = bindDynamicUniforms()
         //#endif
 
-        //#if MC >= 1.21.5
+        //#if MC < 1.21.5
+        //$$ renderPipeline.bind()
+        //#endif
+    }
+
+    //#if MC >= 1.21.5
+    public fun initialize() {
+        if (this::vanilla.isInitialized) {
+            return
+        }
+
         val builtBuffer = builtBuffer.vanilla
         val vertexBuffer = renderPipeline.vertexFormat.uploadImmediateVertexBuffer(builtBuffer.buffer)
         val indexBuffer = builtBuffer.sortedBuffer
@@ -103,23 +120,64 @@ public class RenderPassEncoderImpl internal constructor(
 
         vanilla.setVertexBuffer(0, vertexBuffer)
         vanilla.setIndexBuffer(uploadedIndexBuffer, indexType)
-        //#if MC >= 1.21.6
-        RenderSystem.bindDefaultUniforms(vanilla)
-        vanilla.setUniform("DynamicTransforms", dynamicBuffer)
-        //#endif
-        //#else
-        //$$ renderPipeline.bind()
-        //#endif
+
+        for ((name, id) in namedSamplers) {
+            //#if MC >= 1.21.6
+            vanilla.bindSampler(name, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
+            //#elseif MC >= 1.21.5
+            //$$ vanilla.bindSampler(name, WrappedGlTexture(id))
+            //#endif
+        }
+
+        for ((unit, id) in unitSamplers) {
+            val samplerName = renderPipeline.vanilla.samplers[unit.id]
+            //#if MC >= 1.21.6
+            vanilla.bindSampler(samplerName, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
+            //#elseif MC >= 1.21.5
+            //$$ vanilla.bindSampler(samplerName, WrappedGlTexture(id))
+            //#endif
+        }
+
+        for ((name, values) in uniformsf) {
+            //#if MC >= 1.21.6
+            vanilla.setUniform(name, MemoryStack.stackPush().use { memoryStack ->
+                val buffer = memoryStack.malloc(values.size * 4)
+                for (value in values) {
+                    buffer.putFloat(value)
+                }
+
+                buffer.flip()
+                RenderSystem.getDevice().createBuffer({ "$name UBO" }, GpuBuffer.USAGE_UNIFORM, buffer)
+            }.also(internalBuffers::add))
+            //#elseif MC >= 1.21.5
+            //$$ vanilla.setUniform(name, *values)
+            //#endif
+        }
+
+        for ((name, values) in uniformsi) {
+            //#if MC >= 1.21.6
+            vanilla.setUniform(name, MemoryStack.stackPush().use { memoryStack ->
+                val buffer = memoryStack.malloc(values.size * 4)
+                for (value in values) {
+                    buffer.putInt(value)
+                }
+
+                buffer.flip()
+                RenderSystem.getDevice().createBuffer({ "$name UBO" }, GpuBuffer.USAGE_UNIFORM, buffer)
+            }.also(internalBuffers::add))
+            //#elseif MC >= 1.21.5
+            //$$ vanilla.setUniform(name, *values)
+            //#endif
+        }
     }
+    //#endif
 
     override fun texture(
         name: String,
         id: Int
     ): RenderPassEncoder {
-        //#if MC >= 1.21.6
-        vanilla.bindSampler(name, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
-        //#elseif MC >= 1.21.5
-        //$$ vanilla.bindSampler(name, WrappedGlTexture(id))
+        //#if MC >= 1.21.5
+        namedSamplers[name] = id
         //#else
         //$$ renderPipeline.texture(name, id)
         //#endif
@@ -131,8 +189,7 @@ public class RenderPassEncoderImpl internal constructor(
         id: Int
     ): RenderPassEncoder {
         //#if MC >= 1.21.5
-        val samplerName = renderPipeline.vanilla.samplers[unit.id]
-        texture(samplerName, id)
+        unitSamplers[unit] = id
         //#else
         //$$ renderPipeline.texture(unit, id)
         //#endif
@@ -143,18 +200,8 @@ public class RenderPassEncoderImpl internal constructor(
         name: String,
         vararg values: Float
     ): RenderPassEncoder {
-        //#if MC >= 1.21.6
-        vanilla.setUniform(name, MemoryStack.stackPush().use { memoryStack ->
-            val buffer = memoryStack.malloc(values.size * 4)
-            for (value in values) {
-                buffer.putFloat(value)
-            }
-
-            buffer.flip()
-            RenderSystem.getDevice().createBuffer({ "$name UBO" }, GpuBuffer.USAGE_UNIFORM, buffer)
-        }.also(internalBuffers::add))
-        //#elseif MC >= 1.21.5
-        //$$ vanilla.setUniform(name, *values)
+        //#if MC >= 1.21.5
+        uniformsf[name] = values
         //#else
         //$$ renderPipeline.uniform(name, *values)
         //#endif
@@ -165,18 +212,8 @@ public class RenderPassEncoderImpl internal constructor(
         name: String,
         vararg values: Int
     ): RenderPassEncoder {
-        //#if MC >= 1.21.6
-        vanilla.setUniform(name, MemoryStack.stackPush().use { memoryStack ->
-            val buffer = memoryStack.malloc(values.size * 4)
-            for (value in values) {
-                buffer.putInt(value)
-            }
-
-            buffer.flip()
-            RenderSystem.getDevice().createBuffer({ "$name UBO" }, GpuBuffer.USAGE_UNIFORM, buffer)
-        }.also(internalBuffers::add))
-        //#elseif MC >= 1.21.5
-        //$$ vanilla.setUniform(name, *values)
+        //#if MC >= 1.21.5
+        uniformsi[name] = values
         //#else
         //$$ renderPipeline.uniform(name, *values)
         //#endif
@@ -196,7 +233,7 @@ public class RenderPassEncoderImpl internal constructor(
         //$$ val shaderColor = FloatArray(4)
         //$$ GL11.glGetFloatv(GL11.GL_CURRENT_COLOR, shaderColor)
         //#else
-        //$$ val shaderColor = BufferUtils.createFloatBuffer(4)
+        //$$ val shaderColor = BufferUtils.createFloatBuffer(16)
         //$$ GL11.glGetFloat(GL11.GL_CURRENT_COLOR, shaderColor)
         //#endif
         //$$ return OmniColor(shaderColor[0], shaderColor[1], shaderColor[2], shaderColor[3])
@@ -206,6 +243,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun setShaderColor(red: Float, green: Float, blue: Float, alpha: Float): RenderPassEncoder {
         //#if MC >= 1.21.6
         shaderColor = Vector4f(red, green, blue, alpha)
+        dynamicBufferSlice = bindDynamicUniforms()
         //#else
         //$$ prevShaderColor = getShaderColor()
         //#if MC >= 1.17.1
@@ -222,6 +260,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun setLineWidth(width: Float): RenderPassEncoder {
         //#if MC >= 1.21.6
         shaderLineWidth = width
+        dynamicBufferSlice = bindDynamicUniforms()
         //#else
         //#if MC >= 1.17.1
         //$$ RenderSystem.lineWidth(width)
@@ -239,6 +278,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun setTextureMatrix(matrix: OmniMatrix4f): RenderPassEncoder {
         //#if MC >= 1.21.6
         textureMatrix = matrix.vanilla
+        dynamicBufferSlice = bindDynamicUniforms()
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.setTextureMatrix(matrix.vanilla)
         //#else
@@ -257,6 +297,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun resetTextureMatrix(): RenderPassEncoder {
         //#if MC >= 1.21.6
         textureMatrix = null
+        dynamicBufferSlice = bindDynamicUniforms()
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.resetTextureMatrix()
         //#else
@@ -270,6 +311,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun setModelViewMatrix(matrix: OmniMatrix4f): RenderPassEncoder {
         //#if MC >= 1.21.6
         modelViewMatrix = matrix.vanilla
+        dynamicBufferSlice = bindDynamicUniforms()
         //#elseif MC >= 1.17.1
         //$$ val stack = RenderSystem.getModelViewStack()
         //#if MC >= 1.20.6
@@ -295,6 +337,7 @@ public class RenderPassEncoderImpl internal constructor(
     override fun resetModelViewMatrix(): RenderPassEncoder {
         //#if MC >= 1.21.6
         modelViewMatrix = null
+        dynamicBufferSlice = bindDynamicUniforms()
         //#elseif MC >= 1.17.1
         //$$ val stack = RenderSystem.getModelViewStack()
         //#if MC >= 1.20.6
@@ -327,8 +370,10 @@ public class RenderPassEncoderImpl internal constructor(
 
     override fun submit() {
         //#if MC >= 1.21.5
+        initialize()
+
         //#if MC >= 1.21.6
-        bindDynamicUniforms()
+        dynamicBufferSlice = bindDynamicUniforms()
         //#endif
 
         if (scissorBox != null) {
@@ -342,6 +387,11 @@ public class RenderPassEncoderImpl internal constructor(
             vanilla.disableScissor()
         }
 
+        //#if MC >= 1.21.6
+        RenderSystem.bindDefaultUniforms(vanilla)
+        vanilla.setUniform("DynamicTransforms", dynamicBufferSlice)
+        //#endif
+
         renderPipeline.draw(vanilla, builtBuffer.vanilla)
         vanilla.close()
         //#if MC >= 1.21.6
@@ -350,7 +400,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#else
         //$$ if (renderPass.activePipeline != renderPipeline) {
         //$$     renderPass.activePipeline = renderPipeline
-        //$$     renderPipeline.activeRenderState.applyTo(renderPass.activeRenderState)
+        //$$     renderPipeline.requestedRenderState.applyTo(renderPass.activeRenderState)
         //$$ }
         //$$
         //$$ var previousScissorBox: OmniRenderingContext.ScissorBox? = null

@@ -10,12 +10,7 @@ public enum class OmniTextureUnit(public val id: Int) {
     TEXTURE4(4),
     TEXTURE5(5),
     TEXTURE6(6),
-    TEXTURE7(7),
-    TEXTURE8(8),
-    TEXTURE9(9),
-    TEXTURE10(10),
-    TEXTURE11(11),
-    TEXTURE12(12);
+    TEXTURE7(7);
 
     public val const: Int
         get() = GL13.GL_TEXTURE0 + id

@@ -2,6 +2,7 @@
 
 package dev.deftu.omnicore.api.client.player
 
+import dev.deftu.omnicore.api.client.client
 import net.minecraft.client.MinecraftClient
 import java.util.UUID
 
@@ -16,3 +17,9 @@ public val MinecraftClient.uuid: UUID
 
 public val MinecraftClient.username: String
     get() = session.username
+
+public val playerUuid: UUID
+    get() = client.uuid
+
+public val playerName: String
+    get() = client.username

@@ -129,6 +129,40 @@ public object OmniLoader {
         }
 
     @JvmStatic
+    @get:JvmName("hasActiveMod")
+    public val hasActiveMod: Boolean
+        get() {
+            //#if FABRIC
+            return false
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return ModLoadingContext.get().activeContainer?.modId != "minecraft"
+            //#else
+            //$$ return Loader.instance().activeModContainer() != null
+            //#endif
+            //#endif
+        }
+
+    @JvmStatic
+    @Suppress("RedundantNullableReturnType")
+    public val activeMod: ModInfo?
+        get() {
+            //#if FABRIC
+            return ModInfo.DUMMY
+            //#else
+            //#if MC >= 1.15.2
+            //$$ return ModInfo.wrap(ModLoadingContext.get().activeContainer)
+            //#else
+            //$$ if (hasActiveMod) {
+            //$$     return ModInfo.wrap(Loader.instance().activeModContainer()!!)
+            //$$ }
+            //$$
+            //$$ return ModInfo.DUMMY
+            //#endif
+            //#endif
+        }
+
+    @JvmStatic
     public fun isLoaded(id: String, version: String): Boolean {
         //#if FABRIC
         return FabricLoader.getInstance().isModLoaded(id) && FabricLoader.getInstance().getModContainer(id).get().metadata.version.friendlyString == version

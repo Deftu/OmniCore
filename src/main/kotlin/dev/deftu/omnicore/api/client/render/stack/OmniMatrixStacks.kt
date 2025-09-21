@@ -69,4 +69,11 @@ public object OmniMatrixStacks {
         //$$ return create()
         //#endif
     }
+
+    //#if MC >= 1.20.1
+    @JvmStatic
+    public fun vanilla(stack: MatrixStack): OmniMatrixStack {
+        return wrap(stack)
+    }
+    //#endif
 }

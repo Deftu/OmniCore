@@ -8,10 +8,17 @@ import java.awt.Color
 public interface OmniVertexConsumer {
     public fun vertex(stack: OmniMatrixStack, x: Double, y: Double, z: Double): OmniVertexConsumer
     public fun color(red: Int, green: Int, blue: Int, alpha: Int): OmniVertexConsumer
-    public fun color(red: Float, green: Float, blue: Float, alpha: Float): OmniVertexConsumer
+
+    public fun color(red: Float, green: Float, blue: Float, alpha: Float): OmniVertexConsumer {
+        return color(
+            (red * 255).toInt().coerceIn(0, 255),
+            (green * 255).toInt().coerceIn(0, 255),
+            (blue * 255).toInt().coerceIn(0, 255),
+            (alpha * 255).toInt().coerceIn(0, 255)
+        )
+    }
 
     public fun color(color: OmniColor): OmniVertexConsumer {
-        val color = color.convertTo(ColorFormat.ARGB)
         return color(color.red, color.green, color.blue, color.alpha)
     }
 
@@ -19,7 +26,10 @@ public interface OmniVertexConsumer {
         return color(color.red, color.green, color.blue, color.alpha)
     }
 
-    public fun color(color: Int): OmniVertexConsumer
+    public fun color(color: Int): OmniVertexConsumer {
+        return color(OmniColor(color))
+    }
+
     public fun texture(u: Double, v: Double): OmniVertexConsumer
     public fun overlay(u: Int, v: Int): OmniVertexConsumer
     public fun light(u: Int, v: Int): OmniVertexConsumer
@@ -37,8 +47,8 @@ public interface OmniVertexConsumer {
         color: OmniColor
     ): OmniVertexConsumer {
         return this
-            .vertex(stack, x1, y1, 0.0).color(color).next()
-            .vertex(stack, x2, y2, 0.0).color(color).next()
+            .vertex(stack, x1, y1, 0.0).color(color,).next()
+            .vertex(stack, x2, y2, 0.0).color(color,).next()
     }
 
     public fun line(

@@ -2,7 +2,7 @@ package dev.deftu.omnicore.api.client.render.state
 
 import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderState
 
-public class OmniRenderState(
+public data class OmniRenderState(
     @JvmField public var blendState: OmniBlendState,
     @JvmField public var depthState: OmniDepthState,
     @JvmField public var cullState: OmniCullState,
@@ -23,6 +23,7 @@ public class OmniRenderState(
         cullState.submit(saveLast)
         colorMaskState.submit(saveLast)
         polygonOffsetState.submit(saveLast)
+        legacyState.submit(saveLast)
     }
 
     public fun applyTo(other: OmniRenderState) {

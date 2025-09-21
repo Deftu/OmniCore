@@ -49,19 +49,6 @@ public open class OmniVertexConsumerImpl(
         return this
     }
 
-    override fun color(red: Float, green: Float, blue: Float, alpha: Float): OmniVertexConsumer {
-        value.color(red, green, blue, alpha)
-        return this
-    }
-
-    override fun color(color: Int): OmniVertexConsumer {
-        val red = (color shr 16 and 0xFF) / 255f
-        val green = (color shr 8 and 0xFF) / 255f
-        val blue = (color and 0xFF) / 255f
-        val alpha = (color shr 24 and 0xFF) / 255f
-        return color(red, green, blue, alpha)
-    }
-
     override fun texture(u: Double, v: Double): OmniVertexConsumer {
         //#if MC >= 1.16.5
         value.texture(u.toFloat(), v.toFloat())
