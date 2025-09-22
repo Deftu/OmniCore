@@ -1,43 +1,20 @@
 package dev.deftu.omnicore.api.client.framebuffer
 
-import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
-import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniResolution
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
-import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
-import dev.deftu.omnicore.internal.identifierOf
 import org.lwjgl.opengl.GL11
 
-//#if MC <= 1.12.2
-//$$ import net.minecraft.client.renderer.OpenGlHelper
-//#endif
-
-//#if MC < 1.21.5
-//$$ import com.mojang.blaze3d.platform.GlStateManager
-//#endif
-
 public interface OmniFramebuffer : AutoCloseable {
-    public companion object {
-        @JvmStatic
-        public val defaultPipeline: OmniRenderPipeline by lazy {
-            OmniRenderPipelines.builderWithDefaultShader(
-                location = identifierOf("framebuffer"),
-                vertexFormat = DefaultVertexFormats.POSITION_TEXTURE_COLOR,
-                drawMode = DrawMode.QUADS,
-            ).setBlendState(OmniBlendState.ALPHA).build()
-        }
-    }
-
     public val id: Int
     public val width: Int
     public val height: Int
@@ -115,7 +92,7 @@ public interface OmniFramebuffer : AutoCloseable {
         color: OmniColor
     ) {
         this.drawTexture(
-            defaultPipeline,
+            OmniRenderPipelines.TEXTURED,
             this.colorTexture,
             stack,
             x, y,
