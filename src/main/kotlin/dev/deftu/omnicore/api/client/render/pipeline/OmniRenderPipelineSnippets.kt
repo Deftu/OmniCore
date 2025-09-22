@@ -13,6 +13,7 @@ public object OmniRenderPipelineSnippets {
         .setDrawMode(DrawMode.QUADS)
         .setBlendState(OmniBlendState.ALPHA)
         .configureLegacyEffects {
+            shadeModel = ShadeModel.SMOOTH
             OmniTextureUnit.TEXTURE0 equals false
         }.build()
 
