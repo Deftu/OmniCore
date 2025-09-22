@@ -102,6 +102,12 @@ dependencies {
         }
     }
 
+    if (mcData.version <= MinecraftVersions.VERSION_1_8_9) {
+        // fastutil for DFU
+        api(libs.fastutil)
+        includeOrShade(libs.fastutil)
+    }
+
     if (mcData.isFabric) {
         modImplementation(libs.flk.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}" })
 
