@@ -25,9 +25,9 @@ public object OmniInputs {
             //$$     InputConstants.Type.SCANCODE.getOrCreate(scanCode)
             //$$ } else {
             //$$     InputConstants.Type.KEYSYM.getOrCreate(code)
-            //$$ }).toString()
+            //$$ }).displayName.toString()
             //#elseif MC >= 1.16.5
-            InputUtil.fromKeyCode(code, scanCode).toString()
+            InputUtil.fromKeyCode(code, scanCode).translationKey.toString()
             //#else
             //$$ GameSettings.getKeyDisplayString(code) ?: return "Unknown"
             //#endif
