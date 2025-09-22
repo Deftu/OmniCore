@@ -2,6 +2,7 @@ package dev.deftu.omnicore.api.client.render.stack
 
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
+import dev.deftu.omnicore.api.math.OmniVector2f
 import dev.deftu.omnicore.api.math.OmniVector3f
 import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
 import org.joml.Quaternionf
@@ -79,6 +80,35 @@ public interface OmniMatrixStack {
     public fun scale(vector: OmniVector3f) {
         scale(vector.x, vector.y, vector.z)
     }
+
+    public fun transformPosition(x: Float, y: Float, dest: OmniVector2f): OmniVector2f {
+        val m = current.positionMatrix
+        dest.set(
+            x = m.m00 * x + m.m10 * y + m.m30,
+            y = m.m01 * x + m.m11 * y + m.m31
+        )
+
+        return dest
+    }
+
+    public fun transformPosition(x: Float, y: Float): OmniVector2f {
+        val dest = OmniVector2f()
+        transformPosition(x, y, dest)
+        return dest
+    }
+
+    public fun transformDirection(dest: OmniVector2f): OmniVector2f {
+        val m = current.positionMatrix
+        val x = dest.x
+        val y = dest.y
+        dest.set(
+            x = m.m00 * x + m.m10 * y,
+            y = m.m01 * x + m.m11 * y
+        )
+
+        return dest
+    }
+
 
     /**
      * Apply current matrix on top of global model-view matrix.
