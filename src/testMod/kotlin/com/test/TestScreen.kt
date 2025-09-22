@@ -77,7 +77,6 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
         )
 
         ctx.renderGradientQuad(
-            pipeline = OmniRenderPipelines.POSITION_COLOR,
             x = 100f,
             y = 300f,
             width = 128,
