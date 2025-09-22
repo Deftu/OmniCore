@@ -98,6 +98,33 @@ public data class OmniRenderingContext(
         OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
     }
 
+    public fun renderGradientQuad(
+        pipeline: OmniRenderPipeline,
+        x: Float, y: Float,
+        width: Int, height: Int,
+        topColor: OmniColor,
+        bottomColor: OmniColor,
+    ) {
+        val buffer = pipeline.createBufferBuilder()
+        buffer
+            .vertex(matrices, x.toDouble(), y.toDouble(), 0.0)
+            .color(topColor)
+            .next()
+        buffer
+            .vertex(matrices, (x + width).toDouble(), y.toDouble(), 0.0)
+            .color(topColor)
+            .next()
+        buffer
+            .vertex(matrices, (x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .color(bottomColor)
+            .next()
+        buffer
+            .vertex(matrices, x.toDouble(), (y + height).toDouble(), 0.0)
+            .color(bottomColor)
+            .next()
+        buffer.buildOrThrow().drawAndClose(pipeline)
+    }
+
     @JvmOverloads
     public fun renderTextureRegion(
         pipeline: OmniRenderPipeline,
@@ -220,7 +247,10 @@ public data class OmniRenderingContext(
 
     /** Pops the current scissor; restores previous or disables when empty. */
     public fun popScissor() {
-        if (scissorStack.isEmpty()) return
+        if (scissorStack.isEmpty()) {
+            return
+        }
+
         scissorStack.removeLast()
 
         val next = scissorStack.lastOrNull()
