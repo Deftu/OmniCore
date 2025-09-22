@@ -3,6 +3,7 @@ package dev.deftu.omnicore.api.client.render.pipeline
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+import dev.deftu.omnicore.api.client.render.ScissorBox
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.systems.RenderPass
@@ -38,8 +39,12 @@ public interface RenderPassEncoder {
     public fun setModelViewMatrix(matrix: OmniMatrix4f): RenderPassEncoder
     public fun resetModelViewMatrix(): RenderPassEncoder
 
-    public fun enableScissor(x: Int, y: Int, width: Int, height: Int): RenderPassEncoder
+    public fun enableScissor(box: ScissorBox): RenderPassEncoder
     public fun disableScissor(): RenderPassEncoder
+
+    public fun enableScissor(x: Int, y: Int, width: Int, height: Int): RenderPassEncoder {
+        return enableScissor(ScissorBox(x, y, width, height))
+    }
 
     /** Encode and submit your pass. One shot; any subsequent calls will throw. */
     public fun submit()

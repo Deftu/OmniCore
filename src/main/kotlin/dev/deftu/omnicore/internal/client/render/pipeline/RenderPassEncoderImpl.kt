@@ -2,10 +2,12 @@ package dev.deftu.omnicore.internal.client.render.pipeline
 
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.math.OmniMatrix4f
-import dev.deftu.omnicore.api.client.render.OmniRenderingContext
+import dev.deftu.omnicore.api.client.render.OmniResolution
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+import dev.deftu.omnicore.api.client.render.ScissorBox
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.internal.client.render.ScissorInternals
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.6
@@ -15,10 +17,6 @@ import net.minecraft.client.gl.DynamicUniforms
 import org.joml.Vector4f
 import org.lwjgl.system.MemoryStack
 import kotlin.use
-//#endif
-
-//#if MC < 1.21.5
-//$$ import dev.deftu.omnicore.internal.client.render.ScissorInternals
 //#endif
 
 //#if MC >= 1.21.5
@@ -73,7 +71,7 @@ public class RenderPassEncoderImpl internal constructor(
     //$$ private var prevShaderColor: OmniColor? = null
     //#endif
 
-    private var scissorBox: OmniRenderingContext.ScissorBox? = null
+    private var scissorBox: ScissorBox? = null
 
     init {
         //#if MC >= 1.21.6
@@ -353,13 +351,8 @@ public class RenderPassEncoderImpl internal constructor(
         return this
     }
 
-    override fun enableScissor(
-        x: Int,
-        y: Int,
-        width: Int,
-        height: Int
-    ): RenderPassEncoder {
-        this.scissorBox = OmniRenderingContext.ScissorBox(x, y, width, height)
+    override fun enableScissor(box: ScissorBox): RenderPassEncoder {
+        this.scissorBox = box
         return this
     }
 
@@ -376,16 +369,25 @@ public class RenderPassEncoderImpl internal constructor(
         dynamicBufferSlice = bindDynamicUniforms()
         //#endif
 
-        if (scissorBox != null) {
+        val scissorBox = scissorBox ?: ScissorInternals.activeScissorState
+        scissorBox?.let { box ->
+            val scaleFactor = OmniResolution.scaleFactor.toFloat()
+            val nx = (box.left * scaleFactor).toInt()
+            val ny = OmniResolution.viewportHeight - box.bottom * scaleFactor.toInt()
+            val nw = (box.width * scaleFactor).toInt()
+            val nh = (box.height * scaleFactor).toInt()
             vanilla.enableScissor(
-                scissorBox!!.x,
-                scissorBox!!.y,
-                scissorBox!!.width,
-                scissorBox!!.height
+                nx,
+                ny,
+                nw,
+                nh
             )
-        } else {
-            vanilla.disableScissor()
-        }
+
+            // Forcibly disable global scissor, regardless of if that's what's being used here, to avoid interference
+            // Ideally the user would manage this themselves or would use the scoped scissor helpers. This is just an
+            // added safety measure to avoid state leakage.
+            ScissorInternals.disableScissor()
+        } ?: vanilla.disableScissor()
 
         //#if MC >= 1.21.6
         RenderSystem.bindDefaultUniforms(vanilla)
@@ -403,7 +405,7 @@ public class RenderPassEncoderImpl internal constructor(
         //$$     renderPipeline.requestedRenderState.applyTo(renderPass.activeRenderState)
         //$$ }
         //$$
-        //$$ var previousScissorBox: OmniRenderingContext.ScissorBox? = null
+        //$$ var previousScissorBox: ScissorBox? = null
         //$$ if (this.scissorBox != null) {
         //$$     previousScissorBox = ScissorInternals.activeScissorState
         //$$     this.scissorBox?.let(ScissorInternals::applyScissor)

@@ -55,21 +55,6 @@ public data class OmniRenderingContext(
         }
     }
 
-    public data class ScissorBox(val x: Int, val y: Int, val width: Int, val height: Int) {
-        public val isEmpty: Boolean
-            get() = width <= 0 || height <= 0
-
-        public fun intersection(other: ScissorBox): ScissorBox? {
-            val ix = maxOf(this.x, other.x)
-            val iy = maxOf(this.y, other.y)
-            val ix2 = minOf(this.x + this.width, other.x + other.width)
-            val iy2 = minOf(this.y + this.height, other.y + other.height)
-            val iw = ix2 - ix
-            val ih = iy2 - iy
-            return if (iw > 0 && ih > 0) ScissorBox(ix, iy, iw, ih) else null
-        }
-    }
-
     private val scissorStack = ArrayDeque<ScissorBox>()
 
     public val currentScissor: ScissorBox?
@@ -221,7 +206,7 @@ public data class OmniRenderingContext(
 
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */
     public fun pushScissor(x: Int, y: Int, width: Int, height: Int) {
-        val incoming = ScissorBox(x, y, width, height)
+        val incoming = ScissorBox(x, y, width, height).transformQuickly(this.matrices)
 
         val effective = scissorStack.lastOrNull()?.let { top ->
             // We already had scissor; clamp to intersection
@@ -230,20 +215,7 @@ public data class OmniRenderingContext(
 
         scissorStack.addLast(effective)
 
-        if (effective.isEmpty) {
-            ScissorInternals.disableScissor(
-                //#if MC >= 1.21.6
-                graphics
-                //#endif
-            )
-        } else {
-            ScissorInternals.applyScissor(
-                //#if MC >= 1.21.6
-                graphics,
-                //#endif
-                effective
-            )
-        }
+        ScissorInternals.applyScissor(effective)
     }
 
     /** Pops the current scissor; restores previous or disables when empty. */
@@ -253,18 +225,9 @@ public data class OmniRenderingContext(
 
         val next = scissorStack.lastOrNull()
         if (next == null) {
-            ScissorInternals.disableScissor(
-                //#if MC >= 1.21.6
-                graphics
-                //#endif
-            )
+            ScissorInternals.disableScissor()
         } else {
-            ScissorInternals.applyScissor(
-                //#if MC >= 1.21.6
-                graphics,
-                //#endif
-                next
-            )
+            ScissorInternals.applyScissor(next)
         }
     }
 
@@ -322,11 +285,7 @@ public data class OmniRenderingContext(
     override fun close() {
         if (scissorStack.isNotEmpty()) {
             scissorStack.clear()
-            ScissorInternals.disableScissor(
-                //#if MC >= 1.21.6
-                graphics
-                //#endif
-            )
+            ScissorInternals.disableScissor()
         }
     }
 }
