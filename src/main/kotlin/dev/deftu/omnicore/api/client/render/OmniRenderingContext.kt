@@ -2,6 +2,7 @@ package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
@@ -123,6 +124,15 @@ public data class OmniRenderingContext(
             .color(bottomColor)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline)
+    }
+
+    public fun renderGradientQuad(
+        x: Float, y: Float,
+        width: Int, height: Int,
+        topColor: OmniColor,
+        bottomColor: OmniColor,
+    ) {
+        renderGradientQuad(OmniRenderPipelines.POSITION_COLOR, x, y, width, height, topColor, bottomColor)
     }
 
     @JvmOverloads
