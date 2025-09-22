@@ -76,6 +76,16 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             shadowType = TextShadowType.Outline(OmniColors.BLUE)
         )
 
+        ctx.renderGradientQuad(
+            pipeline = OmniRenderPipelines.POSITION_COLOR,
+            x = 100f,
+            y = 300f,
+            width = 128,
+            height = 128,
+            topColor = OmniColors.RED,
+            bottomColor = OmniColors.BLUE
+        )
+
         if (texture != null) {
             ctx.renderTexture(
                 pipeline = OmniRenderPipelines.TEXTURED,
@@ -146,7 +156,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             ctx.pushScissor(
                 x = renderX.toInt(),
                 y = renderY.toInt(),
-                width = (renderWidth / 2).toInt(),
+                width = renderWidth.toInt(),
                 height = (renderHeight / 2).toInt()
             )
 
