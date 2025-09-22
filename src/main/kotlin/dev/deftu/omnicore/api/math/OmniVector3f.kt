@@ -122,14 +122,6 @@ public data class OmniVector3f(
         return this * scale
     }
 
-    public fun lerp(target: OmniVector3f, delta: Float): OmniVector3f {
-        return OmniVector3f(
-            x = OmniMath.lerp(this.x, target.x, delta),
-            y = OmniMath.lerp(this.y, target.y, delta),
-            z = OmniMath.lerp(this.z, target.z, delta)
-        )
-    }
-
     public fun clampLength(max: Float): OmniVector3f {
         require(max >= 0f) { "Max length must be non-negative." }
         val lengthSq = lengthSquared
@@ -140,6 +132,14 @@ public data class OmniVector3f(
 
         val scale = max / sqrt(lengthSq)
         return this * scale
+    }
+
+    public fun lerp(target: OmniVector3f, delta: Float): OmniVector3f {
+        return OmniVector3f(
+            x = OmniMath.lerp(this.x, target.x, delta),
+            y = OmniMath.lerp(this.y, target.y, delta),
+            z = OmniMath.lerp(this.z, target.z, delta)
+        )
     }
 
     public fun project(onto: OmniVector3f): OmniVector3f {
