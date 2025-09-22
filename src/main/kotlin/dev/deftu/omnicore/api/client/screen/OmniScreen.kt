@@ -518,6 +518,8 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#if MC >= 1.21.6
         isBackgroundSuppressed = true
         //#endif
+
+        context.close()
     }
 
     final override fun renderBackground(
@@ -546,6 +548,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         )
 
         onBackgroundRender(context, mouseX, mouseY, tickDelta)
+        context.close()
     }
     //#else
     //$$ final override fun initGui() {
