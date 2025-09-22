@@ -525,7 +525,8 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
         return dest.set(data)
         //#elseif MC >= 1.17.1 || MC <= 1.12.2
         //$$ val buffer = BufferUtils.createFloatBuffer(16)
-        //$$ buffer.put(data).flip()
+        //$$ buffer.put(data)
+        //$$ (buffer as java.nio.Buffer).flip()
         //#if MC >= 1.17.1
         //$$ dest.load(buffer)
         //#else
