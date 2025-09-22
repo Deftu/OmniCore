@@ -27,6 +27,7 @@ import net.minecraft.client.gl.GlCommandEncoder
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniRenderState
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyLightingState
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderState
+//$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyShadeModelState
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyTextureState
 //#endif
 
@@ -183,6 +184,7 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$         legacyState = OmniLegacyRenderState(
         //$$             alphaState = legacyEffects.alpha,
         //$$             lightingState = OmniLegacyLightingState(legacyEffects.lighting),
+        //$$             shadeModelState = OmniLegacyShadeModelState(legacyEffects.shadeModel),
         //$$             textureStates = legacyEffects.textureStates.map { (unit, state) ->
         //$$                 OmniLegacyTextureState(unit, state)
         //$$             }

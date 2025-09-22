@@ -5,6 +5,7 @@ import dev.deftu.omnicore.api.client.render.state.TrackedState
 public data class OmniLegacyRenderState(
     @JvmField public var alphaState: OmniLegacyAlphaState,
     @JvmField public var lightingState: OmniLegacyLightingState,
+    @JvmField public var shadeModelState: OmniLegacyShadeModelState,
     @JvmField public var textureStates: List<OmniLegacyTextureState>,
 ) : TrackedState<OmniLegacyRenderState> {
     override var prevState: OmniLegacyRenderState? = null
@@ -17,6 +18,7 @@ public data class OmniLegacyRenderState(
 
         alphaState.submit(saveLast)
         lightingState.submit(saveLast)
+        shadeModelState.submit(saveLast)
         textureStates.forEach { it.submit(saveLast) }
     }
 
@@ -27,6 +29,10 @@ public data class OmniLegacyRenderState(
 
         if (other.lightingState != lightingState) {
             other.setLightingState(lightingState)
+        }
+
+        if (other.shadeModelState != shadeModelState) {
+            other.setShadeModelState(shadeModelState)
         }
 
         if (other.textureStates != textureStates) {
@@ -42,6 +48,12 @@ public data class OmniLegacyRenderState(
 
     public fun setLightingState(state: OmniLegacyLightingState): OmniLegacyRenderState {
         lightingState = state
+        state.submit(true)
+        return this
+    }
+
+    public fun setShadeModelState(state: OmniLegacyShadeModelState): OmniLegacyRenderState {
+        shadeModelState = state
         state.submit(true)
         return this
     }

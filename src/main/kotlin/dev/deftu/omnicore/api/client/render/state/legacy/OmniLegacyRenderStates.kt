@@ -5,6 +5,10 @@ import dev.deftu.omnicore.internal.client.render.state.legacy.AlphaStateInternal
 import dev.deftu.omnicore.internal.client.render.state.legacy.LightingStateInternals
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
 
+//#if MC <= 1.16.5
+//$$ import org.lwjgl.opengl.GL11
+//#endif
+
 public object OmniLegacyRenderStates {
     @JvmStatic
     public val alpha: OmniLegacyAlphaState
@@ -20,6 +24,17 @@ public object OmniLegacyRenderStates {
     public val lighting: OmniLegacyLightingState
         get() {
             return OmniLegacyLightingState(isEnabled = LightingStateInternals.isEnabled,)
+        }
+
+    @JvmStatic
+    public val shadeModel: OmniLegacyShadeModelState
+        get() {
+            //#if MC >= 1.16.5
+            return OmniLegacyShadeModelState.SMOOTH
+            //#else
+            //$$ val model = ShadeModel.findOrThrow(GL11.glGetInteger(GL11.GL_SHADE_MODEL))
+            //$$ return OmniLegacyShadeModelState(model)
+            //#endif
         }
 
     @JvmStatic
@@ -47,6 +62,7 @@ public object OmniLegacyRenderStates {
         get() = OmniLegacyRenderState(
             alphaState = alpha,
             lightingState = lighting,
+            shadeModelState = shadeModel,
             textureStates = textures,
         )
 
