@@ -31,19 +31,19 @@ import dev.deftu.omnicore.internal.client.render.DefaultShaders
 //#endif
 
 public object OmniRenderPipelines {
-    @JvmStatic
+    @JvmField
     public val POSITION_COLOR: OmniRenderPipeline = builderWithDefaultShader(
         location = identifierOf("pipeline/position_color"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_COLOR)
     ).build()
 
-    @JvmStatic
+    @JvmField
     public val TEXTURED: OmniRenderPipeline = builderWithDefaultShader(
         location = identifierOf("pipeline/textured"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_TEXTURE_COLOR)
     ).build()
 
-    @JvmStatic
+    @JvmField
     public val LINES: OmniRenderPipeline = builderWithDefaultShader(
         location = identifierOf("pipeline/lines"),
         snippets = arrayOf(OmniRenderPipelineSnippets.LINES)
