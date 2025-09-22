@@ -20,7 +20,9 @@ public object OmniRenderPipelineSnippets {
         .setVertexFormat(DefaultVertexFormats.POSITION_TEXTURE_COLOR)
         .setDrawMode(DrawMode.QUADS)
         .setBlendState(OmniBlendState.ALPHA)
-        .build()
+        .configureLegacyEffects {
+            OmniTextureUnit.TEXTURE0 equals true
+        }.build()
 
     @JvmField
     public val LINES: OmniRenderPipeline.Snippet = builder()
