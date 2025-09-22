@@ -4,6 +4,7 @@ import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
+import dev.deftu.omnicore.api.client.render.state.legacy.ShadeModel
 
 public object OmniRenderPipelineSnippets {
     @JvmField
@@ -21,6 +22,7 @@ public object OmniRenderPipelineSnippets {
         .setDrawMode(DrawMode.QUADS)
         .setBlendState(OmniBlendState.ALPHA)
         .configureLegacyEffects {
+            shadeModel = ShadeModel.SMOOTH
             OmniTextureUnit.TEXTURE0 equals true
         }.build()
 
