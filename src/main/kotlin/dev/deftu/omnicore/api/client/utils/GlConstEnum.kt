@@ -11,7 +11,22 @@ public interface GlConstEnum {
 
         @JvmStatic
         public fun <E : GlConstEnum> findOrThrow(clz: Class<E>, all: Collection<E>, const: Int): E {
-            return findOrNull(all, const) ?: throw IllegalArgumentException("Unknown GL const for ${clz.simpleName}: $const")
+            return findOrNull(all, const) ?:
+            throw IllegalArgumentException(buildString {
+                append("Unknown GL const for ")
+                append(clz.simpleName)
+
+                append("(")
+                buildList {
+                    all.mapTo(this, GlConstEnum::const)
+                        .sorted()
+                        .map(Int::toString)
+                }.forEach(::append)
+                append(")")
+
+                append(": ")
+                append(const)
+            })
         }
 
         @JvmStatic
