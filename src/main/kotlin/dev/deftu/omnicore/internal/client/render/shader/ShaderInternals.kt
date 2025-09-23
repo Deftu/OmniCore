@@ -6,7 +6,6 @@ import dev.deftu.omnicore.api.client.render.shader.uniforms.SamplerTarget
 import dev.deftu.omnicore.api.client.render.shader.uniforms.UniformKind
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import java.nio.FloatBuffer
@@ -22,20 +21,12 @@ public object ShaderInternals {
 
     @JvmStatic
     public fun program(): Int {
-        //#if MC >= 1.16.5
-        return GlStateManager.glCreateProgram()
-        //#else
-        //$$ return OpenGlHelper.glCreateProgram()
-        //#endif
+        return GL20.glCreateProgram()
     }
 
     @JvmStatic
     public fun shader(type: Int): Int {
-        //#if MC >= 1.16.5
-        return GlStateManager.glCreateShader(type)
-        //#else
-        //$$ return OpenGlHelper.glCreateShader(type)
-        //#endif
+        return GL20.glCreateShader(type)
     }
 
     @JvmStatic
@@ -87,47 +78,27 @@ public object ShaderInternals {
 
     @JvmStatic
     public fun attachShader(program: Int, shader: Int) {
-        //#if MC >= 1.16.5
-        GlStateManager.glAttachShader(program, shader)
-        //#else
-        //$$ OpenGlHelper.glAttachShader(program, shader)
-        //#endif
+        GL20.glAttachShader(program, shader)
     }
 
     @JvmStatic
     public fun linkProgram(program: Int) {
-        //#if MC >= 1.16.5
-        GlStateManager.glLinkProgram(program)
-        //#else
-        //$$ OpenGlHelper.glLinkProgram(program)
-        //#endif
+        GL20.glLinkProgram(program)
     }
 
     @JvmStatic
     public fun validateProgram(program: Int) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glValidateProgram(program)
-        } else {
-            ARBShaderObjects.glValidateProgramARB(program)
-        }
+        GL20.glValidateProgram(program)
     }
 
     @JvmStatic
     public fun deleteProgram(program: Int) {
-        //#if MC >= 1.16.5
-        GlStateManager.glDeleteProgram(program)
-        //#else
-        //$$ OpenGlHelper.glDeleteProgram(program)
-        //#endif
+        GL20.glDeleteProgram(program)
     }
 
     @JvmStatic
     public fun useProgram(program: Int) {
-        //#if MC >= 1.16.5
-        GlStateManager._glUseProgram(program)
-        //#else
-        //$$ OpenGlHelper.glUseProgram(program)
-        //#endif
+        GL20.glUseProgram(program)
     }
 
     @JvmStatic
@@ -139,38 +110,22 @@ public object ShaderInternals {
 
     @JvmStatic
     public fun programi(program: Int, pname: Int): Int {
-        //#if MC >= 1.16.5
-        return GlStateManager.glGetProgrami(program, pname)
-        //#else
-        //$$ return OpenGlHelper.glGetProgrami(program, pname)
-        //#endif
+        return GL20.glGetProgrami(program, pname)
     }
 
     @JvmStatic
     public fun programInfoLog(program: Int, maxLength: Int): String {
-        //#if MC >= 1.16.5
-        return GlStateManager.glGetProgramInfoLog(program, maxLength)
-        //#else
-        //$$ return OpenGlHelper.glGetProgramInfoLog(program, maxLength)
-        //#endif
+        return GL20.glGetProgramInfoLog(program, maxLength)
     }
 
     @JvmStatic
     public fun shaderSource(shader: Int, source: String) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glShaderSource(shader, source)
-        } else {
-            ARBShaderObjects.glShaderSourceARB(shader, source)
-        }
+        GL20.glShaderSource(shader, source)
     }
 
     @JvmStatic
     public fun compileShader0(shader: Int) {
-        //#if MC >= 1.16.5
-        GlStateManager.glCompileShader(shader)
-        //#else
-        //$$ OpenGlHelper.glCompileShader(shader)
-        //#endif
+        return GL20.glCompileShader(shader)
     }
 
     @JvmStatic
@@ -190,33 +145,17 @@ public object ShaderInternals {
 
     @JvmStatic
     public fun deleteShader(shader: Int) {
-        if (GlCapabilities.isGl21Available) {
-            //#if MC >= 1.16.5
-            GlStateManager.glDeleteShader(shader)
-            //#else
-            //$$ GL20.glDeleteShader(shader)
-            //#endif
-        } else {
-            ARBShaderObjects.glDeleteObjectARB(shader)
-        }
+        return GL20.glDeleteShader(shader)
     }
 
     @JvmStatic
     public fun shaderi(shader: Int, pname: Int): Int {
-        //#if MC >= 1.16.5
-        return GlStateManager.glGetShaderi(shader, pname)
-        //#else
-        //$$ return OpenGlHelper.glGetShaderi(shader, pname)
-        //#endif
+        return GL20.glGetShaderi(shader, pname)
     }
 
     @JvmStatic
     public fun shaderInfoLog(shader: Int, maxLength: Int): String {
-        //#if MC >= 1.16.5
-        return GlStateManager.glGetShaderInfoLog(shader, maxLength)
-        //#else
-        //$$ return OpenGlHelper.glGetShaderInfoLog(shader, maxLength)
-        //#endif
+        return GL20.glGetShaderInfoLog(shader, maxLength)
     }
 
     // Uniform reflection
@@ -298,11 +237,7 @@ public object ShaderInternals {
 
     @JvmStatic
     public fun uniformLocation(program: Int, name: String): Int {
-        //#if MC >= 1.16.5
-        return GlStateManager._glGetUniformLocation(program, name)
-        //#else
-        //$$ return OpenGlHelper.glGetUniformLocation(program, name)
-        //#endif
+        return GL20.glGetUniformLocation(program, name)
     }
 
     // Uniform writes
