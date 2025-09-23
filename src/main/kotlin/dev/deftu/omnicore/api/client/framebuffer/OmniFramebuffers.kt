@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.client.framebuffer
 
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextures
@@ -12,6 +13,10 @@ import net.minecraft.client.texture.GlTexture
 //#endif
 
 public object OmniFramebuffers {
+    @JvmStatic
+    public val main: OmniFramebuffer
+        get() = wrap(client.framebuffer)
+
     @JvmStatic
     public fun create(
         width: Int,
