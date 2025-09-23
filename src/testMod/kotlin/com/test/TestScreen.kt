@@ -1,5 +1,7 @@
 package com.test
 
+import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
+import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffers
 import dev.deftu.omnicore.api.client.image.OmniImages
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
@@ -8,6 +10,7 @@ import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.TextShadowType
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.screen.OmniScreen
+import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColors
@@ -36,16 +39,32 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     private val renderHeight = 100.0
 
     private var text = MESSAGE_1
+    private var framebuffer: OmniFramebuffer? = null
     private var texture: OmniTextureHandle? = null
 
     override fun onInitialize(width: Int, height: Int) {
         super.onInitialize(width, height)
+
+        if (framebuffer != null) {
+            framebuffer!!.close()
+            framebuffer = null
+        }
 
         if (texture != null) {
             OmniTextures.destroy(texture!!.location)
             texture!!.close()
             texture = null
         }
+
+        framebuffer = OmniFramebuffers.create(
+            width = width,
+            height = height,
+            colorFormat = OmniTextureFormat.RGBA8,
+            depthFormat = OmniTextureFormat.DEPTH24_STENCIL8,
+        )
+
+        val main = OmniFramebuffers.main
+        println("Main fbo size: ${main.width}x${main.height}, fbo id: ${main.id}, color texture id: ${main.colorTexture.id}")
 
         if (createsTexture) {
             createCheckerboardTexture()
@@ -76,14 +95,16 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             shadowType = TextShadowType.Outline(OmniColors.BLUE)
         )
 
-        ctx.renderGradientQuad(
-            x = 100f,
-            y = 300f,
-            width = 128,
-            height = 128,
-            topColor = OmniColors.RED,
-            bottomColor = OmniColors.BLUE
-        )
+        framebuffer?.usingToRender { _, _, _ ->
+            ctx.renderGradientQuad(
+                x = 100f,
+                y = 300f,
+                width = 128,
+                height = 128,
+                topColor = OmniColors.RED,
+                bottomColor = OmniColors.BLUE
+            )
+        }
 
         if (texture != null) {
             ctx.renderTexture(
@@ -97,6 +118,8 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
                 v = 0f,
             )
         }
+
+        framebuffer?.drawColorTexture(ctx.matrices, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
     }
 
     override fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean {
