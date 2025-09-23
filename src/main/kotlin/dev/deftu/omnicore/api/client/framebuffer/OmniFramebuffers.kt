@@ -4,6 +4,7 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextures
+import dev.deftu.omnicore.api.client.textures.TextureConfiguration
 import net.minecraft.client.gl.Framebuffer
 
 //#if MC >= 1.21.5
@@ -23,8 +24,10 @@ public object OmniFramebuffers {
         height: Int,
         colorFormat: OmniTextureFormat,
         depthFormat: OmniTextureFormat,
+        colorConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
+        depthConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
     ): OmniFramebuffer {
-        return ManagedFramebuffer(width, height, colorFormat, depthFormat)
+        return ManagedFramebuffer(width, height, colorFormat, depthFormat, colorConfiguration, depthConfiguration)
     }
 
     @JvmStatic

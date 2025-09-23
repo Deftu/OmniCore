@@ -8,10 +8,11 @@ import org.lwjgl.opengl.GL14
 import org.lwjgl.opengl.GL30
 import java.nio.ByteBuffer
 
-public class ManagedTexture(
+public class ManagedTexture @JvmOverloads public constructor(
     initialWidth: Int,
     initialHeight: Int,
-    override val format: OmniTextureFormat
+    override val format: OmniTextureFormat,
+    public val configuration: TextureConfiguration = TextureConfiguration.DEFAULT,
 ) : AbstractGlTexture(format) {
     override var id: Int = -1
         private set
@@ -53,10 +54,10 @@ public class ManagedTexture(
     private fun createTexture() {
         this.id = TextureInternals.create()
         TextureHelper.with(this.id) {
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE)
-            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, this.configuration.minFilter.const)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, this.configuration.magFilter.const)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, this.configuration.wrapS.const)
+            GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, this.configuration.wrapT.const)
 
             @Suppress("CAST_NEVER_SUCCEEDS")
             GL11.glTexImage2D(

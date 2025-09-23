@@ -6,13 +6,16 @@ import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import dev.deftu.omnicore.api.client.render.ClearMask
+import dev.deftu.omnicore.api.client.textures.TextureConfiguration
 import dev.deftu.omnicore.internal.client.render.GlInternals
 
-public class ManagedFramebuffer(
+public class ManagedFramebuffer @JvmOverloads public constructor(
     width: Int,
     height: Int,
-    private val colorFormat: OmniTextureFormat,
-    private val depthFormat: OmniTextureFormat,
+    public val colorFormat: OmniTextureFormat,
+    public val depthFormat: OmniTextureFormat,
+    public val colorConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
+    public val depthConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
 ) : OmniFramebuffer {
     override var id: Int = -1
         private set
@@ -79,8 +82,8 @@ public class ManagedFramebuffer(
 
     private fun initialize() {
         this.id = FramebufferInternals.create()
-        this.colorTexture = OmniTextures.create(width, height, colorFormat) as AbstractGlTexture
-        this.depthStencilTexture = OmniTextures.create(width, height, depthFormat) as AbstractGlTexture
+        this.colorTexture = OmniTextures.create(width, height, colorFormat, colorConfiguration) as AbstractGlTexture
+        this.depthStencilTexture = OmniTextures.create(width, height, depthFormat, depthConfiguration) as AbstractGlTexture
         this.using {
             FramebufferHelper.attachColor(this.id, this.colorTexture.id)
             FramebufferInternals.checkStatus()

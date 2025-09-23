@@ -28,12 +28,14 @@ import com.mojang.blaze3d.textures.GpuTexture
 
 public object OmniTextures {
     @JvmStatic
+    @JvmOverloads
     public fun create(
         width: Int,
         height: Int,
-        format: OmniTextureFormat = OmniTextureFormat.RGBA8
+        format: OmniTextureFormat = OmniTextureFormat.RGBA8,
+        configuration: TextureConfiguration = TextureConfiguration.DEFAULT,
     ): OmniTextureHandle {
-        return ManagedTexture(width, height, format)
+        return ManagedTexture(width, height, format, configuration)
     }
 
     @JvmStatic
