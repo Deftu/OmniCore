@@ -41,6 +41,11 @@ public interface OmniTextureHandle : AutoCloseable {
     /** Clears the texture to the given depth value. */
     public fun clearDepth(depth: Float)
 
+    /** Provides a single color value for the given pixel in the texture. */
+    public operator fun get(x: Int, y: Int): OmniColor {
+        return readColor(x, y)
+    }
+
     /** Provides an array of color values for the given region of the texture. */
     public fun readColor(
         x: Int,
