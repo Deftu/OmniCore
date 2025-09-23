@@ -49,4 +49,7 @@ public class ShaderSchema private constructor(
             return ShaderSchema(attributes.toList(), uniforms.toList())
         }
     }
+
+    public val samplers: List<UniformDefinition.Sampler>
+        get() = uniforms.filterIsInstance<UniformDefinition.Sampler>()
 }

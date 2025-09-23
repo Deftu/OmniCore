@@ -32,6 +32,12 @@ import dev.deftu.omnicore.internal.client.render.DefaultShaders
 
 public object OmniRenderPipelines {
     @JvmField
+    public val POSITION: OmniRenderPipeline = builderWithDefaultShader(
+        location = identifierOf("pipeline/position"),
+        snippets = arrayOf(OmniRenderPipelineSnippets.POSITION)
+    ).build()
+
+    @JvmField
     public val POSITION_COLOR: OmniRenderPipeline = builderWithDefaultShader(
         location = identifierOf("pipeline/position_color"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_COLOR)

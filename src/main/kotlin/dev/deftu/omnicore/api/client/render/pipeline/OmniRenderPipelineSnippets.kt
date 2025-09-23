@@ -8,6 +8,15 @@ import dev.deftu.omnicore.api.client.render.state.legacy.ShadeModel
 
 public object OmniRenderPipelineSnippets {
     @JvmField
+    public val POSITION: OmniRenderPipeline.Snippet = builder()
+        .setVertexFormat(DefaultVertexFormats.POSITION)
+        .setDrawMode(DrawMode.QUADS)
+        .setBlendState(OmniBlendState.NORMAL)
+        .configureLegacyEffects {
+            OmniTextureUnit.TEXTURE0 equals false
+        }.build()
+
+    @JvmField
     public val POSITION_COLOR: OmniRenderPipeline.Snippet = builder()
         .setVertexFormat(DefaultVertexFormats.POSITION_COLOR)
         .setDrawMode(DrawMode.QUADS)

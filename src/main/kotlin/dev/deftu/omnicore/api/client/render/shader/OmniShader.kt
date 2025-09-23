@@ -10,7 +10,7 @@ public interface OmniShader {
     public fun bind()
     public fun unbind()
 
-    public fun <T> OmniShader.withBound(block: () -> T): T {
+    public fun <T> withBound(block: () -> T): T {
         bind()
         try {
             return block()
