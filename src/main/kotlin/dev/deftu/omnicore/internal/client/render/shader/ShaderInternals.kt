@@ -9,11 +9,11 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.ARBShaderObjects
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
+import java.nio.FloatBuffer
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.renderer.OpenGlHelper
 //$$ import java.nio.ByteBuffer
-//$$ import java.nio.FloatBuffer
 //#endif
 
 @ApiStatus.Internal
@@ -426,4 +426,39 @@ public object ShaderInternals {
         //$$ }
         //#endif
     }
+
+    //#if MC >= 1.16.5
+    @JvmStatic
+    public fun uniformMatrix2(
+        location: Int,
+        transpose: Boolean,
+        matrix: FloatBuffer
+    ) {
+        uniformMatrix2(location, transpose, bufferToArray(matrix))
+    }
+
+    @JvmStatic
+    public fun uniformMatrix3(
+        location: Int,
+        transpose: Boolean,
+        matrix: FloatBuffer
+    ) {
+        uniformMatrix3(location, transpose, bufferToArray(matrix))
+    }
+
+    @JvmStatic
+    public fun uniformMatrix4(
+        location: Int,
+        transpose: Boolean,
+        matrix: FloatBuffer
+    ) {
+        uniformMatrix4(location, transpose, bufferToArray(matrix))
+    }
+
+    private fun bufferToArray(buffer: FloatBuffer): FloatArray {
+        val array = FloatArray(buffer.remaining())
+        buffer.get(array)
+        return array
+    }
+    //#endif
 }
