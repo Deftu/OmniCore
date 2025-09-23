@@ -309,47 +309,27 @@ public object ShaderInternals {
 
     @JvmStatic
     public fun uniform1f(location: Int, v0: Float) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniform1f(location, v0)
-        } else {
-            ARBShaderObjects.glUniform1fARB(location, v0)
-        }
+        GL20.glUniform1f(location, v0)
     }
 
     @JvmStatic
     public fun uniform1i(location: Int, v0: Int) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniform1i(location, v0)
-        } else {
-            ARBShaderObjects.glUniform1iARB(location, v0)
-        }
+        GL20.glUniform1i(location, v0)
     }
 
     @JvmStatic
     public fun uniform2f(location: Int, v0: Float, v1: Float) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniform2f(location, v0, v1)
-        } else {
-            ARBShaderObjects.glUniform2fARB(location, v0, v1)
-        }
+        GL20.glUniform2f(location, v0, v1)
     }
 
     @JvmStatic
     public fun uniform3f(location: Int, v0: Float, v1: Float, v2: Float) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniform3f(location, v0, v1, v2)
-        } else {
-            ARBShaderObjects.glUniform3fARB(location, v0, v1, v2)
-        }
+        GL20.glUniform3f(location, v0, v1, v2)
     }
 
     @JvmStatic
     public fun uniform4f(location: Int, v0: Float, v1: Float, v2: Float, v3: Float) {
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniform4f(location, v0, v1, v2, v3)
-        } else {
-            ARBShaderObjects.glUniform4fARB(location, v0, v1, v2, v3)
-        }
+        GL20.glUniform4f(location, v0, v1, v2, v3)
     }
 
     @JvmStatic
@@ -363,17 +343,9 @@ public object ShaderInternals {
         //#endif
     ) {
         //#if MC >= 1.16.5
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniformMatrix2fv(location, transpose, matrix)
-        } else {
-            ARBShaderObjects.glUniformMatrix2fvARB(location, transpose, matrix)
-        }
+        GL20.glUniformMatrix2fv(location, transpose, matrix)
         //#else
-        //$$ if (GlCapabilities.isGl21Available) {
-        //$$     GL20.glUniformMatrix2(location, transpose, matrix)
-        //$$ } else {
-        //$$     ARBShaderObjects.glUniformMatrix2ARB(location, transpose, matrix)
-        //$$ }
+        //$$ GL20.glUniformMatrix2(location, transpose, matrix)
         //#endif
     }
 
@@ -388,17 +360,9 @@ public object ShaderInternals {
         //#endif
     ) {
         //#if MC >= 1.16.5
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniformMatrix3fv(location, transpose, matrix)
-        } else {
-            ARBShaderObjects.glUniformMatrix3fvARB(location, transpose, matrix)
-        }
+        GL20.glUniformMatrix3fv(location, transpose, matrix)
         //#else
-        //$$ if (GlCapabilities.isGl21Available) {
-        //$$     GL20.glUniformMatrix3(location, transpose, matrix)
-        //$$ } else {
-        //$$     ARBShaderObjects.glUniformMatrix3ARB(location, transpose, matrix)
-        //$$ }
+        //$$ GL20.glUniformMatrix3(location, transpose, matrix)
         //#endif
     }
 
@@ -413,17 +377,9 @@ public object ShaderInternals {
         //#endif
     ) {
         //#if MC >= 1.16.5
-        if (GlCapabilities.isGl21Available) {
-            GL20.glUniformMatrix4fv(location, transpose, matrix)
-        } else {
-            ARBShaderObjects.glUniformMatrix4fvARB(location, transpose, matrix)
-        }
+        GL20.glUniformMatrix4fv(location, transpose, matrix)
         //#else
-        //$$ if (GlCapabilities.isGl21Available) {
-        //$$     GL20.glUniformMatrix4(location, transpose, matrix)
-        //$$ } else {
-        //$$     ARBShaderObjects.glUniformMatrix4ARB(location, transpose, matrix)
-        //$$ }
+        //$$ GL20.glUniformMatrix4(location, transpose, matrix)
         //#endif
     }
 
