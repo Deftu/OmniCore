@@ -27,9 +27,30 @@ public object OmniLegacyRenderStates {
         }
 
     @JvmStatic
+    public val lineStipple: OmniLegacyLineStippleState
+        get() {
+            //#if MC >= 1.17.1
+            return OmniLegacyLineStippleState(
+                isEnabled = false,
+                factor = 1,
+                pattern = 0xFFFF.toShort(),
+            )
+            //#else
+            //$$ val enabled = GL11.glIsEnabled(GL11.GL_LINE_STIPPLE)
+            //$$ val factor = GL11.glGetInteger(GL11.GL_LINE_STIPPLE_REPEAT)
+            //$$ val pattern = GL11.glGetInteger(GL11.GL_LINE_STIPPLE_PATTERN).toShort()
+            //$$ return OmniLegacyLineStippleState(
+            //$$     isEnabled = enabled,
+            //$$     factor = factor,
+            //$$     pattern = pattern,
+            //$$ )
+            //#endif
+        }
+
+    @JvmStatic
     public val shadeModel: OmniLegacyShadeModelState
         get() {
-            //#if MC >= 1.16.5
+            //#if MC >= 1.17.1
             return OmniLegacyShadeModelState.SMOOTH
             //#else
             //$$ val model = ShadeModel.findOrThrow(GL11.glGetInteger(GL11.GL_SHADE_MODEL))
@@ -62,6 +83,7 @@ public object OmniLegacyRenderStates {
         get() = OmniLegacyRenderState(
             alphaState = alpha,
             lightingState = lighting,
+            lineStippleState = lineStipple,
             shadeModelState = shadeModel,
             textureStates = textures,
         )

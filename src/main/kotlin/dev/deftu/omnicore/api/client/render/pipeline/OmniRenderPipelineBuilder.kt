@@ -22,7 +22,6 @@ import dev.deftu.omnicore.api.client.render.shader.uniforms.UniformKind
 import dev.deftu.omnicore.api.identifierOrThrow
 import net.minecraft.client.gl.GlCommandEncoder
 import org.apache.commons.codec.digest.DigestUtils
-
 //#else
 //$$ import dev.deftu.omnicore.api.client.render.state.CullFace
 //$$ import dev.deftu.omnicore.api.client.render.state.DepthFunction
@@ -33,6 +32,7 @@ import org.apache.commons.codec.digest.DigestUtils
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniRenderState
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyLightingState
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderState
+//$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderStates
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyShadeModelState
 //$$ import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyTextureState
 //#endif
@@ -212,6 +212,7 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$         legacyState = OmniLegacyRenderState(
         //$$             alphaState = legacyEffects.alpha,
         //$$             lightingState = OmniLegacyLightingState(legacyEffects.lighting),
+        //$$             lineStippleState = OmniLegacyRenderStates.lineStipple.withState(legacyEffects.lineStipple),
         //$$             shadeModelState = OmniLegacyShadeModelState(legacyEffects.shadeModel),
         //$$             textureStates = legacyEffects.textureStates.map { (unit, state) ->
         //$$                 OmniLegacyTextureState(unit, state)
@@ -270,12 +271,12 @@ public class OmniRenderPipelineBuilder internal constructor(
     }
 
     public fun configureLegacyEffects(configure: Consumer<LegacyEffects.Builder>): OmniRenderPipelineBuilder {
-        this.legacyEffects = LegacyEffects.Builder().apply(configure::accept).build()
+        this.legacyEffects = LegacyEffects.Builder(this.legacyEffects).apply(configure::accept).build()
         return this
     }
 
     public fun configureLegacyEffects(configure: LegacyEffects.Builder.() -> Unit): OmniRenderPipelineBuilder {
-        this.legacyEffects = LegacyEffects.Builder().apply(configure).build()
+        this.legacyEffects = LegacyEffects.Builder(this.legacyEffects).apply(configure).build()
         return this
     }
 }

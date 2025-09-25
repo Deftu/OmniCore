@@ -33,6 +33,8 @@ public interface RenderPassEncoder {
 
     public fun setLineWidth(width: Float): RenderPassEncoder
 
+    public fun setLineStipple(factor: Int, pattern: Short): RenderPassEncoder
+
     public fun setTextureMatrix(matrix: OmniMatrix4f): RenderPassEncoder
     public fun resetTextureMatrix(): RenderPassEncoder
 

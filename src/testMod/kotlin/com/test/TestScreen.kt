@@ -206,10 +206,15 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
         }
     }
 
+    val pipeline = OmniRenderPipelines.LINES
+        .newBuilder()
+        .configureLegacyEffects {
+            lineStipple = true
+        }.build()
+
     /** Draws a horizontally straight white line, [renderWidth] across */
     private fun renderLine(ctx: OmniRenderingContext) {
         ctx.withMatrices {
-            val pipeline = OmniRenderPipelines.LINES
             val buffer = pipeline.createBufferBuilder()
 
             buffer.vertex(ctx.matrices, renderX, renderY + renderHeight + 10.0, 0.0)
@@ -223,6 +228,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
             buffer.buildOrThrow().drawAndClose(pipeline) {
                 setLineWidth(15.0f) // test setting line width
+                setLineStipple(10, 0xAAAA.toShort())
             }
         }
     }

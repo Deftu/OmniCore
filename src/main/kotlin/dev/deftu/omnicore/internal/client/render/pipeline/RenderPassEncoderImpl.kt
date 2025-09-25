@@ -71,6 +71,11 @@ public class RenderPassEncoderImpl internal constructor(
     //$$ private var prevShaderColor: OmniColor? = null
     //#endif
 
+    //#if MC <= 1.16.5
+    //$$ private var lineStippleFactor: Int = 1
+    //$$ private var lineStipplePattern: Short = 0xFFFF.toShort()
+    //#endif
+
     private var scissorBox: ScissorBox? = null
 
     init {
@@ -273,6 +278,14 @@ public class RenderPassEncoderImpl internal constructor(
         return this
     }
 
+    override fun setLineStipple(factor: Int, pattern: Short): RenderPassEncoder {
+        //#if MC <= 1.16.5
+        //$$ lineStippleFactor = factor
+        //$$ lineStipplePattern = pattern
+        //#endif
+        return this
+    }
+
     override fun setTextureMatrix(matrix: OmniMatrix4f): RenderPassEncoder {
         //#if MC >= 1.21.6
         textureMatrix = matrix.vanilla
@@ -403,6 +416,11 @@ public class RenderPassEncoderImpl internal constructor(
         //$$ if (renderPass.activePipeline != renderPipeline) {
         //$$     renderPass.activePipeline = renderPipeline
         //$$     renderPipeline.requestedRenderState.applyTo(renderPass.activeRenderState)
+        //$$
+            //#if MC <= 1.16.5
+            //$$ // Update line stipple
+            //$$ renderPass.activeRenderState.legacyState.setLineStippleState(renderPass.activeRenderState.legacyState.lineStippleState.withParams(lineStippleFactor, lineStipplePattern))
+            //#endif
         //$$ }
         //$$
         //$$ var previousScissorBox: ScissorBox? = null
