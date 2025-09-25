@@ -2,6 +2,7 @@ package dev.deftu.omnicore.api.client.render.pipeline
 
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DrawMode
+import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
@@ -51,6 +52,7 @@ public interface OmniRenderPipeline {
     public fun bind()
     public fun unbind()
 
+    public fun newBuilder(shaderProvider: ShaderProvider?): OmniRenderPipelineBuilder
     public fun newBuilder(): OmniRenderPipelineBuilder
 
     public fun createBufferBuilder(): OmniBufferBuilder {

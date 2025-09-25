@@ -51,6 +51,14 @@ public class OmniRenderPipelineImpl(
         shaderProvider?.unbind()
     }
 
+    override fun newBuilder(shaderProvider: ShaderProvider?): OmniRenderPipelineBuilder {
+        if (shaderProvider == null) {
+            return newBuilder()
+        }
+
+        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
+    }
+
     override fun newBuilder(): OmniRenderPipelineBuilder {
         return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
     }
