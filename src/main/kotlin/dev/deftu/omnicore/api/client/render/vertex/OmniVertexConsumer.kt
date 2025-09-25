@@ -3,6 +3,7 @@ package dev.deftu.omnicore.api.client.render.vertex
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.color.ColorFormat
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.math.OmniVector3f
 import java.awt.Color
 
 public interface OmniVertexConsumer {
@@ -34,6 +35,11 @@ public interface OmniVertexConsumer {
     public fun overlay(u: Int, v: Int): OmniVertexConsumer
     public fun light(u: Int, v: Int): OmniVertexConsumer
     public fun normal(stack: OmniMatrixStack, nx: Float, ny: Float, nz: Float): OmniVertexConsumer
+
+    public fun normal(stack: OmniMatrixStack, normal: OmniVector3f): OmniVertexConsumer {
+        return normal(stack, normal.x, normal.y, normal.z)
+    }
+
     public fun next(): OmniVertexConsumer
 
     // Extra utility functions for common shapes
