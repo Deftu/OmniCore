@@ -10,10 +10,14 @@ public interface OmniBuiltBuffer : AutoCloseable {
 
     public fun draw(pipeline: OmniRenderPipeline, builder: Consumer<RenderPassEncoder>)
 
-    public fun draw(pipeline: OmniRenderPipeline, builder: RenderPassEncoder.() -> Unit = {}) {
+    public fun draw(pipeline: OmniRenderPipeline, builder: RenderPassEncoder.() -> Unit) {
         draw(pipeline, Consumer {
             builder(it)
         })
+    }
+
+    public fun draw(pipeline: OmniRenderPipeline) {
+        draw(pipeline, Consumer { })
     }
 
     public fun drawAndClose(pipeline: OmniRenderPipeline, builder: Consumer<RenderPassEncoder>) {
@@ -22,10 +26,14 @@ public interface OmniBuiltBuffer : AutoCloseable {
         }
     }
 
-    public fun drawAndClose(pipeline: OmniRenderPipeline, builder: RenderPassEncoder.() -> Unit = {}) {
+    public fun drawAndClose(pipeline: OmniRenderPipeline, builder: RenderPassEncoder.() -> Unit) {
         drawAndClose(pipeline, Consumer {
             builder(it)
         })
+    }
+
+    public fun drawAndClose(pipeline: OmniRenderPipeline) {
+        drawAndClose(pipeline, Consumer { })
     }
 
     public fun markClosed()
