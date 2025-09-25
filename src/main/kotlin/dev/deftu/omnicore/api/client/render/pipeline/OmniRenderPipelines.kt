@@ -63,15 +63,29 @@ public object OmniRenderPipelines {
             drawMode = DrawModes.from(vanilla.vertexFormatMode),
             vertexFormat = vanilla.vertexFormat,
             vanilla = vanilla,
-            shaderProvider = ShaderProvider.Vanilla(
-                vertexLocation = vanilla.vertexShader,
-                fragmentLocation = vanilla.fragmentShader,
-                samplers = vanilla.samplers,
-                uniforms = vanilla.uniforms.associate { description ->
-                    description.name to description.type
-                }
-            ),
+            shaderProvider = deriveShaderProvider(vanilla),
             shaderSourcesFunction = null
+        )
+    }
+
+    @JvmStatic
+    public fun builderFrom(vanilla: RenderPipeline): OmniRenderPipelineBuilder {
+        return builder(
+            location = vanilla.location,
+            vertexFormat = vanilla.vertexFormat,
+            drawMode = DrawModes.from(vanilla.vertexFormatMode),
+            shaderProvider = deriveShaderProvider(vanilla)
+        )
+    }
+
+    private fun deriveShaderProvider(vanilla: RenderPipeline): ShaderProvider {
+        return ShaderProvider.Vanilla(
+            vertexLocation = vanilla.vertexShader,
+            fragmentLocation = vanilla.fragmentShader,
+            samplers = vanilla.samplers,
+            uniforms = vanilla.uniforms.associate { description ->
+                description.name to description.type
+            }
         )
     }
 
