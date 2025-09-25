@@ -52,7 +52,6 @@ public class OmniRenderPipelineImpl(
     }
 
     override fun newBuilder(): OmniRenderPipelineBuilder {
-        checkNotNull(shaderProvider) { "This pipeline was not created with a ShaderProvider, so it cannot be rebuilt." }
         return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
     }
 
