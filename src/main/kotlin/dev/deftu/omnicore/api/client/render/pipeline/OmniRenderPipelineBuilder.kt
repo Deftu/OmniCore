@@ -47,7 +47,7 @@ public class OmniRenderPipelineBuilder internal constructor(
     //$$ private val shaderProvider: ShaderProvider?,
     //#endif
 ) {
-    @JvmField public var depthTest: OmniRenderPipeline.DepthTest = OmniRenderPipeline.DepthTest.DISABLED
+    @JvmField public var depthTest: OmniRenderPipeline.DepthTest = OmniRenderPipeline.DepthTest.LESS_OR_EQUAL
     @JvmField public var culling: Boolean = false
     @JvmField public var colorLogic: OmniRenderPipeline.ColorLogic = OmniRenderPipeline.ColorLogic.NONE
     @JvmField public var blendState: OmniBlendState = OmniBlendState.DISABLED
