@@ -66,7 +66,7 @@ public class OmniVoxelShapeImpl(override val boxes: List<OmniAABB>) : OmniVoxelS
                     add(OmniAABB(box.minX, box.maxY, box.minZ, box.minX, box.maxY, box.maxZ)) // Edge 7
                     add(OmniAABB(box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ)) // Edge 8
                     add(OmniAABB(box.maxX, box.minY, box.minZ, box.maxX, box.minY, box.maxZ)) // Edge 9
-                    add(OmniAABB(box.maxX, box.minY, box.minZ, box.minX, box.minY, box.minZ)) // Edge 10
+                    add(OmniAABB(box.maxX, box.minY, box.minZ, box.maxX, box.maxY, box.minZ)) // Edge 10
                     add(OmniAABB(box.minX, box.minY, box.maxZ, box.minX, box.maxY, box.maxZ)) // Edge 11
                     add(OmniAABB(box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ)) // Edge 12
                 }
