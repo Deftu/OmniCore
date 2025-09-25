@@ -63,7 +63,14 @@ public object OmniRenderPipelines {
             drawMode = DrawModes.from(vanilla.vertexFormatMode),
             vertexFormat = vanilla.vertexFormat,
             vanilla = vanilla,
-            shaderProvider = null,
+            shaderProvider = ShaderProvider.Vanilla(
+                vertexLocation = vanilla.vertexShader,
+                fragmentLocation = vanilla.fragmentShader,
+                samplers = vanilla.samplers,
+                uniforms = vanilla.uniforms.associate { description ->
+                    description.name to description.type
+                }
+            ),
             shaderSourcesFunction = null
         )
     }
