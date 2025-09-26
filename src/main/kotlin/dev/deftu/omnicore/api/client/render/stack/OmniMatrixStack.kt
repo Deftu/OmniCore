@@ -1,11 +1,11 @@
 package dev.deftu.omnicore.api.client.render.stack
 
+import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.api.math.OmniVector2f
 import dev.deftu.omnicore.api.math.OmniVector3f
 import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
-import org.joml.Quaternionf
 
 //#if MC >= 1.16.5
 import net.minecraft.client.util.math.MatrixStack
@@ -77,8 +77,16 @@ public interface OmniMatrixStack {
         translate(vector.x, vector.y, vector.z)
     }
 
+    public fun translate(vec: OmniVec3d) {
+        translate(vec.x.toFloat(), vec.y.toFloat(), vec.z.toFloat())
+    }
+
     public fun scale(vector: OmniVector3f) {
         scale(vector.x, vector.y, vector.z)
+    }
+
+    public fun scale(vec: OmniVec3d) {
+        scale(vec.x.toFloat(), vec.y.toFloat(), vec.z.toFloat())
     }
 
     public fun transformPosition(x: Float, y: Float, dest: OmniVector2f): OmniVector2f {
