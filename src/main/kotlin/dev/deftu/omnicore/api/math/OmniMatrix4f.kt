@@ -58,7 +58,7 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
             //#else
             //$$ val buffer = BufferUtils.createFloatBuffer(16)
             //$$ matrix.store(buffer)
-            //#if MC >= 1.17.1
+            //#if MC >= 1.16.5
             //$$ for (i in output.indices) {
             //$$     output[i] = buffer.get(i)
             //$$ }
