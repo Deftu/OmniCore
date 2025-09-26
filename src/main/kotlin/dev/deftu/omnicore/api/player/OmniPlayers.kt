@@ -3,7 +3,6 @@
 package dev.deftu.omnicore.api.player
 
 import dev.deftu.omnicore.api.OmniGameMode
-import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.equipment.EquipmentType
 import dev.deftu.omnicore.api.world.OmniBiomeData
 import dev.deftu.omnicore.api.world.OmniChunkData
@@ -11,7 +10,6 @@ import dev.deftu.omnicore.api.world.dimensionType
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.math.Vec3d
 import java.util.UUID
 
 //#if MC <= 1.16.5
@@ -113,141 +111,3 @@ public val PlayerEntity.hungerLevel: Int
 
 public val PlayerEntity.saturationLevel: Float
     get() = hungerManager.saturationLevel
-
-public var PlayerEntity.posX: Double
-    get() {
-        //#if MC >= 1.16.5
-        return x
-        //#else
-        //$$ return posX
-        //#endif
-    }
-    set(value) {
-        setPos(value, posY, posZ)
-    }
-
-public var PlayerEntity.prevPosX: Double
-    get() {
-        //#if MC >= 1.16.5
-        return lastX
-        //#else
-        //$$ return prevPosX
-        //#endif
-    }
-    set(value) {
-        //#if MC >= 1.16.5
-        lastX = value
-        //#else
-        //$$ prevPosX = value
-        //#endif
-    }
-
-public var PlayerEntity.posY: Double
-    get() {
-        //#if MC >= 1.16.5
-        return y
-        //#else
-        //$$ return posY
-        //#endif
-    }
-    set(value) {
-        setPos(posX, value, posZ)
-    }
-
-public var PlayerEntity.prevPosY: Double
-    get() {
-        //#if MC >= 1.16.5
-        return lastY
-        //#else
-        //$$ return prevPosY
-        //#endif
-    }
-    set(value) {
-        //#if MC >= 1.16.5
-        lastY = value
-        //#else
-        //$$ prevPosY = value
-        //#endif
-    }
-
-public var PlayerEntity.posZ: Double
-    get() {
-        //#if MC >= 1.16.5
-        return z
-        //#else
-        //$$ return posZ
-        //#endif
-    }
-    set(value) {
-        setPos(posX, posY, value)
-    }
-
-public var PlayerEntity.prevPosZ: Double
-    get() {
-        //#if MC >= 1.16.5
-        return lastZ
-        //#else
-        //$$ return prevPosZ
-        //#endif
-    }
-    set(value) {
-        //#if MC >= 1.16.5
-        lastZ = value
-        //#else
-        //$$ prevPosZ = value
-        //#endif
-    }
-
-public var PlayerEntity.pos: Vec3d
-    get() {
-        //#if MC >= 1.16.5
-        return pos
-        //#else
-        //#if FABRIC
-        //$$ return getPos()
-        //#else
-        //$$ return positionVector
-        //#endif
-        //#endif
-    }
-    set(value) {
-        setPos(value.x, value.y, value.z)
-    }
-
-public var PlayerEntity.prevPos: Vec3d
-    get() = OmniVec3d(prevPosX, prevPosY, prevPosZ).vanilla
-    set(value) {
-        //#if MC >= 1.16.5
-        lastX = value.x
-        lastY = value.y
-        lastZ = value.z
-        //#else
-        //$$ prevPosX = value.x
-        //$$ prevPosY = value.y
-        //$$ prevPosZ = value.z
-        //#endif
-    }
-
-public var PlayerEntity.rotationYaw: Float
-    get() = yaw
-    set(value) {
-        yaw = value
-    }
-
-public var PlayerEntity.prevRotationYaw: Float
-    get() = lastYaw
-    set(value) {
-        lastYaw = value
-    }
-
-public var PlayerEntity.rotationPitch: Float
-    get() = pitch
-    set(value) {
-        pitch = value
-    }
-
-public var PlayerEntity.prevRotationPitch: Float
-    get() = lastPitch
-    set(value) {
-        lastPitch = value
-    }
