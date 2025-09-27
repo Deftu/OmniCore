@@ -20,11 +20,11 @@ public class Mixin_ForwardServerCustomPayload2EletricBoogaloo {
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"))
     private void omnicore$captureCustomPayloads(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-        CustomPayload payload = packet.comp_1647();
+        CustomPayload payload = packet.payload();
         //#if MC >= 1.20.6
-        Identifier channel = payload.getId().comp_2242();
+        Identifier channel = payload.getId().id();
         //#else
-        //$$ Identifier channel = payload.comp_1678();
+        //$$ Identifier channel = payload.id();
         //#endif
         if (!OmniNetworking.isRegisteredChannel(channel)) {
             return;

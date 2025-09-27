@@ -95,7 +95,7 @@ public data class OmniChunkData(
         val biome = world.getBiome(pos) ?: return null
         //#if MC >= 1.18.2
         val id = biome.key?.map { it.value }?.get() ?: return null
-        val value = biome.comp_349()
+        val value = biome.value()
 
         return OmniBiomeData(
             world = this.world,

@@ -28,7 +28,6 @@ public class Mixin_WriteCustomPacketBuffers<B extends PacketByteBuf> {
 
         VanillaCustomPayload payload = (VanillaCustomPayload) customPayload;
         buf.writeIdentifier(payload.getIdentifier());
-        System.out.println("OmniCore: Writing custom payload " + payload.getIdentifier());
         payload.write(buf);
         ci.cancel();
     }

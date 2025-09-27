@@ -66,15 +66,15 @@ public class Mixin_ForwardServerCustomPayloads {
         GameProfile playerProfile = ((ServerCommonNetworkHandler) (Object) this).getDebugProfile();
         ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(playerProfile.getId());
 
-        CustomPayload payload = packet.comp_1647();
+        CustomPayload payload = packet.payload();
         if (!(payload instanceof UnknownPayloadDataSmuggler)) {
             return;
         }
 
         //#if MC >= 1.20.6
-        Identifier channel = payload.getId().comp_2242();
+        Identifier channel = payload.getId().id();
         //#else
-        //$$ Identifier channel = payload.comp_1678();
+        //$$ Identifier channel = payload.id();
         //#endif
         if (!OmniNetworking.isRegisteredChannel(channel)) {
             return;

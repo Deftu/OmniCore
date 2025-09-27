@@ -27,7 +27,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.UI_BUTTON_CLICK
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("gui.button.press")
@@ -74,7 +74,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.ENTITY_ITEM_BREAK
                 //#if MC >= 1.21.5
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("random.break")
@@ -86,7 +86,7 @@ public object OmniSounds {
     public val WOLF_AMBIENT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            classicWolfSounds.comp_3779().comp_349()
+            classicWolfSounds.ambientSound.value()
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_AMBIENT
             //#else
@@ -99,7 +99,7 @@ public object OmniSounds {
     public val WOLF_DEATH: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            classicWolfSounds.comp_3780().comp_349()
+            classicWolfSounds.deathSound.value()
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_DEATH
             //#else
@@ -112,7 +112,7 @@ public object OmniSounds {
     public val WOLF_GROWL: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            classicWolfSounds.comp_3781().comp_349()
+            classicWolfSounds.growlSound.value()
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_GROWL
             //#else
@@ -141,7 +141,7 @@ public object OmniSounds {
     public val WOLF_HURT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            classicWolfSounds.comp_3782().comp_349()
+            classicWolfSounds.hurtSound.value()
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_HURT
             //#else
@@ -154,7 +154,7 @@ public object OmniSounds {
     public val WOLF_PANT: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            classicWolfSounds.comp_3783().comp_349()
+            classicWolfSounds.pantSound.value()
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_PANT
             //#else
@@ -189,7 +189,7 @@ public object OmniSounds {
     public val WOLF_WHINE: OmniSound = noInline {
         OmniSound(
             //#if MC >= 1.21.5
-            classicWolfSounds.comp_3784().comp_349()
+            classicWolfSounds.whineSound.value()
             //#elseif MC >= 1.12.2
             //$$ SoundEvents.WOLF_WHINE
             //#else
@@ -204,7 +204,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("note.bd")
@@ -218,7 +218,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.BLOCK_NOTE_BLOCK_BASS
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("note.bass")
@@ -232,7 +232,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.BLOCK_NOTE_BLOCK_HARP
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("note.harp")
@@ -246,7 +246,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.BLOCK_NOTE_BLOCK_HAT
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("note.hat")
@@ -260,7 +260,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.BLOCK_NOTE_BLOCK_PLING
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("note.pling")
@@ -274,7 +274,7 @@ public object OmniSounds {
             //#if MC >= 1.12.2
             SoundEvents.BLOCK_NOTE_BLOCK_SNARE
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
             //#else
             //$$ identifierOrThrow("note.snare")
@@ -289,7 +289,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_BELL
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -304,7 +304,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_CHIME
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -319,7 +319,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_FLUTE
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -334,7 +334,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_GUITAR
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -349,7 +349,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -364,7 +364,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -379,7 +379,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_COW_BELL
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -394,7 +394,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -409,7 +409,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_BIT
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else
@@ -424,7 +424,7 @@ public object OmniSounds {
         OmniSound(
             SoundEvents.BLOCK_NOTE_BLOCK_BANJO
                 //#if MC >= 1.19.4
-                .comp_349()
+                .value()
                 //#endif
         )
         //#else

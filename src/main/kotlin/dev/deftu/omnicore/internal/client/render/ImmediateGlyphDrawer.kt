@@ -51,7 +51,7 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : TextRenderer
     }
 
     override fun drawGlyph(drawnGlyph: BakedGlyph.DrawnGlyph) {
-        val baked = drawnGlyph.comp_3316
+        val baked = drawnGlyph.glyph
         if (baked.texture == null) {
             return
         }

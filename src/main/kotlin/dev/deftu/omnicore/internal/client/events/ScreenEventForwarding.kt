@@ -24,25 +24,25 @@ public object ScreenEventForwarding {
 
             //#if MC >= 1.21.9
             //$$ ScreenKeyboardEvents.allowKeyPress(screen).register { _, event ->
-            //$$     val event = ScreenEvent.KeyPress.Pre(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     val event = ScreenEvent.KeyPress.Pre(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
             //$$
             //$$ ScreenKeyboardEvents.allowKeyRelease(screen).register { _, event ->
-            //$$     val event = ScreenEvent.KeyRelease.Pre(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     val event = ScreenEvent.KeyRelease.Pre(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
             //$$
             //$$ ScreenMouseEvents.allowMouseClick(screen).register { _, event ->
-            //$$     val event = ScreenEvent.MouseClick.Pre(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     val event = ScreenEvent.MouseClick.Pre(screen, event.buttonInfo.button, event.x, event.y)
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
             //$$
             //$$ ScreenMouseEvents.allowMouseRelease(screen).register { _, event ->
-            //$$     val event = ScreenEvent.MouseRelease.Pre(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     val event = ScreenEvent.MouseRelease.Pre(screen, event.buttonInfo.button, event.x, event.y)
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
@@ -92,23 +92,23 @@ public object ScreenEventForwarding {
 
             //#if MC >= 1.21.9
             //$$ ScreenKeyboardEvents.afterKeyPress(screen).register { _, event ->
-            //$$     val event = ScreenEvent.KeyPress.Post(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     val event = ScreenEvent.KeyPress.Post(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
             //$$     eventBus.post(event)
             //$$ }
             //$$
             //$$ ScreenKeyboardEvents.afterKeyRelease(screen).register { _, event ->
-            //$$     val event = ScreenEvent.KeyRelease.Post(screen, event.keycode, event.comp_4796, KeyboardModifiers.wrap(event.comp_4797))
+            //$$     val event = ScreenEvent.KeyRelease.Post(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
             //$$     eventBus.post(event)
             //$$ }
             //$$
             //$$ ScreenMouseEvents.afterMouseClick(screen).register { _, event, _ ->
-            //$$     val event = ScreenEvent.MouseClick.Post(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     val event = ScreenEvent.MouseClick.Post(screen, event.buttonInfo.button, event.x, event.y)
             //$$     eventBus.post(event)
             //$$     true
             //$$ }
             //$$
             //$$ ScreenMouseEvents.afterMouseRelease(screen).register { _, event, _ ->
-            //$$     val event = ScreenEvent.MouseRelease.Post(screen, event.comp_4800.button, event.comp_4798, event.comp_4799)
+            //$$     val event = ScreenEvent.MouseRelease.Post(screen, event.buttonInfo.button, event.x, event.y)
             //$$     eventBus.post(event)
             //$$     true
             //$$ }

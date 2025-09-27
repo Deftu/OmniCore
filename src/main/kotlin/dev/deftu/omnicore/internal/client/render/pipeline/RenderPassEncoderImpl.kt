@@ -99,10 +99,10 @@ public class RenderPassEncoderImpl internal constructor(
         val vertexBuffer = renderPipeline.vertexFormat.uploadImmediateVertexBuffer(builtBuffer.buffer)
         val indexBuffer = builtBuffer.sortedBuffer
         val (uploadedIndexBuffer, indexType) = if (indexBuffer == null) {
-            val shapeIndexBuffer = RenderSystem.getSequentialBuffer(builtBuffer.drawParameters.comp_752())
-            shapeIndexBuffer.getIndexBuffer(builtBuffer.drawParameters.comp_751()) to shapeIndexBuffer.indexType
+            val shapeIndexBuffer = RenderSystem.getSequentialBuffer(builtBuffer.drawParameters.mode)
+            shapeIndexBuffer.getIndexBuffer(builtBuffer.drawParameters.indexCount) to shapeIndexBuffer.indexType
         } else {
-            renderPipeline.vertexFormat.uploadImmediateIndexBuffer(indexBuffer) to builtBuffer.drawParameters.comp_753()
+            renderPipeline.vertexFormat.uploadImmediateIndexBuffer(indexBuffer) to builtBuffer.drawParameters.indexType
         }
 
         vanilla = with(client.framebuffer) {

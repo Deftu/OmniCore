@@ -74,11 +74,11 @@ public class Mixin_ForwardClientCustomPayloads {
             CallbackInfo ci
     ) {
         //#if MC >= 1.20.4
-        CustomPayload payload = packet.comp_1646();
+        CustomPayload payload = packet.payload();
         //#if MC >= 1.20.6
-        Identifier channel = payload.getId().comp_2242();
+        Identifier channel = payload.getId().id();
         //#else
-        //$$ Identifier channel = payload.comp_1678();
+        //$$ Identifier channel = payload.id();
         //#endif
         if (!OmniClientNetworking.isChannelRegistered(channel)) {
             return;

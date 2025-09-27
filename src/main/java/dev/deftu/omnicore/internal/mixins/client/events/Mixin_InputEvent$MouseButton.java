@@ -39,7 +39,7 @@ public class Mixin_InputEvent$MouseButton {
 
         //#if MC >= 1.21.9
         //$$ int button = event.button();
-        //$$ int modifiers = event.comp_4797();
+        //$$ int modifiers = event.modifiers();
         //#endif
         KeyboardModifiers mods = KeyboardModifiers.wrap(modifiers);
         InputState state = action == GLFW.GLFW_PRESS ? InputState.PRESSED : action == GLFW.GLFW_RELEASE ? InputState.RELEASED : InputState.REPEATED;

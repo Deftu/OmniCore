@@ -27,7 +27,7 @@ public class VanillaCustomPayload(public val identifier: Identifier, public val 
         return CustomPayload.Id(identifier)
     }
     //#else
-    //$$ override fun comp_1678(): Identifier {
+    //$$ override fun id(): Identifier {
     //$$     return identifier
     //$$ }
     //#endif

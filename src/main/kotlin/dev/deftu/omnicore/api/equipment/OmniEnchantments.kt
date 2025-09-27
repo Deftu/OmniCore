@@ -14,7 +14,7 @@ public val ItemStack.enchantmentInfo: List<EnchantmentInfo>
             //#if FORGE-LIKE
             //$$ EnchantmentInfo(enchantment.value(), level)
             //#else
-            EnchantmentInfo(enchantment.comp_349(), level)
+            EnchantmentInfo(enchantment.value(), level)
             //#endif
         }
         //#elseif MC >= 1.16.5

@@ -39,9 +39,9 @@ public class Mixin_InputEvent$Key {
         }
 
         //#if MC >= 1.21.9
-        //$$ int key = event.getKeycode();
-        //$$ int scancode = event.comp_4796();
-        //$$ int modifiers = event.comp_4797();
+        //$$ int key = event.key();
+        //$$ int scancode = event.scancode();
+        //$$ int modifiers = event.modifiers();
         //#endif
         KeyboardModifiers mods = KeyboardModifiers.wrap(modifiers);
         InputState state = action == GLFW.GLFW_PRESS ? InputState.PRESSED : action == GLFW.GLFW_RELEASE ? InputState.RELEASED : InputState.REPEATED;
