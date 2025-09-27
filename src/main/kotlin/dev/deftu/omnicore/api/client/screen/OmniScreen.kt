@@ -535,6 +535,12 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         tickDelta: Float,
         //#endif
     ) {
+        //#if MC >= 1.20.4
+        if (isBackgroundSuppressed) {
+            return
+        }
+        //#endif
+
         //#if MC < 1.20.4
         //$$ val mouseX = OmniMouse.scaledX.toInt()
         //$$ val mouseY = OmniMouse.scaledY.toInt()
