@@ -12,6 +12,13 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 //#elseif FORGE-LIKE
+//#if MC <= 1.12.2
+//$$ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+//$$ import net.minecraftforge.client.event.GuiScreenEvent
+//$$ import org.lwjgl.input.Keyboard
+//$$ import org.lwjgl.input.Mouse
+//#endif
+//$$
 //$$ import dev.deftu.omnicore.internal.forgeEventBus
 //#endif
 
@@ -314,4 +321,74 @@ public object ScreenEventForwarding {
         //$$ forgeEventBus.register(this)
         //#endif
     }
+
+    //#if FORGE && MC <= 1.12.2
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPreInit(event: GuiScreenEvent.InitGuiEvent.Pre) {
+    //$$     eventBus.post(ScreenEvent.Init.Pre(event.gui))
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPostInit(event: GuiScreenEvent.InitGuiEvent.Post) {
+    //$$     eventBus.post(ScreenEvent.Init.Post(event.gui))
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPreRender(event: GuiScreenEvent.DrawScreenEvent.Pre) {
+    //$$     val context = OmniRenderingContext.from()
+    //$$     eventBus.post(ScreenEvent.Render.Pre(event.gui, context, event.renderPartialTicks))
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPostRender(event: GuiScreenEvent.DrawScreenEvent.Post) {
+    //$$     val context = OmniRenderingContext.from()
+    //$$     eventBus.post(ScreenEvent.Render.Post(event.gui, context, event.renderPartialTicks))
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPreKeyInput(event: GuiScreenEvent.KeyboardInputEvent.Pre) {
+    //$$     val keyCode = Keyboard.getEventKey()
+    //$$     val modifiers = KeyboardModifiers.current
+    //$$     val action = if (Keyboard.getEventKeyState()) 1 else 0
+    //$$     when (action) {
+    //$$         1 -> eventBus.post(ScreenEvent.KeyPress.Post(event.gui, keyCode, action, modifiers))
+    //$$         0 -> eventBus.post(ScreenEvent.KeyRelease.Pre(event.gui, keyCode, action, modifiers))
+    //$$     }
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPostKeyInput(event: GuiScreenEvent.KeyboardInputEvent.Post) {
+    //$$     val keyCode = Keyboard.getEventKey()
+    //$$     val modifiers = KeyboardModifiers.current
+    //$$     val action = if (Keyboard.getEventKeyState()) 1 else 0
+    //$$     when (action) {
+    //$$         1 -> eventBus.post(ScreenEvent.KeyPress.Post(event.gui, keyCode, action, modifiers))
+    //$$         0 -> eventBus.post(ScreenEvent.KeyRelease.Post(event.gui, keyCode, action, modifiers))
+    //$$     }
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPreMouseInput(event: GuiScreenEvent.MouseInputEvent.Pre) {
+    //$$     val button = Mouse.getEventButton()
+    //$$     val x = Mouse.getEventX().toDouble()
+    //$$     val y = Mouse.getEventY().toDouble()
+    //$$     val action = if (Mouse.getEventButtonState()) 1 else 0
+    //$$     when (action) {
+    //$$         1 -> eventBus.post(ScreenEvent.MouseClick.Pre(event.gui, button, x, y))
+    //$$         0 -> eventBus.post(ScreenEvent.MouseRelease.Pre(event.gui, button, x, y))
+    //$$     }
+    //$$ }
+    //$$
+    //$$ @SubscribeEvent
+    //$$ public fun onGuiPostMouseInput(event: GuiScreenEvent.MouseInputEvent.Post) {
+    //$$     val button = Mouse.getEventButton()
+    //$$     val x = Mouse.getEventX().toDouble()
+    //$$     val y = Mouse.getEventY().toDouble()
+    //$$     val action = if (Mouse.getEventButtonState()) 1 else 0
+    //$$     when (action) {
+    //$$         1 -> eventBus.post(ScreenEvent.MouseClick.Post(event.gui, button, x, y))
+    //$$         0 -> eventBus.post(ScreenEvent.MouseRelease.Post(event.gui, button, x, y))
+    //$$     }
+    //$$ }
+    //#endif
 }
