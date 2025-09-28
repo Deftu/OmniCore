@@ -3,15 +3,22 @@ package dev.deftu.omnicore.api.client.render
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.color.ColorFormat
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import dev.deftu.textile.minecraft.MCTextFormat
 import dev.deftu.textile.minecraft.MCTextHolder
 
 //#if MC >= 1.21.6
 import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
+//#elseif MC >= 1.16.5
+//$$ import net.minecraft.text.Style
 //#endif
 
 //#if MC >= 1.20.1 && MC < 1.21.6
 //$$ import net.minecraft.client.font.TextRenderer
+//#endif
+
+//#if MC >= 1.16.5
+import net.minecraft.text.StringVisitable
 //#endif
 
 //#if MC < 1.16.5
@@ -167,6 +174,22 @@ public object OmniTextRenderer {
         return textRenderer.getWrappedLinesHeight(text.asVanilla(), maxWidth)
         //#else
         //$$ return height(text.asString(), maxWidth)
+        //#endif
+    }
+
+    @JvmStatic
+    public fun wrapLines(text: String, maxWidth: Int): List<MCTextHolder<*>> {
+        return wrapLines(MCSimpleTextHolder(text), maxWidth)
+    }
+
+    @JvmStatic
+    public fun wrapLines(text: MCTextHolder<*>, maxWidth: Int): List<MCTextHolder<*>> {
+        //#if MC >= 1.21.6
+        return textRenderer.wrapLinesWithoutLanguage(text.asVanilla(), maxWidth).map(StringVisitable::getString).map(::MCSimpleTextHolder)
+        //#elseif MC >= 1.16.5
+        //$$ return textRenderer.textHandler.wrapLines(text.asVanilla(), maxWidth, Style.EMPTY).map(StringVisitable::getString).map(::MCSimpleTextHolder)
+        //#else
+        //$$ return textRenderer.listFormattedStringToWidth(text.asString(), maxWidth).map(::MCSimpleTextHolder)
         //#endif
     }
 }
