@@ -58,6 +58,9 @@ public class OmniRenderPipelineBuilder internal constructor(
     // legacy
     @JvmField public var legacyEffects: LegacyEffects = LegacyEffects()
 
+    // compatibility
+    @JvmField public var irisType: IrisShaderType? = null
+
     public fun build(): OmniRenderPipeline {
         //#if MC >= 1.21.5
         var shaderSourcesFunction: ((Identifier, ShaderType) -> String?)? = null
@@ -173,7 +176,7 @@ public class OmniRenderPipelineBuilder internal constructor(
             }
         }
 
-        return OmniRenderPipelineImpl(location, drawMode, vertexFormat, vanilla, shaderProvider, shaderSourcesFunction)
+        irisType?.assign(vanilla) ?: IrisShaderType.warnIfNecessary(location)
         return OmniRenderPipelineImpl(
             builderSnapshotSnippet = OmniRenderPipeline.Snippet(
                 location = null,
@@ -187,6 +190,7 @@ public class OmniRenderPipelineBuilder internal constructor(
                 depthMask = depthMask,
                 polygonOffset = polygonOffset,
                 legacyEffects = legacyEffects,
+                irisType = irisType,
             ),
             location = location,
             drawMode = drawMode,
@@ -209,6 +213,7 @@ public class OmniRenderPipelineBuilder internal constructor(
         //$$         depthMask = depthMask,
         //$$         polygonOffset = polygonOffset,
         //$$         legacyEffects = legacyEffects,
+        //$$         irisType = irisType,
         //$$     ),
         //$$     location = location,
         //$$     drawMode = drawMode,
@@ -267,6 +272,7 @@ public class OmniRenderPipelineBuilder internal constructor(
             snippet.depthMask?.let { depthMask = it }
             snippet.polygonOffset?.let { polygonOffset = it }
             snippet.legacyEffects?.let { legacyEffects = it }
+            snippet.irisType?.let { irisType = it }
         }
 
         return this
@@ -312,5 +318,9 @@ public class OmniRenderPipelineBuilder internal constructor(
     public fun configureLegacyEffects(configure: LegacyEffects.Builder.() -> Unit): OmniRenderPipelineBuilder {
         this.legacyEffects = LegacyEffects.Builder(this.legacyEffects).apply(configure).build()
         return this
+    }
+
+    public fun setIrisType(type: IrisShaderType?): OmniRenderPipelineBuilder {
+        this.irisType = type; return this
     }
 }

@@ -25,6 +25,7 @@ public interface OmniRenderPipeline {
         public val depthMask: Boolean?,
         public val polygonOffset: Pair<Float, Float>?,
         public val legacyEffects: LegacyEffects?,
+        public val irisType: IrisShaderType?,
     )
 
     public enum class DepthTest {

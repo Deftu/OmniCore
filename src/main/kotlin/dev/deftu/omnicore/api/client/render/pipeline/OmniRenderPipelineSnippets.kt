@@ -11,6 +11,7 @@ public object OmniRenderPipelineSnippets {
     public val POSITION: OmniRenderPipeline.Snippet = builder()
         .setVertexFormat(DefaultVertexFormats.POSITION)
         .setDrawMode(DrawMode.QUADS)
+        .setIrisType(IrisShaderType.BASIC)
         .setBlendState(OmniBlendState.NORMAL)
         .configureLegacyEffects {
             OmniTextureUnit.TEXTURE0 equals false
@@ -20,6 +21,7 @@ public object OmniRenderPipelineSnippets {
     public val POSITION_COLOR: OmniRenderPipeline.Snippet = builder()
         .setVertexFormat(DefaultVertexFormats.POSITION_COLOR)
         .setDrawMode(DrawMode.QUADS)
+        .setIrisType(IrisShaderType.BASIC)
         .setBlendState(OmniBlendState.ALPHA)
         .configureLegacyEffects {
             shadeModel = ShadeModel.SMOOTH
@@ -30,6 +32,7 @@ public object OmniRenderPipelineSnippets {
     public val POSITION_TEXTURE_COLOR: OmniRenderPipeline.Snippet = builder()
         .setVertexFormat(DefaultVertexFormats.POSITION_TEXTURE_COLOR)
         .setDrawMode(DrawMode.QUADS)
+        .setIrisType(IrisShaderType.TEXTURED)
         .setBlendState(OmniBlendState.ALPHA)
         .configureLegacyEffects {
             shadeModel = ShadeModel.SMOOTH
@@ -40,6 +43,7 @@ public object OmniRenderPipelineSnippets {
     public val LINES: OmniRenderPipeline.Snippet = builder()
         .setVertexFormat(DefaultVertexFormats.POSITION_COLOR_NORMAL)
         .setDrawMode(DrawMode.LINES)
+        .setIrisType(IrisShaderType.LINES)
         .setBlendState(OmniBlendState.ALPHA)
         .setCulling(false)
         .configureLegacyEffects {

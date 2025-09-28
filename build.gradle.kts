@@ -58,6 +58,20 @@ java {
     withSourcesJar()
 }
 
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven("https://api.modrinth.com/maven") {
+                name = "Modrinth"
+            }
+        }
+
+        filter {
+            includeGroup("maven.modrinth")
+        }
+    }
+}
+
 if (mcData.isNeoForge && mcData.version > MinecraftVersions.VERSION_1_21_8) {
     repositories {
         maven {
@@ -85,6 +99,16 @@ dependencies {
 
     api(libs.brigadier)
     api(includeOrShade(libs.enhancedeventbus.get())!!)
+
+    if (mcData.version >= MinecraftVersions.VERSION_1_21_5) {
+        val irisVersion = when {
+            mcData.version >= MinecraftVersions.VERSION_1_21_6 -> "1.9.1+1.21.7-${mcData.loader.friendlyString}"
+            mcData.version >= MinecraftVersions.VERSION_1_21_5 -> "1.8.11+1.21.5-${mcData.loader.friendlyString}"
+            else -> throw IllegalStateException("Unsupported Minecraft version: ${mcData.version}")
+        }
+
+        modCompileOnly("maven.modrinth:iris:$irisVersion")
+    }
 
     if (mcData.version <= MinecraftVersions.VERSION_1_12_2) {
         if (mcData.isForge) {

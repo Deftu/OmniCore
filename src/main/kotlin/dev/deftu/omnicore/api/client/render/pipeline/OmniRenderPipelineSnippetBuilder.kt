@@ -22,6 +22,8 @@ public class OmniRenderPipelineSnippetBuilder {
 
     @JvmField public var legacyEffects: LegacyEffects? = null
 
+    @JvmField public var irisType: IrisShaderType? = null
+
     public fun build(): OmniRenderPipeline.Snippet {
         return OmniRenderPipeline.Snippet(
             location = location,
@@ -35,6 +37,7 @@ public class OmniRenderPipelineSnippetBuilder {
             depthMask = depthMask,
             polygonOffset = polygonOffset,
             legacyEffects = legacyEffects,
+            irisType = irisType,
         )
     }
 
@@ -50,6 +53,7 @@ public class OmniRenderPipelineSnippetBuilder {
         depthMask = null
         polygonOffset = null
         legacyEffects = null
+        irisType = null
         return this
     }
 
@@ -70,6 +74,7 @@ public class OmniRenderPipelineSnippetBuilder {
             other.depthMask?.let { depthMask = it }
             other.polygonOffset?.let { polygonOffset = it }
             other.legacyEffects?.let { legacyEffects = it }
+            other.irisType?.let { irisType = it }
         }
 
         return this
@@ -131,5 +136,9 @@ public class OmniRenderPipelineSnippetBuilder {
     public fun configureLegacyEffects(configure: LegacyEffects.Builder.() -> Unit): OmniRenderPipelineSnippetBuilder {
         this.legacyEffects = LegacyEffects.Builder().apply(configure).build()
         return this
+    }
+
+    public fun setIrisType(type: IrisShaderType): OmniRenderPipelineSnippetBuilder {
+        this.irisType = type; return this
     }
 }
