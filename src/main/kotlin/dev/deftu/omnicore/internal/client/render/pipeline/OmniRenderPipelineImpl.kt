@@ -15,6 +15,7 @@ import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
 public class OmniRenderPipelineImpl(
+    private val builderSnapshotSnippet: OmniRenderPipeline.Snippet?,
     override val location: Identifier,
     override val drawMode: DrawMode,
     override val vertexFormat: VertexFormat,
@@ -49,11 +50,15 @@ public class OmniRenderPipelineImpl(
             return newBuilder()
         }
 
-        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
+        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider).also { builder ->
+            builderSnapshotSnippet?.let { snippet -> builder.applySnippet(snippet) }
+        }
     }
 
     override fun newBuilder(): OmniRenderPipelineBuilder {
         checkNotNull(shaderProvider) { "This pipeline was not created with a ShaderProvider, so it cannot be rebuilt." }
-        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
+        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider).also { builder ->
+            builderSnapshotSnippet?.let { snippet -> builder.applySnippet(snippet) }
+        }
     }
 }

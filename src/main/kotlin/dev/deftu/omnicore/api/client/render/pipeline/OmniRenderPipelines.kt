@@ -59,6 +59,7 @@ public object OmniRenderPipelines {
     @JvmStatic
     public fun wrap(vanilla: RenderPipeline): OmniRenderPipeline {
         return OmniRenderPipelineImpl(
+            builderSnapshotSnippet = null,
             location = vanilla.location,
             drawMode = DrawModes.from(vanilla.vertexFormatMode),
             vertexFormat = vanilla.vertexFormat,

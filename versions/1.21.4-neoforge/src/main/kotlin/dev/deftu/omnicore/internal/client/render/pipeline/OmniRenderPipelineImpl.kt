@@ -20,6 +20,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 
 @ApiStatus.Internal
 public class OmniRenderPipelineImpl(
+    private val builderSnapshotSnippet: OmniRenderPipeline.Snippet?,
     override val location: ResourceLocation,
     override val drawMode: DrawMode,
     override val vertexFormat: VertexFormat,
@@ -56,11 +57,15 @@ public class OmniRenderPipelineImpl(
             return newBuilder()
         }
 
-        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
+        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider).also { builder ->
+            builderSnapshotSnippet?.let { snippet -> builder.applySnippet(snippet) }
+        }
     }
 
     override fun newBuilder(): OmniRenderPipelineBuilder {
-        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider)
+        return OmniRenderPipelineBuilder(location, vertexFormat, drawMode, shaderProvider).also { builder ->
+            builderSnapshotSnippet?.let { snippet -> builder.applySnippet(snippet) }
+        }
     }
 
     public fun texture(name: String, id: Int) {

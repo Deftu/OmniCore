@@ -174,8 +174,42 @@ public class OmniRenderPipelineBuilder internal constructor(
         }
 
         return OmniRenderPipelineImpl(location, drawMode, vertexFormat, vanilla, shaderProvider, shaderSourcesFunction)
+        return OmniRenderPipelineImpl(
+            builderSnapshotSnippet = OmniRenderPipeline.Snippet(
+                location = null,
+                vertexFormat = null,
+                drawMode = null,
+                depthTest = depthTest,
+                culling = culling,
+                colorLogic = colorLogic,
+                blendState = blendState,
+                colorMask = colorMask,
+                depthMask = depthMask,
+                polygonOffset = polygonOffset,
+                legacyEffects = legacyEffects,
+            ),
+            location = location,
+            drawMode = drawMode,
+            vertexFormat = vertexFormat,
+            vanilla = vanilla,
+            shaderProvider = shaderProvider,
+            shaderSourcesFunction = shaderSourcesFunction
+        )
         //#else
         //$$ return OmniRenderPipelineImpl(
+        //$$     builderSnapshotSnippet = OmniRenderPipeline.Snippet(
+        //$$         location = null,
+        //$$         vertexFormat = null,
+        //$$         drawMode = null,
+        //$$         depthTest = depthTest,
+        //$$         culling = culling,
+        //$$         colorLogic = colorLogic,
+        //$$         blendState = blendState,
+        //$$         colorMask = colorMask,
+        //$$         depthMask = depthMask,
+        //$$         polygonOffset = polygonOffset,
+        //$$         legacyEffects = legacyEffects,
+        //$$     ),
         //$$     location = location,
         //$$     drawMode = drawMode,
         //$$     vertexFormat = vertexFormat,
