@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.math
 
 import org.joml.Vector4f
+import kotlin.math.abs
 import kotlin.math.acos
 import kotlin.math.sqrt
 
@@ -158,6 +159,11 @@ public data class OmniVector4f(
 
         val cosTheta = (this.dot(other) / (thisLength * otherLength)).coerceIn(-1f, 1f)
         return acos(cosTheta)
+    }
+
+    public fun perspectiveDivide(eps: Float = 1e-6f): OmniVector4f {
+        return if (abs(w) <= eps) this
+        else OmniVector4f(x / w, y / w, z / w, 1f)
     }
 
     public fun toArray(): FloatArray {

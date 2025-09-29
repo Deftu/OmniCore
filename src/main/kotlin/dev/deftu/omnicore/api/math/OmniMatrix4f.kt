@@ -158,11 +158,11 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
         }
 
         public fun translation(x: Float, y: Float, z: Float): OmniMatrix4f {
-            val data = identity().data
-            data[12] = x
-            data[13] = y
-            data[14] = z
-            return OmniMatrix4f(data)
+            val matrix = identity()
+            matrix.m03 = x
+            matrix.m13 = y
+            matrix.m23 = z
+            return matrix
         }
 
         @JvmStatic
@@ -373,6 +373,14 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
         return data[column * 4 + row]
     }
 
+    public operator fun times(other: OmniMatrix4f): OmniMatrix4f {
+        return multiply(other)
+    }
+
+    public operator fun times(vector: OmniVector4f): OmniVector4f {
+        return transform(vector)
+    }
+
     public fun multiply(other: OmniMatrix4f): OmniMatrix4f {
         val left = this.data
         val right = other.data
@@ -479,13 +487,27 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
         return this
     }
 
-    public fun transpose(): OmniMatrix4f {
-        val transposed = FloatArray(16)
-        for (row in 0..3) for (column in 0..3) {
-            transposed[column * 4 + row] = data[row * 4 + column]
+    public fun setIdentity(): OmniMatrix4f {
+        for (i in data.indices) {
+            data[i] = if (i % 5 == 0) 1f else 0f
         }
 
-        return OmniMatrix4f(transposed)
+        return this
+    }
+
+    public fun transpose(): OmniMatrix4f {
+        for (r in 0..3) {
+            for (c in r + 1..3) {
+                val i = c * 4 + r
+                val j = r * 4 + c
+
+                val tmp = data[i]
+                data[i] = data[j]
+                data[j] = tmp
+            }
+        }
+
+        return this
     }
 
     public fun transform(vector: OmniVector4f): OmniVector4f {
@@ -496,19 +518,24 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
         return OmniVector4f(nx, ny, nz, nw)
     }
 
-    public fun transformPosition(x: Float, y: Float, z: Float): OmniVector4f {
-        val xPrime = data[0] * x + data[4] * y + data[8] * z + data[12]
-        val yPrime = data[1] * x + data[5] * y + data[9] * z + data[13]
-        val zPrime = data[2] * x + data[6] * y + data[10] * z + data[14]
-        val wPrime = data[3] * x + data[7] * y + data[11] * z + data[15]
-        return OmniVector4f(xPrime, yPrime, zPrime, wPrime)
+    public fun transformPoint(x: Float, y: Float, z: Float): OmniVector4f {
+        val nx = data[0] * x + data[4] * y + data[8]  * z + data[12]
+        val ny = data[1] * x + data[5] * y + data[9]  * z + data[13]
+        val nz = data[2] * x + data[6] * y + data[10] * z + data[14]
+        val nw = data[3] * x + data[7] * y + data[11] * z + data[15]
+        return OmniVector4f(nx, ny, nz, nw)
     }
 
-    public fun transformDirection(x: Float, y: Float, z: Float): OmniVector3f {
-        val xPrime = data[0] * x + data[4] * y + data[8] * z
-        val yPrime = data[1] * x + data[5] * y + data[9] * z
-        val zPrime = data[2] * x + data[6] * y + data[10] * z
-        return OmniVector3f(xPrime, yPrime, zPrime)
+    public fun transformPoint3(x: Float, y: Float, z: Float): OmniVector3f {
+        val p = transformPoint(x, y, z).perspectiveDivide()
+        return OmniVector3f(p.x, p.y, p.z)
+    }
+
+    public fun transformVector(x: Float, y: Float, z: Float): OmniVector3f {
+        val nx = data[0] * x + data[4] * y + data[8]  * z
+        val ny = data[1] * x + data[5] * y + data[9]  * z
+        val nz = data[2] * x + data[6] * y + data[10] * z
+        return OmniVector3f(nx, ny, nz)
     }
 
     public fun deepCopy(): OmniMatrix4f {

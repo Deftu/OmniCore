@@ -278,13 +278,25 @@ public class OmniMatrix3f private constructor(private val data: FloatArray) {
         return this
     }
 
-    public fun transpose(): OmniMatrix3f {
-        val transposed = FloatArray(9)
-        for (row in 0..2) for (column in 0..2) {
-            transposed[column * 3 + row] = data[row * 3 + column]
+    public fun setIdentity(): OmniMatrix3f {
+        for (i in data.indices) {
+            data[i] = if (i % 4 == 0) 1f else 0f
         }
 
-        return OmniMatrix3f(transposed)
+        return this
+    }
+
+    public fun transpose(): OmniMatrix3f {
+        val a01 = data[3]
+        val a02 = data[6]
+        val a12 = data[7]
+        data[3] = data[1]
+        data[1] = a01
+        data[6] = data[2]
+        data[2] = a02
+        data[7] = data[5]
+        data[5] = a12
+        return this
     }
 
     public fun transformDirection(x: Float, y: Float, z: Float): OmniVector3f {
