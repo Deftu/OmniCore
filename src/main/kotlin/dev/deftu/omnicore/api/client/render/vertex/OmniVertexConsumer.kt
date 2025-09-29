@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.api.client.render.vertex
 
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import dev.deftu.omnicore.api.color.ColorFormat
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.math.OmniVector3f
+import dev.deftu.omnicore.api.math.OmniVector4f
 import java.awt.Color
 
 public interface OmniVertexConsumer {
@@ -53,8 +53,8 @@ public interface OmniVertexConsumer {
         color: OmniColor
     ): OmniVertexConsumer {
         return this
-            .vertex(stack, x1, y1, 0.0).color(color,).next()
-            .vertex(stack, x2, y2, 0.0).color(color,).next()
+            .vertex(stack, x1, y1, 0.0).color(color).next()
+            .vertex(stack, x2, y2, 0.0).color(color).next()
     }
 
     public fun line(
