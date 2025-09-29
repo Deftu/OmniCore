@@ -29,6 +29,11 @@ public object OmniRenderPipelineSnippets {
         }.build()
 
     @JvmField
+    public val POSITION_COLOR_TRIANGLES: OmniRenderPipeline.Snippet = builder(POSITION_COLOR)
+        .setDrawMode(DrawMode.TRIANGLES)
+        .build()
+
+    @JvmField
     public val POSITION_TEXTURE_COLOR: OmniRenderPipeline.Snippet = builder()
         .setVertexFormat(DefaultVertexFormats.POSITION_TEXTURE_COLOR)
         .setDrawMode(DrawMode.QUADS)

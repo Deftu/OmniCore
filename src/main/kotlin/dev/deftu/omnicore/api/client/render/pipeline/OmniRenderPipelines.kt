@@ -44,6 +44,12 @@ public object OmniRenderPipelines {
     ).build()
 
     @JvmField
+    public val POSITION_COLOR_TRIANGLES: OmniRenderPipeline = builderWithDefaultShader(
+        location = identifierOf("pipeline/position_color_triangles"),
+        snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_COLOR_TRIANGLES)
+    ).build()
+
+    @JvmField
     public val TEXTURED: OmniRenderPipeline = builderWithDefaultShader(
         location = identifierOf("pipeline/textured"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_TEXTURE_COLOR)

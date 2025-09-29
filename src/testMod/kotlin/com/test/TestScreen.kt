@@ -6,15 +6,26 @@ import dev.deftu.omnicore.api.client.image.OmniImages
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
+import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
+import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
+import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.TextShadowType
+import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
+import dev.deftu.omnicore.api.client.render.state.OmniBlendState
+import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyAlphaState
+import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderStates
+import dev.deftu.omnicore.api.client.render.state.legacy.ShadeModel
+import dev.deftu.omnicore.api.client.render.vertex.circle
+import dev.deftu.omnicore.api.client.render.vertex.roundedQuad
 import dev.deftu.omnicore.api.client.screen.OmniScreen
 import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.api.identifierOrThrow
+import dev.deftu.omnicore.api.math.OmniVector4f
 import dev.deftu.textile.minecraft.MCSimpleTextHolder
 import kotlin.io.path.Path
 import kotlin.math.abs
@@ -84,7 +95,8 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     override fun onRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
         super.onRender(ctx, mouseX, mouseY, tickDelta) // Render vanilla screen
 
-        renderQuad(ctx)
+//        renderQuad(ctx)
+        renderRoundedQuad(ctx)
         renderLine(ctx)
 
         ctx.renderTextCentered(
@@ -203,6 +215,32 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             buffer.buildOrThrow().drawAndClose(pipeline)
 
 //            ctx.popScissor()
+        }
+    }
+
+    private fun renderRoundedQuad(ctx: OmniRenderingContext) {
+        ctx.withMatrices { matrices ->
+            val buffer = OmniRenderPipelines.POSITION_COLOR_TRIANGLES.createBufferBuilder()
+//            buffer.roundedQuad(
+//                stack = matrices,
+//                x = renderX,
+//                y = renderY,
+//                width = renderWidth,
+//                height = renderHeight,
+//                radius = 50f,
+//                color = OmniColors.LIME,
+//            )
+
+            buffer.circle(
+                stack = matrices,
+                cx = renderX + renderWidth / 2,
+                cy = renderY + renderHeight / 2,
+                radius = renderHeight.toFloat() / 2f,
+                color = OmniColors.PINK.withAlpha(89),
+                segmentScale = 0.2
+            )
+
+            buffer.buildOrThrow().drawAndClose(OmniRenderPipelines.POSITION_COLOR_TRIANGLES)
         }
     }
 
