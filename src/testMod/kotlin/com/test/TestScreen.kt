@@ -175,12 +175,12 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
     private fun renderQuad(ctx: OmniRenderingContext) {
         ctx.withMatrices { matrices ->
-            ctx.pushScissor(
-                x = renderX.toInt(),
-                y = renderY.toInt(),
-                width = renderWidth.toInt(),
-                height = (renderHeight / 2).toInt()
-            )
+//            ctx.pushScissor(
+//                x = renderX.toInt(),
+//                y = renderY.toInt(),
+//                width = renderWidth.toInt(),
+//                height = (renderHeight / 2).toInt()
+//            )
 
             val pipeline = OmniRenderPipelines.POSITION_COLOR
             val buffer = pipeline.createBufferBuilder()
@@ -202,7 +202,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
                 .next()
             buffer.buildOrThrow().drawAndClose(pipeline)
 
-            ctx.popScissor()
+//            ctx.popScissor()
         }
     }
 

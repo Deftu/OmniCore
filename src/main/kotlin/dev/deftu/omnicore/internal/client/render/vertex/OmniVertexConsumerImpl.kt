@@ -8,11 +8,8 @@ import org.jetbrains.annotations.ApiStatus
 //#if MC >= 1.16.5
 import net.minecraft.client.render.BufferBuilder
 //#else
+//$$ import dev.deftu.omnicore.api.math.OmniVector4f
 //$$ import net.minecraft.client.renderer.BufferBuilder
-//$$ import org.lwjgl.util.vector.Matrix4f
-//$$ import org.lwjgl.util.vector.Matrix3f
-//$$ import org.lwjgl.util.vector.Vector4f
-//$$ import org.lwjgl.util.vector.Vector3f
 //#endif
 
 @ApiStatus.Internal
@@ -38,8 +35,8 @@ public open class OmniVertexConsumerImpl(
         //#if MC >= 1.16.5
         value.vertex(stack.current.positionMatrix.vanilla, x.toFloat(), y.toFloat(), z.toFloat())
         //#else
-        //$$ val vector = stack.current.positionMatrix.transformDirection(x.toFloat(), y.toFloat(), z.toFloat())
-        //$$ value.pos(vector.x.toDouble(), vector.y.toDouble(), vector.z.toDouble())
+        //$$ val (vx, vy, vz) = stack.current.positionMatrix.transform(OmniVector4f(x.toFloat(), y.toFloat(), z.toFloat(), 1f))
+        //$$ value.pos(vx.toDouble(), vy.toDouble(), vz.toDouble())
         //#endif
         return this
     }

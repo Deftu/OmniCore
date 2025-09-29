@@ -488,12 +488,20 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
         return OmniMatrix4f(transposed)
     }
 
-    public fun transformPosition(x: Float, y: Float, z: Float): FloatArray {
+    public fun transform(vector: OmniVector4f): OmniVector4f {
+        val nx = data[0] * vector.x + data[4] * vector.y + data[8] * vector.z  + data[12] * vector.w
+        val ny = data[1] * vector.x + data[5] * vector.y + data[9] * vector.z  + data[13] * vector.w
+        val nz = data[2] * vector.x + data[6] * vector.y + data[10] * vector.z + data[14] * vector.w
+        val nw = data[3] * vector.x + data[7] * vector.y + data[11] * vector.z + data[15] * vector.w
+        return OmniVector4f(nx, ny, nz, nw)
+    }
+
+    public fun transformPosition(x: Float, y: Float, z: Float): OmniVector4f {
         val xPrime = data[0] * x + data[4] * y + data[8] * z + data[12]
         val yPrime = data[1] * x + data[5] * y + data[9] * z + data[13]
         val zPrime = data[2] * x + data[6] * y + data[10] * z + data[14]
         val wPrime = data[3] * x + data[7] * y + data[11] * z + data[15]
-        return floatArrayOf(xPrime, yPrime, zPrime, wPrime)
+        return OmniVector4f(xPrime, yPrime, zPrime, wPrime)
     }
 
     public fun transformDirection(x: Float, y: Float, z: Float): OmniVector3f {
