@@ -72,19 +72,6 @@ repositories {
     }
 }
 
-if (mcData.isNeoForge && mcData.version > MinecraftVersions.VERSION_1_21_8) {
-    repositories {
-        maven {
-            name = "Maven for PR #2639" // https://github.com/neoforged/NeoForge/pull/2639
-            url = uri("https://prmaven.neoforged.net/NeoForge/pr2639")
-            content {
-                includeModule("net.neoforged", "neoforge")
-                includeModule("net.neoforged", "testframework")
-            }
-        }
-    }
-}
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
