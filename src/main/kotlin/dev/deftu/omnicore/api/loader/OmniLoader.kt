@@ -76,8 +76,13 @@ public object OmniLoader {
                 else -> throw IllegalStateException("Unknown physical side")
             }
             //#else
-            //#if MC >= 1.15.2
-            //$$ return when (FMLEnvironment.dist) {
+            //#if MC >= 1.16.5
+            //#if MC >= 1.21.9
+            //$$ val dist = FMLEnvironment.getDist()
+            //#else
+            //$$ val dist = FMLEnvironment.dist
+            //#endif
+            //$$ return when (dist) {
             //$$     Dist.CLIENT -> Side.CLIENT
             //$$     Dist.DEDICATED_SERVER -> Side.SERVER
             //$$     else -> throw IllegalStateException("Unknown physical side")
@@ -106,7 +111,9 @@ public object OmniLoader {
             //#if FABRIC
             return FabricLoader.getInstance().isDevelopmentEnvironment
             //#else
-            //#if MC >= 1.15.2
+            //#if MC >= 1.21.9
+            //$$ return !FMLLoader.getCurrent().isProduction
+            //#elseif MC >= 1.16.5
             //$$ return !FMLLoader.isProduction()
             //#else
             //$$ return Launch.blackboard["fml.deobfuscatedEnvironment"] as Boolean
@@ -232,7 +239,9 @@ public object OmniLoader {
         val container = FabricLoader.getInstance().getModContainer(id).orElse(null)
         return container?.findPath(path)?.getOrNull()?.takeIf(Files::exists)?.let(Files::newInputStream)
         //#else
-        //#if MC >= 1.15.2
+        //#if MC >= 1.21.9
+        //$$ return ModList.get().getModFileById(id).file.contents.openFile(path)
+        //#elseif MC >= 1.16.5
         //$$ return ModList.get().getModFileById(id).file.findResource(path)?.inputStream()
         //#else
         //$$ val container = Loader.instance().getIndexedModList()[id]
