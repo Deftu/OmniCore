@@ -148,10 +148,19 @@ public interface OmniMatrixStack {
         }
     }
 
-    public fun with(block: OmniMatrixStack.() -> OmniMatrixUnit) {
+    public fun <T> with(block: OmniMatrixStack.() -> T): T {
+        push()
+        return try {
+            block()
+        } finally {
+            pop()
+        }
+    }
+
+    public fun with(block: Runnable) {
         push()
         try {
-            block()
+            block.run()
         } finally {
             pop()
         }
