@@ -3,6 +3,7 @@ package dev.deftu.omnicore.internal.client.render.stack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
+import dev.deftu.omnicore.api.math.OmniQuaternion
 import java.util.ArrayDeque
 import java.util.Deque
 
@@ -162,6 +163,17 @@ public class OmniMatrixStackImpl private constructor(private val stack: Deque<Om
             val radians = if (isDegrees) Math.toRadians(angle.toDouble()).toFloat() else angle
             positionMatrix.rotate(axisX, axisY, axisZ, radians)
             normalMatrix.rotate(axisX, axisY, axisZ, radians)
+        }
+    }
+
+    override fun rotate(quaternion: OmniQuaternion) {
+        if (quaternion == OmniQuaternion.identity()) {
+            return
+        }
+
+        with(current) {
+            positionMatrix.rotate(quaternion)
+            normalMatrix.rotate(quaternion)
         }
     }
 

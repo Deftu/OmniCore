@@ -3,6 +3,7 @@ package dev.deftu.omnicore.api.client.render.stack
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
+import dev.deftu.omnicore.api.math.OmniQuaternion
 import dev.deftu.omnicore.api.math.OmniVector2f
 import dev.deftu.omnicore.api.math.OmniVector3f
 import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
@@ -72,6 +73,7 @@ public interface OmniMatrixStack {
     public fun translate(x: Float, y: Float, z: Float)
     public fun scale(x: Float, y: Float, z: Float)
     public fun rotate(angle: Float, axisX: Float, axisY: Float, axisZ: Float, isDegrees: Boolean = true)
+    public fun rotate(quaternion: OmniQuaternion)
 
     public fun translate(vector: OmniVector3f) {
         translate(vector.x, vector.y, vector.z)

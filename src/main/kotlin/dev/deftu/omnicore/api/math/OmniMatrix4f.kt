@@ -482,8 +482,26 @@ public class OmniMatrix4f private constructor(private val data: FloatArray) {
     }
 
     public fun rotate(axisX: Float, axisY: Float, axisZ: Float, angle: Float): OmniMatrix4f {
-        val r = rotation(axisX, axisY, axisZ, angle)
-        postMultiplyInPlace(r.data)
+        val rotationMatrix = rotation(axisX, axisY, axisZ, angle)
+        postMultiplyInPlace(rotationMatrix.data)
+        return this
+    }
+
+    public fun rotate(quat: OmniQuaternion): OmniMatrix4f {
+        val normalized = quat.normalize(OmniQuaternion(0f, 0f, 0f, 0f))
+        val x = normalized.x; val y = normalized.y; val z = normalized.z; val w = normalized.w
+        val xs = x * x; val ys = y * y; val zs = z * z
+        val xy = x * y; val xz = x * z; val yz = y * z
+        val wx = w * x; val wy = w * y; val wz = w * z
+
+        val rotationMatrix = floatArrayOf(
+            1f - 2f * (ys + zs), 2f * (xy + wz), 2f * (xz - wy), 0f,
+            2f * (xy - wz), 1f - 2f * (xs + zs), 2f * (yz + wx), 0f,
+            2f * (xz + wy), 2f * (yz - wx), 1f - 2f * (xs + ys), 0f,
+            0f, 0f, 0f, 1f
+        )
+
+        postMultiplyInPlace(rotationMatrix)
         return this
     }
 

@@ -3,6 +3,7 @@ package dev.deftu.omnicore.internal.client.render.stack
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
+import dev.deftu.omnicore.api.math.OmniQuaternion
 
 public data object OmniMatrixUnit : OmniMatrixStack {
     private val entry = OmniMatrixStack.Entry(OmniMatrix4f.identity(), OmniMatrix3f.identity())
@@ -34,6 +35,10 @@ public data object OmniMatrixUnit : OmniMatrixStack {
     }
 
     override fun rotate(angle: Float, axisX: Float, axisY: Float, axisZ: Float, isDegrees: Boolean) {
+        // no-op
+    }
+
+    override fun rotate(quaternion: OmniQuaternion) {
         // no-op
     }
 

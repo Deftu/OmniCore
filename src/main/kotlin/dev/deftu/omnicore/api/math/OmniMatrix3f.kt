@@ -278,6 +278,23 @@ public class OmniMatrix3f private constructor(private val data: FloatArray) {
         return this
     }
 
+    public fun rotate(quat: OmniQuaternion): OmniMatrix3f {
+        val normalized = quat.normalize(OmniQuaternion(0f, 0f, 0f, 0f))
+        val x = normalized.x; val y = normalized.y; val z = normalized.z; val w = normalized.w
+        val xs = x * x; val ys = y * y; val zs = z * z
+        val xy = x * y; val xz = x * z; val yz = y * z
+        val wx = w * x; val wy = w * y; val wz = w * z
+
+        val rotationMatrix = floatArrayOf(
+            1f - 2f * (ys + zs), 2f * (xy + wz), 2f * (xz - wy),
+            2f * (xy - wz), 1f - 2f * (xs + zs), 2f * (yz + wx),
+            2f * (xz + wy), 2f * (yz - wx), 1f - 2f * (xs + ys)
+        )
+
+        postMultiplyInPlace(rotationMatrix)
+        return this
+    }
+
     public fun setIdentity(): OmniMatrix3f {
         for (i in data.indices) {
             data[i] = if (i % 4 == 0) 1f else 0f
