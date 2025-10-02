@@ -28,7 +28,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
         val color = native.getColorArgb(x, y)
         return OmniColor(ColorFormat.ARGB, color)
         //#elseif MC >= 1.16.5
-        //$$ return OmniColor(ColorFormat.ARGB, native.getColor(x, y))
+        //$$ return OmniColor(ColorFormat.ABGR, native.getColor(x, y))
         //#else
         //$$ return OmniColor(ColorFormat.ARGB, native.getRGB(x, y))
         //#endif
@@ -38,7 +38,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
         //#if MC >= 1.21.2
         native.setColorArgb(x, y, color.pack(ColorFormat.ARGB))
         //#elseif MC >= 1.16.5
-        //$$ native.setColor(x, y, color.pack(ColorFormat.ARGB))
+        //$$ native.setColor(x, y, color.pack(ColorFormat.ABGR))
         //#else
         //$$ native.setRGB(x, y, color.pack(ColorFormat.ARGB))
         //#endif
