@@ -4,9 +4,12 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.color.ColorFormat
 import dev.deftu.omnicore.api.color.OmniColor
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextFormat
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.Text
+import dev.deftu.textile.TextStyle
+import dev.deftu.textile.minecraft.MCText
+import dev.deftu.textile.minecraft.MCTextStyle
+import net.minecraft.text.Text as VanillaText
+import kotlin.math.abs
 
 //#if MC >= 1.21.6
 import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
@@ -18,15 +21,14 @@ import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
 //$$ import net.minecraft.client.font.TextRenderer
 //#endif
 
-//#if MC >= 1.16.5
-import net.minecraft.text.StringVisitable
-//#endif
-
 //#if MC < 1.16.5
 //$$ import dev.deftu.omnicore.api.client.render.state.OmniRenderStates
 //#endif
 
 public object OmniTextRenderer {
+    public const val COLOR_CHAR: Char = '\u00a7'
+    @JvmField public val FORMATTING_CODE_PATTERN: Regex = Regex("§[0-9a-fk-or]", RegexOption.IGNORE_CASE)
+
     private inline val textRenderer
         get() = client.textRenderer
 
@@ -51,7 +53,7 @@ public object OmniTextRenderer {
     @JvmStatic
     public fun render(
         matrices: OmniMatrixStack,
-        text: String,
+        text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
@@ -59,7 +61,7 @@ public object OmniTextRenderer {
         //#if MC >= 1.21.6
         val drawer = ImmediateGlyphDrawer(matrices.current.positionMatrix.vanilla)
 
-        val glyph = textRenderer.prepare(text, x, y, color.pack(ColorFormat.ARGB), shadow, 0)
+        val glyph = textRenderer.prepare(text.asOrderedText(), x, y, color.pack(ColorFormat.ARGB), shadow, 0)
         glyph.draw(drawer)
         drawer.flush()
 
@@ -87,7 +89,7 @@ public object OmniTextRenderer {
         //$$ val blendState = OmniRenderStates.blend.asEnabled()
         //$$ blendState.submit()
         //$$ val xPos = textRenderer.drawString(
-        //$$     text,
+        //$$     text.formattedText,
         //$$     x,
         //$$     y,
         //$$     color.pack(ColorFormat.ARGB),
@@ -97,6 +99,50 @@ public object OmniTextRenderer {
         //$$ blendState.restore()
         //$$ return xPos
         //#endif
+    }
+
+    @JvmStatic
+    public fun render(
+        matrices: OmniMatrixStack,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return render(matrices, MCText.convert(text), x, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun render(
+        matrices: OmniMatrixStack,
+        text: String,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return render(matrices, Text.literal(text), x, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun render(
+        context: OmniRenderingContext,
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return render(context.matrices, text, x, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun render(
+        context: OmniRenderingContext,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return render(context.matrices, text, x, y, color, shadow)
     }
 
     @JvmStatic
@@ -113,7 +159,7 @@ public object OmniTextRenderer {
     @JvmStatic
     public fun render(
         matrices: OmniMatrixStack,
-        text: String,
+        text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
@@ -129,7 +175,7 @@ public object OmniTextRenderer {
                     return render(matrices, text, x, y, color, shadow = false)
                 }
 
-                val strippedText = MCTextFormat.strip(text)
+                val strippedText = stripColor(MCText.wrap(text).collapseToString())
                 for (i in outlineOffsets.indices step 2) {
                     val dx = outlineOffsets[i]
                     val dy = outlineOffsets[i + 1]
@@ -139,6 +185,50 @@ public object OmniTextRenderer {
                 render(matrices, text, x, y, color, shadow = false)
             }
         }
+    }
+
+    @JvmStatic
+    public fun render(
+        matrices: OmniMatrixStack,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return render(matrices, MCText.convert(text), x, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun render(
+        matrices: OmniMatrixStack,
+        text: String,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return render(matrices, Text.literal(text), x, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun render(
+        context: OmniRenderingContext,
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return render(context.matrices, text, x, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun render(
+        context: OmniRenderingContext,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return render(context.matrices, text, x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -155,13 +245,57 @@ public object OmniTextRenderer {
     @JvmStatic
     public fun renderCentered(
         matrices: OmniMatrixStack,
-        text: String,
+        text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
         val width = width(text)
         return render(matrices, text, x - width / 2f, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        matrices: OmniMatrixStack,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return renderCentered(matrices, MCText.convert(text), x, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        matrices: OmniMatrixStack,
+        text: String,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return renderCentered(matrices, Text.literal(text), x, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        context: OmniRenderingContext,
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return renderCentered(context.matrices, text, x, y, color, shadow)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        context: OmniRenderingContext,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ): Int {
+        return renderCentered(context.matrices, text, x, y, color, shadow)
     }
 
     @JvmStatic
@@ -178,13 +312,57 @@ public object OmniTextRenderer {
     @JvmStatic
     public fun renderCentered(
         matrices: OmniMatrixStack,
-        text: String,
+        text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
         val width = width(text)
         return render(matrices, text, x - width / 2f, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        matrices: OmniMatrixStack,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return renderCentered(matrices, MCText.convert(text), x, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        matrices: OmniMatrixStack,
+        text: String,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return renderCentered(matrices, Text.literal(text), x, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        context: OmniRenderingContext,
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return renderCentered(context.matrices, text, x, y, color, shadowType)
+    }
+
+    @JvmStatic
+    public fun renderCentered(
+        context: OmniRenderingContext,
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ): Int {
+        return renderCentered(context.matrices, text, x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -204,11 +382,16 @@ public object OmniTextRenderer {
     }
 
     @JvmStatic
-    public fun width(text: MCTextHolder<*>): Int {
+    public fun width(text: Text): Int {
+        return width(MCText.convert(text))
+    }
+
+    @JvmStatic
+    public fun width(text: VanillaText): Int {
         //#if MC >= 1.16.5
-        return textRenderer.getWidth(text.asVanilla())
+        return textRenderer.getWidth(text)
         //#else
-        //$$ return width(text.asString())
+        //$$ return textRenderer.getStringWidth(text.unformattedText)
         //#endif
     }
 
@@ -218,27 +401,30 @@ public object OmniTextRenderer {
     }
 
     @JvmStatic
-    public fun height(text: MCTextHolder<*>, maxWidth: Int): Int {
+    public fun height(text: Text, maxWidth: Int): Int {
+        return height(MCText.convert(text), maxWidth)
+    }
+
+    @JvmStatic
+    public fun height(text: VanillaText, maxWidth: Int): Int {
         //#if MC >= 1.19.2
-        return textRenderer.getWrappedLinesHeight(text.asVanilla(), maxWidth)
+        return textRenderer.getWrappedLinesHeight(text, maxWidth)
         //#else
-        //$$ return height(text.asString(), maxWidth)
+        //$$ return textRenderer.getWrappedLinesHeight(text.asString(), maxWidth)
         //#endif
     }
 
     @JvmStatic
-    public fun wrapLines(text: String, maxWidth: Int): List<MCTextHolder<*>> {
-        return wrapLines(MCSimpleTextHolder(text), maxWidth)
+    public fun stripColor(text: String): String {
+        return text.replace(COLOR_CHAR, '§').replace(FORMATTING_CODE_PATTERN) {
+            if (it.value[1] in '0'..'9') "" else it.value
+        }
     }
 
     @JvmStatic
-    public fun wrapLines(text: MCTextHolder<*>, maxWidth: Int): List<MCTextHolder<*>> {
-        //#if MC >= 1.21.6
-        return textRenderer.wrapLinesWithoutLanguage(text.asVanilla(), maxWidth).map(StringVisitable::getString).map(::MCSimpleTextHolder)
-        //#elseif MC >= 1.16.5
-        //$$ return textRenderer.textHandler.wrapLines(text.asVanilla(), maxWidth, Style.EMPTY).map(StringVisitable::getString).map(::MCSimpleTextHolder)
-        //#else
-        //$$ return textRenderer.listFormattedStringToWidth(text.asString(), maxWidth).map(::MCSimpleTextHolder)
-        //#endif
+    public fun stripFormat(text: String): String {
+        return text.replace(COLOR_CHAR, '§').replace(FORMATTING_CODE_PATTERN) {
+            if (it.value[1] in 'a'..'r') "" else it.value
+        }
     }
 }
