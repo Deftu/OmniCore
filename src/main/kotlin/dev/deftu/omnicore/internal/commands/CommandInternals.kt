@@ -29,9 +29,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 //$$ import com.mojang.brigadier.exceptions.CommandSyntaxException
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import dev.deftu.omnicore.api.profiled
-//$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import net.minecraft.command.ICommandSender
 //$$ import net.minecraft.server.MinecraftServer
+//$$ import net.minecraft.util.text.TextFormatting
 //#if FORGE
 //$$ import net.minecraft.command.ServerCommandManager
 //$$ import net.minecraftforge.fml.server.FMLServerHandler
@@ -159,7 +159,7 @@ public object CommandInternals {
     //$$         .join()
     //$$         .list
     //$$         .map(Suggestion::getText)
-    //$$         .map { text -> MCTextFormat.GRAY + (if (command.contains(" ")) "" else "/") + text + MCTextFormat.RESET }
+    //$$         .map { text -> TextFormatting.GRAY.toString() + (if (command.contains(" ")) "" else "/") + text + TextFormatting.RESET.toString() }
     //$$         .toMutableList()
     //$$ }
     //#endif

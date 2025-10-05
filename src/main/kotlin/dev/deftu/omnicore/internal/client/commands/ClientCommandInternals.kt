@@ -22,8 +22,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 //#endif
 
 //#if MC <= 1.12.2
-//$$ import dev.deftu.textile.minecraft.MCTextFormat
 //$$ import com.mojang.brigadier.suggestion.Suggestion
+//$$ import net.minecraft.util.text.TextFormatting
 //#endif
 
 //#if FORGE-LIKE && MC >= 1.18.2
@@ -114,7 +114,7 @@ public object ClientCommandInternals {
     //$$         .join()
     //$$         .list
     //$$         .map(Suggestion::getText)
-    //$$         .map { text -> MCTextFormat.GRAY + (if (command.contains(" ")) "" else "/") + text + MCTextFormat.RESET }
+    //$$         .map { text -> TextFormatting.GRAY.toString() + (if (command.contains(" ")) "" else "/") + text + TextFormatting.RESET.toString() }
     //$$         .toSet()
     //$$ }
     //#endif

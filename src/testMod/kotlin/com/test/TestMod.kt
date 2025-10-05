@@ -21,8 +21,9 @@ import dev.deftu.omnicore.api.player.biomeData
 import dev.deftu.omnicore.api.player.chunkData
 import dev.deftu.omnicore.api.sound.OmniSounds
 import dev.deftu.omnicore.api.world.isClearWeather
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextFormat
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.MCTextStyle
+import dev.deftu.textile.minecraft.TextColors
 import net.minecraft.server.network.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
 
@@ -149,7 +150,7 @@ class TestMod
                 OmniClientChat.displayChatMessage("---")
                 OmniClientChat.displayErrorMessage(testError)
                 OmniClientChat.displayChatMessage("---")
-                OmniClientChat.displayErrorMessage(MCSimpleTextHolder("This is a test error message!").withFormatting(MCTextFormat.DARK_PURPLE), testError)
+                OmniClientChat.displayErrorMessage(Text.literal("This is a test error message!").setStyle(MCTextStyle(color = TextColors.DARK_PURPLE).build()), testError)
 
                 OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
 

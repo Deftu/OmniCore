@@ -1,22 +1,21 @@
 package dev.deftu.omnicore.api.chat
 
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.Text
 
 public interface Audience {
-    public fun sendChat(text: MCTextHolder<*>)
+    public fun sendChat(text: Text)
     public fun sendChat(text: String) {
-        sendChat(MCSimpleTextHolder(text))
+        sendChat(Text.literal(text))
     }
 
-    public fun sendActionBar(text: MCTextHolder<*>)
+    public fun sendActionBar(text: Text)
     public fun sendActionBar(text: String) {
-        sendActionBar(MCSimpleTextHolder(text))
+        sendActionBar(Text.literal(text))
     }
 
     public fun sendTitle(
-        title: MCTextHolder<*>,
-        subtitle: MCTextHolder<*>? = null,
+        title: Text,
+        subtitle: Text? = null,
         fadeIn: Int = 10,
         stay: Int = 70,
         fadeOut: Int = 20
@@ -30,8 +29,8 @@ public interface Audience {
         fadeOut: Int = 20
     ) {
         sendTitle(
-            MCSimpleTextHolder(title),
-            subtitle?.let { MCSimpleTextHolder(it) },
+            Text.literal(title),
+            subtitle?.let(Text::literal),
             fadeIn,
             stay,
             fadeOut

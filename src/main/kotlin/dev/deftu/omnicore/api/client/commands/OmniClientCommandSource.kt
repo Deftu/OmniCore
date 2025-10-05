@@ -5,8 +5,7 @@ import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.network.OmniClientNetworking
 import dev.deftu.omnicore.api.network.PacketPayload
 import dev.deftu.omnicore.api.scheduling.TickSchedulers
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.Text
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.network.ClientPlayerEntity
@@ -30,17 +29,17 @@ public object OmniClientCommandSource {
         return Command.SINGLE_SUCCESS
     }
 
-    public fun replyChat(text: MCTextHolder<*>): Int {
+    public fun replyChat(text: Text): Int {
         OmniClientChat.displayChatMessage(text)
         return Command.SINGLE_SUCCESS
     }
 
     public fun replyChat(text: String): Int {
-        return replyChat(MCSimpleTextHolder(text))
+        return replyChat(Text.literal(text))
     }
 
     @JvmOverloads
-    public fun replyError(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true): Int {
+    public fun replyError(content: Text, throwable: Throwable, isDetailed: Boolean = true): Int {
         OmniClientChat.displayErrorMessage(content, throwable, isDetailed)
         return Command.SINGLE_SUCCESS
     }
@@ -52,18 +51,18 @@ public object OmniClientCommandSource {
         return Command.SINGLE_SUCCESS
     }
 
-    public fun replyActionBar(text: MCTextHolder<*>): Int {
+    public fun replyActionBar(text: Text): Int {
         OmniClientChat.displayActionBar(text)
         return Command.SINGLE_SUCCESS
     }
 
     public fun replyActionBar(text: String): Int {
-        return replyActionBar(MCSimpleTextHolder(text))
+        return replyActionBar(Text.literal(text))
     }
 
     public fun replyTitle(
-        title: MCTextHolder<*>,
-        subtitle: MCTextHolder<*>? = null,
+        title: Text,
+        subtitle: Text? = null,
         fadeIn: Int = 10,
         stay: Int = 70,
         fadeOut: Int = 20
@@ -80,8 +79,8 @@ public object OmniClientCommandSource {
         fadeOut: Int = 20
     ): Int {
         return replyTitle(
-            MCSimpleTextHolder(title),
-            subtitle?.let { MCSimpleTextHolder(it) },
+            Text.literal(title),
+            subtitle?.let(Text::literal),
             fadeIn,
             stay,
             fadeOut

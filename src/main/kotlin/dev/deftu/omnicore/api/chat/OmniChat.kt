@@ -1,12 +1,11 @@
 package dev.deftu.omnicore.api.chat
 
 import dev.deftu.omnicore.internal.asReadableString
-import dev.deftu.textile.minecraft.MCHoverEvent
-import dev.deftu.textile.minecraft.MCSimpleMutableTextHolder
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextFormat
-import dev.deftu.textile.minecraft.MCTextHolder
-import net.minecraft.server.command.CommandOutput
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.HoverEvent
+import dev.deftu.textile.minecraft.MCText
+import dev.deftu.textile.minecraft.MCTextStyle
+import dev.deftu.textile.minecraft.TextColors
 import net.minecraft.server.network.ServerPlayerEntity
 
 //#if MC <= 1.8.9
@@ -36,25 +35,25 @@ public object OmniChat {
     }
 
     @JvmStatic
-    public fun displayChatMessage(player: ServerPlayerEntity, text: MCTextHolder<*>) {
+    public fun displayChatMessage(player: ServerPlayerEntity, text: Text) {
         player
             //#if MC >= 1.19.2
-            .sendMessage(text.asVanilla(), false)
+            .sendMessage(MCText.convert(text), false)
             //#elseif MC >= 1.16.5
-            //$$ .sendSystemMessage(text.asVanilla(), NULL_UUID)
+            //$$ .sendSystemMessage(MCText.convert(text), NULL_UUID)
             //#else
-            //$$ .sendMessage(text.asVanilla())
+            //$$ .sendMessage(MCText.convert(text))
             //#endif
     }
 
     @JvmStatic
     public fun displayChatMessage(player: ServerPlayerEntity, text: String) {
-        displayChatMessage(player, MCSimpleTextHolder(text))
+        displayChatMessage(player, Text.literal(text))
     }
 
     @JvmStatic
     @JvmOverloads
-    public fun displayErrorMessage(player: ServerPlayerEntity, content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true) {
+    public fun displayErrorMessage(player: ServerPlayerEntity, content: Text, throwable: Throwable, isDetailed: Boolean = true) {
         displayChatMessage(player, buildErrorMessage(content, throwable, isDetailed))
     }
 
@@ -65,28 +64,28 @@ public object OmniChat {
     }
 
     @JvmStatic
-    public fun displayActionBar(player: ServerPlayerEntity, text: MCTextHolder<*>) {
+    public fun displayActionBar(player: ServerPlayerEntity, text: Text) {
         //#if MC >= 1.19.2
-        player.sendMessage(text.asVanilla(), true)
+        player.sendMessage(MCText.convert(text), true)
         //#elseif MC >= 1.12.2
-        //$$ player.sendMessage(text.asVanilla(), true)
+        //$$ player.sendMessage(MCText.convert(text), true)
         //#else
-        //$$ val packet = ChatMessageS2CPacket(text.asVanilla() , 2.toByte())
+        //$$ val packet = ChatMessageS2CPacket(MCText.convert(text) , 2.toByte())
         //$$ player.networkHandler.sendPacket(packet)
         //#endif
     }
 
     @JvmStatic
     public fun displayActionBar(player: ServerPlayerEntity, text: String) {
-        displayActionBar(player, MCSimpleTextHolder(text))
+        displayActionBar(player, Text.literal(text))
     }
 
     @JvmStatic
     @JvmOverloads
     public fun displayTitle(
         player: ServerPlayerEntity,
-        title: MCTextHolder<*>,
-        subtitle: MCTextHolder<*>? = null,
+        title: Text,
+        subtitle: Text? = null,
         fadeIn: Int = 10,
         stay: Int = 70,
         fadeOut: Int = 20
@@ -104,26 +103,26 @@ public object OmniChat {
         stay: Int = 70,
         fadeOut: Int = 20
     ) {
-        displayTitle(player, MCSimpleTextHolder(title), subtitle?.let(::MCSimpleTextHolder), fadeIn, stay, fadeOut)
+        displayTitle(player, Text.literal(title), subtitle?.let(Text::literal), fadeIn, stay, fadeOut)
     }
 
     @JvmStatic
-    public fun buildErrorMessage(throwable: Throwable, isDetailed: Boolean = true): MCTextHolder<*> {
-        val text = MCSimpleMutableTextHolder(throwable.message ?: "An error occurred")
-            .addFormatting(MCTextFormat.RED)
+    public fun buildErrorMessage(throwable: Throwable, isDetailed: Boolean = true): Text {
+        val text = Text.literal(throwable.message ?: "An error occurred")
+            .setStyle(MCTextStyle(color = TextColors.RED).build())
         if (isDetailed) {
-            text.setHoverEvent(MCHoverEvent.ShowText(throwable.asReadableString))
+            text.fillStyle(MCTextStyle(hoverEvent = HoverEvent.ShowText(Text.literal(throwable.asReadableString))).build())
         }
 
         return text
     }
 
     @JvmStatic
-    public fun buildErrorMessage(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true): MCTextHolder<*> {
-        val displayedText = MCSimpleMutableTextHolder("")
+    public fun buildErrorMessage(content: Text, throwable: Throwable, isDetailed: Boolean = true): Text {
+        val displayedText = Text.empty()
             .append(content)
         if (isDetailed) {
-            displayedText.setHoverEvent(MCHoverEvent.ShowText(throwable.asReadableString))
+            displayedText.fillStyle(MCTextStyle(hoverEvent = HoverEvent.ShowText(Text.literal(throwable.asReadableString))).build())
         }
 
         return displayedText

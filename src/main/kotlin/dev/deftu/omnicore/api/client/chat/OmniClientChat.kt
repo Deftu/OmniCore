@@ -4,8 +4,8 @@ import dev.deftu.omnicore.api.chat.MessageSurface
 import dev.deftu.omnicore.api.chat.OmniChat
 import dev.deftu.omnicore.api.client.player
 import dev.deftu.omnicore.api.client.playerHud
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.MCText
 
 //#if MC <= 1.12.2
 //$$ import dev.deftu.omnicore.api.client.client
@@ -30,25 +30,25 @@ public object OmniClientChat {
     }
 
     @JvmStatic
-    public fun displayChatMessage(text: MCTextHolder<*>) {
+    public fun displayChatMessage(text: Text) {
         player
             //#if MC >= 1.19.2
-            ?.sendMessage(text.asVanilla(), false)
+            ?.sendMessage(MCText.convert(text), false)
             //#elseif MC >= 1.16.5
-            //$$ ?.sendSystemMessage(text.asVanilla(), OmniChat.NULL_UUID)
+            //$$ ?.sendSystemMessage(MCText.convert(text), OmniChat.NULL_UUID)
             //#else
-            //$$ ?.sendMessage(text.asVanilla())
+            //$$ ?.sendMessage(MCText.convert(text))
             //#endif
     }
 
     @JvmStatic
     public fun displayChatMessage(text: String) {
-        displayChatMessage(MCSimpleTextHolder(text))
+        displayChatMessage(Text.literal(text))
     }
 
     @JvmStatic
     @JvmOverloads
-    public fun displayErrorMessage(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true) {
+    public fun displayErrorMessage(content: Text, throwable: Throwable, isDetailed: Boolean = true) {
         displayChatMessage(OmniChat.buildErrorMessage(content, throwable, isDetailed))
     }
 
@@ -59,28 +59,28 @@ public object OmniClientChat {
     }
 
     @JvmStatic
-    public fun displayActionBar(text: MCTextHolder<*>) {
+    public fun displayActionBar(text: Text) {
         //#if MC >= 1.19.2
-        player?.sendMessage(text.asVanilla(), true)
+        player?.sendMessage(MCText.convert(text), true)
         //#elseif MC >= 1.16.5
-        //$$ player?.sendMessage(text.asVanilla(), true)
+        //$$ player?.sendMessage(MCText.convert(text), true)
         //#elseif MC >= 1.12.2
-        //$$ player?.sendStatusMessage(text.asVanilla(), true)
+        //$$ player?.sendStatusMessage(MCText.convert(text), true)
         //#else
-        //$$ client.networkHandler?.onChatMessage(ChatMessageS2CPacket(text.asVanilla(), 2))
+        //$$ client.networkHandler?.onChatMessage(ChatMessageS2CPacket(MCText.convert(text), 2))
         //#endif
     }
 
     @JvmStatic
     public fun displayActionBar(text: String) {
-        displayActionBar(MCSimpleTextHolder(text))
+        displayActionBar(Text.literal(text))
     }
 
     @JvmStatic
     @JvmOverloads
     public fun displayTitle(
-        title: MCTextHolder<*>,
-        subtitle: MCTextHolder<*>? = null,
+        title: Text,
+        subtitle: Text? = null,
         fadeIn: Int = 10,
         stay: Int = 70,
         fadeOut: Int = 20
@@ -89,15 +89,15 @@ public object OmniClientChat {
         playerHud?.apply {
             clear()
             setTitleTicks(fadeIn, stay, fadeOut)
-            subtitle?.let(MCTextHolder<*>::asVanilla).let(this::setSubtitle)
-            setTitle(title.asVanilla())
+            subtitle?.let(MCText::convert).let(this::setSubtitle)
+            setTitle(MCText.convert(title))
         }
         //#else
         //$$ val hud = playerHud ?: return
         //#if MC >= 1.16.5
-        //$$ hud.setTitles(title.asVanilla(), subtitle?.asVanilla(), fadeIn, stay, fadeOut)
+        //$$ hud.setTitles(MCText.convert(title), subtitle?.let(MCText::convert), fadeIn, stay, fadeOut)
         //#else
-        //$$ hud.displayTitle(title.asString(), subtitle?.asString(), fadeIn, stay, fadeOut)
+        //$$ hud.displayTitle(title.collapseToString(), subtitle?.collapseToString(), fadeIn, stay, fadeOut)
         //#endif
         //#endif
     }
@@ -111,6 +111,6 @@ public object OmniClientChat {
         stay: Int = 70,
         fadeOut: Int = 20
     ) {
-        displayTitle(MCSimpleTextHolder(title), subtitle?.let(::MCSimpleTextHolder), fadeIn, stay, fadeOut)
+        displayTitle(Text.literal(title), subtitle?.let(Text::literal), fadeIn, stay, fadeOut)
     }
 }

@@ -8,11 +8,11 @@ import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
 import dev.deftu.omnicore.api.client.render.ImmediateScreenRenderer
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.MCText
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.screen.Screen
-import net.minecraft.text.Text
+import net.minecraft.text.Text as VanillaText
 
 //#if MC >= 1.21.9
 //$$ import net.minecraft.client.input.CharacterEvent
@@ -41,11 +41,11 @@ import net.minecraft.client.gui.DrawContext
 //#endif
 
 public abstract class OmniScreen @JvmOverloads public constructor(
-    public val screenTitle: MCTextHolder<*>? = null,
+    public val screenTitle: Text? = null,
     public val storePreviousScreen: Boolean = true,
 ) : Screen(
     //#if MC >= 1.16.5
-    (screenTitle ?: MCSimpleTextHolder("")).asVanilla()
+    MCText.convert(screenTitle ?: Text.empty())
     //#endif
 ), OmniScreenController {
     public companion object {
@@ -375,8 +375,8 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     }
 
     //#if MC >= 1.16.5
-    final override fun getTitle(): Text? {
-        return screenTitle?.asVanilla()
+    final override fun getTitle(): VanillaText? {
+        return screenTitle?.let(MCText::convert)
     }
 
     final override fun init() {

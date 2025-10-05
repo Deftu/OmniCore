@@ -4,8 +4,8 @@ import com.mojang.brigadier.Command
 import dev.deftu.omnicore.api.chat.OmniChat
 import dev.deftu.omnicore.api.network.OmniNetworking
 import dev.deftu.omnicore.api.network.PacketPayload
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
-import dev.deftu.textile.minecraft.MCTextHolder
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.MCText
 import net.minecraft.server.MinecraftServer
 import net.minecraft.server.command.CommandOutput
 import net.minecraft.server.network.ServerPlayerEntity
@@ -27,9 +27,9 @@ public class OmniCommandSource(
     //$$ )
     //#endif
 
-    public fun replyChat(text: MCTextHolder<*>): Int {
+    public fun replyChat(text: Text): Int {
         output.sendMessage(
-            text.asVanilla(),
+            MCText.convert(text),
             //#if MC >= 1.16.5 && MC < 1.19.2
             //$$ OmniChat.NULL_UUID
             //#endif
@@ -39,13 +39,13 @@ public class OmniCommandSource(
     }
 
     public fun replyChat(text: String): Int {
-        return replyChat(MCSimpleTextHolder(text))
+        return replyChat(Text.literal(text))
     }
 
     @JvmOverloads
-    public fun replyError(content: MCTextHolder<*>, throwable: Throwable, isDetailed: Boolean = true): Int {
+    public fun replyError(content: Text, throwable: Throwable, isDetailed: Boolean = true): Int {
         output.sendMessage(
-            OmniChat.buildErrorMessage(content, throwable, isDetailed).asVanilla(),
+            MCText.convert(OmniChat.buildErrorMessage(content, throwable, isDetailed)),
             //#if MC >= 1.16.5 && MC < 1.19.2
             //$$ OmniChat.NULL_UUID
             //#endif
@@ -57,7 +57,7 @@ public class OmniCommandSource(
     @JvmOverloads
     public fun replyError(error: Throwable, isDetailed: Boolean = true): Int {
         output.sendMessage(
-            OmniChat.buildErrorMessage(error, isDetailed).asVanilla(),
+            MCText.convert(OmniChat.buildErrorMessage(error, isDetailed)),
             //#if MC >= 1.16.5 && MC < 1.19.2
             //$$ OmniChat.NULL_UUID
             //#endif
@@ -66,19 +66,19 @@ public class OmniCommandSource(
         return Command.SINGLE_SUCCESS
     }
 
-    public fun replyActionBar(text: MCTextHolder<*>): Int {
+    public fun replyActionBar(text: Text): Int {
         val player = player ?: return 0
         OmniChat.displayActionBar(player, text)
         return Command.SINGLE_SUCCESS
     }
 
     public fun replyActionBar(text: String): Int {
-        return replyActionBar(MCSimpleTextHolder(text))
+        return replyActionBar(Text.literal(text))
     }
 
     public fun replyTitle(
-        title: MCTextHolder<*>,
-        subtitle: MCTextHolder<*>? = null,
+        title: Text,
+        subtitle: Text? = null,
         fadeIn: Int = 10,
         stay: Int = 70,
         fadeOut: Int = 20
@@ -96,8 +96,8 @@ public class OmniCommandSource(
         fadeOut: Int = 20
     ): Int {
         return replyTitle(
-            MCSimpleTextHolder(title),
-            subtitle?.let { MCSimpleTextHolder(it) },
+            Text.literal(title),
+            subtitle?.let(Text::literal),
             fadeIn,
             stay,
             fadeOut

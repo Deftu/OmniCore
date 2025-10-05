@@ -3,9 +3,9 @@ package dev.deftu.omnicore.internal.mixins.client;
 //#if FABRIC
 import com.google.common.collect.ObjectArrays;
 import dev.deftu.omnicore.internal.client.commands.ClientCommandInternals;
-import dev.deftu.textile.minecraft.MCTextFormat;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.entity.ai.pathing.PathNodeMaker;
+import net.minecraft.util.Formatting;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,11 +22,11 @@ public class Mixin_MergeClientCommandsForAutoComplete {
     @Unique private final Set<String> omnicore$autoCompletions = new HashSet<>();
 
      @Inject(
-            //#if MC == 1.8.9
+             //#if MC == 1.8.9
              //$$ method = "requestAutocomplete",
-            //#else
+             //#else
              method = "method_12184",
-            //#endif
+             //#endif
             at = @At(value = "INVOKE", target = "Ljava/lang/String;length()I", shift = At.Shift.AFTER)
     )
     private void omnicore$populateAutoComplete(
@@ -73,7 +73,7 @@ public class Mixin_MergeClientCommandsForAutoComplete {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/TextFieldWidget;write(Ljava/lang/String;)V")
     )
     private void omnicore$removeSuggestionFormatting(TextFieldWidget textField, String text) {
-        String stripped = MCTextFormat.strip(text);
+        String stripped = Formatting.strip(text);
         textField.write(stripped);
     }
 }
