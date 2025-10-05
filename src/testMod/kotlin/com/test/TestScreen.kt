@@ -6,35 +6,154 @@ import dev.deftu.omnicore.api.client.image.OmniImages
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
-import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
-import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
-import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+import dev.deftu.omnicore.api.client.render.OmniTextRenderer
+import dev.deftu.omnicore.api.client.render.OmniTextWrapping
 import dev.deftu.omnicore.api.client.render.TextShadowType
-import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
-import dev.deftu.omnicore.api.client.render.state.OmniBlendState
-import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyAlphaState
-import dev.deftu.omnicore.api.client.render.state.legacy.OmniLegacyRenderStates
-import dev.deftu.omnicore.api.client.render.state.legacy.ShadeModel
 import dev.deftu.omnicore.api.client.render.vertex.circle
-import dev.deftu.omnicore.api.client.render.vertex.roundedQuad
 import dev.deftu.omnicore.api.client.screen.OmniScreen
 import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.api.identifierOrThrow
-import dev.deftu.omnicore.api.math.OmniVector4f
-import dev.deftu.textile.minecraft.MCSimpleTextHolder
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.ClickEvent
+import dev.deftu.textile.minecraft.HoverEvent
+import dev.deftu.textile.minecraft.MCText
+import dev.deftu.textile.minecraft.MCTextStyle
+import dev.deftu.textile.minecraft.TextColors
+import net.minecraft.util.Formatting
+import java.net.URI
 import kotlin.io.path.Path
 import kotlin.math.abs
 
-class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screenTitle = MCSimpleTextHolder("Test Screen")) {
+class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screenTitle = Text.literal("Test Screen")) {
     companion object {
         private const val MESSAGE_1 = "Hello, OmniCore!"
         private const val MESSAGE_2 = "This is a test screen."
+
+        val MIXED_MESSAGE: Text =
+            Text.literal("Lorem ipsum dolor sit amet, ")
+                .setStyle(
+                    MCTextStyle()
+                        .setColor(TextColors.RED)
+                        .setBold(true)
+                        .build()
+                )
+                .append(
+                    Text.literal("consectetur adipiscing elit. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setItalic(true)
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Proin rhoncus dui sed tortor consequat commodo. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setColor(TextColors.hex("#3F88C5"))
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Duis quis ipsum lectus. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setUnderlined(true)
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Nullam faucibus tortor urna, ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setBold(true)
+                                .setItalic(true)
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("ac porttitor magna feugiat a. ")
+                        .setStyle(MCTextStyle().build()) // normal
+                )
+                .append(
+                    Text.literal("Ut at posuere tellus. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setColor(TextColors.hex("#9B59B6").withFallback(Formatting.DARK_PURPLE))
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Vivamus maximus dui et nibh venenatis fermentum. ")
+                        .setStyle(MCTextStyle().build()) // normal
+                )
+                .append(
+                    Text.literal("Morbi non mauris nec ex mattis maximus sed quis libero. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setItalic(true)
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Sed non massa convallis, pharetra massa in, volutpat odio. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setColor(TextColors.GREEN)
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Maecenas commodo vulputate condimentum. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setBold(true)
+                                .setClickEvent(ClickEvent.OpenUrl(URI.create("https://deftu.dev")))
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Quisque fermentum vel velit eget interdum. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setColor(TextColors.GOLD)
+                                .setHoverEvent(HoverEvent.ShowText(Text.literal("Hovered!")))
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("In commodo eros nec diam ornare, ")
+                        .setStyle(MCTextStyle().build()) // normal
+                )
+                .append(
+                    Text.literal("ut placerat lorem lacinia. ")
+                        .setStyle(
+                            MCTextStyle()
+                                .setColor(TextColors.hex("#1ABC9C").withFallback(Formatting.AQUA))
+                                .setUnderlined(true)
+                                .build()
+                        )
+                )
+                .append(
+                    Text.literal("Donec eleifend ac risus eget pretium. ")
+                        .setStyle(MCTextStyle().build()) // normal
+                )
+                .append(
+                    MCText.translatable("gui.done")
+                        .setStyle(
+                            MCTextStyle()
+                                .setColor(TextColors.YELLOW)
+                                .setBold(true)
+                                .build()
+                        )
+                )
     }
+
+    override val isPausingScreen: Boolean = false
 
     private val topLeftColor = OmniColors.RED
     private val topRightColor = OmniColors.GREEN
@@ -106,6 +225,17 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             color = OmniColors.GREEN,
             shadowType = TextShadowType.Outline(OmniColors.BLUE)
         )
+
+        val messageLines = OmniTextWrapping.wrap(MIXED_MESSAGE, maxWidth = width / 3)
+        messageLines.forEachIndexed { index, line ->
+            ctx.renderTextCentered(
+                text = line,
+                x = (width /2f),
+                y = 50f + index * (OmniTextRenderer.lineHeight + 2),
+                color = OmniColors.WHITE,
+                shadowType = TextShadowType.Outline(OmniColors.BLACK)
+            )
+        }
 
         framebuffer?.usingToRender { _, _, _ ->
             ctx.renderGradientQuad(
