@@ -3,7 +3,6 @@ package dev.deftu.omnicore.api.client.render
 import dev.deftu.textile.MutableText
 import dev.deftu.textile.StringVisitable
 import dev.deftu.textile.Text
-import dev.deftu.textile.TextContent
 import dev.deftu.textile.TextStyle
 import org.jetbrains.annotations.ApiStatus
 
@@ -30,14 +29,13 @@ public object OmniTextWrapping {
         var currentLineWidth = 0
 
         fun emitLine() {
-            val line = currentLine ?: Text.empty()
-            lines += line
+            lines += currentLine ?: Text.empty()
             currentLine = null
             currentLineWidth = 0
         }
 
         fun appendPiece(piece: String, style: TextStyle) {
-            currentLine = appendStyled(currentLine, piece, style)
+            currentLine = (currentLine ?: Text.literal("")).append(Text.literal(piece).setStyle(style))
             currentLineWidth += measure(piece, style)
         }
 
@@ -180,25 +178,6 @@ public object OmniTextWrapping {
         }
 
         return tokens
-    }
-
-    private fun appendStyled(current: MutableText?, text: String, style: TextStyle): MutableText {
-        if (current == null) {
-            return Text.literal(text).setStyle(style)
-        }
-
-        val siblings = current.siblings
-        if (siblings.isNotEmpty()) {
-            val tail = siblings.last()
-            if (tail is MutableText && tail.style == style && tail.content is TextContent.Literal) {
-                val lit = tail.content as TextContent.Literal
-                tail.content = TextContent.Literal(lit.text + text)
-                return current
-            }
-        }
-
-        current.append(Text.literal(text).setStyle(style))
-        return current
     }
 
     private fun measure(content: String, style: TextStyle): Int {
