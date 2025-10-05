@@ -9,6 +9,8 @@ import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
+import dev.deftu.textile.Text
+import net.minecraft.text.Text as VanillaText
 import net.minecraft.util.Identifier
 import java.util.function.Consumer
 
@@ -63,12 +65,50 @@ public data class OmniRenderingContext(
 
     @JvmOverloads
     public fun renderText(
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true
+    ) {
+        OmniTextRenderer.render(this, text, x, y, color, shadow)
+    }
+
+    @JvmOverloads
+    public fun renderText(
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true
+    ) {
+        OmniTextRenderer.render(this, text, x, y, color, shadow)
+    }
+
+    @JvmOverloads
+    public fun renderText(
         text: String,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true
     ) {
         OmniTextRenderer.render(this, text, x, y, color, shadow)
+    }
+
+    public fun renderText(
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ) {
+        OmniTextRenderer.render(this, text, x, y, color, shadowType)
+    }
+
+    public fun renderText(
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ) {
+        OmniTextRenderer.render(this, text, x, y, color, shadowType)
     }
 
     public fun renderText(
@@ -82,12 +122,50 @@ public data class OmniRenderingContext(
 
     @JvmOverloads
     public fun renderTextCentered(
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ) {
+        OmniTextRenderer.renderCentered(this, text, x, y, color, shadow)
+    }
+
+    @JvmOverloads
+    public fun renderTextCentered(
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadow: Boolean = true,
+    ) {
+        OmniTextRenderer.renderCentered(this, text, x, y, color, shadow)
+    }
+
+    @JvmOverloads
+    public fun renderTextCentered(
         text: String,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ) {
         OmniTextRenderer.renderCentered(this, text, x, y, color, shadow)
+    }
+
+    public fun renderTextCentered(
+        text: VanillaText,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ) {
+        OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
+    }
+
+    public fun renderTextCentered(
+        text: Text,
+        x: Float, y: Float,
+        color: OmniColor,
+        shadowType: TextShadowType
+    ) {
+        OmniTextRenderer.renderCentered(this, text, x, y, color, shadowType)
     }
 
     public fun renderTextCentered(
