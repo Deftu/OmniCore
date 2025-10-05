@@ -4,6 +4,7 @@ public object ClientEventForwarding {
     public fun initialize() {
         ClientTickEventForwarding.initialize()
         HudRenderEventForwarding.initialize()
+        RenderTickEventForwarding.initialize()
         ScreenEventForwarding.initialize()
     }
 }
