@@ -214,8 +214,8 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     override fun onRender(ctx: OmniRenderingContext, mouseX: Int, mouseY: Int, tickDelta: Float) {
         super.onRender(ctx, mouseX, mouseY, tickDelta) // Render vanilla screen
 
-//        renderQuad(ctx)
-        renderRoundedQuad(ctx)
+        renderQuad(ctx)
+//        renderRoundedQuad(ctx)
         renderLine(ctx)
 
         ctx.renderTextCentered(
@@ -317,36 +317,25 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
     private fun renderQuad(ctx: OmniRenderingContext) {
         ctx.withMatrices { matrices ->
-//            ctx.pushScissor(
-//                x = renderX.toInt(),
-//                y = renderY.toInt(),
-//                width = renderWidth.toInt(),
-//                height = (renderHeight / 2).toInt()
-//            )
+            matrices.translate(renderX.toFloat(), renderY.toFloat(), 0f)
+            matrices.rotate(15f, 0f, 0f, 1f)
 
-            val pipeline = OmniRenderPipelines.POSITION_COLOR
-            val buffer = pipeline.createBufferBuilder()
-            buffer
-                .vertex(matrices, renderX, renderY, 0.0)
-                .color(topLeftColor)
-                .next()
-            buffer
-                .vertex(matrices, renderX + renderWidth, renderY, 0.0)
-                .color(topRightColor)
-                .next()
-            buffer
-                .vertex(matrices, renderX + renderWidth, renderY + renderHeight, 0.0)
-                .color(bottomRightColor)
-                .next()
-            buffer
-                .vertex(matrices, renderX, renderY + renderHeight, 0.0)
-                .color(bottomLeftColor)
-                .next()
-            buffer.buildOrThrow().drawAndClose(pipeline)
-
-//            ctx.popScissor()
+            ctx.withScissor(
+                x = 0, y = 0,
+                width = renderWidth.toInt(),
+                height = (renderHeight / 2).toInt()
+            ) {
+                val pipeline = OmniRenderPipelines.POSITION_COLOR
+                val buffer = pipeline.createBufferBuilder()
+                buffer.vertex(matrices, 0.0, 0.0, 0.0).color(topLeftColor).next()
+                buffer.vertex(matrices, 0.0 + renderWidth,0.0, 0.0).color(topRightColor).next()
+                buffer.vertex(matrices, 0.0 + renderWidth,0.0 + renderHeight,0.0).color(bottomRightColor).next()
+                buffer.vertex(matrices, 0.0, 0.0 + renderHeight,0.0).color(bottomLeftColor).next()
+                buffer.buildOrThrow().drawAndClose(pipeline)
+            }
         }
     }
+
 
     private fun renderRoundedQuad(ctx: OmniRenderingContext) {
         ctx.withMatrices { matrices ->
