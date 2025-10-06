@@ -389,17 +389,7 @@ public class RenderPassEncoderImpl internal constructor(
             val ny = OmniResolution.viewportHeight - box.bottom * scaleFactor.toInt()
             val nw = (box.width * scaleFactor).toInt()
             val nh = (box.height * scaleFactor).toInt()
-            vanilla.enableScissor(
-                nx,
-                ny,
-                nw,
-                nh
-            )
-
-            // Forcibly disable global scissor, regardless of if that's what's being used here, to avoid interference
-            // Ideally the user would manage this themselves or would use the scoped scissor helpers. This is just an
-            // added safety measure to avoid state leakage.
-            ScissorInternals.disableScissor()
+            vanilla.enableScissor(nx, ny, nw, nh)
         } ?: vanilla.disableScissor()
 
         //#if MC >= 1.21.6
