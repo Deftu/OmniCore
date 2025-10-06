@@ -6,7 +6,6 @@ import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.api.math.OmniQuaternion
 import dev.deftu.omnicore.api.math.OmniVector2f
 import dev.deftu.omnicore.api.math.OmniVector3f
-import dev.deftu.omnicore.internal.client.render.stack.OmniMatrixUnit
 
 //#if MC >= 1.16.5
 import net.minecraft.client.util.math.MatrixStack
@@ -94,10 +93,9 @@ public interface OmniMatrixStack {
     public fun transformPosition(x: Float, y: Float, dest: OmniVector2f): OmniVector2f {
         val m = current.positionMatrix
         dest.set(
-            x = m.m00 * x + m.m10 * y + m.m30,
-            y = m.m01 * x + m.m11 * y + m.m31
+            x = m.m00 * x + m.m01 * y + m.m03,
+            y = m.m10 * x + m.m11 * y + m.m13
         )
-
         return dest
     }
 
@@ -112,13 +110,11 @@ public interface OmniMatrixStack {
         val x = dest.x
         val y = dest.y
         dest.set(
-            x = m.m00 * x + m.m10 * y,
-            y = m.m01 * x + m.m11 * y
+            x = m.m00 * x + m.m01 * y,
+            y = m.m10 * x + m.m11 * y
         )
-
         return dest
     }
-
 
     /**
      * Apply current matrix on top of global model-view matrix.
