@@ -332,7 +332,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#endif
 
         //#if MC >= 1.20.1
-        super.render(ctx.graphics, mouseX, mouseY, tickDelta)
+        super.render(ctx.graphics!!, mouseX, mouseY, tickDelta)
         //#elseif MC >= 1.16.5
         //$$ super.render(ctx.matrices.vanilla, mouseX, mouseY, tickDelta)
         //#else
@@ -351,7 +351,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         tickDelta: Float,
     ) {
         //#if MC >= 1.21.6
-        ctx.graphics.createNewRootLayer()
+        ctx.graphics?.createNewRootLayer()
         //#endif
 
         //#if MC >= 1.20.1
@@ -370,7 +370,7 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#endif
 
         //#if MC >= 1.21.6
-        ctx.graphics.createNewRootLayer()
+        ctx.graphics?.createNewRootLayer()
         //#endif
     }
 

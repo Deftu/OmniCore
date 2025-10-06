@@ -28,7 +28,7 @@ import net.minecraft.client.gui.DrawContext
 
 public data class OmniRenderingContext(
     //#if MC >= 1.20.1
-    val graphics: DrawContext,
+    val graphics: DrawContext?,
     //#endif
     val matrices: OmniMatrixStack,
 ) : AutoCloseable {

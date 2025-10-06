@@ -44,6 +44,8 @@ public object ImmediateScreenRenderer {
 
     @JvmStatic
     public fun render(ctx: OmniRenderingContext, block: () -> Unit) {
+        val graphics = ctx.graphics ?: throw IllegalStateException("Cannot use ImmediateScreenRenderer outside of a render context!")
+
         val scaleFactor = OmniResolution.scaleFactor.toFloat()
         val width = OmniResolution.viewportWidth
         val height = OmniResolution.viewportHeight
@@ -76,9 +78,9 @@ public object ImmediateScreenRenderer {
             }
         })
 
-        ctx.graphics.matrices.pushMatrix()
-        ctx.graphics.matrices.scale(1f / scaleFactor, 1f / scaleFactor)
-        ctx.graphics.drawTexture(
+        graphics.matrices.pushMatrix()
+        graphics.matrices.scale(1f / scaleFactor, 1f / scaleFactor)
+        graphics.drawTexture(
             RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA,
             identifier,
             // x, y
@@ -93,7 +95,7 @@ public object ImmediateScreenRenderer {
             width, height,
         )
 
-        ctx.graphics.matrices.popMatrix()
+        graphics.matrices.popMatrix()
         client.textureManager.destroyTexture(identifier)
     }
 
