@@ -351,14 +351,25 @@ public data class OmniRenderingContext(
 
     public fun doesScissorContain(x: Int, y: Int): Boolean {
         val current = scissorStack.lastOrNull() ?: return true
-        return x >= current.x && x < current.x + current.width &&
-               y >= current.y && y < current.y + current.height
+        return x >= current.x &&
+                y >= current.y &&
+                x < current.x + current.width &&
+                y < current.y + current.height
     }
 
     public fun doesScissorContain(x: Int, y: Int, width: Int, height: Int): Boolean {
-        val current = scissorStack.lastOrNull() ?: return false
-        return x + width <= current.x || x >= current.x + current.width ||
-               y + height <= current.y || y >= current.y + current.height
+        val current = scissorStack.lastOrNull() ?: return true
+        return x >= current.x &&
+                y >= current.y &&
+                x + width  <= current.x + current.width &&
+                y + height <= current.y + current.height
+    }
+
+    public fun doesScissorOverlap(x: Int, y: Int, width: Int, height: Int): Boolean {
+        val current = scissorStack.lastOrNull() ?: return true
+        val disjoint = x + width <= current.x || x >= current.x + current.width ||
+                y + height <= current.y || y >= current.y + current.height
+        return !disjoint
     }
 
     public fun withScissor(x: Int, y: Int, width: Int, height: Int, runnable: Runnable) {
