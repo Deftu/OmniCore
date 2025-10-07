@@ -152,7 +152,7 @@ class TestMod
                 OmniClientChat.displayChatMessage("---")
                 OmniClientChat.displayErrorMessage(Text.literal("This is a test error message!").setStyle(MCTextStyle(color = TextColors.DARK_PURPLE).build()), testError)
 
-                OmniClientSound.play(OmniSounds.ITEM_BREAK, 1f, 1f)
+                OmniClientSound.play(OmniSounds.ENTITY.itemBreak, 1f, 1f)
 
                 OmniClientChat.displayChatMessage("TestMod base command executed!")
 
@@ -218,6 +218,41 @@ class TestMod
                         sendTestPacket(message)
                         ctx.source.replyChat("Sent test packet to the server with custom message: $message")
                     }
+                }
+            }
+
+            val allSounds = listOf(
+                OmniSounds.BLOCK.anvilUse, OmniSounds.BLOCK.anvilBreak, OmniSounds.BLOCK.anvilFall, OmniSounds.BLOCK.anvilLand, OmniSounds.BLOCK.anvilPlace,
+                OmniSounds.BLOCK.doorOpen, OmniSounds.BLOCK.doorClose,
+                OmniSounds.BLOCK.chestOpen, OmniSounds.BLOCK.chestClose,
+
+                OmniSounds.ENTITY.experienceOrb, OmniSounds.ENTITY.levelUp,
+                OmniSounds.ENTITY.itemPickUp, OmniSounds.ENTITY.itemBreak,
+
+                OmniSounds.NOTE_BLOCK.basedrum, OmniSounds.NOTE_BLOCK.bass, OmniSounds.NOTE_BLOCK.harp, OmniSounds.NOTE_BLOCK.hat, OmniSounds.NOTE_BLOCK.pling, OmniSounds.NOTE_BLOCK.snare,
+                OmniSounds.NOTE_BLOCK.bell, OmniSounds.NOTE_BLOCK.chime, OmniSounds.NOTE_BLOCK.flute, OmniSounds.NOTE_BLOCK.guitar, OmniSounds.NOTE_BLOCK.xylophone,
+                OmniSounds.NOTE_BLOCK.ironXylophone, OmniSounds.NOTE_BLOCK.cowBell, OmniSounds.NOTE_BLOCK.didgeridoo, OmniSounds.NOTE_BLOCK.bit, OmniSounds.NOTE_BLOCK.banjo,
+
+                OmniSounds.PLAYER.hurt, OmniSounds.PLAYER.death, OmniSounds.PLAYER.swim, OmniSounds.PLAYER.splash, OmniSounds.PLAYER.burp, OmniSounds.PLAYER.fallBig, OmniSounds.PLAYER.fallSmall,
+
+                OmniSounds.WOLF.shake, OmniSounds.WOLF.step, OmniSounds.WOLF.bark, OmniSounds.WOLF.death, OmniSounds.WOLF.growl, OmniSounds.WOLF.hurt, OmniSounds.WOLF.panting, OmniSounds.WOLF.whine,
+
+                OmniSounds.MISCELLANEOUS.buttonClick
+            )
+
+            var currentSoundIndex = 0
+            then("sounds") {
+                runs { ctx ->
+                    val sound = allSounds[currentSoundIndex++]
+                    if (currentSoundIndex >= allSounds.size) {
+                        currentSoundIndex = 0
+                    }
+
+                    OmniClientSound.play(sound, 1f, 1f)
+                    ctx.source.replyChat(Text.literal("Played sound ")
+                        .append(Text.literal((currentSoundIndex - 1).toString()).setStyle(MCTextStyle.color(TextColors.GREEN)))
+                        .append(Text.literal(" of ${allSounds.size - 1} (${sound.location})"))
+                    )
                 }
             }
         }.register()
