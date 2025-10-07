@@ -1,7 +1,9 @@
 package dev.deftu.omnicore.api.client.input.keybindings
 
 import dev.deftu.omnicore.api.client.input.OmniInputCode
+import dev.deftu.omnicore.api.client.input.OmniInputs
 import dev.deftu.omnicore.api.client.input.OmniKey
+import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.identifierOrThrow
 import net.minecraft.client.option.KeyBinding
@@ -11,6 +13,10 @@ import net.minecraft.util.Identifier
 //$$ import net.minecraft.client.input.KeyEvent
 //$$ import net.minecraft.client.input.MouseButtonEvent
 //$$ import net.minecraft.client.input.MouseButtonInfo
+//#endif
+
+//#if MC >= 1.16.5
+import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessBoundKey
 //#endif
 
 public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCKeyBinding {
@@ -38,6 +44,21 @@ public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCK
             //#else
             //$$ return this.type.code(this.vanillaKeyBinding.keyCodeDefault)
             //#endif
+        }
+
+    override var boundValue: OmniInputCode
+        get() {
+            val code =
+                //#if MC >= 1.16.5
+                (this.vanillaKeyBinding as Mixin_AccessBoundKey).boundKey?.code ?: return OmniKeys.KEY_NONE
+                //#else
+                //$$ this.vanillaKeyBinding.keyCode
+                //#endif
+
+            return OmniInputs.get(code)
+        }
+        set(value) {
+            super.boundValue = value
         }
 
     override fun matchesMouse(button: Int): Boolean {
