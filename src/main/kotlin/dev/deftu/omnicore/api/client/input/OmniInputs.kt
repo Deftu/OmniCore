@@ -21,13 +21,13 @@ public object OmniInputs {
     public fun getDisplayName(code: Int, scanCode: Int = -1): String {
         val name =
             //#if MC >= 1.21.9
-            //$$ (if (code == -1) {
-            //$$     InputConstants.Type.SCANCODE.getOrCreate(scanCode)
-            //$$ } else {
-            //$$     InputConstants.Type.KEYSYM.getOrCreate(code)
-            //$$ }).displayName.toString()
+            (if (code == -1) {
+                InputUtil.Type.SCANCODE.createFromCode(scanCode)
+            } else {
+                InputUtil.Type.KEYSYM.createFromCode(code)
+            }).localizedText.toString()
             //#elseif MC >= 1.16.5
-            InputUtil.fromKeyCode(code, scanCode).translationKey.toString()
+            //$$ InputConstants.getKey(code, scanCode).name.toString()
             //#else
             //$$ GameSettings.getKeyDisplayString(code) ?: return "Unknown"
             //#endif

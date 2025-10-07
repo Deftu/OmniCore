@@ -10,9 +10,9 @@ import net.minecraft.client.option.KeyBinding
 import net.minecraft.util.Identifier
 
 //#if MC >= 1.21.9
-//$$ import net.minecraft.client.input.KeyEvent
-//$$ import net.minecraft.client.input.MouseButtonEvent
-//$$ import net.minecraft.client.input.MouseButtonInfo
+import net.minecraft.client.input.KeyInput
+import net.minecraft.client.gui.Click
+import net.minecraft.client.input.MouseInput
 //#endif
 
 //#if MC >= 1.16.5
@@ -20,13 +20,13 @@ import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessBoundKey
 //#endif
 
 public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCKeyBinding {
-    override val name: String = this.vanillaKeyBinding.translationKey
+    override val name: String = this.vanillaKeyBinding.id
 
     override val category: Identifier =
         //#if MC >= 1.21.9
-        //$$ this.vanillaKeyBinding.category.id
+        this.vanillaKeyBinding.category.id
         //#else
-        identifierOrThrow(this.vanillaKeyBinding.category)
+        //$$ identifierOrThrow(this.vanillaKeyBinding.category)
         //#endif
 
     override val type: OmniKeyBinding.KeyBindingType
@@ -63,9 +63,9 @@ public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCK
 
     override fun matchesMouse(button: Int): Boolean {
         //#if MC >= 1.21.9
-        //$$ return this.vanillaKeyBinding.matchesMouse(MouseButtonEvent(0.0, 0.0, MouseButtonInfo(button, 0)))
+        return this.vanillaKeyBinding.matchesMouse(Click(0.0, 0.0, MouseInput(button, 0)))
         //#elseif MC >= 1.16.5
-        return this.vanillaKeyBinding.matchesMouse(button)
+        //$$ return this.vanillaKeyBinding.matchesMouse(button)
         //#else
         //$$ return button == this.vanillaKeyBinding.keyCode
         //#endif
@@ -73,9 +73,9 @@ public class WrappedKeyBinding(override val vanillaKeyBinding: KeyBinding) : MCK
 
     override fun matchesKey(keyCode: Int, scancode: Int): Boolean {
         //#if MC >= 1.21.9
-        //$$ return this.vanillaKeyBinding.matches(KeyEvent(keyCode, scancode, 0))
+        return this.vanillaKeyBinding.matchesKey(KeyInput(keyCode, scancode, 0))
         //#elseif MC >= 1.16.5
-        return this.vanillaKeyBinding.matchesKey(keyCode, scancode)
+        //$$ return this.vanillaKeyBinding.matches(keyCode, scancode)
         //#else
         //$$ return keyCode == this.vanillaKeyBinding.keyCode
         //#endif

@@ -64,7 +64,7 @@ public class Mixin_ForwardServerCustomPayloads {
     ) {
         //#if MC >= 1.20.4
         GameProfile playerProfile = ((ServerCommonNetworkHandler) (Object) this).getDebugProfile();
-        ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(playerProfile.getId());
+        ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(playerProfile.id());
 
         CustomPayload payload = packet.payload();
         if (!(payload instanceof UnknownPayloadDataSmuggler)) {

@@ -34,13 +34,13 @@ public val PlayerEntity.trueName: String
 
 @get:JvmName("getUuid")
 public val PlayerEntity.trueUuid: UUID
-    get() = this.gameProfile.id
+    get() = this.gameProfile.id()
 
 public val PlayerEntity.chunkData: OmniChunkData?
     get() {
         return OmniChunkData.from(
-            world = world,
-            dimension = world.dimensionType,
+            world = entityWorld,
+            dimension = entityWorld.dimensionType,
             //#if MC >= 1.17.1
             chunkPos = chunkPos
             //#else

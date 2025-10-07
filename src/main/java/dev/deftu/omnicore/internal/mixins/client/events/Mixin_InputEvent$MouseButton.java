@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //#if MC >= 1.21.9
-//$$ import net.minecraft.client.input.MouseInput;
+import net.minecraft.client.input.MouseInput;
 //#endif
 
 @Mixin(Mouse.class)
@@ -24,12 +24,12 @@ public class Mixin_InputEvent$MouseButton {
     private void deftulib$onMouseButton(
             long handle,
             //#if MC >= 1.21.9
-            //$$ MouseInput event,
-            //$$ int action,
-            //#else
-            int button,
+            MouseInput event,
             int action,
-            int modifiers,
+            //#else
+            //$$ int button,
+            //$$ int action,
+            //$$ int modifiers,
             //#endif
             CallbackInfo ci
     ) {
@@ -38,8 +38,8 @@ public class Mixin_InputEvent$MouseButton {
         }
 
         //#if MC >= 1.21.9
-        //$$ int button = event.button();
-        //$$ int modifiers = event.modifiers();
+        int button = event.button();
+        int modifiers = event.modifiers();
         //#endif
         KeyboardModifiers mods = KeyboardModifiers.wrap(modifiers);
         InputState state = action == GLFW.GLFW_PRESS ? InputState.PRESSED : action == GLFW.GLFW_RELEASE ? InputState.RELEASED : InputState.REPEATED;

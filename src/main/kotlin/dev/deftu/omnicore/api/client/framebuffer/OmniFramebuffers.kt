@@ -63,11 +63,11 @@ public object OmniFramebuffers {
         return wrap(
             id = id,
             //#if MC >= 1.21.9
-            //$$ width = framebuffer.width,
-            //$$ height = framebuffer.height,
+            width = framebuffer.textureWidth,
+            height = framebuffer.textureHeight,
             //#else
-            width = framebuffer.viewportWidth,
-            height = framebuffer.viewportHeight,
+            //$$ width = framebuffer.viewWidth,
+            //$$ height = framebuffer.viewHeight,
             //#endif
             //#if MC >= 1.21.5
             colorTexture = OmniTextures.wrap(colorTexture) as AbstractGlTexture,

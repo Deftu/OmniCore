@@ -5,12 +5,12 @@ import com.mojang.blaze3d.textures.GpuTextureView
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPass
+import dev.deftu.omnicore.internal.client.render.pipeline.RenderPassEncoderImpl
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
+import net.minecraft.client.gui.font.glyphs.BakedGlyph
 import net.minecraft.client.gui.Font
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.Tesselator
-import dev.deftu.omnicore.internal.client.render.pipeline.RenderPassEncoderImpl
-import net.minecraft.client.gui.font.TextRenderable
 import org.joml.Matrix4f
 
 internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVisitor {
@@ -50,26 +50,27 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVi
         }
     }
 
-    override fun acceptGlyph(renderable: TextRenderable) {
-        if (renderable.textureView() == null) {
+    override fun acceptGlyph(drawnGlyph: BakedGlyph.GlyphInstance) {
+        val baked = drawnGlyph.glyph
+        if (baked.textureView() == null) {
             return
         }
 
-        if (renderable.guiPipeline() != renderPipeline || renderable.textureView() != texture) {
+        if (baked.guiPipeline() != renderPipeline || baked.textureView() != texture) {
             flush()
-            renderPipeline = renderable.guiPipeline()
-            texture = renderable.textureView()
+            renderPipeline = baked.guiPipeline()
+            texture = baked.textureView()
             buffer = Tesselator.getInstance().begin(renderPipeline!!.vertexFormatMode, renderPipeline!!.vertexFormat)
         }
 
-        if (buffer != null) {
-            renderable.render(matrix, buffer, LIGHT, false)
-        }
+        baked.renderChar(drawnGlyph, matrix, buffer, LIGHT, false)
     }
 
-    override fun acceptEffect(renderable: TextRenderable) {
-        if (buffer != null) {
-            renderable.render(matrix, buffer, LIGHT, false)
+    override fun acceptEffect(bakedGlyph: BakedGlyph, rectangle: BakedGlyph.Effect) {
+        if (bakedGlyph.textureView() == null) {
+            return
         }
+
+        bakedGlyph.renderEffect(rectangle, matrix, buffer, LIGHT, false)
     }
 }

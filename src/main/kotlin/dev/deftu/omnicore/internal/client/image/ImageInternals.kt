@@ -10,9 +10,9 @@ import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.9
-//$$ import java.nio.ByteBuffer
+import java.nio.ByteBuffer
 //#elseif MC >= 1.21.5
-import java.nio.IntBuffer
+//$$ import java.nio.IntBuffer
 //#else
 //$$ import com.mojang.blaze3d.platform.TextureUtil
 //#endif
@@ -83,9 +83,9 @@ public object ImageInternals {
             format,
             GL11.GL_UNSIGNED_BYTE,
             //#if MC >= 1.21.9
-            //$$ null as ByteBuffer?
+            null as ByteBuffer?
             //#else
-            null as IntBuffer?
+            //$$ null as IntBuffer?
             //#endif
         )
         unbind()

@@ -434,9 +434,9 @@ public class RenderPassEncoderImpl internal constructor(
             modelViewMatrix ?: RenderSystem.getModelViewMatrix(),
             shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
             //#if MC >= 1.21.9
-            //$$ org.joml.Vector3f(),
+            org.joml.Vector3f(),
             //#else
-            RenderSystem.getModelOffset(),
+            //$$ RenderSystem.getModelOffset(),
             //#endif
             textureMatrix ?: RenderSystem.getTextureMatrix(),
             shaderLineWidth ?: RenderSystem.getShaderLineWidth()

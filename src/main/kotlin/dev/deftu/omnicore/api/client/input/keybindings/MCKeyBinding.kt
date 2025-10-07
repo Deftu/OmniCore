@@ -60,7 +60,7 @@ public interface MCKeyBinding : OmniKeyBinding {
     public val translatedName: String
         get() {
             //#if MC >= 1.16.5
-            return OmniLocalization[this.vanillaKeyBinding.translationKey]
+            return OmniLocalization[this.vanillaKeyBinding.id]
             //#else
             //$$ return OmniLocalization[this.vanillaKeyBinding.keyDescription]
             //#endif

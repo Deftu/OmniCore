@@ -59,7 +59,7 @@ public object OmniMouseSettings {
 
     @JvmStatic
     public val isMouseYInverted: Boolean
-        get() = unwrap(options.invertYMouse)
+        get() = unwrap(options.invertMouseY)
 
     @JvmStatic
     public val isDiscreteScrollEnabled: Boolean

@@ -18,7 +18,7 @@ public object DefaultShaders {
             VertexFormats.POSITION_COLOR_LIGHT to identifierOrThrow("core/position_color_lightmap"),
             VertexFormats.POSITION_COLOR_NORMAL to identifierOrThrow("core/rendertype_lines"),
             //#if MC < 1.21.9
-            VertexFormats.BLIT_SCREEN to identifierOrThrow("core/blit_screen"),
+            //$$ DefaultVertexFormat.BLIT_SCREEN to identifierOrThrow("core/blit_screen"),
             //#endif
         )
     }
