@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.sound
 
+import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.omnicore.internal.identifierOf
 import net.minecraft.util.Identifier
 
@@ -10,8 +11,35 @@ import net.minecraft.sound.SoundEvent
 public class OmniSound {
     public companion object {
         @JvmStatic
+        public fun of(location: Identifier): OmniSound {
+            return OmniSound(location)
+        }
+
+        @JvmStatic
+        public fun of(path: String): OmniSound {
+            return OmniSound(identifierOrThrow(path))
+        }
+
+        @JvmStatic
+        public fun of(namespace: String, path: String): OmniSound {
+            return OmniSound(identifierOrThrow(namespace, path))
+        }
+
+        //#if MC >= 1.12.2
+        @JvmStatic
+        public fun of(event: SoundEvent): OmniSound {
+            return OmniSound(event)
+        }
+        //#endif
+
+        @JvmStatic
         public fun invalid(): OmniSound {
             return OmniSound(identifierOf("invalid"))
+        }
+
+        @JvmStatic
+        public fun invalidOr(value: OmniSound? = null): OmniSound {
+            return value ?: invalid()
         }
     }
 
@@ -21,7 +49,7 @@ public class OmniSound {
     public val event: SoundEvent
     //#endif
 
-    public constructor(location: Identifier) {
+    private constructor(location: Identifier) {
         this.location = location
         //#if MC >= 1.12.2
         //#if MC >= 1.19.4
@@ -33,22 +61,22 @@ public class OmniSound {
     }
 
     //#if MC >= 1.12.2
-    public constructor(event: SoundEvent) {
+    private constructor(event: SoundEvent) {
         this.location = event.id()
         this.event = event
     }
+
+    public fun isSameEvent(other: SoundEvent): Boolean {
+        return this.event == other
+    }
     //#endif
 
+    public fun isSameLocation(location: Identifier): Boolean {
+        return this.location == location
+    }
+
     override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other is Identifier -> location == other
-            //#if MC >= 1.12.2
-            other is SoundEvent -> event == other
-            //#endif
-            other is OmniSound -> location == other.location
-            else -> false
-        }
+        return this === other || (other is OmniSound && this.location == other.location)
     }
 
     /**
