@@ -128,6 +128,7 @@ dependencies {
         } else {
             // 1.16.5+
             modImplementation(libs.fapi.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricApiVersion}" })
+            modImplementation(mcData.dependencies.fabric.modMenuDependency)
         }
     }
 }

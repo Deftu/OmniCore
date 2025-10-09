@@ -15,6 +15,9 @@
         ],
         "client": [
             "dev.deftu.omnicore.internal.OmniCoreEntrypoint"
+        ],
+        "modmenu": [
+            "dev.deftu.omnicore.internal.client.compat.config.ModMenuCompat"
         ]
     },
     "mixins": [
