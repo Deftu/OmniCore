@@ -1,6 +1,7 @@
 package com.test
 
 import dev.deftu.omnicore.api.identifierOrThrow
+import dev.deftu.omnicore.api.network.OmniPacketByteBuf
 import dev.deftu.omnicore.api.network.PacketPayload
 import dev.deftu.omnicore.api.network.PacketType
 import dev.deftu.omnicore.api.network.codec.StreamCodec
@@ -19,13 +20,7 @@ data class TestPacketPayload(val message: String) : PacketPayload {
         val TYPE = PacketType(ID, CODEC)
     }
 
-    private constructor(buf: PacketByteBuf) : this(
-        //#if MC >= 1.16.5
-        buf.readString()
-        //#else
-        //$$ buf.readString(32767)
-        //#endif
-    )
+    private constructor(buf: PacketByteBuf) : this(OmniPacketByteBuf.readString(buf))
 
     fun write(buf: PacketByteBuf) {
         buf.writeString(message)
