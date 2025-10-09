@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.input
 
-public data class OmniKey(override val code: Int) : OmniInputCode {
+public class OmniKey internal constructor(override val code: Int, public val name: String) : OmniInputCode {
     override val isPressed: Boolean
         get() = OmniKeyboard.isPressed(code)
 
@@ -15,5 +15,12 @@ public data class OmniKey(override val code: Int) : OmniInputCode {
 
     override fun hashCode(): Int {
         return code.hashCode()
+    }
+
+    override fun toString(): String {
+        return buildString {
+            append(this@OmniKey::class.simpleName)
+            append("[").append(name).append(" (").append(code).append(")]")
+        }
     }
 }

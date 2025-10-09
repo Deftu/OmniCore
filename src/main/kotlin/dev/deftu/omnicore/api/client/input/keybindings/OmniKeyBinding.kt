@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.api.client.input.keybindings
 
 import dev.deftu.omnicore.api.client.input.OmniInputCode
-import dev.deftu.omnicore.api.client.input.OmniKey
-import dev.deftu.omnicore.api.client.input.OmniMouseButton
+import dev.deftu.omnicore.api.client.input.OmniKeys
+import dev.deftu.omnicore.api.client.input.OmniMouseButtons
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.util.Identifier
 
@@ -50,8 +50,8 @@ public interface OmniKeyBinding {
 
         public fun code(code: Int): OmniInputCode {
             return when (this) {
-                KEY -> OmniKey(code)
-                MOUSE -> OmniMouseButton(code)
+                KEY -> OmniKeys.from(code)
+                MOUSE -> OmniMouseButtons.from(code)
             }
         }
     }

@@ -1,6 +1,8 @@
 package dev.deftu.omnicore.api.client.events
 
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
+import dev.deftu.omnicore.api.client.input.OmniKey
+import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.events.CancellableEvent
 import net.minecraft.client.gui.screen.Screen
@@ -31,13 +33,13 @@ public sealed interface ScreenEvent {
     }
 
     public sealed interface KeyPress : ScreenEvent {
-        public val key: Int
+        public val key: OmniKey
         public val scanCode: Int
         public val modifiers: KeyboardModifiers
 
         public data class Pre(
             override val screen: Screen,
-            override val key: Int,
+            override val key: OmniKey,
             override val scanCode: Int,
             override val modifiers: KeyboardModifiers
         ) : KeyPress, CancellableEvent {
@@ -46,20 +48,20 @@ public sealed interface ScreenEvent {
 
         public data class Post(
             override val screen: Screen,
-            override val key: Int,
+            override val key: OmniKey,
             override val scanCode: Int,
             override val modifiers: KeyboardModifiers
         ) : KeyPress
     }
 
     public sealed interface KeyRelease : ScreenEvent {
-        public val key: Int
+        public val key: OmniKey
         public val scanCode: Int
         public val modifiers: KeyboardModifiers
 
         public data class Pre(
             override val screen: Screen,
-            override val key: Int,
+            override val key: OmniKey,
             override val scanCode: Int,
             override val modifiers: KeyboardModifiers
         ) : KeyRelease, CancellableEvent {
@@ -68,20 +70,20 @@ public sealed interface ScreenEvent {
 
         public data class Post(
             override val screen: Screen,
-            override val key: Int,
+            override val key: OmniKey,
             override val scanCode: Int,
             override val modifiers: KeyboardModifiers
         ) : KeyRelease
     }
 
     public sealed interface MouseClick : ScreenEvent {
-        public val button: Int
+        public val button: OmniMouseButton
         public val x: Double
         public val y: Double
 
         public data class Pre(
             override val screen: Screen,
-            override val button: Int,
+            override val button: OmniMouseButton,
             override val x: Double,
             override val y: Double
         ) : MouseClick, CancellableEvent {
@@ -90,20 +92,20 @@ public sealed interface ScreenEvent {
 
         public data class Post(
             override val screen: Screen,
-            override val button: Int,
+            override val button: OmniMouseButton,
             override val x: Double,
             override val y: Double
         ) : MouseClick
     }
 
     public sealed interface MouseRelease : ScreenEvent {
-        public val button: Int
+        public val button: OmniMouseButton
         public val x: Double
         public val y: Double
 
         public data class Pre(
             override val screen: Screen,
-            override val button: Int,
+            override val button: OmniMouseButton,
             override val x: Double,
             override val y: Double
         ) : MouseRelease, CancellableEvent {
@@ -112,7 +114,7 @@ public sealed interface ScreenEvent {
 
         public data class Post(
             override val screen: Screen,
-            override val button: Int,
+            override val button: OmniMouseButton,
             override val x: Double,
             override val y: Double
         ) : MouseRelease

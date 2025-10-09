@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.client.OmniClient;
 import dev.deftu.omnicore.api.client.events.input.InputEvent;
 import dev.deftu.omnicore.api.client.events.input.InputState;
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers;
-import dev.deftu.omnicore.api.client.input.OmniKey;
+import dev.deftu.omnicore.api.client.input.OmniKeys;
 import net.minecraft.client.Keyboard;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +45,7 @@ public class Mixin_InputEvent$Key {
         //#endif
         KeyboardModifiers mods = KeyboardModifiers.wrap(modifiers);
         InputState state = action == GLFW.GLFW_PRESS ? InputState.PRESSED : action == GLFW.GLFW_RELEASE ? InputState.RELEASED : InputState.REPEATED;
-        OmniCore.getEventBus().post(new InputEvent.Key(state, new OmniKey(key), scancode, mods));
+        OmniCore.getEventBus().post(new InputEvent.Key(state, OmniKeys.from(key), scancode, mods));
     }
 }
 //#endif

@@ -4,6 +4,7 @@ package dev.deftu.omnicore.internal.mixins.client.events;
 import dev.deftu.omnicore.api.OmniCore;
 import dev.deftu.omnicore.api.client.events.ScreenEvent;
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers;
+import dev.deftu.omnicore.api.client.input.OmniKeys;
 import net.minecraft.client.gui.screen.Screen;
 import org.lwjgl.input.Keyboard;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,21 +26,21 @@ public abstract class Mixin_ScreenEvent$Key {
             wasPressed = false;
 
             Screen $this = (Screen) (Object) this;
-            ScreenEvent.KeyRelease.Pre event = new ScreenEvent.KeyRelease.Pre($this, Keyboard.getEventKey(), -1, KeyboardModifiers.get());
+            ScreenEvent.KeyRelease.Pre event = new ScreenEvent.KeyRelease.Pre($this, OmniKeys.from(Keyboard.getEventKey()), -1, KeyboardModifiers.get());
             OmniCore.getEventBus().post(event);
             if (!event.isCancelled()) {
-                OmniCore.getEventBus().post(new ScreenEvent.KeyRelease.Post($this, Keyboard.getEventKey(), -1, KeyboardModifiers.get()));
+                OmniCore.getEventBus().post(new ScreenEvent.KeyRelease.Post($this, OmniKeys.from(Keyboard.getEventKey()), -1, KeyboardModifiers.get()));
             }
         }
     }
 
     @Redirect(method = "handleKeyboard", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;keyPressed(CI)V"))
     private void omnicore$onKeyboardTick(Screen instance, char keyChar, int keyCode) {
-        ScreenEvent.KeyPress.Pre event = new ScreenEvent.KeyPress.Pre(instance, keyCode, -1, KeyboardModifiers.get());
+        ScreenEvent.KeyPress.Pre event = new ScreenEvent.KeyPress.Pre(instance, OmniKeys.from(keyCode), -1, KeyboardModifiers.get());
         OmniCore.getEventBus().post(event);
         if (!event.isCancelled()) {
             keyPressed(keyChar, keyCode);
-            OmniCore.getEventBus().post(new ScreenEvent.KeyPress.Post(instance, keyCode, -1, KeyboardModifiers.get()));
+            OmniCore.getEventBus().post(new ScreenEvent.KeyPress.Post(instance, OmniKeys.from(keyCode), -1, KeyboardModifiers.get()));
             wasPressed = true;
         }
     }

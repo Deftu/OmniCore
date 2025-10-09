@@ -10,8 +10,8 @@ public object OmniInputs {
     @JvmStatic
     public fun get(code: Int): OmniInputCode {
         return when {
-            OmniKeyboard.isKeyboardButton(code) -> OmniKey(code)
-            OmniMouse.isMouseButton(code) -> OmniMouseButton(code)
+            OmniKeyboard.isKeyboardButton(code) -> OmniKeys.from(code)
+            OmniMouse.isMouseButton(code) -> OmniMouseButtons.from(code)
             else -> throw IllegalArgumentException("Code $code is not a valid key or mouse button")
         }
     }

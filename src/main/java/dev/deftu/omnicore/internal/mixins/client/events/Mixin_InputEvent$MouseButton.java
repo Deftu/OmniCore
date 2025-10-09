@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.client.OmniClient;
 import dev.deftu.omnicore.api.client.events.input.InputEvent;
 import dev.deftu.omnicore.api.client.events.input.InputState;
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers;
-import dev.deftu.omnicore.api.client.input.OmniMouseButton;
+import dev.deftu.omnicore.api.client.input.OmniMouseButtons;
 import net.minecraft.client.Mouse;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +43,7 @@ public class Mixin_InputEvent$MouseButton {
         //#endif
         KeyboardModifiers mods = KeyboardModifiers.wrap(modifiers);
         InputState state = action == GLFW.GLFW_PRESS ? InputState.PRESSED : action == GLFW.GLFW_RELEASE ? InputState.RELEASED : InputState.REPEATED;
-        OmniCore.getEventBus().post(new InputEvent.MouseButton(state, new OmniMouseButton(button), mods));
+        OmniCore.getEventBus().post(new InputEvent.MouseButton(state, OmniMouseButtons.from(button), mods));
     }
 }
 //#endif

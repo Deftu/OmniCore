@@ -2,6 +2,8 @@ package dev.deftu.omnicore.internal.client.events
 
 import dev.deftu.omnicore.api.client.events.ScreenEvent
 import dev.deftu.omnicore.api.client.input.KeyboardModifiers
+import dev.deftu.omnicore.api.client.input.OmniKeys
+import dev.deftu.omnicore.api.client.input.OmniMouseButtons
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
 import dev.deftu.omnicore.api.eventBus
@@ -31,49 +33,49 @@ public object ScreenEventForwarding {
 
             //#if MC >= 1.21.9
             ScreenKeyboardEvents.allowKeyPress(screen).register { _, event ->
-                val event = ScreenEvent.KeyPress.Pre(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyPress.Pre(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
                 !event.isCancelled
             }
 
             ScreenKeyboardEvents.allowKeyRelease(screen).register { _, event ->
-                val event = ScreenEvent.KeyRelease.Pre(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyRelease.Pre(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
                 !event.isCancelled
             }
 
             ScreenMouseEvents.allowMouseClick(screen).register { _, event ->
-                val event = ScreenEvent.MouseClick.Pre(screen, event.buttonInfo.button, event.x, event.y)
+                val event = ScreenEvent.MouseClick.Pre(screen, OmniMouseButtons.from(event.buttonInfo.button), event.x, event.y)
                 eventBus.post(event)
                 !event.isCancelled
             }
 
             ScreenMouseEvents.allowMouseRelease(screen).register { _, event ->
-                val event = ScreenEvent.MouseRelease.Pre(screen, event.buttonInfo.button, event.x, event.y)
+                val event = ScreenEvent.MouseRelease.Pre(screen, OmniMouseButtons.from(event.buttonInfo.button), event.x, event.y)
                 eventBus.post(event)
                 !event.isCancelled
             }
             //#else
             //$$ ScreenKeyboardEvents.allowKeyPress(screen).register { _, keyCode, scancode, modifiers ->
-            //$$     val event = ScreenEvent.KeyPress.Pre(screen, keyCode, scancode, KeyboardModifiers.wrap(modifiers))
+            //$$     val event = ScreenEvent.KeyPress.Pre(screen, OmniKeys.from(keyCode), scancode, KeyboardModifiers.wrap(modifiers))
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
             //$$
             //$$ ScreenKeyboardEvents.allowKeyRelease(screen).register { _, keyCode, scancode, modifiers ->
-            //$$     val event = ScreenEvent.KeyRelease.Pre(screen, keyCode, scancode, KeyboardModifiers.wrap(modifiers))
+            //$$     val event = ScreenEvent.KeyRelease.Pre(screen, OmniKeys.from(keyCode), scancode, KeyboardModifiers.wrap(modifiers))
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
             //$$
             //$$ ScreenMouseEvents.allowMouseClick(screen).register { _, x, y, button ->
-            //$$     val event = ScreenEvent.MouseClick.Pre(screen, button, x, y)
+            //$$     val event = ScreenEvent.MouseClick.Pre(screen, OmniMouseButtons.from(button), x, y)
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
             //$$
             //$$ ScreenMouseEvents.allowMouseRelease(screen).register { _, x, y, button ->
-            //$$     val event = ScreenEvent.MouseRelease.Pre(screen, button, x, y)
+            //$$     val event = ScreenEvent.MouseRelease.Pre(screen, OmniMouseButtons.from(button), x, y)
             //$$     eventBus.post(event)
             //$$     !event.isCancelled
             //$$ }
@@ -99,44 +101,44 @@ public object ScreenEventForwarding {
 
             //#if MC >= 1.21.9
             ScreenKeyboardEvents.afterKeyPress(screen).register { _, event ->
-                val event = ScreenEvent.KeyPress.Post(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyPress.Post(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
             }
 
             ScreenKeyboardEvents.afterKeyRelease(screen).register { _, event ->
-                val event = ScreenEvent.KeyRelease.Post(screen, event.keycode, event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyRelease.Post(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
             }
 
             ScreenMouseEvents.afterMouseClick(screen).register { _, event, _ ->
-                val event = ScreenEvent.MouseClick.Post(screen, event.buttonInfo.button, event.x, event.y)
+                val event = ScreenEvent.MouseClick.Post(screen, OmniMouseButtons.from(event.buttonInfo.button), event.x, event.y)
                 eventBus.post(event)
                 true
             }
 
             ScreenMouseEvents.afterMouseRelease(screen).register { _, event, _ ->
-                val event = ScreenEvent.MouseRelease.Post(screen, event.buttonInfo.button, event.x, event.y)
+                val event = ScreenEvent.MouseRelease.Post(screen, OmniMouseButtons.from(event.buttonInfo.button), event.x, event.y)
                 eventBus.post(event)
                 true
             }
             //#else
             //$$ ScreenKeyboardEvents.afterKeyPress(screen).register { _, keyCode, scancode, modifiers ->
-            //$$     val event = ScreenEvent.KeyPress.Post(screen, keyCode, scancode, KeyboardModifiers.wrap(modifiers))
+            //$$     val event = ScreenEvent.KeyPress.Post(screen, OmniKeys.from(keyCode), scancode, KeyboardModifiers.wrap(modifiers))
             //$$     eventBus.post(event)
             //$$ }
             //$$
             //$$ ScreenKeyboardEvents.afterKeyRelease(screen).register { _, keyCode, scancode, modifiers ->
-            //$$     val event = ScreenEvent.KeyRelease.Post(screen, keyCode, scancode, KeyboardModifiers.wrap(modifiers))
+            //$$     val event = ScreenEvent.KeyRelease.Post(screen, OmniKeys.from(keyCode), scancode, KeyboardModifiers.wrap(modifiers))
             //$$     eventBus.post(event)
             //$$ }
             //$$
             //$$ ScreenMouseEvents.afterMouseClick(screen).register { _, x, y, button ->
-            //$$     val event = ScreenEvent.MouseClick.Post(screen, button, x, y)
+            //$$     val event = ScreenEvent.MouseClick.Post(screen, OmniMouseButtons.from(button), x, y)
             //$$     eventBus.post(event)
             //$$ }
             //$$
             //$$ ScreenMouseEvents.afterMouseRelease(screen).register { _, x, y, button ->
-            //$$     val event = ScreenEvent.MouseRelease.Post(screen, button, x, y)
+            //$$     val event = ScreenEvent.MouseRelease.Post(screen, OmniMouseButtons.from(button), x, y)
             //$$     eventBus.post(event)
             //$$ }
             //#endif
@@ -244,7 +246,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     val ev = ScreenEvent.KeyPress.Pre(screen, event.keyCode, event.scanCode, KeyboardModifiers.wrap(event.modifiers))
+        //$$     val ev = ScreenEvent.KeyPress.Pre(screen, OmniKeys.from(event.keyCode), event.scanCode, KeyboardModifiers.wrap(event.modifiers))
         //$$     eventBus.post(ev)
         //$$     event.isCanceled = ev.isCancelled
         //$$ }
@@ -255,7 +257,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     eventBus.post(ScreenEvent.KeyPress.Post(screen, event.keyCode, event.scanCode, KeyboardModifiers.wrap(event.modifiers)))
+        //$$     eventBus.post(ScreenEvent.KeyPress.Post(screen, OmniKeys.from(event.keyCode), event.scanCode, KeyboardModifiers.wrap(event.modifiers)))
         //$$ }
         //$$
         //$$ forgeEventBus.addListener<LoaderPreKeyReleaseEvent> { event ->
@@ -264,7 +266,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     val ev = ScreenEvent.KeyRelease.Pre(screen, event.keyCode, event.scanCode, KeyboardModifiers.wrap(event.modifiers))
+        //$$     val ev = ScreenEvent.KeyRelease.Pre(screen, OmniKeys.from(event.keyCode), event.scanCode, KeyboardModifiers.wrap(event.modifiers))
         //$$     eventBus.post(ev)
         //$$     event.isCanceled = ev.isCancelled
         //$$ }
@@ -275,7 +277,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     eventBus.post(ScreenEvent.KeyRelease.Post(screen, event.keyCode, event.scanCode, KeyboardModifiers.wrap(event.modifiers)))
+        //$$     eventBus.post(ScreenEvent.KeyRelease.Post(screen, OmniKeys.from(event.keyCode), event.scanCode, KeyboardModifiers.wrap(event.modifiers)))
         //$$ }
         //$$
         //$$ forgeEventBus.addListener<LoaderPreMouseClickEvent> { event ->
@@ -284,7 +286,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     val ev = ScreenEvent.MouseClick.Pre(screen, event.button, event.mouseX, event.mouseY)
+        //$$     val ev = ScreenEvent.MouseClick.Pre(screen, OmniMouseButtons.from(event.button), event.mouseX, event.mouseY)
         //$$     eventBus.post(ev)
         //$$     event.isCanceled = ev.isCancelled
         //$$ }
@@ -295,7 +297,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     eventBus.post(ScreenEvent.MouseClick.Post(screen, event.button, event.mouseX, event.mouseY))
+        //$$     eventBus.post(ScreenEvent.MouseClick.Post(screen, OmniMouseButtons.from(event.button), event.mouseX, event.mouseY))
         //$$ }
         //$$
         //$$ forgeEventBus.addListener<LoaderPreMouseReleaseEvent> { event ->
@@ -304,7 +306,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     val ev = ScreenEvent.MouseRelease.Pre(screen, event.button, event.mouseX, event.mouseY)
+        //$$     val ev = ScreenEvent.MouseRelease.Pre(screen, OmniMouseButtons.from(event.button), event.mouseX, event.mouseY)
         //$$     eventBus.post(ev)
         //$$     event.isCanceled = ev.isCancelled
         //$$ }
@@ -315,7 +317,7 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
-        //$$     eventBus.post(ScreenEvent.MouseRelease.Post(screen, event.button, event.mouseX, event.mouseY))
+        //$$     eventBus.post(ScreenEvent.MouseRelease.Post(screen, OmniMouseButtons.from(event.button), event.mouseX, event.mouseY))
         //$$ }
         //#elseif FORGE
         //$$ forgeEventBus.register(this)
@@ -351,8 +353,8 @@ public object ScreenEventForwarding {
     //$$     val modifiers = KeyboardModifiers.current
     //$$     val action = if (Keyboard.getEventKeyState()) 1 else 0
     //$$     when (action) {
-    //$$         1 -> eventBus.post(ScreenEvent.KeyPress.Post(event.gui, keyCode, action, modifiers))
-    //$$         0 -> eventBus.post(ScreenEvent.KeyRelease.Pre(event.gui, keyCode, action, modifiers))
+    //$$         1 -> eventBus.post(ScreenEvent.KeyPress.Post(event.gui, OmniKeys.from(keyCode), action, modifiers))
+    //$$         0 -> eventBus.post(ScreenEvent.KeyRelease.Pre(event.gui, OmniKeys.from(keyCode), action, modifiers))
     //$$     }
     //$$ }
     //$$
@@ -362,8 +364,8 @@ public object ScreenEventForwarding {
     //$$     val modifiers = KeyboardModifiers.current
     //$$     val action = if (Keyboard.getEventKeyState()) 1 else 0
     //$$     when (action) {
-    //$$         1 -> eventBus.post(ScreenEvent.KeyPress.Post(event.gui, keyCode, action, modifiers))
-    //$$         0 -> eventBus.post(ScreenEvent.KeyRelease.Post(event.gui, keyCode, action, modifiers))
+    //$$         1 -> eventBus.post(ScreenEvent.KeyPress.Post(event.gui, OmniKeys.from(keyCode), action, modifiers))
+    //$$         0 -> eventBus.post(ScreenEvent.KeyRelease.Post(event.gui, OmniKeys.from(keyCode), action, modifiers))
     //$$     }
     //$$ }
     //$$
@@ -374,8 +376,8 @@ public object ScreenEventForwarding {
     //$$     val y = Mouse.getEventY().toDouble()
     //$$     val action = if (Mouse.getEventButtonState()) 1 else 0
     //$$     when (action) {
-    //$$         1 -> eventBus.post(ScreenEvent.MouseClick.Pre(event.gui, button, x, y))
-    //$$         0 -> eventBus.post(ScreenEvent.MouseRelease.Pre(event.gui, button, x, y))
+    //$$         1 -> eventBus.post(ScreenEvent.MouseClick.Pre(event.gui, OmniMouseButtons.from(button), x, y))
+    //$$         0 -> eventBus.post(ScreenEvent.MouseRelease.Pre(event.gui, OmniMouseButtons.from(button), x, y))
     //$$     }
     //$$ }
     //$$
@@ -386,8 +388,8 @@ public object ScreenEventForwarding {
     //$$     val y = Mouse.getEventY().toDouble()
     //$$     val action = if (Mouse.getEventButtonState()) 1 else 0
     //$$     when (action) {
-    //$$         1 -> eventBus.post(ScreenEvent.MouseClick.Post(event.gui, button, x, y))
-    //$$         0 -> eventBus.post(ScreenEvent.MouseRelease.Post(event.gui, button, x, y))
+    //$$         1 -> eventBus.post(ScreenEvent.MouseClick.Post(event.gui, OmniMouseButtons.from(button), x, y))
+    //$$         0 -> eventBus.post(ScreenEvent.MouseRelease.Post(event.gui, OmniMouseButtons.from(button), x, y))
     //$$     }
     //$$ }
     //#endif
