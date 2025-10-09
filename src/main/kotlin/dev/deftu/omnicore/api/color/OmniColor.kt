@@ -54,6 +54,7 @@ public data class OmniColor(
     public val awt: Color
         get() = Color(red, green, blue, alpha)
 
+    @JvmOverloads
     public fun pack(target: ColorFormat = this.format): Int {
         return if (target == this.format) {
             value
