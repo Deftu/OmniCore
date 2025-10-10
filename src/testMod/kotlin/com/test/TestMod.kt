@@ -6,6 +6,7 @@ import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.commands.OmniClientCommands
 import dev.deftu.omnicore.api.client.commands.argument
 import dev.deftu.omnicore.api.client.commands.command
+import dev.deftu.omnicore.api.client.compat.config.ConfigScreenRegistry
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBindings
@@ -120,6 +121,10 @@ class TestMod
         //#endif
 
         exampleKeyBinding.register()
+
+        ConfigScreenRegistry.register(ID) { _ ->
+            TestScreen()
+        }
 
         logger.info("Is $ID $VERSION on the physical client? ${OmniLoader.isPhysicalClient}")
         OmniClientResources.registerReloadListener(TestResourceListener)
