@@ -4,12 +4,11 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
 import dev.deftu.omnicore.api.color.ColorFormat
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.textile.CollapseMode
 import dev.deftu.textile.Text
-import dev.deftu.textile.TextStyle
 import dev.deftu.textile.minecraft.MCText
-import dev.deftu.textile.minecraft.MCTextStyle
+import dev.deftu.textile.minecraft.FormattingCodes
 import net.minecraft.text.Text as VanillaText
-import kotlin.math.abs
 
 //#if MC >= 1.21.6
 import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
@@ -26,9 +25,6 @@ import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
 //#endif
 
 public object OmniTextRenderer {
-    public const val COLOR_CHAR: Char = '\u00a7'
-    @JvmField public val FORMATTING_CODE_PATTERN: Regex = Regex("§[0-9a-fk-or]", RegexOption.IGNORE_CASE)
-
     private inline val textRenderer
         get() = client.textRenderer
 
@@ -175,7 +171,7 @@ public object OmniTextRenderer {
                     return render(matrices, text, x, y, color, shadow = false)
                 }
 
-                val strippedText = stripColor(MCText.wrap(text).collapseToString())
+                val strippedText = FormattingCodes.stripColor(MCText.wrap(text).collapseToString(CollapseMode.SCOPED))
                 for (i in outlineOffsets.indices step 2) {
                     val dx = outlineOffsets[i]
                     val dy = outlineOffsets[i + 1]
@@ -412,19 +408,5 @@ public object OmniTextRenderer {
         //#else
         //$$ return textRenderer.getWrappedLinesHeight(text.asString(), maxWidth)
         //#endif
-    }
-
-    @JvmStatic
-    public fun stripColor(text: String): String {
-        return text.replace(COLOR_CHAR, '§').replace(FORMATTING_CODE_PATTERN) {
-            if (it.value[1] in '0'..'9') "" else it.value
-        }
-    }
-
-    @JvmStatic
-    public fun stripFormat(text: String): String {
-        return text.replace(COLOR_CHAR, '§').replace(FORMATTING_CODE_PATTERN) {
-            if (it.value[1] in 'a'..'r') "" else it.value
-        }
     }
 }

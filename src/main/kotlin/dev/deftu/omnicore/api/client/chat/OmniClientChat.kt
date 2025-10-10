@@ -9,6 +9,7 @@ import dev.deftu.textile.minecraft.MCText
 
 //#if MC <= 1.12.2
 //$$ import dev.deftu.omnicore.api.client.client
+//$$ import dev.deftu.textile.CollapseMode
 //$$ import net.minecraft.network.play.server.SPacketChat
 //#endif
 
@@ -97,7 +98,7 @@ public object OmniClientChat {
         //#if MC >= 1.16.5
         //$$ hud.setTitles(MCText.convert(title), subtitle?.let(MCText::convert), fadeIn, stay, fadeOut)
         //#else
-        //$$ hud.displayTitle(title.collapseToString(), subtitle?.collapseToString(), fadeIn, stay, fadeOut)
+        //$$ hud.displayTitle(title.collapseToString(CollapseMode.SCOPED), subtitle?.collapseToString(), fadeIn, stay, fadeOut)
         //#endif
         //#endif
     }
