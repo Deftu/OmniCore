@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack
 //$$ import net.minecraft.entity.player.PlayerEntity
 //#endif
 
-public fun LivingEntity.stack(target: EquipmentType): ItemStack {
+public fun LivingEntity.stack(target: EquipmentType): ItemStack? {
     //#if MC < 1.12.2
     //$$ require(this is PlayerEntity) { "Only players have equipment slots in MC versions before 1.12.2" }
     //#endif
@@ -27,6 +27,6 @@ public fun LivingEntity.stack(target: EquipmentType): ItemStack {
     }
 }
 
-public operator fun LivingEntity.get(target: EquipmentType): ItemStack {
+public operator fun LivingEntity.get(target: EquipmentType): ItemStack? {
     return this.stack(target)
 }

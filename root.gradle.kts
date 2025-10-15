@@ -145,11 +145,6 @@ val versions = listOf(
     "1.21.8-fabric",
 )
 
-val buildVersions by tasks.creating {
-    group = "deftu"
-    dependsOn(versions.map { ":$it:build" })
-}
-
 listOf(
     "DeftuReleasesRepository",
     "DeftuSnapshotsRepository",
