@@ -8,6 +8,7 @@ import dev.deftu.omnicore.api.world.OmniBiomeData
 import dev.deftu.omnicore.api.world.OmniChunkData
 import dev.deftu.omnicore.api.world.dimensionType
 import net.minecraft.client.network.ClientPlayerEntity
+import net.minecraft.entity.Entity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.server.network.ServerPlayerEntity
 import java.util.UUID
@@ -35,6 +36,9 @@ public val PlayerEntity.trueName: String
 @get:JvmName("getUuid")
 public val PlayerEntity.trueUuid: UUID
     get() = this.gameProfile.id()
+
+public val Entity.isPlayer: Boolean
+    get() = this is PlayerEntity
 
 public val PlayerEntity.chunkData: OmniChunkData?
     get() {
