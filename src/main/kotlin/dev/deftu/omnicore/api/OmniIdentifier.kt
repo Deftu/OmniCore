@@ -2,6 +2,8 @@
 
 package dev.deftu.omnicore.api
 
+import dev.deftu.textile.Text
+import dev.deftu.textile.minecraft.MCText
 import net.minecraft.util.Identifier
 
 public const val DEFAULT_NAMESPACE: String = "minecraft"
@@ -19,6 +21,14 @@ public inline val Identifier.shortTranslationKey: String
 
         return translationKey
     }
+
+public inline val Identifier.translatedText: Text
+    @JvmName("createTranslatedText")
+    get() = MCText.translatable(translationKey)
+
+public inline val Identifier.shortTranslatedText: Text
+    @JvmName("createShortTranslatedText")
+    get() = MCText.translatable(shortTranslationKey)
 
 public inline val Identifier.isMinecraft: Boolean
     get() = namespace == DEFAULT_NAMESPACE
@@ -61,6 +71,24 @@ public fun identifierOrThrow(path: String): Identifier {
 
 public fun Identifier.translationKey(prefix: String): String {
     return "$prefix.$translationKey"
+}
+
+public fun Identifier.shortTranslationKey(prefix: String): String {
+    if (namespace == DEFAULT_NAMESPACE) {
+        return "$prefix.$path"
+    }
+
+    return "$prefix.$translationKey"
+}
+
+@JvmName("createTranslatedText")
+public fun Identifier.translatedText(prefix: String): Text {
+    return MCText.translatable(translationKey(prefix))
+}
+
+@JvmName("createShortTranslatedText")
+public fun Identifier.shortTranslatedText(prefix: String): Text {
+    return MCText.translatable(shortTranslationKey(prefix))
 }
 
 public fun Identifier.withNamespace(namespace: String): Identifier {
