@@ -3,6 +3,7 @@
 package dev.deftu.omnicore.api.client.screen
 
 import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.scheduling.TickSchedulers
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.gui.screen.Screen
 
@@ -35,6 +36,17 @@ public val isInInventoryLikeScreen: Boolean
 
 public val Class<out Screen>.isCurrentScreen: Boolean
     get() = this == currentScreen?.javaClass
+
+@JvmOverloads
+public fun Screen.openScreen(delayTicks: Int = 0) {
+    if (delayTicks <= 0) {
+        currentScreen = this
+    } else {
+        TickSchedulers.client.after(delayTicks) {
+            currentScreen = this
+        }
+    }
+}
 
 public fun closeScreen() {
     currentScreen = null
