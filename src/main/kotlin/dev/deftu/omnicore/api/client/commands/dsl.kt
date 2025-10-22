@@ -59,6 +59,7 @@ public class CommandBuilder internal constructor(internal val builder: LiteralAr
         for (alias in aliases) {
             val aliasNode = LiteralArgumentBuilder.literal<OmniClientCommandSource>(alias)
                 .requires(node.requirement)
+                .executes(node.command)
                 .redirect(node)
                 .build()
             OmniClientCommands.register(aliasNode)
