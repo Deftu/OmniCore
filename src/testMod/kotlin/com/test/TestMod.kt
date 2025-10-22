@@ -17,7 +17,9 @@ import dev.deftu.omnicore.api.client.sound.OmniClientSound
 import dev.deftu.omnicore.api.client.world
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.commands.types.OmniColorArgumentType
+import dev.deftu.omnicore.api.commands.types.OmniDirectionalAxisArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniSoundArgumentType
+import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.omnicore.api.loader.OmniLoader
 import dev.deftu.omnicore.api.network.OmniNetworking
@@ -284,6 +286,15 @@ class TestMod
                             .append(Text.literal(color.toHexARGB()).setStyle(MCTextStyle.color(TextColors.hex(color.toHexRGB()))))
                             .append(Text.literal("  | $color"))
                         )
+                    }
+                }
+            }
+
+            then("axis") {
+                argument("value", OmniDirectionalAxisArgumentType.directionalAxis()) {
+                    runs { ctx ->
+                        val axis = ctx.argument<OmniDirectionalAxis>("value")
+                        ctx.source.replyChat("You entered the directional axis: $axis")
                     }
                 }
             }
