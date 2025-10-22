@@ -147,6 +147,8 @@ class TestMod
         }
 
         OmniClientCommands.command("testmod") {
+            alias("tm", "testing")
+
             runs {
                 val testError = IllegalStateException("This command requires a subcommand!", IllegalStateException("This command requires a subcommand (2)!"))
 
