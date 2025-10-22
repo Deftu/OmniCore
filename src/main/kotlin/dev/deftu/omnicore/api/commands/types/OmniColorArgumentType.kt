@@ -10,6 +10,7 @@ import com.mojang.brigadier.Message
 import dev.deftu.omnicore.api.color.NamedColor
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
 import org.jetbrains.annotations.ApiStatus
 import java.util.concurrent.CompletableFuture
 
@@ -75,12 +76,9 @@ public class OmniColorArgumentType : ArgumentType<OmniColor> {
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        val input = builder.remaining.lowercase()
-        for (named in NamedColor.complete(input)) {
-            builder.suggest(named.id)
-        }
-
-        return builder.buildFuture()
+        return CommandCompletable.suggestMatching({ input ->
+            NamedColor.complete(input).map(NamedColor::id)
+        }, builder)
     }
 
     override fun getExamples(): Collection<String> {

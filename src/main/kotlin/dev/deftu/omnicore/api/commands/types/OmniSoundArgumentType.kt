@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.omnicore.api.sound.OmniSounds
 import org.jetbrains.annotations.ApiStatus
@@ -67,14 +68,7 @@ public class OmniSoundArgumentType(private val permittedSounds: Set<OmniSound>) 
         context: CommandContext<S?>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {
-        for (sound in permittedSounds) {
-            val key = sound.string()
-            if (key.startsWith(builder.remaining)) {
-                builder.suggest(key)
-            }
-        }
-
-        return builder.buildFuture()
+        return CommandCompletable.suggestMatching(permittedSounds.map { it.string() }, builder)
     }
 
     override fun getExamples(): Collection<String> {
