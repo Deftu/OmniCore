@@ -15,11 +15,15 @@ import dev.deftu.omnicore.api.client.player
 import dev.deftu.omnicore.api.client.resources.OmniClientResources
 import dev.deftu.omnicore.api.client.sound.OmniClientSound
 import dev.deftu.omnicore.api.client.world
+import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.commands.types.OmniColorArgumentType
+import dev.deftu.omnicore.api.commands.types.OmniSoundArgumentType
 import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.omnicore.api.loader.OmniLoader
 import dev.deftu.omnicore.api.network.OmniNetworking
 import dev.deftu.omnicore.api.player.biomeData
 import dev.deftu.omnicore.api.player.chunkData
+import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.omnicore.api.sound.OmniSounds
 import dev.deftu.omnicore.api.world.isClearWeather
 import dev.deftu.textile.Text
@@ -259,6 +263,28 @@ class TestMod
                         .append(Text.literal((currentSoundIndex - 1).toString()).setStyle(MCTextStyle.color(TextColors.GREEN)))
                         .append(Text.literal(" of ${allSounds.size - 1} (${sound.location})"))
                     )
+                }
+
+                then("exact") {
+                    argument("sound", OmniSoundArgumentType.sounds(allSounds)) {
+                        runs { ctx ->
+                            val sound = ctx.argument<OmniSound>("sound")
+                            OmniClientSound.play(sound, 1f, 1f)
+                            ctx.source.replyChat("Played exact sound: ${sound.location}")
+                        }
+                    }
+                }
+            }
+
+            then("color") {
+                argument("value", OmniColorArgumentType.color()) {
+                    runs { ctx ->
+                        val color = ctx.argument<OmniColor>("value")
+                        ctx.source.replyChat(Text.literal("You entered the color: ")
+                            .append(Text.literal(color.toHexARGB()).setStyle(MCTextStyle.color(TextColors.hex(color.toHexRGB()))))
+                            .append(Text.literal("  | $color"))
+                        )
+                    }
                 }
             }
         }.register()
