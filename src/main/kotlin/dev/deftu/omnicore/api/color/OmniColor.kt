@@ -25,6 +25,56 @@ public data class OmniColor(
 
         @JvmField
         public val CODEC: Codec<OmniColor> = OmniCodecOps.withAlternative(FORMAT_AWARE_CODEC, PACKED_CODEC)
+
+        @JvmStatic
+        public fun rgba(red: Int, green: Int, blue: Int, alpha: Int = 255): OmniColor {
+            return OmniColor(ColorFormat.RGBA, ColorFormat.RGBA.pack(red, green, blue, alpha))
+        }
+
+        @JvmStatic
+        public fun rgba(value: Int): OmniColor {
+            return OmniColor(ColorFormat.RGBA, value)
+        }
+
+        @JvmStatic
+        public fun argb(alpha: Int, red: Int, green: Int, blue: Int): OmniColor {
+            return OmniColor(ColorFormat.ARGB, ColorFormat.ARGB.pack(red, green, blue, alpha))
+        }
+
+        @JvmStatic
+        public fun argb(value: Int): OmniColor {
+            return OmniColor(ColorFormat.ARGB, value)
+        }
+
+        @JvmStatic
+        public fun abgr(alpha: Int, blue: Int, green: Int, red: Int): OmniColor {
+            return OmniColor(ColorFormat.ABGR, ColorFormat.ABGR.pack(red, green, blue, alpha))
+        }
+
+        @JvmStatic
+        public fun abgr(value: Int): OmniColor {
+            return OmniColor(ColorFormat.ABGR, value)
+        }
+
+        @JvmStatic
+        public fun bgra(blue: Int, green: Int, red: Int, alpha: Int): OmniColor {
+            return OmniColor(ColorFormat.BGRA, ColorFormat.BGRA.pack(red, green, blue, alpha))
+        }
+
+        @JvmStatic
+        public fun bgra(value: Int): OmniColor {
+            return OmniColor(ColorFormat.BGRA, value)
+        }
+
+        @JvmStatic
+        public fun rgb(red: Int, green: Int, blue: Int): OmniColor {
+            return OmniColor(ColorFormat.RGBA, ColorFormat.RGBA.pack(red, green, blue, 255))
+        }
+
+        @JvmStatic
+        public fun rgb(value: Int): OmniColor {
+            return OmniColor(ColorFormat.RGBA, value or (0xFF shl 0))
+        }
     }
 
     @JvmOverloads
