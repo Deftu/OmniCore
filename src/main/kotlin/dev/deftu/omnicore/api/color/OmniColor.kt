@@ -73,7 +73,10 @@ public data class OmniColor(
 
         @JvmStatic
         public fun rgb(value: Int): OmniColor {
-            return OmniColor(ColorFormat.RGBA, value or (0xFF shl 0))
+            val r = (value ushr 16) and 0xFF
+            val g = (value ushr 8) and 0xFF
+            val b = value and 0xFF
+            return rgba(r, g, b, 255)
         }
     }
 
@@ -175,6 +178,16 @@ public data class OmniColor(
     public fun withAlpha(alpha: Int): OmniColor {
         val newValue = format.overwriteAlpha(value, alpha)
         return if (newValue == value) this else OmniColor(format, newValue)
+    }
+
+    public fun toHexARGB(): String {
+        val argbValue = format.convertTo(ColorFormat.ARGB, value)
+        return String.format("%08X", argbValue)
+    }
+
+    public fun toHexRGB(): String {
+        val rgbValue = format.convertTo(ColorFormat.RGBA, value) and 0xFFFFFF
+        return String.format("%06X", rgbValue)
     }
 
     override fun toString(): String {
