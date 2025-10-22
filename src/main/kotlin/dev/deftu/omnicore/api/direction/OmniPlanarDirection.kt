@@ -1,9 +1,11 @@
 package dev.deftu.omnicore.api.direction
 
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
+
 public enum class OmniPlanarDirection(
     public val fullName: String,
     public val abbreviatedName: String
-) {
+) : CommandCompletable {
     NORTH("North", "N"),
     NORTH_EAST("North East", "NE"),
     EAST("East", "E"),
@@ -42,6 +44,9 @@ public enum class OmniPlanarDirection(
             WEST -> EAST
             NORTH_WEST -> SOUTH_EAST
         }
+
+    override val id: String
+        get() = fullName.lowercase().replace(" ", "_")
 
     public fun next(): OmniPlanarDirection {
         return ALL[(ordinal + 1) % ALL.size]

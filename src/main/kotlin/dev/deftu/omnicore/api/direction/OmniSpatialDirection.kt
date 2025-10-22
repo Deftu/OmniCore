@@ -1,8 +1,9 @@
 package dev.deftu.omnicore.api.direction
 
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
 import net.minecraft.util.math.Direction
 
-public enum class OmniSpatialDirection {
+public enum class OmniSpatialDirection : CommandCompletable {
     NORTH,
     EAST,
     SOUTH,
@@ -26,6 +27,9 @@ public enum class OmniSpatialDirection {
     public val vanilla: Direction
         get() = VANILLA_MAPPINGS[this]
             ?: throw IllegalStateException("No vanilla mapping for $this")
+
+    override val id: String
+        get() = name.lowercase()
 
     public fun next(): OmniSpatialDirection {
         return ALL[(ordinal + 1) % ALL.size]

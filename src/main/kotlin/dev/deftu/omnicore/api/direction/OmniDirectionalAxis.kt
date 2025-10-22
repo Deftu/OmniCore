@@ -1,8 +1,9 @@
 package dev.deftu.omnicore.api.direction
 
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
 import net.minecraft.util.math.Direction
 
-public enum class OmniDirectionalAxis(public val id: String) {
+public enum class OmniDirectionalAxis(override val id: String) : CommandCompletable {
     X("x"),
     Y("y"),
     Z("z");
