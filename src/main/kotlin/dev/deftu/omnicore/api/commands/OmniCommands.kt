@@ -8,6 +8,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode
 import dev.deftu.omnicore.internal.commands.CommandInternals
 
 public object OmniCommands {
+    @JvmStatic
     public val dispatcher: CommandDispatcher<OmniCommandSource>
         get() = CommandInternals.dispatcher
 
