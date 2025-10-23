@@ -1,8 +1,10 @@
 package dev.deftu.omnicore.api.commands.types.enumerable
 
+import com.mojang.brigadier.Message
 import com.mojang.brigadier.StringReader
 import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import dev.deftu.omnicore.api.commands.CommandCompletable
@@ -12,6 +14,10 @@ public open class EnumArgumentType<T> protected constructor(
     private val values: Array<T>
 ) : ArgumentType<T> where T : Enum<T>, T : CommandCompletable {
     public companion object {
+        private val EXCEPTION = DynamicCommandExceptionType { value: Any ->
+            Message { "Invalid value '$value'" }
+        }
+
         @JvmStatic
         public fun <T> of(values: Array<T>): EnumArgumentType<T>
             where T : Enum<T>, T : CommandCompletable
@@ -26,7 +32,7 @@ public open class EnumArgumentType<T> protected constructor(
         val value = reader.readUnquotedString()
         return values.firstOrNull {
             it.id.equals(value, ignoreCase = true)
-        } ?: throw IllegalArgumentException("Invalid value '$value'")
+        } ?: throw EXCEPTION.createWithContext(reader, value)
     }
 
     override fun <S : Any?> listSuggestions(

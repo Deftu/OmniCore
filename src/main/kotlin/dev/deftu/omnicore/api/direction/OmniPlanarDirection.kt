@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.direction
 
-import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
+import dev.deftu.omnicore.api.commands.CommandCompletable
 
 public enum class OmniPlanarDirection(
     public val fullName: String,

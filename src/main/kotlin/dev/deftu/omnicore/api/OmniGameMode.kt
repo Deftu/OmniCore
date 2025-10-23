@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api
 
-import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
+import dev.deftu.omnicore.api.commands.CommandCompletable
 
 public enum class OmniGameMode(override val id: String) : CommandCompletable {
     ADVENTURE("adventure"),

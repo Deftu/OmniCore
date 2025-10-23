@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.data
 
-import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
+import dev.deftu.omnicore.api.commands.CommandCompletable
 import kotlin.math.abs
 import kotlin.math.max
 

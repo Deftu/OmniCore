@@ -1,8 +1,7 @@
 package dev.deftu.omnicore.api.data
 
-import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
+import dev.deftu.omnicore.api.commands.CommandCompletable
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
-import dev.deftu.omnicore.api.direction.OmniSpatialDirection
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt

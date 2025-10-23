@@ -16,9 +16,9 @@ import dev.deftu.omnicore.api.client.resources.OmniClientResources
 import dev.deftu.omnicore.api.client.sound.OmniClientSound
 import dev.deftu.omnicore.api.client.world
 import dev.deftu.omnicore.api.color.OmniColor
-import dev.deftu.omnicore.api.commands.types.OmniColorArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniDirectionalAxisArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniSoundArgumentType
+import dev.deftu.omnicore.api.commands.types.color.OmniColorArgumentType
 import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.identifierOrThrow
 import dev.deftu.omnicore.api.loader.OmniLoader
@@ -283,7 +283,7 @@ class TestMod
                     runs { ctx ->
                         val color = ctx.argument<OmniColor>("value")
                         ctx.source.replyChat(Text.literal("You entered the color: ")
-                            .append(Text.literal(color.toHexARGB()).setStyle(MCTextStyle.color(TextColors.hex(color.toHexRGB()))))
+                            .append(Text.literal(color.toHexRGB()).setStyle(MCTextStyle.color(TextColors.hex(color.toHexRGB()))))
                             .append(Text.literal("  | $color"))
                         )
                     }
