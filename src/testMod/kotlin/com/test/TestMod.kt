@@ -37,12 +37,11 @@ import dev.deftu.textile.minecraft.MCTextStyle
 import dev.deftu.textile.minecraft.TextColors
 import net.minecraft.server.network.ServerPlayerEntity
 import org.apache.logging.log4j.LogManager
+import net.minecraft.util.Identifier
 
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
-import net.minecraft.util.Identifier
-
 //#elseif FORGE
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.fml.common.Mod
