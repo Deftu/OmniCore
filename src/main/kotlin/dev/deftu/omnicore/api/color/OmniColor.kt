@@ -186,7 +186,7 @@ public data class OmniColor(
     }
 
     public fun toHexRGB(): String {
-        val rgbValue = format.convertTo(ColorFormat.RGBA, value) and 0xFFFFFF
+        val rgbValue = (format.convertTo(ColorFormat.RGBA, value) ushr 8) and 0xFFFFFF
         return String.format("%06X", rgbValue)
     }
 
