@@ -3,6 +3,7 @@ package com.test
 import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommands
 import dev.deftu.omnicore.api.client.commands.argument
 import dev.deftu.omnicore.api.client.commands.command
@@ -16,6 +17,7 @@ import dev.deftu.omnicore.api.client.resources.OmniClientResources
 import dev.deftu.omnicore.api.client.sound.OmniClientSound
 import dev.deftu.omnicore.api.client.world
 import dev.deftu.omnicore.api.color.OmniColor
+import dev.deftu.omnicore.api.commands.types.IdentifierArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniDirectionalAxisArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniSoundArgumentType
 import dev.deftu.omnicore.api.commands.types.color.OmniColorArgumentType
@@ -25,6 +27,8 @@ import dev.deftu.omnicore.api.loader.OmniLoader
 import dev.deftu.omnicore.api.network.OmniNetworking
 import dev.deftu.omnicore.api.player.biomeData
 import dev.deftu.omnicore.api.player.chunkData
+import dev.deftu.omnicore.api.resources.findFirstOrNull
+import dev.deftu.omnicore.api.resources.readString
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.omnicore.api.sound.OmniSounds
 import dev.deftu.omnicore.api.world.isClearWeather
@@ -37,6 +41,8 @@ import org.apache.logging.log4j.LogManager
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.api.ModInitializer
+import net.minecraft.util.Identifier
+
 //#elseif FORGE
 //#if MC >= 1.16.5
 //$$ import net.minecraftforge.fml.common.Mod
@@ -229,6 +235,26 @@ class TestMod
                         val message = ctx.argument<String>("message")
                         sendTestPacket(message)
                         ctx.source.replyChat("Sent test packet to the server with custom message: $message")
+                    }
+                }
+            }
+
+            then("resource") {
+                argument("identifier", IdentifierArgumentType.identifier()) {
+                    runs { ctx ->
+                        val identifier = ctx.argument<Identifier>("identifier")
+                        val resource = client.resourceManager.findFirstOrNull(identifier)
+                        if (resource != null) {
+                            println("""
+                                Resource contents for $identifier:
+                                --------------------------------
+                                ${resource.readString()}
+                            """.trimIndent())
+
+                            ctx.source.replyChat("Found resource: $identifier")
+                        } else {
+                            ctx.source.replyChat("Resource not found: $identifier")
+                        }
                     }
                 }
             }
