@@ -1,15 +1,16 @@
 package dev.deftu.omnicore.api.data
 
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
 import kotlin.math.abs
 import kotlin.math.max
 
-public enum class RadiusMetric {
+public enum class RadiusMetric(override val id: String) : CommandCompletable {
     /** L1: |dx| + |dy| + |dz| <= r (diamond/octahedron) */
-    MANHATTAN,
+    MANHATTAN("manhattan"),
     /** L∞: max(|dx|, |dy|, |dz|) <= r (cube / square) */
-    CHEBYSHEV,
+    CHEBYSHEV("chebyshev"),
     /** L2: (squared): dx² + dy² + dz² <= r (sphere/circle). avoids sqrt */
-    EUCLIDEAN;
+    EUCLIDEAN("euclidean");
 
     @JvmOverloads
     public fun isInside2D(
@@ -33,5 +34,11 @@ public enum class RadiusMetric {
             CHEBYSHEV -> max(max(abs(dx), abs(dy)), abs(dz)) <= radius
             EUCLIDEAN -> (dx * dx) + (dy * dy) + (dz * dz) <= radiusSq
         }
+    }
+
+    public companion object {
+        @JvmField
+        @Suppress("EnumValuesSoftDeprecate")
+        public val ALL: List<RadiusMetric> = RadiusMetric.values().toList()
     }
 }

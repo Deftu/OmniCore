@@ -1,19 +1,21 @@
 package dev.deftu.omnicore.api.data
 
+import dev.deftu.omnicore.api.commands.types.enumerable.CommandCompletable
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
+import dev.deftu.omnicore.api.direction.OmniSpatialDirection
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.sqrt
 
-public enum class DistanceMetric {
+public enum class DistanceMetric(override val id: String) : CommandCompletable {
     /** L2 norm. */
-    EUCLIDEAN,
+    EUCLIDEAN("euclidean"),
     /** L2 without sqrt; matches "squaredDistanceTo". */
-    EUCLIDEAN_SQUARED,
+    EUCLIDEAN_SQUARED("euclidean_squared"),
     /** L1 norm; matches "manhattanDistance". */
-    MANHATTAN,
+    MANHATTAN("manhattan"),
     /** L∞ norm; max component distance. */
-    CHEBYSHEV;
+    CHEBYSHEV("chebyshev");
 
     public fun distance3D(
         ax: Double, ay: Double, az: Double,
@@ -79,5 +81,11 @@ public enum class DistanceMetric {
 
     public fun distance2D(a: OmniVec3d, b: OmniVec3d): Double {
         return distance2D(a.x, a.z, b.x, b.z)
+    }
+
+    public companion object {
+        @JvmField
+        @Suppress("EnumValuesSoftDeprecate")
+        public val ALL: List<DistanceMetric> = DistanceMetric.values().toList()
     }
 }

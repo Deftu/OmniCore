@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.commands.CommandCompletable
 
 //#if MC >= 1.16.5
 import net.minecraft.client.option.Perspective
@@ -17,13 +18,15 @@ import net.minecraft.client.option.Perspective
 public enum class OmniPerspective(
     public val isFirstPerson: Boolean,
     public val isFrontView: Boolean
-) {
-
+) : CommandCompletable {
     FIRST_PERSON(true,  false),
     THIRD_PERSON_BACK(false, false),
     THIRD_PERSON_FRONT(false, true);
 
     public val isThirdPerson: Boolean get() = !isFirstPerson
+
+    override val id: String
+        get() = name.lowercase()
 
     /**
      * Sets the current camera perspective to this.

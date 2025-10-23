@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
+import dev.deftu.omnicore.api.commands.CommandCompletable
 import java.util.concurrent.CompletableFuture
 
 public open class EnumArgumentType<T> protected constructor(

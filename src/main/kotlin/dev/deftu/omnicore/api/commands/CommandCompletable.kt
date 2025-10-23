@@ -1,4 +1,4 @@
-package dev.deftu.omnicore.api.commands.types.enumerable
+package dev.deftu.omnicore.api.commands
 
 import com.mojang.brigadier.suggestion.Suggestions
 import com.mojang.brigadier.suggestion.SuggestionsBuilder
