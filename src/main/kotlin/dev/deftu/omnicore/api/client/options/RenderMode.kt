@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 //#if MC >= 1.16.5
-import net.minecraft.client.option.GraphicsMode
+import net.minecraft.client.GraphicsStatus
 //#endif
 
 public enum class RenderMode {
@@ -20,11 +20,11 @@ public enum class RenderMode {
             }
 
         //#if MC >= 1.16.5
-        public fun from(vanilla: GraphicsMode): RenderMode {
+        public fun from(vanilla: GraphicsStatus): RenderMode {
             return when (vanilla) {
-                GraphicsMode.FAST -> FAST
-                GraphicsMode.FANCY -> FANCY
-                GraphicsMode.FABULOUS -> FABULOUS
+                GraphicsStatus.FAST -> FAST
+                GraphicsStatus.FANCY -> FANCY
+                GraphicsStatus.FABULOUS -> FABULOUS
             }
         }
         //#endif

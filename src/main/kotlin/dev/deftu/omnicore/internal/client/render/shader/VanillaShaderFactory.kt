@@ -16,7 +16,7 @@ package dev.deftu.omnicore.internal.client.render.shader
 //$$ import org.jetbrains.annotations.ApiStatus
 //$$
 //#if MC >= 1.21.2
-//$$ import dev.deftu.omnicore.api.identifierOrThrow
+//$$ import dev.deftu.omnicore.api.locationOrThrow
 //$$ import com.mojang.blaze3d.shaders.CompiledShader
 //#endif
 //$$
@@ -29,7 +29,7 @@ package dev.deftu.omnicore.internal.client.render.shader
 //$$ import net.minecraft.server.packs.resources.Resource
 //$$ import java.util.Optional
 //#else
-//$$ import net.minecraft.resource.ResourceImpl
+//$$ import net.minecraft.server.packs.resources.SimpleResource
 //#endif
 //$$
 //$$ @ApiStatus.Internal
@@ -93,7 +93,7 @@ package dev.deftu.omnicore.internal.client.render.shader
 //$$         }
 //$$
             //#if MC < 1.21.2
-            //$$ val factory = { location: Identifier ->
+            //$$ val factory = { location: ResourceLocation ->
             //$$     val content = when (location.path.substringAfter(".")) {
             //$$         "json" -> programJson.toString()
             //$$         "vsh" -> processedVert
@@ -106,9 +106,9 @@ package dev.deftu.omnicore.internal.client.render.shader
                 //#elseif MC >= 1.19
                 //$$ Optional.of(Resource("__generated__", content::byteInputStream))
                 //#else
-                //$$ ResourceImpl("__generated__", location, content.byteInputStream(), null)
+                //$$ SimpleResource("__generated__", location, content.byteInputStream(), null)
                 //#endif
-                //$$ }
+            //$$ }
             //#endif
 //$$
 //$$         val vertexFormat = if (vertexFormat != null) {
@@ -126,14 +126,14 @@ package dev.deftu.omnicore.internal.client.render.shader
 //$$         }
 //$$
             //#if MC >= 1.21.2
-            //$$ val vertLocation = identifierOrThrow(vertName)
-            //$$ val fragLocation = identifierOrThrow(fragName)
+            //$$ val vertLocation = locationOrThrow(vertName)
+            //$$ val fragLocation = locationOrThrow(fragName)
             //$$ val vertShader = CompiledShader.compile(vertLocation, CompiledShader.Type.VERTEX, processedVert)
             //$$ val fragShader = CompiledShader.compile(fragLocation, CompiledShader.Type.FRAGMENT, processedFrag)
             //$$ return VanillaShader(CompiledShaderProgram.link(vertShader, fragShader, vertexFormat), blendState)
             //#else
             //$$ val shaderName = DigestUtils.sha1Hex(programJson.toString()).lowercase()
-            //$$ return VanillaShader(ShaderProgram(factory, shaderName, vertexFormat), blendState)
+            //$$ return VanillaShader(ShaderInstance(factory, shaderName, vertexFormat), blendState)
             //#endif
 //$$     }
 //$$

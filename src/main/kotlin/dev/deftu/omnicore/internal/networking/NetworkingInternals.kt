@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.internal.networking
 
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.util.Identifier
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import org.jetbrains.annotations.ApiStatus
 
 //#if FORGE && MC <= 1.12.2
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.ApiStatus
 //#endif
 
 //#if MC <= 1.8.9
-//$$ import dev.deftu.omnicore.api.identifierOrThrow
+//$$ import dev.deftu.omnicore.api.locationOrThrow
 //#endif
 
 @ApiStatus.Internal
@@ -37,17 +37,17 @@ public object NetworkingInternals {
 
     @JvmStatic
     public fun send(
-        player: ServerPlayerEntity,
-        id: Identifier,
-        buf: PacketByteBuf
+        player: ServerPlayer,
+        id: ResourceLocation,
+        buf: FriendlyByteBuf
     ) {
         //#if MC <= 1.12.2
         //$$ initialize()
         //#endif
 
-        val packet = CustomPayloadS2CPacket(
+        val packet = ClientboundCustomPayloadPacket(
             //#if MC >= 1.20.4
-            VanillaCustomPayload(id, buf),
+            VanillaCustomPacketPayload(id, buf),
             //#elseif MC >= 1.16.5
             //$$ id,
             //$$ buf,
@@ -57,20 +57,15 @@ public object NetworkingInternals {
             //#endif
         )
 
-        val networkHandler = player.networkHandler
-        //#if MC >= 1.20.6 && FORGE-LIKE
-        //$$ networkHandler.send(packet)
-        //#else
-        networkHandler.sendPacket(packet)
-        //#endif
+        player.connection.send(packet)
     }
 
     @JvmStatic
-    public fun readIdentifier(buf: PacketByteBuf): Identifier {
+    public fun readResourceLocation(buf: FriendlyByteBuf): ResourceLocation {
         //#if MC >= 1.12.2
-        return buf.readIdentifier()
+        return buf.readResourceLocation()
         //#else
-        //$$ return identifierOrThrow(buf.readString(Short.MAX_VALUE.toInt()))
+        //$$ return locationOrThrow(buf.readStringFromBuffer(Short.MAX_VALUE.toInt()))
         //#endif
     }
 

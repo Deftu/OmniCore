@@ -7,22 +7,22 @@ import dev.deftu.omnicore.api.resources.findFirstOrNull
 import dev.deftu.omnicore.api.resources.readBytes
 import dev.deftu.omnicore.internal.client.image.OmniImageImpl
 import dev.deftu.omnicore.internal.client.image.ImageInternals
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Path
 
 //#if MC >= 1.21.6
-import net.minecraft.client.texture.GlTextureView
+import com.mojang.blaze3d.opengl.GlTextureView
 //#endif
 
 //#if MC >= 1.21.5
-import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.opengl.GlTexture
 //#endif
 
 //#if MC >= 1.16.5
-import net.minecraft.client.texture.NativeImage
+import com.mojang.blaze3d.platform.NativeImage
 import java.nio.file.Files
 //#else
 //$$ import java.awt.image.BufferedImage
@@ -110,7 +110,7 @@ public object OmniImages {
     }
 
     @JvmStatic
-    public fun resource(location: Identifier): OmniImage? {
+    public fun resource(location: ResourceLocation): OmniImage? {
         val inputStream = client.resourceManager.findFirstOrNull(location)
             ?.readBytes()
             ?.let(::ByteArrayInputStream)

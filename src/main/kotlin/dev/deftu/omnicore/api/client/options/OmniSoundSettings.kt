@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.options
 
-import net.minecraft.sound.SoundCategory as VanillaSoundCategory
+import net.minecraft.sounds.SoundSource as VanillaSoundCategory
 
 public object OmniSoundSettings {
     public object Capabilities {
@@ -68,8 +68,10 @@ public object OmniSoundSettings {
     @JvmStatic
     public val isSubtitlesEnabled: Boolean
         get() {
-            //#if MC >= 1.9
-            return unwrap(options.showSubtitles)
+            //#if MC >= 1.19.2
+            return unwrap(options.showSubtitles())
+            //#elseif MC >= 1.9
+            //$$ return unwrap(options.showSubtitles)
             //#else
             //$$ return false
             //#endif
@@ -78,8 +80,10 @@ public object OmniSoundSettings {
     @JvmStatic
     public val narratorMode: NarratorMode
         get() {
-            //#if MC >= 1.12.2
-            return NarratorMode.from(unwrap(options.narrator))
+            //#if MC >= 1.19.2
+            return NarratorMode.from(unwrap(options.narrator()))
+            //#elseif MC >= 1.12.2
+            //$$ return NarratorMode.from(unwrap(options.narratorStatus))
             //#else
             //$$ return NarratorMode.OFF
             //#endif
@@ -98,8 +102,10 @@ public object OmniSoundSettings {
     @JvmStatic
     public val soundDevice: String?
         get() {
-            //#if MC >= 1.18
-            return unwrap(options.soundDevice)
+            //#if MC >= 1.19.2
+            return unwrap(options.soundDevice())
+            //#elseif MC >= 1.18.2
+            //$$ return unwrap(options.soundDevice)
             //#else
             //$$ return null
             //#endif
@@ -109,7 +115,7 @@ public object OmniSoundSettings {
     public val isDirectionalAudioEnabled: Boolean
         get() {
             //#if MC >= 1.19
-            return unwrap(options.directionalAudio)
+            return unwrap(options.directionalAudio())
             //#else
             //$$ return false
             //#endif
@@ -119,7 +125,7 @@ public object OmniSoundSettings {
     public val musicFrequency: MusicFrequency
         get() {
             //#if MC >= 1.21.6
-            return MusicFrequency.from(unwrap(options.musicFrequency))
+            return MusicFrequency.from(unwrap(options.musicFrequency()))
             //#else
             //$$ return MusicFrequency.DEFAULT
             //#endif
@@ -129,7 +135,7 @@ public object OmniSoundSettings {
     public val isNowPlayingToastEnabled: Boolean
         get() {
             //#if MC >= 1.21.6
-            return unwrap(options.showNowPlayingToast)
+            return unwrap(options.showNowPlayingToast())
             //#else
             //$$ return false
             //#endif
@@ -140,7 +146,7 @@ public object OmniSoundSettings {
      */
     @JvmStatic
     public fun getCategoryVolume(category: VanillaSoundCategory): Float {
-        return options.getCategorySoundVolume(category)
+        return options.getSoundSourceVolume(category)
     }
 
     /**
@@ -156,7 +162,11 @@ public object OmniSoundSettings {
      */
     @JvmStatic
     public fun getVolume(category: VanillaSoundCategory): Float {
-        return options.getSoundVolume(category)
+        //#if MC >= 1.21.6
+        return options.getFinalSoundSourceVolume(category)
+        //#else
+        //$$ return getCategoryVolume(category) * getCategoryVolume(VanillaSoundCategory.MASTER)
+        //#endif
     }
 
     /**

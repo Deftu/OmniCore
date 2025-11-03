@@ -3,7 +3,7 @@ package dev.deftu.omnicore.internal.client.render.shape
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 import dev.deftu.omnicore.api.color.OmniColor
@@ -16,7 +16,7 @@ public object VectorShapeRenderer {
     @JvmStatic
     public fun render(
         vertexConsumer: OmniVertexConsumer,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         origin: OmniVector3f,
         delta: OmniVec3d,
         color: OmniColor
@@ -29,28 +29,28 @@ public object VectorShapeRenderer {
         val dz = delta.z
 
         // Vertex 1: at origin
-        vertexConsumer.vertex(matrices, ox, oy, oz)
+        vertexConsumer.vertex(pose, ox, oy, oz)
             .color(color)
-            .normal(matrices, dx.toFloat(), dy.toFloat(), dz.toFloat())
+            .normal(pose, dx.toFloat(), dy.toFloat(), dz.toFloat())
             .next()
 
         // Vertex 2: at origin + delta
-        vertexConsumer.vertex(matrices, ox + dx, oy + dy, oz + dz)
+        vertexConsumer.vertex(pose, ox + dx, oy + dy, oz + dz)
             .color(color)
-            .normal(matrices, dx.toFloat(), dy.toFloat(), dz.toFloat())
+            .normal(pose, dx.toFloat(), dy.toFloat(), dz.toFloat())
             .next()
     }
 
     @JvmStatic
     public fun render(
         pipeline: OmniRenderPipeline,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         origin: OmniVector3f,
         delta: OmniVec3d,
         color: OmniColor
     ) {
         val buffer = OmniBufferBuilders.create(DrawMode.LINES, DefaultVertexFormats.POSITION_COLOR_NORMAL)
-        render(buffer, matrices, origin, delta, color)
+        render(buffer, pose, origin, delta, color)
         buffer.buildOrNull()?.drawAndClose(pipeline)
     }
 }

@@ -7,17 +7,21 @@ import dev.deftu.omnicore.api.network.PacketPayload
 import dev.deftu.textile.Text
 import dev.deftu.textile.minecraft.MCText
 import net.minecraft.server.MinecraftServer
-import net.minecraft.server.command.CommandOutput
-import net.minecraft.server.network.ServerPlayerEntity
-import net.minecraft.server.world.ServerWorld
+import net.minecraft.commands.CommandSource
+import net.minecraft.server.level.ServerPlayer
+import net.minecraft.server.level.ServerLevel
 
 public class OmniCommandSource(
     public val server: MinecraftServer,
-    public val output: CommandOutput,
-    public val world: ServerWorld
+    public val output: CommandSource,
+    public val world: ServerLevel
 ) {
-    public inline val player: ServerPlayerEntity?
-        get() = output as? ServerPlayerEntity
+    //#if MC >= 1.16.5 && MC < 1.19.2
+    //$$ private val NULL_UUID = java.util.UUID(0L, 0L)
+    //#endif
+
+    public inline val player: ServerPlayer?
+        get() = output as? ServerPlayer
 
     //#if MC <= 1.12.2
     //$$ internal constructor(server: MinecraftServer, output: ICommandSender) : this(
@@ -28,13 +32,7 @@ public class OmniCommandSource(
     //#endif
 
     public fun replyChat(text: Text): Int {
-        output.sendMessage(
-            MCText.convert(text),
-            //#if MC >= 1.16.5 && MC < 1.19.2
-            //$$ OmniChat.NULL_UUID
-            //#endif
-        )
-
+        message(text)
         return Command.SINGLE_SUCCESS
     }
 
@@ -44,25 +42,13 @@ public class OmniCommandSource(
 
     @JvmOverloads
     public fun replyError(content: Text, throwable: Throwable, isDetailed: Boolean = true): Int {
-        output.sendMessage(
-            MCText.convert(OmniChat.buildErrorMessage(content, throwable, isDetailed)),
-            //#if MC >= 1.16.5 && MC < 1.19.2
-            //$$ OmniChat.NULL_UUID
-            //#endif
-        )
-
+        message(OmniChat.buildErrorMessage(content, throwable, isDetailed))
         return Command.SINGLE_SUCCESS
     }
 
     @JvmOverloads
     public fun replyError(error: Throwable, isDetailed: Boolean = true): Int {
-        output.sendMessage(
-            MCText.convert(OmniChat.buildErrorMessage(error, isDetailed)),
-            //#if MC >= 1.16.5 && MC < 1.19.2
-            //$$ OmniChat.NULL_UUID
-            //#endif
-        )
-
+        message(OmniChat.buildErrorMessage(error, isDetailed))
         return Command.SINGLE_SUCCESS
     }
 
@@ -108,5 +94,15 @@ public class OmniCommandSource(
         val player = player ?: return 0 // failure
         OmniNetworking.send(player, payload)
         return Command.SINGLE_SUCCESS
+    }
+
+    private fun message(text: Text) {
+        //#if MC >= 1.16.5 && MC < 1.19.2
+        //$$ output.sendMessage(MCText.convert(text), NULL_UUID)
+        //#elseif MC >= 1.19.2
+        output.sendSystemMessage(MCText.convert(text))
+        //#else
+        //$$ output.sendMessage(MCText.convert(text))
+        //#endif
     }
 }

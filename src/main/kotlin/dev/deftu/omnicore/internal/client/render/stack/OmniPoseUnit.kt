@@ -1,20 +1,20 @@
 package dev.deftu.omnicore.internal.client.render.stack
 
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import dev.deftu.omnicore.api.math.OmniMatrix3f
 import dev.deftu.omnicore.api.math.OmniMatrix4f
 import dev.deftu.omnicore.api.math.OmniQuaternion
 
-public data object OmniMatrixUnit : OmniMatrixStack {
-    private val entry = OmniMatrixStack.Entry(OmniMatrix4f.identity(), OmniMatrix3f.identity())
+public data object OmniPoseUnit : OmniPoseStack {
+    private val entry = OmniPoseStack.Entry(OmniMatrix4f.identity(), OmniMatrix3f.identity())
 
     override val isEmpty: Boolean
         get() = true
 
-    override val current: OmniMatrixStack.Entry
+    override val current: OmniPoseStack.Entry
         get() = entry
 
-    override fun deepCopy(): OmniMatrixStack {
+    override fun deepCopy(): OmniPoseStack {
         return this
     }
 
@@ -22,7 +22,7 @@ public data object OmniMatrixUnit : OmniMatrixStack {
         // no-op
     }
 
-    override fun pop(): OmniMatrixStack.Entry {
+    override fun pop(): OmniPoseStack.Entry {
         return entry
     }
 

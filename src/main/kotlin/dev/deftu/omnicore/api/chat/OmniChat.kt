@@ -6,19 +6,15 @@ import dev.deftu.textile.minecraft.HoverEvent
 import dev.deftu.textile.minecraft.MCText
 import dev.deftu.textile.minecraft.MCTextStyle
 import dev.deftu.textile.minecraft.TextColors
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
 
 //#if MC <= 1.8.9
-//$$ import net.minecraft.network.packet.s2c.play.ChatMessageS2CPacket
+//$$ import net.minecraft.network.play.server.S02PacketChat
 //#endif
 
 public object OmniChat {
-    //#if MC >= 1.16.5 && MC < 1.19.2
-    //$$ internal val NULL_UUID = java.util.UUID(0, 0)
-    //#endif
-
     @JvmStatic
-    public fun display(player: ServerPlayerEntity, surface: MessageSurface) {
+    public fun display(player: ServerPlayer, surface: MessageSurface) {
         when (surface) {
             is MessageSurface.ChatMessage -> displayChatMessage(player,surface.content)
             is MessageSurface.ErrorMessage -> displayErrorMessage(player,surface.content, surface.error, surface.isDetailed)
@@ -35,55 +31,53 @@ public object OmniChat {
     }
 
     @JvmStatic
-    public fun displayChatMessage(player: ServerPlayerEntity, text: Text) {
+    public fun displayChatMessage(player: ServerPlayer, text: Text) {
         player
-            //#if MC >= 1.19.2
-            .sendMessage(MCText.convert(text), false)
-            //#elseif MC >= 1.16.5
-            //$$ .sendSystemMessage(MCText.convert(text), NULL_UUID)
+            //#if MC >= 1.16.5
+            .displayClientMessage(MCText.convert(text), false)
             //#else
             //$$ .sendMessage(MCText.convert(text))
             //#endif
     }
 
     @JvmStatic
-    public fun displayChatMessage(player: ServerPlayerEntity, text: String) {
+    public fun displayChatMessage(player: ServerPlayer, text: String) {
         displayChatMessage(player, Text.literal(text))
     }
 
     @JvmStatic
     @JvmOverloads
-    public fun displayErrorMessage(player: ServerPlayerEntity, content: Text, throwable: Throwable, isDetailed: Boolean = true) {
+    public fun displayErrorMessage(player: ServerPlayer, content: Text, throwable: Throwable, isDetailed: Boolean = true) {
         displayChatMessage(player, buildErrorMessage(content, throwable, isDetailed))
     }
 
     @JvmStatic
     @JvmOverloads
-    public fun displayErrorMessage(player: ServerPlayerEntity, error: Throwable, isDetailed: Boolean = true) {
+    public fun displayErrorMessage(player: ServerPlayer, error: Throwable, isDetailed: Boolean = true) {
         displayChatMessage(player, buildErrorMessage(error, isDetailed))
     }
 
     @JvmStatic
-    public fun displayActionBar(player: ServerPlayerEntity, text: Text) {
+    public fun displayActionBar(player: ServerPlayer, text: Text) {
         //#if MC >= 1.19.2
-        player.sendMessage(MCText.convert(text), true)
+        player.displayClientMessage(MCText.convert(text), true)
         //#elseif MC >= 1.12.2
-        //$$ player.sendMessage(MCText.convert(text), true)
+        //$$ player.displayClientMessage(MCText.convert(text), true)
         //#else
-        //$$ val packet = ChatMessageS2CPacket(MCText.convert(text) , 2.toByte())
-        //$$ player.networkHandler.sendPacket(packet)
+        //$$ val packet = S02PacketChat(MCText.convert(text) , 2.toByte())
+        //$$ player.playerNetServerHandler.sendPacket(packet)
         //#endif
     }
 
     @JvmStatic
-    public fun displayActionBar(player: ServerPlayerEntity, text: String) {
+    public fun displayActionBar(player: ServerPlayer, text: String) {
         displayActionBar(player, Text.literal(text))
     }
 
     @JvmStatic
     @JvmOverloads
     public fun displayTitle(
-        player: ServerPlayerEntity,
+        player: ServerPlayer,
         title: Text,
         subtitle: Text? = null,
         fadeIn: Int = 10,
@@ -96,7 +90,7 @@ public object OmniChat {
     @JvmStatic
     @JvmOverloads
     public fun displayTitle(
-        player: ServerPlayerEntity,
+        player: ServerPlayer,
         title: String,
         subtitle: String? = null,
         fadeIn: Int = 10,

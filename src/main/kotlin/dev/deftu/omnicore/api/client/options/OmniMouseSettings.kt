@@ -35,13 +35,21 @@ public object OmniMouseSettings {
 
     @JvmStatic
     public val mouseSensitivity: Double
-        get() = unwrap(options.mouseSensitivity).toDouble()
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.sensitivity()).toDouble()
+            //#else
+            //$$ return unwrap(options.sensitivity).toDouble()
+            //#endif
+        }
 
     @JvmStatic
     public val mouseWheelSensitivity: Double
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.mouseWheelSensitivity).toDouble()
+            //#if MC >= 1.19.2
+            return unwrap(options.mouseWheelSensitivity()).toDouble()
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.mouseWheelSensitivity).toDouble()
             //#else
             //$$ return 0.0
             //#endif
@@ -50,8 +58,10 @@ public object OmniMouseSettings {
     @JvmStatic
     public val isRawMouseInputEnabled: Boolean
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.rawMouseInput)
+            //#if MC >= 1.19.2
+            return unwrap(options.rawMouseInput())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.rawMouseInput)
             //#else
             //$$ return false
             //#endif
@@ -59,13 +69,21 @@ public object OmniMouseSettings {
 
     @JvmStatic
     public val isMouseYInverted: Boolean
-        get() = unwrap(options.invertMouseY)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.invertMouseY())
+            //#else
+            //$$ return unwrap(options.invertYMouse)
+            //#endif
+        }
 
     @JvmStatic
     public val isDiscreteScrollEnabled: Boolean
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.discreteMouseScroll)
+            //#if MC >= 1.19.2
+            return unwrap(options.discreteMouseScroll())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.discreteMouseScroll)
             //#else
             //$$ return false
             //#endif
@@ -73,5 +91,11 @@ public object OmniMouseSettings {
 
     @JvmStatic
     public val isTouchscreenMode: Boolean
-        get() = unwrap(options.touchscreen)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.touchscreen())
+            //#else
+            //$$ return unwrap(options.touchscreen)
+            //#endif
+        }
 }

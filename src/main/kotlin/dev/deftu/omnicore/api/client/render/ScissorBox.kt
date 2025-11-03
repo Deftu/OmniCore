@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -30,9 +30,9 @@ public data class ScissorBox(val x: Int, val y: Int, val width: Int, val height:
         return if (iw > 0 && ih > 0) ScissorBox(ix, iy, iw, ih) else null
     }
 
-    public fun transformQuickly(stack: OmniMatrixStack): ScissorBox {
-        val p1 = stack.transformPosition(left.toFloat(), top.toFloat())
-        val p2 = stack.transformPosition(right.toFloat(), bottom.toFloat())
+    public fun transformQuickly(pose: OmniPoseStack): ScissorBox {
+        val p1 = pose.transformPosition(left.toFloat(), top.toFloat())
+        val p2 = pose.transformPosition(right.toFloat(), bottom.toFloat())
 
         val nx  = floor(minOf(p1.x, p2.x)).toInt()
         val ny  = floor(minOf(p1.y, p2.y)).toInt()

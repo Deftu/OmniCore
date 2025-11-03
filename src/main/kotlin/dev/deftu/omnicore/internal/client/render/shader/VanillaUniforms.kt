@@ -125,7 +125,11 @@ package dev.deftu.omnicore.internal.client.render.shader
 //$$     }
 //$$
 //$$     override fun setTexture(id: Int) {
-//$$         program.bindSampler(name, id)
+            //#if MC >= 1.21.2
+            //$$ program.bindSampler(name, id)
+            //#else
+            //$$ program.setSampler(name, id)
+            //#endif
 //$$     }
 //$$ }
 //#endif

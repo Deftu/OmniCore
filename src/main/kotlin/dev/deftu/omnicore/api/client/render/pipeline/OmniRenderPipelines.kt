@@ -6,14 +6,14 @@ import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.shader.ShaderSchema
-import dev.deftu.omnicore.internal.identifierOf
+import dev.deftu.omnicore.internal.internalLocationOf
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import dev.deftu.omnicore.api.client.render.DrawModes
-import net.minecraft.client.gl.UniformType
+import com.mojang.blaze3d.shaders.UniformType
 //#else
 //#if MC >= 1.21.2
 //$$ import dev.deftu.omnicore.api.client.client
@@ -33,31 +33,31 @@ import dev.deftu.omnicore.internal.client.render.DefaultShaders
 public object OmniRenderPipelines {
     @JvmField
     public val POSITION: OmniRenderPipeline = builderWithDefaultShader(
-        location = identifierOf("pipeline/position"),
+        location = internalLocationOf("pipeline/position"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION)
     ).build()
 
     @JvmField
     public val POSITION_COLOR: OmniRenderPipeline = builderWithDefaultShader(
-        location = identifierOf("pipeline/position_color"),
+        location = internalLocationOf("pipeline/position_color"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_COLOR)
     ).build()
 
     @JvmField
     public val POSITION_COLOR_TRIANGLES: OmniRenderPipeline = builderWithDefaultShader(
-        location = identifierOf("pipeline/position_color_triangles"),
+        location = internalLocationOf("pipeline/position_color_triangles"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_COLOR_TRIANGLES)
     ).build()
 
     @JvmField
     public val TEXTURED: OmniRenderPipeline = builderWithDefaultShader(
-        location = identifierOf("pipeline/textured"),
+        location = internalLocationOf("pipeline/textured"),
         snippets = arrayOf(OmniRenderPipelineSnippets.POSITION_TEXTURE_COLOR)
     ).build()
 
     @JvmField
     public val LINES: OmniRenderPipeline = builderWithDefaultShader(
-        location = identifierOf("pipeline/lines"),
+        location = internalLocationOf("pipeline/lines"),
         snippets = arrayOf(OmniRenderPipelineSnippets.LINES)
     ).build()
 
@@ -98,11 +98,11 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builder(
-        location: Identifier,
+        location: ResourceLocation,
         vertexFormat: VertexFormat,
         drawMode: DrawMode,
-        vertexLocation: Identifier,
-        fragmentLocation: Identifier,
+        vertexLocation: ResourceLocation,
+        fragmentLocation: ResourceLocation,
         samplers: List<String>,
         uniforms: Map<String, UniformType>,
     ): OmniRenderPipelineBuilder {
@@ -121,9 +121,9 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builder(
-        location: Identifier,
-        vertexLocation: Identifier,
-        fragmentLocation: Identifier,
+        location: ResourceLocation,
+        vertexLocation: ResourceLocation,
+        fragmentLocation: ResourceLocation,
         samplers: List<String>,
         uniforms: Map<String, UniformType>,
         vararg snippets: OmniRenderPipeline.Snippet,
@@ -142,8 +142,8 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builder(
-        vertexLocation: Identifier,
-        fragmentLocation: Identifier,
+        vertexLocation: ResourceLocation,
+        fragmentLocation: ResourceLocation,
         samplers: List<String>,
         uniforms: Map<String, UniformType>,
         vararg snippets: OmniRenderPipeline.Snippet,
@@ -201,7 +201,7 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builder(
-        location: Identifier,
+        location: ResourceLocation,
         vertexFormat: VertexFormat,
         drawMode: DrawMode,
         //#if MC >= 1.21.5
@@ -220,7 +220,7 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builder(
-        location: Identifier,
+        location: ResourceLocation,
         //#if MC >= 1.21.5
         shaderProvider: ShaderProvider,
         //#else
@@ -257,15 +257,15 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builderWithDefaultShader(
-        location: Identifier,
+        location: ResourceLocation,
         vertexFormat: VertexFormat,
         drawMode: DrawMode,
     ): OmniRenderPipelineBuilder {
         //#if MC >= 1.17.1
         val defaultShader = DefaultShaders[vertexFormat]
-            //#if MC >= 1.21.5
+        //#if MC >= 1.21.5
             ?: throw IllegalArgumentException("No default shader for vertex format $vertexFormat")
-            //#endif
+        //#endif
 
         //#if MC >= 1.21.5
         val samplers = List(vertexFormat.elements.map(VertexFormatElement::usage).count(VertexFormatElement.Usage.UV::equals)) { "Sampler$it" }
@@ -304,7 +304,7 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builderWithDefaultShader(
-        location: Identifier,
+        location: ResourceLocation,
         vertexFormat: DefaultVertexFormats,
         drawMode: DrawMode,
     ): OmniRenderPipelineBuilder {
@@ -316,7 +316,7 @@ public object OmniRenderPipelines {
     }
 
     @JvmStatic
-    public fun builderWithDefaultShader(location: Identifier, vararg snippets: OmniRenderPipeline.Snippet): OmniRenderPipelineBuilder {
+    public fun builderWithDefaultShader(location: ResourceLocation, vararg snippets: OmniRenderPipeline.Snippet): OmniRenderPipelineBuilder {
         val (vertexFormat, drawMode) = extractSnippet(snippet(*snippets))
         return builderWithDefaultShader(
             location = location,
@@ -337,7 +337,7 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builderWithCompatibleShader(
-        location: Identifier,
+        location: ResourceLocation,
         vertexFormat: VertexFormat,
         drawMode: DrawMode,
         vertexSource: String,
@@ -359,7 +359,7 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builderWithCompatibleShader(
-        location: Identifier,
+        location: ResourceLocation,
         vertexFormat: DefaultVertexFormats,
         drawMode: DrawMode,
         vertexSource: String,
@@ -378,7 +378,7 @@ public object OmniRenderPipelines {
 
     @JvmStatic
     public fun builderWithCompatibleShader(
-        location: Identifier,
+        location: ResourceLocation,
         vertexSource: String,
         fragmentSource: String,
         schema: ShaderSchema,
@@ -430,7 +430,7 @@ public object OmniRenderPipelines {
         return Pair(vertexFormat, drawMode)
     }
 
-    private fun extractAllSnippet(snippet: OmniRenderPipeline.Snippet): Triple<Identifier, VertexFormat, DrawMode> {
+    private fun extractAllSnippet(snippet: OmniRenderPipeline.Snippet): Triple<ResourceLocation, VertexFormat, DrawMode> {
         val location = snippet.location
             ?: throw IllegalArgumentException("Snippet must have a location")
         val (vertexFormat, drawMode) = extractSnippet(snippet)

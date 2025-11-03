@@ -2,14 +2,14 @@ package dev.deftu.omnicore.internal.sound
 
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.omnicore.api.sound.OmniWolfSounds
-import net.minecraft.entity.passive.WolfSoundVariant
-import net.minecraft.entity.passive.WolfSoundVariants
-import net.minecraft.sound.SoundEvents
+import net.minecraft.world.entity.animal.wolf.WolfSoundVariant
+import net.minecraft.world.entity.animal.wolf.WolfSoundVariants
+import net.minecraft.sounds.SoundEvents
 
 public object OmniWolfSoundsImpl : OmniWolfSounds {
     private val classicWolfSounds: WolfSoundVariant by lazy {
-        SoundEvents.WOLF_SOUNDS[WolfSoundVariants.Type.CLASSIC] ?:
-            error("Unable to find classic wolf sounds")
+        SoundEvents.WOLF_SOUNDS[WolfSoundVariants.SoundSet.CLASSIC] ?:
+        error("Unable to find classic wolf sounds")
     }
 
     override val shake: OmniSound by CommonWolfSounds.shake

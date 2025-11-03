@@ -9,16 +9,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //#if MC >= 1.16.5
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 
 //#if MC >= 1.20.4
 import com.mojang.authlib.GameProfile;
-import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerCommonNetworkHandler;
+import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Shadow;
 //#else
@@ -26,19 +26,19 @@ import org.spongepowered.asm.mixin.Shadow;
 //#endif
 
 //#if MC >= 1.20.4
-@Mixin(ServerCommonNetworkHandler.class)
+@Mixin(ServerCommonPacketListenerImpl.class)
 //#else
 //$$ @Mixin(ServerGamePacketListenerImpl.class)
 //#endif
 //#else
-//$$ import dev.deftu.omnicore.api.OmniIdentifier;
-//$$ import net.minecraft.entity.player.ServerPlayerEntity;
-//$$ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-//$$ import net.minecraft.server.network.ServerPlayNetworkHandler;
-//$$ import net.minecraft.util.Identifier;
-//$$ import net.minecraft.util.PacketByteBuf;
+//$$ import dev.deftu.omnicore.api.OmniResourceLocation;
+//$$ import net.minecraft.entity.player.EntityPlayerMP;
+//$$ import net.minecraft.network.NetHandlerPlayServer;
+//$$ import net.minecraft.network.PacketBuffer;
+//$$ import net.minecraft.network.play.client.CPacketCustomPayload;
+//$$ import net.minecraft.util.ResourceLocation;
 //$$
-//$$ @Mixin(ServerPlayNetworkHandler.class)
+//$$ @Mixin(NetHandlerPlayServer.class)
 //#endif
 public class Mixin_ForwardServerCustomPayloads {
     //#if MC >= 1.20.4
@@ -47,40 +47,40 @@ public class Mixin_ForwardServerCustomPayloads {
 
     @Inject(
             //#if MC >= 1.16.5
-            method = "onCustomPayload",
+            method = "handleCustomPayload",
             //#else
-            //$$ method = "onCustomPayload",
+            //$$ method = "processCustomPayload",
             //#endif
             at = @At("HEAD"),
             cancellable = true
     )
     private void omnicore$captureCustomPayloads(
             //#if MC >= 1.16.5
-            CustomPayloadC2SPacket packet,
+            ServerboundCustomPayloadPacket packet,
             //#else
-            //$$ CustomPayloadC2SPacket packet,
+            //$$ CPacketCustomPayload packet,
             //#endif
             CallbackInfo ci
     ) {
         //#if MC >= 1.20.4
-        GameProfile playerProfile = ((ServerCommonNetworkHandler) (Object) this).getDebugProfile();
-        ServerPlayerEntity player = this.server.getPlayerManager().getPlayer(playerProfile.id());
+        GameProfile playerProfile = ((ServerCommonPacketListenerImpl) (Object) this).getOwner();
+        ServerPlayer player = this.server.getPlayerList().getPlayer(playerProfile.id());
 
-        CustomPayload payload = packet.payload();
+        CustomPacketPayload payload = packet.payload();
         if (!(payload instanceof UnknownPayloadDataSmuggler)) {
             return;
         }
 
         //#if MC >= 1.20.6
-        Identifier channel = payload.getId().id();
+        ResourceLocation channel = payload.type().id();
         //#else
-        //$$ Identifier channel = payload.id();
+        //$$ ResourceLocation channel = payload.id();
         //#endif
         if (!OmniNetworking.isRegisteredChannel(channel)) {
             return;
         }
 
-        PacketByteBuf buf = ((UnknownPayloadDataSmuggler) payload).omnicore$getData();
+        FriendlyByteBuf buf = ((UnknownPayloadDataSmuggler) payload).omnicore$getData();
         //#elseif MC >= 1.16.5
         //$$ ServerPlayer player = ((ServerGamePacketListenerImpl) (Object) this).player;
         //#if MC >= 1.17.1
@@ -94,27 +94,25 @@ public class Mixin_ForwardServerCustomPayloads {
         //$$ buf.readerIndex(0);
         //#elseif MC >= 1.16.5
         //$$ Mixin_CustomPayloadDataAccessor accessor = (Mixin_CustomPayloadDataAccessor) packet;
-        //$$ Identifier channel = accessor.getChannel();
+        //$$ ResourceLocation channel = accessor.getIdentifier();
         //$$ if (!OmniNetworking.isRegisteredChannel(channel)) {
         //$$     return;
         //$$ }
         //$$
-        //$$ PacketByteBuf packetData = accessor.getData();
-        //$$ PacketByteBuf buf = new PacketByteBuf(packetData.copy());
+        //$$ FriendlyByteBuf packetData = accessor.getData();
+        //$$ FriendlyByteBuf buf = new FriendlyByteBuf(packetData.copy());
         //$$ buf.readerIndex(0);
         //#endif
         //#else
-        //$$ ServerPlayerEntity player = ((ServerPlayNetworkHandler) (Object) this).player;
-        //$$ Identifier channel = OmniIdentifier.createOrNull(packet.getChannel());
-        //$$ System.out.println("Received custom payload on channel: " + channel);
+        //$$ EntityPlayerMP player = ((NetHandlerPlayServer) (Object) this).player;
+        //$$ ResourceLocation channel = OmniResourceLocation.createOrNull(packet.getChannelName());
         //$$ if (channel == null || !OmniNetworking.isRegisteredChannel(channel)) {
         //$$     return;
         //$$ }
         //$$
-        //$$ PacketByteBuf packetData = packet.getPayload();
-        //$$ PacketByteBuf buf = new PacketByteBuf(packetData.copy());
+        //$$ PacketBuffer packetData = packet.getBufferData();
+        //$$ PacketBuffer buf = new PacketBuffer(packetData.copy());
         //$$ buf.readerIndex(0);
-        //$$ System.out.println("Payload: " + buf);
         //#endif
         OmniNetworking.handle(channel, buf, player);
         ci.cancel();

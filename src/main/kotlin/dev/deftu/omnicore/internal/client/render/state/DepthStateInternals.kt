@@ -33,7 +33,7 @@ public object DepthStateInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.enableDepthTest()
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.enableDepthTest()
+        //$$ GlStateManager._enableDepthTest()
         //#else
         //$$ GlStateManager.enableDepth()
         //#endif
@@ -46,7 +46,7 @@ public object DepthStateInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.disableDepthTest()
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.disableDepthTest()
+        //$$ GlStateManager._disableDepthTest()
         //#else
         //$$ GlStateManager.disableDepth()
         //#endif
@@ -59,7 +59,7 @@ public object DepthStateInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.depthFunc(func)
         //#else
-        //$$ GlStateManager.depthFunc(func)
+        //$$ GlStateManager._depthFunc(func)
         //#endif
     }
 
@@ -70,7 +70,7 @@ public object DepthStateInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.depthMask(mask)
         //#else
-        //$$ GlStateManager.depthMask(mask)
+        //$$ GlStateManager._depthMask(mask)
         //#endif
     }
 }

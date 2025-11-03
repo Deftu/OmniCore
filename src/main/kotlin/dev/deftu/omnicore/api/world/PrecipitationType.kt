@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.world
 
 //#if MC >= 1.16.5
-import net.minecraft.world.biome.Biome
+import net.minecraft.world.level.biome.Biome
 //#endif
 
 public enum class PrecipitationType {

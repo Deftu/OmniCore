@@ -3,8 +3,8 @@ package dev.deftu.omnicore.api.serialization
 import com.mojang.serialization.Codec
 import com.mojang.serialization.DataResult
 import dev.deftu.omnicore.api.OmniUuid
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.core.BlockPos
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAccessor
@@ -14,7 +14,7 @@ import java.util.function.Function
 import java.util.regex.Pattern
 
 //#if MC <= 1.19.2
-//$$ import dev.deftu.omnicore.api.identifierOrThrow
+//$$ import dev.deftu.omnicore.api.locationOrThrow
 //#endif
 
 //#if MC < 1.16.5
@@ -34,14 +34,14 @@ public object OmniCodecs {
     )
 
     @JvmField
-    public val IDENTIFIER: Codec<Identifier> =
+    public val RESOURCE_LOCATION: Codec<ResourceLocation> =
         //#if MC >= 1.19.4
-        Identifier.CODEC
+        ResourceLocation.CODEC
         //#else
         //$$ Codec.STRING.comapFlatMap<ResourceLocation>(
         //$$     {
         //$$         try {
-        //$$             DataResult.success(identifierOrThrow(it))
+        //$$             DataResult.success(locationOrThrow(it))
         //$$         } catch (e: Exception) {
         //$$             DataResult.error("Not a valid resource location: $it ${e.message}")
         //$$         }

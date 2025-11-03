@@ -1,14 +1,14 @@
 package dev.deftu.omnicore.internal.client.sound
 
-import net.minecraft.client.sound.PositionedSoundInstance
-import net.minecraft.client.sound.SoundManager
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
+import net.minecraft.client.sounds.SoundManager
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.12.2
-import net.minecraft.sound.SoundEvent
+import net.minecraft.sounds.SoundEvent
 //#else
-//$$ import net.minecraft.client.sound.SoundInstance
-//$$ import net.minecraft.util.Identifier
+//$$ import net.minecraft.client.audio.ISound
+//$$ import net.minecraft.util.ResourceLocation
 //$$ import java.lang.invoke.MethodHandle
 //$$ import java.lang.invoke.MethodHandles
 //#endif
@@ -18,7 +18,7 @@ public object ClientSoundInternals {
     //#if MC < 1.12.2
     //$$ private val positionedSoundRecordConstructor: MethodHandle? by lazy {
     //$$     try {
-    //$$         val constructor = PositionedSoundInstance::class.java.getDeclaredConstructor(Identifier::class.java, Float::class.java, Float::class.java, Boolean::class.java, Int::class.java, SoundInstance.AttenuationType::class.java, Float::class.java, Float::class.java, Float::class.java)
+    //$$         val constructor = PositionedSoundRecord::class.java.getDeclaredConstructor(ResourceLocation::class.java, Float::class.java, Float::class.java, Boolean::class.java, Int::class.java, ISound.AttenuationType::class.java, Float::class.java, Float::class.java, Float::class.java)
     //$$         constructor.isAccessible = true
     //$$         MethodHandles.lookup().unreflectConstructor(constructor)
     //$$     } catch (e: Throwable) {
@@ -34,7 +34,7 @@ public object ClientSoundInternals {
         //#if MC >= 1.12.2
         event: SoundEvent,
         //#else
-        //$$ event: Identifier,
+        //$$ event: ResourceLocation,
         //#endif
         volume: Float,
         pitch: Float
@@ -47,15 +47,15 @@ public object ClientSoundInternals {
         //#if MC >= 1.12.2
         event: SoundEvent,
         //#else
-        //$$ event: Identifier,
+        //$$ event: ResourceLocation,
         //#endif
         volume: Float,
         pitch: Float
-    ): PositionedSoundInstance? {
+    ): SimpleSoundInstance? {
         //#if MC >= 1.12.2
-        return PositionedSoundInstance.master(event, pitch, volume)
+        return SimpleSoundInstance.forUI(event, pitch, volume)
         //#else
-        //$$ return positionedSoundRecordConstructor?.invokeExact(event, volume, pitch, false, 0, SoundInstance.AttenuationType.NONE, 0.0f, 0.0f, 0.0f) as? PositionedSoundInstance
+        //$$ return positionedSoundRecordConstructor?.invokeExact(event, volume, pitch, false, 0, ISound.AttenuationType.NONE, 0.0f, 0.0f, 0.0f) as? PositionedSoundRecord
         //#endif
     }
 }

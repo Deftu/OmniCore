@@ -8,7 +8,7 @@ import java.nio.file.Path
 import kotlin.use
 
 //#if MC >= 1.16.5
-import net.minecraft.client.texture.NativeImage
+import com.mojang.blaze3d.platform.NativeImage
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 //#else
@@ -25,10 +25,10 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
 
     override operator fun get(x: Int, y: Int): OmniColor {
         //#if MC >= 1.21.2
-        val color = native.getColorArgb(x, y)
+        val color = native.getPixel(x, y)
         return OmniColor(ColorFormat.ARGB, color)
         //#elseif MC >= 1.16.5
-        //$$ return OmniColor(ColorFormat.ABGR, native.getColor(x, y))
+        //$$ return OmniColor(ColorFormat.ABGR, native.getPixelRGBA(x, y))
         //#else
         //$$ return OmniColor(ColorFormat.ARGB, native.getRGB(x, y))
         //#endif
@@ -36,9 +36,9 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
 
     override operator fun set(x: Int, y: Int, color: OmniColor) {
         //#if MC >= 1.21.2
-        native.setColorArgb(x, y, color.pack(ColorFormat.ARGB))
+        native.setPixel(x, y, color.pack(ColorFormat.ARGB))
         //#elseif MC >= 1.16.5
-        //$$ native.setColor(x, y, color.pack(ColorFormat.ABGR))
+        //$$ native.setPixelRGBA(x, y, color.pack(ColorFormat.ABGR))
         //#else
         //$$ native.setRGB(x, y, color.pack(ColorFormat.ARGB))
         //#endif
@@ -47,7 +47,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
     override fun flipX() {
         //#if MC >= 1.16.5
         MemoryStack.stackPush().use { memoryStack ->
-            val channelCount = native.format.channelCount
+            val channelCount = native.format().components()
             val rowSize = width * channelCount
             val rowBuffer = memoryStack.nmalloc(rowSize)
 
@@ -59,7 +59,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
                     val rightOffset = i * rowSize + right * channelCount
 
                     //#if MC >= 1.21.5
-                    val pointer = native.imageId()
+                    val pointer = native.pointer
                     //#else
                     //$$ val pointer = ImageInternals.pointer(native)
                     //#endif
@@ -80,7 +80,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
     override fun flipY() {
         //#if MC >= 1.16.5
         MemoryStack.stackPush().use { memoryStack ->
-            val channelCount = native.format.channelCount
+            val channelCount = native.format().components()
             val rowSize = width * channelCount
             val rowBuffer = memoryStack.nmalloc(rowSize)
 
@@ -88,7 +88,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
                 val bottom = height - 1 - i
 
                 //#if MC >= 1.21.5
-                val pointer = native.imageId()
+                val pointer = native.pointer
                 //#else
                 //$$ val pointer = ImageInternals.pointer(native)
                 //#endif
@@ -107,7 +107,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
 
     override fun saveTo(path: Path) {
         //#if MC >= 1.16.5
-        native.writeTo(path)
+        native.writeToFile(path)
         //#else
         //$$ ImageIO.write(native, "png", path.toFile())
         //#endif
@@ -115,7 +115,7 @@ public class OmniImageImpl(override val width: Int, override val height: Int) : 
 
     override fun saveTo(file: File) {
         //#if MC >= 1.16.5
-        native.writeTo(file)
+        native.writeToFile(file)
         //#else
         //$$ ImageIO.write(native, "png", file)
         //#endif

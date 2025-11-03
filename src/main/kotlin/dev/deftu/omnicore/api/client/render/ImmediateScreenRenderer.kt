@@ -1,16 +1,16 @@
 package dev.deftu.omnicore.api.client.render
 
-import com.mojang.blaze3d.systems.ProjectionType
+import com.mojang.blaze3d.ProjectionType
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.deftu.eventbus.on
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.events.RenderTickEvent
 import dev.deftu.omnicore.api.eventBus
 import dev.deftu.omnicore.internal.client.render.TemporaryTextureAllocator
-import dev.deftu.omnicore.internal.identifierOf
-import net.minecraft.client.gl.RenderPipelines
-import net.minecraft.client.render.ProjectionMatrix2
-import net.minecraft.client.texture.AbstractTexture
+import dev.deftu.omnicore.internal.internalLocationOf
+import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.renderer.CachedOrthoProjectionMatrixBuffer
+import net.minecraft.client.renderer.texture.AbstractTexture
 
 /**
  * Provides you with a means of bypassing Minecraft's new render layering system as of Minecraft 1.21.6.
@@ -23,7 +23,7 @@ import net.minecraft.client.texture.AbstractTexture
  */
 public object ImmediateScreenRenderer {
     private var isInitialized = false
-    private var cachedProjectionMatrix: ProjectionMatrix2? = null
+    private var cachedProjectionMatrix: CachedOrthoProjectionMatrixBuffer? = null
     private var textureAllocator = TemporaryTextureAllocator {
         cachedProjectionMatrix?.close()
         cachedProjectionMatrix = null
@@ -50,18 +50,18 @@ public object ImmediateScreenRenderer {
         val width = OmniResolution.viewportWidth
         val height = OmniResolution.viewportHeight
         val textureAllocation = textureAllocator.allocate(width, height)
-        val projectionMatrix = cachedProjectionMatrix ?: ProjectionMatrix2("Immediately rendered screen", 1_000f, 21_000f, true).also { cachedProjectionMatrix = it }
+        val projectionMatrix = cachedProjectionMatrix ?: CachedOrthoProjectionMatrixBuffer("Immediately rendered screen", 1_000f, 21_000f, true).also { cachedProjectionMatrix = it }
 
         val prevProjectionBuffer = RenderSystem.getProjectionMatrixBuffer()
         val prevProjectionType = RenderSystem.getProjectionType()
-        RenderSystem.setProjectionMatrix(projectionMatrix.set(width.toFloat() / scaleFactor, height.toFloat() / scaleFactor), ProjectionType.ORTHOGRAPHIC)
+        RenderSystem.setProjectionMatrix(projectionMatrix.getBuffer(width.toFloat() / scaleFactor, height.toFloat() / scaleFactor), ProjectionType.ORTHOGRAPHIC)
 
         val prevColorOverride = RenderSystem.outputColorTextureOverride
         val prevDepthOverride = RenderSystem.outputDepthTextureOverride
         RenderSystem.outputColorTextureOverride = textureAllocation.colorTextureView
         RenderSystem.outputDepthTextureOverride = textureAllocation.depthTextureView
 
-        ctx.matrices.translate(0f, 0f, -10_000f) // Render on the same layer as everything else on the screen
+        ctx.pose.translate(0f, 0f, -10_000f) // Render on the same layer as everything else on the screen
         block()
 
         RenderSystem.outputColorTextureOverride = prevColorOverride
@@ -69,18 +69,18 @@ public object ImmediateScreenRenderer {
         @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         RenderSystem.setProjectionMatrix(prevProjectionBuffer, prevProjectionType)
 
-        val identifier = identifierOf("__temporary_screen_render__")
-        client.textureManager.registerTexture(identifier, object : AbstractTexture() {
-            init { glTextureView = textureAllocation.colorTextureView }
+        val identifier = internalLocationOf("__temporary_screen_render__")
+        client.textureManager.register(identifier, object : AbstractTexture() {
+            init { textureView = textureAllocation.colorTextureView }
 
             override fun close() {
                 // no-op
             }
         })
 
-        graphics.matrices.pushMatrix()
-        graphics.matrices.scale(1f / scaleFactor, 1f / scaleFactor)
-        graphics.drawTexture(
+        graphics.pose().pushMatrix()
+        graphics.pose().scale(1f / scaleFactor, 1f / scaleFactor)
+        graphics.blit(
             RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA,
             identifier,
             // x, y
@@ -95,8 +95,8 @@ public object ImmediateScreenRenderer {
             width, height,
         )
 
-        graphics.matrices.popMatrix()
-        client.textureManager.destroyTexture(identifier)
+        graphics.pose().popMatrix()
+        client.textureManager.release(identifier)
     }
 
     @JvmStatic

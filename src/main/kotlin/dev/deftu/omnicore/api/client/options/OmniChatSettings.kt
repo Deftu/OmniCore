@@ -48,14 +48,20 @@ public object OmniChatSettings {
     @JvmStatic
     public val chatOpacity: Double
         get() {
-            return unwrap(options.chatOpacity).toDouble()
+            //#if MC >= 1.19.2
+            return unwrap(options.chatOpacity()).toDouble()
+            //#else
+            //$$ return unwrap(options.chatOpacity).toDouble()
+            //#endif
         }
 
     @JvmStatic
     public val chatLineSpacing: Double
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.chatLineSpacing)
+            //#if MC >= 1.19.2
+            return unwrap(options.chatLineSpacing())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.chatLineSpacing)
             //#else
             //$$ return 0.0
             //#endif
@@ -64,8 +70,10 @@ public object OmniChatSettings {
     @JvmStatic
     public val textBackgroundOpacity: Double
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.textBackgroundOpacity)
+            //#if MC >= 1.19.2
+            return unwrap(options.textBackgroundOpacity())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.textBackgroundOpacity)
             //#else
             //$$ return 0.0
             //#endif
@@ -73,25 +81,51 @@ public object OmniChatSettings {
 
     @JvmStatic
     public val chatScale: Double
-        get() = unwrap(options.chatScale).toDouble()
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatScale()).toDouble()
+            //#else
+            //$$ return unwrap(options.chatScale).toDouble()
+            //#endif
+        }
 
     @JvmStatic
     public val chatWidth: Double
-        get() = unwrap(options.chatWidth).toDouble()
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatWidth()).toDouble()
+            //#else
+            //$$ return unwrap(options.chatWidth).toDouble()
+            //#endif
+        }
 
     @JvmStatic
     public val chatHeightUnfocused: Double
-        get() = unwrap(options.chatHeightUnfocused).toDouble()
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatHeightUnfocused()).toDouble()
+            //#else
+            //$$ return unwrap(options.chatHeightUnfocused).toDouble()
+            //#endif
+        }
 
     @JvmStatic
     public val chatHeightFocused: Double
-        get() = unwrap(options.chatHeightFocused).toDouble()
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatHeightFocused()).toDouble()
+            //#else
+            //$$ return unwrap(options.chatHeightFocused).toDouble()
+            //#endif
+        }
 
     @JvmStatic
     public val chatDelay: Double
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.chatDelay)
+            //#if MC >= 1.19.2
+            return unwrap(options.chatDelay())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.chatDelay)
             //#else
             //$$ return 0.0
             //#endif
@@ -100,8 +134,10 @@ public object OmniChatSettings {
     @JvmStatic
     public val isCommandSuggestingEnabled: Boolean
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.autoSuggestions)
+            //#if MC >= 1.19.2
+            return unwrap(options.autoSuggestions())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.autoSuggestions)
             //#else
             //$$ return true
             //#endif
@@ -109,13 +145,31 @@ public object OmniChatSettings {
 
     @JvmStatic
     public val isChatColorEnabled: Boolean
-        get() = unwrap(options.chatColors)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatColors())
+            //#else
+            //$$ return unwrap(options.chatColors)
+            //#endif
+        }
 
     @JvmStatic
     public val isChatLinksEnabled: Boolean
-        get() = unwrap(options.chatLinks)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatLinks())
+            //#else
+            //$$ return unwrap(options.chatLinks)
+            //#endif
+        }
 
     @JvmStatic
     public val isChatLinksPromptEnabled: Boolean
-        get() = unwrap(options.chatLinksPrompt)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.chatLinksPrompt())
+            //#else
+            //$$ return unwrap(options.chatLinksPrompt)
+            //#endif
+        }
 }

@@ -2,7 +2,7 @@
 
 package dev.deftu.omnicore.api.items
 
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.ItemStack
 
 @get:JvmName("count")
 public val ItemStack?.stackAmount: Int
@@ -11,7 +11,7 @@ public val ItemStack?.stackAmount: Int
         @Suppress("UsePropertyAccessSyntax") // differentiate the getter (getCount()) from the field (count)
         return this?.getCount() ?: 0
         //#else
-        //$$ return this?.count ?: 0
+        //$$ return this?.stackSize ?: 0
         //#endif
     }
 
@@ -25,7 +25,7 @@ public val ItemStack?.isStackEmpty: Boolean
         //#if MC >= 1.12.2
         return isEmpty
         //#else
-        //$$ return count == 0
+        //$$ return stackSize == 0
         //#endif
     }
 

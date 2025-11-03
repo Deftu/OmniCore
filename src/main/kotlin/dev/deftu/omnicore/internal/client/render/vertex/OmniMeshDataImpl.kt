@@ -2,14 +2,14 @@ package dev.deftu.omnicore.internal.client.render.vertex
 
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
-import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.api.client.render.vertex.OmniMeshData
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPass
 import org.jetbrains.annotations.ApiStatus
 import java.util.function.Consumer
 import kotlin.use
 
 @ApiStatus.Internal
-public class OmniBuiltBufferImpl(override val vanilla: VanillaBuiltBuffer) : OmniBuiltBuffer {
+public class OmniMeshDataImpl(override val vanilla: VanillaMeshData) : OmniMeshData {
     private var isClosed = false
 
     override fun draw(pipeline: OmniRenderPipeline, builder: Consumer<RenderPassEncoder>) {
@@ -28,7 +28,7 @@ public class OmniBuiltBufferImpl(override val vanilla: VanillaBuiltBuffer) : Omn
         //#elseif MC >= 1.19.2
         //$$ vanilla.release()
         //#else
-        //$$ vanilla.reset()
+        //$$ vanilla.discard()
         //$$ OmniBufferBuilderImpl.bufferPool.add(vanilla)
         //#endif
 

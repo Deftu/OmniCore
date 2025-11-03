@@ -1,20 +1,20 @@
 package dev.deftu.omnicore.internal.mixins;
 
 import dev.deftu.omnicore.internal.networking.UnknownPayloadDataSmuggler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.UnknownCustomPayload;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.DiscardedPayload;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 
-@Mixin(UnknownCustomPayload.class)
+@Mixin(DiscardedPayload.class)
 public class Mixin_SmuggleUnknownPayloadData implements UnknownPayloadDataSmuggler {
-    private PacketByteBuf omnicore$data;
+    private FriendlyByteBuf omnicore$data;
 
-    public @NotNull PacketByteBuf omnicore$getData() {
+    public @NotNull FriendlyByteBuf omnicore$getData() {
         return this.omnicore$data;
     }
 
-    public void omnicore$setData(@NotNull PacketByteBuf data) {
+    public void omnicore$setData(@NotNull FriendlyByteBuf data) {
         this.omnicore$data = data;
     }
 }

@@ -1,22 +1,22 @@
 package dev.deftu.omnicore.api.client.framebuffer
 
+import com.mojang.blaze3d.pipeline.RenderTarget
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.client.textures.TextureConfiguration
-import net.minecraft.client.gl.Framebuffer
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.systems.RenderSystem
-import net.minecraft.client.gl.GlBackend
-import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.opengl.GlDevice
+import com.mojang.blaze3d.opengl.GlTexture
 //#endif
 
 public object OmniFramebuffers {
     @JvmStatic
     public val main: OmniFramebuffer
-        get() = wrap(client.framebuffer)
+        get() = wrap(client.mainRenderTarget)
 
     @JvmStatic
     public fun create(
@@ -43,14 +43,14 @@ public object OmniFramebuffers {
     }
 
     @JvmStatic
-    public fun wrap(framebuffer: Framebuffer): OmniFramebuffer {
+    public fun wrap(framebuffer: RenderTarget): OmniFramebuffer {
         //#if MC >= 1.21.5
-        val backend = (RenderSystem.getDevice() as? GlBackend) ?: throw IllegalStateException("RenderSystem is not using a GL backend")
-        val id = (framebuffer.colorAttachment as? GlTexture)?.getOrCreateFramebuffer(backend.bufferManager, framebuffer.depthAttachment)
+        val backend = (RenderSystem.getDevice() as? GlDevice) ?: throw IllegalStateException("RenderSystem is not using a GL backend")
+        val id = (framebuffer.colorTexture as? GlTexture)?.getFbo(backend.directStateAccess(), framebuffer.depthTexture)
             ?: throw IllegalStateException("Framebuffer does not have a valid GL texture ID")
-        val colorTexture = framebuffer.colorAttachment
+        val colorTexture = framebuffer.colorTexture
             ?: throw IllegalStateException("Framebuffer does not have a color attachment")
-        val depthTexture = framebuffer.depthAttachment
+        val depthTexture = framebuffer.depthTexture
         //#elseif MC >= 1.16.5
         //$$ val id = framebuffer.frameBufferId
         //$$ val colorTexture = framebuffer.colorTextureId
@@ -63,8 +63,8 @@ public object OmniFramebuffers {
         return wrap(
             id = id,
             //#if MC >= 1.21.9
-            width = framebuffer.textureWidth,
-            height = framebuffer.textureHeight,
+            width = framebuffer.width,
+            height = framebuffer.height,
             //#else
             //$$ width = framebuffer.viewWidth,
             //$$ height = framebuffer.viewHeight,

@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.internal.client.textures
 
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
-import net.minecraft.client.texture.AbstractTexture
+import net.minecraft.client.renderer.texture.AbstractTexture
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.5
@@ -13,14 +13,14 @@ import com.mojang.blaze3d.textures.GpuTextureView
 import com.mojang.blaze3d.textures.FilterMode
 import com.mojang.blaze3d.textures.GpuTexture
 import com.mojang.blaze3d.textures.TextureFormat
-import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.opengl.GlTexture
 import java.lang.invoke.MethodHandle
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
 //#endif
 
 //#if MC <= 1.21.3
-//$$ import net.minecraft.resource.ResourceManager
+//$$ import net.minecraft.server.packs.resources.ResourceManager
 //#endif
 
 @ApiStatus.Internal
@@ -96,11 +96,11 @@ public class HandleBackedTexture(public val handle: OmniTextureHandle) : Abstrac
             ) as GlTexture
 
             glTexture.setTextureFilter(FilterMode.NEAREST, true)
-            this.glTexture = glTexture
+            this.texture = glTexture
             println("Initialized GlTexture for OmniTextureHandle ${handle.id}: $glTexture")
             //#if MC >= 1.21.6
-            this.glTextureView = RenderSystem.getDevice().createTextureView(this.glTexture!!)
-            println("Initialized GlTextureView for OmniTextureHandle ${handle.id}: $glTextureView")
+            this.textureView = RenderSystem.getDevice().createTextureView(this.texture!!)
+            println("Initialized GlTextureView for OmniTextureHandle ${handle.id}: $textureView")
             //#endif
             //#else
             //$$ this.id = handle.id
@@ -112,9 +112,9 @@ public class HandleBackedTexture(public val handle: OmniTextureHandle) : Abstrac
 
     //#if MC >= 1.21.5
     //#if MC >= 1.21.6
-    override fun getGlTextureView(): GpuTextureView {
+    override fun getTextureView(): GpuTextureView {
         initialize()
-        return super.getGlTextureView()
+        return super.getTextureView()
     }
 
     override fun setUseMipmaps(mipmaps: Boolean) {
@@ -133,9 +133,9 @@ public class HandleBackedTexture(public val handle: OmniTextureHandle) : Abstrac
         super.setFilter(bilinear, mipmap)
     }
 
-    override fun getGlTexture(): GpuTexture {
+    override fun getTexture(): GpuTexture {
         initialize()
-        return super.getGlTexture()
+        return super.getTexture()
     }
 
     override fun close() {

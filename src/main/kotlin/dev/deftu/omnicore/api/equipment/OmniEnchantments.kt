@@ -2,23 +2,23 @@
 
 package dev.deftu.omnicore.api.equipment
 
-import net.minecraft.enchantment.Enchantment
-import net.minecraft.enchantment.EnchantmentHelper
-import net.minecraft.item.ItemStack
+import net.minecraft.world.item.enchantment.Enchantment
+import net.minecraft.world.item.enchantment.EnchantmentHelper
+import net.minecraft.world.item.ItemStack
 
 public val ItemStack.enchantmentInfo: List<EnchantmentInfo>
     get() {
         //#if MC >= 1.20.5
-        val component = EnchantmentHelper.getEnchantments(this)
-        return component.enchantmentEntries.map { (enchantment, level) ->
+        val component = EnchantmentHelper.getEnchantmentsForCrafting(this)
+        return component.entrySet().map { (enchantment, level) ->
             //#if FORGE-LIKE
-            //$$ EnchantmentInfo(enchantment.value(), level)
-            //#else
             EnchantmentInfo(enchantment.value(), level)
+            //#else
+            //$$ EnchantmentInfo(enchantment.value(), level)
             //#endif
         }
         //#elseif MC >= 1.16.5
-        //$$ return EnchantmentHelper.fromNbt(this.enchantments).map { (enchantment, level) ->
+        //$$ return EnchantmentHelper.deserializeEnchantments(this.enchantmentTags).map { (enchantment, level) ->
         //$$     EnchantmentInfo(enchantment, level)
         //$$ }
         //#elseif MC >= 1.12.2
@@ -27,9 +27,9 @@ public val ItemStack.enchantmentInfo: List<EnchantmentInfo>
         //$$     EnchantmentInfo(enchantment, level)
         //$$ }
         //#else
-        //$$ val enchantments = EnchantmentHelper.get(this)
+        //$$ val enchantments = EnchantmentHelper.getEnchantments(this)
         //$$ return enchantments.map { (id, level) ->
-        //$$     EnchantmentInfo(Enchantment.byRawId(id), level)
+        //$$     EnchantmentInfo(Enchantment.getEnchantmentById(id), level)
         //$$ }
         //#endif
     }

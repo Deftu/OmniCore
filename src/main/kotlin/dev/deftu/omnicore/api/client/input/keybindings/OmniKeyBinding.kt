@@ -3,11 +3,11 @@ package dev.deftu.omnicore.api.client.input.keybindings
 import dev.deftu.omnicore.api.client.input.OmniInputCode
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.util.Identifier
+import net.minecraft.client.KeyMapping
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.16.5
-import net.minecraft.client.util.InputUtil
+import com.mojang.blaze3d.platform.InputConstants
 //#endif
 
 /**
@@ -23,7 +23,7 @@ public interface OmniKeyBinding {
         @JvmOverloads
         public fun create(
             name: String,
-            category: Identifier,
+            category: ResourceLocation,
             defaultValue: OmniInputCode,
             type: KeyBindingType = KeyBindingType.KEY
         ): MCKeyBinding {
@@ -31,7 +31,7 @@ public interface OmniKeyBinding {
         }
 
         @JvmStatic
-        public fun wrap(vanillaKeyBinding: KeyBinding): MCKeyBinding {
+        public fun wrap(vanillaKeyBinding: KeyMapping): MCKeyBinding {
             return WrappedKeyBinding(vanillaKeyBinding)
         }
     }
@@ -41,10 +41,10 @@ public interface OmniKeyBinding {
         MOUSE;
 
         //#if MC >= 1.16.5
-        public val vanilla: InputUtil.Type
+        public val vanilla: InputConstants.Type
             get() = when (this) {
-                KEY -> InputUtil.Type.KEYSYM
-                MOUSE -> InputUtil.Type.MOUSE
+                KEY -> InputConstants.Type.KEYSYM
+                MOUSE -> InputConstants.Type.MOUSE
             }
         //#endif
 
@@ -58,7 +58,7 @@ public interface OmniKeyBinding {
 
     public val name: String
 
-    public val category: Identifier
+    public val category: ResourceLocation
 
     public val type: KeyBindingType
 

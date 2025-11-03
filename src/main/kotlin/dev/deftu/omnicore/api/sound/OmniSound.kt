@@ -1,28 +1,28 @@
 package dev.deftu.omnicore.api.sound
 
-import dev.deftu.omnicore.api.identifierOrThrow
-import dev.deftu.omnicore.internal.identifierOf
-import net.minecraft.util.Identifier
+import dev.deftu.omnicore.api.locationOrThrow
+import dev.deftu.omnicore.internal.internalLocationOf
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.12.2
-import net.minecraft.sound.SoundEvent
+import net.minecraft.sounds.SoundEvent
 //#endif
 
 public class OmniSound {
     public companion object {
         @JvmStatic
-        public fun of(location: Identifier): OmniSound {
+        public fun of(location: ResourceLocation): OmniSound {
             return OmniSound(location)
         }
 
         @JvmStatic
         public fun of(path: String): OmniSound {
-            return OmniSound(identifierOrThrow(path))
+            return OmniSound(locationOrThrow(path))
         }
 
         @JvmStatic
         public fun of(namespace: String, path: String): OmniSound {
-            return OmniSound(identifierOrThrow(namespace, path))
+            return OmniSound(locationOrThrow(namespace, path))
         }
 
         //#if MC >= 1.12.2
@@ -34,7 +34,7 @@ public class OmniSound {
 
         @JvmStatic
         public fun invalid(): OmniSound {
-            return OmniSound(identifierOf("invalid"))
+            return OmniSound(internalLocationOf("invalid"))
         }
 
         @JvmStatic
@@ -43,17 +43,17 @@ public class OmniSound {
         }
     }
 
-    public val location: Identifier
+    public val location: ResourceLocation
 
     //#if MC >= 1.12.2
     public val event: SoundEvent
     //#endif
 
-    private constructor(location: Identifier) {
+    private constructor(location: ResourceLocation) {
         this.location = location
         //#if MC >= 1.12.2
         //#if MC >= 1.19.4
-        this.event = SoundEvent.of(location)
+        this.event = SoundEvent.createVariableRangeEvent(location)
         //#else
         //$$ this.event = SoundEvent(location)
         //#endif
@@ -62,7 +62,7 @@ public class OmniSound {
 
     //#if MC >= 1.12.2
     private constructor(event: SoundEvent) {
-        this.location = event.id()
+        this.location = event.location
         this.event = event
     }
 
@@ -71,7 +71,7 @@ public class OmniSound {
     }
     //#endif
 
-    public fun isSameLocation(location: Identifier): Boolean {
+    public fun isSameLocation(location: ResourceLocation): Boolean {
         return this.location == location
     }
 
@@ -80,7 +80,7 @@ public class OmniSound {
     }
 
     /**
-     * Returns the hash code of this sound's identifier. We can't consider the sound event's hash code because it's only available in 1.12.2 and above.
+     * Returns the hash code of this sound's resource location. We can't consider the sound event's hash code because it's only available in 1.12.2 and above.
      */
     override fun hashCode(): Int {
         return location.hashCode()

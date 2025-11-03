@@ -16,7 +16,7 @@ public object OmniMouse {
     public val rawX: Double
         get() {
             //#if MC >= 1.14
-            return client.mouse.x
+            return client.mouseHandler.xpos()
             //#else
             //$$ return Mouse.getX().toDouble()
             //#endif
@@ -26,7 +26,7 @@ public object OmniMouse {
     public val rawY: Double
         get() {
             //#if MC >= 1.14
-            return client.mouse.y
+            return client.mouseHandler.ypos()
             //#else
             //$$ return OmniResolution.windowHeight - Mouse.getY().toDouble() - 1
             //#endif
@@ -44,7 +44,7 @@ public object OmniMouse {
     public var isCursorGrabbed: Boolean
         get() {
             //#if MC >= 1.16.5
-            return client.mouse.isCursorLocked
+            return client.mouseHandler.isMouseGrabbed
             //#else
             //$$ return Mouse.isGrabbed()
             //#endif
@@ -52,9 +52,9 @@ public object OmniMouse {
         set(value) {
             //#if MC >= 1.16.5
             if (value) {
-                client.mouse.lockCursor()
+                client.mouseHandler.grabMouse()
             } else {
-                client.mouse.unlockCursor()
+                client.mouseHandler.releaseMouse()
             }
             //#else
             //$$ Mouse.setGrabbed(value)

@@ -1,23 +1,21 @@
 package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.omnicore.api.client.client
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import dev.deftu.omnicore.api.color.ColorFormat
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.textile.CollapseMode
 import dev.deftu.textile.Text
 import dev.deftu.textile.minecraft.MCText
 import dev.deftu.textile.minecraft.FormattingCodes
-import net.minecraft.text.Text as VanillaText
+import net.minecraft.network.chat.Component as VanillaText
 
 //#if MC >= 1.21.6
 import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
-//#elseif MC >= 1.16.5
-//$$ import net.minecraft.text.Style
 //#endif
 
 //#if MC >= 1.20.1 && MC < 1.21.6
-//$$ import net.minecraft.client.font.TextRenderer
+//$$ import net.minecraft.client.gui.Font
 //#endif
 
 //#if MC < 1.16.5
@@ -26,7 +24,7 @@ import dev.deftu.omnicore.internal.client.render.ImmediateGlyphDrawer
 
 public object OmniTextRenderer {
     private inline val textRenderer
-        get() = client.textRenderer
+        get() = client.font
 
     @JvmStatic
     public val outlineOffsets: FloatArray by lazy(LazyThreadSafetyMode.PUBLICATION) {
@@ -44,42 +42,42 @@ public object OmniTextRenderer {
 
     @JvmStatic
     public val lineHeight: Int
-        get() = textRenderer.fontHeight
+        get() = textRenderer.lineHeight
 
     @JvmStatic
     public fun render(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
         //#if MC >= 1.21.6
-        val drawer = ImmediateGlyphDrawer(matrices.current.positionMatrix.vanilla)
+        val drawer = ImmediateGlyphDrawer(pose.current.positionMatrix.vanilla)
 
-        val glyph = textRenderer.prepare(text.asOrderedText(), x, y, color.pack(ColorFormat.ARGB), shadow, 0)
-        glyph.draw(drawer)
+        val glyph = textRenderer.prepareText(text.visualOrderText, x, y, color.pack(ColorFormat.ARGB), shadow, 0)
+        glyph.visit(drawer)
         drawer.flush()
 
         return (x + width(text)).toInt() + if (shadow) 1 else 0
         //#elseif MC >= 1.20.1
-        //$$ return textRenderer.draw(
+        //$$ return textRenderer.drawInBatch(
         //$$     text,
         //$$     x,
         //$$     y,
         //$$     color.pack(ColorFormat.ARGB),
         //$$     shadow,
-        //$$     matrices.vanilla.peek().positionMatrix,
-        //$$     client.bufferBuilders.entityVertexConsumers,
-        //$$     TextRenderer.TextLayerType.NORMAL,
+        //$$     pose.vanilla.last().pose(),
+        //$$     client.renderBuffers().bufferSource(),
+        //$$     Font.DisplayMode.NORMAL,
         //$$     0,
         //$$     15728880
         //$$ )
         //#elseif MC >= 1.16.5
         //$$ return if (shadow) {
-        //$$     textRenderer.drawWithShadow(matrices.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
+        //$$     textRenderer.drawShadow(pose.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
         //$$ } else {
-        //$$     textRenderer.draw(matrices.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
+        //$$     textRenderer.draw(pose.vanilla, text, x, y, color.pack(ColorFormat.ARGB))
         //$$ }
         //#else
         //$$ val blendState = OmniRenderStates.blend.asEnabled()
@@ -99,24 +97,24 @@ public object OmniTextRenderer {
 
     @JvmStatic
     public fun render(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: Text,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return render(matrices, MCText.convert(text), x, y, color, shadow)
+        return render(pose, MCText.convert(text), x, y, color, shadow)
     }
 
     @JvmStatic
     public fun render(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: String,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return render(matrices, Text.literal(text), x, y, color, shadow)
+        return render(pose, Text.literal(text), x, y, color, shadow)
     }
 
     @JvmStatic
@@ -127,7 +125,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return render(context.matrices, text, x, y, color, shadow)
+        return render(context.pose, text, x, y, color, shadow)
     }
 
     @JvmStatic
@@ -138,7 +136,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return render(context.matrices, text, x, y, color, shadow)
+        return render(context.pose, text, x, y, color, shadow)
     }
 
     @JvmStatic
@@ -149,60 +147,60 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return render(context.matrices, text, x, y, color, shadow)
+        return render(context.pose, text, x, y, color, shadow)
     }
 
     @JvmStatic
     public fun render(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
         return when (shadowType) {
-            is TextShadowType.None -> render(matrices, text, x, y, color, shadow = false)
-            is TextShadowType.Drop -> render(matrices, text, x, y, color, shadow = true)
+            is TextShadowType.None -> render(pose, text, x, y, color, shadow = false)
+            is TextShadowType.Drop -> render(pose, text, x, y, color, shadow = true)
             is TextShadowType.Outline -> {
                 val outlineColor = shadowType.color
 
                 // If the outline isn't going to be visible anyway, don't waste draw calls
                 if (outlineColor.alpha <= 3) {
-                    return render(matrices, text, x, y, color, shadow = false)
+                    return render(pose, text, x, y, color, shadow = false)
                 }
 
                 val strippedText = FormattingCodes.stripColor(MCText.wrap(text).collapseToString(CollapseMode.SCOPED))
                 for (i in outlineOffsets.indices step 2) {
                     val dx = outlineOffsets[i]
                     val dy = outlineOffsets[i + 1]
-                    render(matrices, strippedText, x + dx, y + dy, outlineColor, shadow = false)
+                    render(pose, strippedText, x + dx, y + dy, outlineColor, shadow = false)
                 }
 
-                render(matrices, text, x, y, color, shadow = false)
+                render(pose, text, x, y, color, shadow = false)
             }
         }
     }
 
     @JvmStatic
     public fun render(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: Text,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return render(matrices, MCText.convert(text), x, y, color, shadowType)
+        return render(pose, MCText.convert(text), x, y, color, shadowType)
     }
 
     @JvmStatic
     public fun render(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: String,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return render(matrices, Text.literal(text), x, y, color, shadowType)
+        return render(pose, Text.literal(text), x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -213,7 +211,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return render(context.matrices, text, x, y, color, shadowType)
+        return render(context.pose, text, x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -224,7 +222,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return render(context.matrices, text, x, y, color, shadowType)
+        return render(context.pose, text, x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -235,41 +233,41 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return render(context.matrices, text, x, y, color, shadowType)
+        return render(context.pose, text, x, y, color, shadowType)
     }
 
     @JvmStatic
     public fun renderCentered(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
         val width = width(text)
-        return render(matrices, text, x - width / 2f, y, color, shadow)
+        return render(pose, text, x - width / 2f, y, color, shadow)
     }
 
     @JvmStatic
     public fun renderCentered(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: Text,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return renderCentered(matrices, MCText.convert(text), x, y, color, shadow)
+        return renderCentered(pose, MCText.convert(text), x, y, color, shadow)
     }
 
     @JvmStatic
     public fun renderCentered(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: String,
         x: Float, y: Float,
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return renderCentered(matrices, Text.literal(text), x, y, color, shadow)
+        return renderCentered(pose, Text.literal(text), x, y, color, shadow)
     }
 
     @JvmStatic
@@ -280,7 +278,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return renderCentered(context.matrices, text, x, y, color, shadow)
+        return renderCentered(context.pose, text, x, y, color, shadow)
     }
 
     @JvmStatic
@@ -291,7 +289,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return renderCentered(context.matrices, text, x, y, color, shadow)
+        return renderCentered(context.pose, text, x, y, color, shadow)
     }
 
     @JvmStatic
@@ -302,41 +300,41 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadow: Boolean = true,
     ): Int {
-        return renderCentered(context.matrices, text, x, y, color, shadow)
+        return renderCentered(context.pose, text, x, y, color, shadow)
     }
 
     @JvmStatic
     public fun renderCentered(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: VanillaText,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
         val width = width(text)
-        return render(matrices, text, x - width / 2f, y, color, shadowType)
+        return render(pose, text, x - width / 2f, y, color, shadowType)
     }
 
     @JvmStatic
     public fun renderCentered(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: Text,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return renderCentered(matrices, MCText.convert(text), x, y, color, shadowType)
+        return renderCentered(pose, MCText.convert(text), x, y, color, shadowType)
     }
 
     @JvmStatic
     public fun renderCentered(
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         text: String,
         x: Float, y: Float,
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return renderCentered(matrices, Text.literal(text), x, y, color, shadowType)
+        return renderCentered(pose, Text.literal(text), x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -347,7 +345,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return renderCentered(context.matrices, text, x, y, color, shadowType)
+        return renderCentered(context.pose, text, x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -358,7 +356,7 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return renderCentered(context.matrices, text, x, y, color, shadowType)
+        return renderCentered(context.pose, text, x, y, color, shadowType)
     }
 
     @JvmStatic
@@ -369,12 +367,12 @@ public object OmniTextRenderer {
         color: OmniColor,
         shadowType: TextShadowType
     ): Int {
-        return renderCentered(context.matrices, text, x, y, color, shadowType)
+        return renderCentered(context.pose, text, x, y, color, shadowType)
     }
 
     @JvmStatic
     public fun width(text: String): Int {
-        return textRenderer.getWidth(text)
+        return textRenderer.width(text)
     }
 
     @JvmStatic
@@ -385,7 +383,7 @@ public object OmniTextRenderer {
     @JvmStatic
     public fun width(text: VanillaText): Int {
         //#if MC >= 1.16.5
-        return textRenderer.getWidth(text)
+        return textRenderer.width(text)
         //#else
         //$$ return textRenderer.getStringWidth(text.unformattedText)
         //#endif
@@ -393,7 +391,7 @@ public object OmniTextRenderer {
 
     @JvmStatic
     public fun height(text: String, maxWidth: Int): Int {
-        return textRenderer.getWrappedLinesHeight(text, maxWidth)
+        return textRenderer.wordWrapHeight(text, maxWidth)
     }
 
     @JvmStatic
@@ -404,9 +402,9 @@ public object OmniTextRenderer {
     @JvmStatic
     public fun height(text: VanillaText, maxWidth: Int): Int {
         //#if MC >= 1.19.2
-        return textRenderer.getWrappedLinesHeight(text, maxWidth)
+        return textRenderer.wordWrapHeight(text, maxWidth)
         //#else
-        //$$ return textRenderer.getWrappedLinesHeight(text.asString(), maxWidth)
+        //$$ return textRenderer.wordWrapHeight(text.contents, maxWidth)
         //#endif
     }
 }

@@ -4,26 +4,26 @@ import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.blaze3d.shaders.ShaderType
 import com.mojang.blaze3d.systems.RenderPass
 import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.vertex.MeshData
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelineBuilder
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
-import net.minecraft.client.render.BuiltBuffer
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
 public class OmniRenderPipelineImpl(
     private val builderSnapshotSnippet: OmniRenderPipeline.Snippet?,
-    override val location: Identifier,
+    override val location: ResourceLocation,
     override val drawMode: DrawMode,
     override val vertexFormat: VertexFormat,
     override val vanilla: RenderPipeline,
     private val shaderProvider: ShaderProvider?,
-    private val shaderSourcesFunction: ((Identifier, ShaderType) -> String?)?,
+    private val shaderSourcesFunction: ((ResourceLocation, ShaderType) -> String?)?,
 ) : OmniRenderPipeline {
-    internal fun draw(renderPass: RenderPass, builtBuffer: BuiltBuffer) {
+    internal fun draw(renderPass: RenderPass, builtBuffer: MeshData) {
         if (shaderSourcesFunction != null) {
             RenderSystem.getDevice()
                 .precompilePipeline(vanilla, shaderSourcesFunction)
@@ -31,9 +31,9 @@ public class OmniRenderPipelineImpl(
 
         renderPass.setPipeline(vanilla)
         //#if MC >= 1.21.6
-        renderPass.drawIndexed(0, 0, builtBuffer.drawParameters.indexCount, 1)
+        renderPass.drawIndexed(0, 0, builtBuffer.drawState().indexCount, 1)
         //#else
-        //$$ renderPass.drawIndexed(0, builtBuffer.drawParameters.indexCount)
+        //$$ renderPass.drawIndexed(0, builtBuffer.drawState().indexCount)
         //#endif
     }
 

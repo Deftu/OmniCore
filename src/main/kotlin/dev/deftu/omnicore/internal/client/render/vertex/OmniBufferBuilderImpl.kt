@@ -1,8 +1,8 @@
 package dev.deftu.omnicore.internal.client.render.vertex
 
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder
-import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
-import net.minecraft.client.render.BufferBuilder
+import dev.deftu.omnicore.api.client.render.vertex.OmniMeshData
+import com.mojang.blaze3d.vertex.BufferBuilder
 
 //#if MC < 1.19.2
 //$$ import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
@@ -16,22 +16,22 @@ public class OmniBufferBuilderImpl(override val vanilla: BufferBuilder) : OmniBu
     }
 
     //#if MC >= 1.21.1
-    override fun buildOrNull(): OmniBuiltBuffer? {
-        return vanilla.endNullable()?.let(::OmniBuiltBufferImpl)
+    override fun buildOrNull(): OmniMeshData? {
+        return vanilla.build()?.let(::OmniMeshDataImpl)
     }
     //#elseif MC >= 1.19.2
-    //$$ override fun buildOrNull(): OmniBuiltBuffer? {
-    //$$     return vanilla.endOrDiscardIfEmpty()?.let(::OmniBuiltBufferImpl)
+    //$$ override fun buildOrNull(): OmniMeshData? {
+    //$$     return vanilla.endOrDiscardIfEmpty()?.let(::OmniMeshDataImpl)
     //$$ }
     //#else
     //$$ private var vertexCount = 0
     //$$
-    //$$ override fun buildOrNull(): OmniBuiltBuffer? {
+    //$$ override fun buildOrNull(): OmniMeshData? {
     //$$     vanilla.end()
     //$$     return if (vertexCount > 0) {
-    //$$         OmniBuiltBufferImpl(vanilla)
+    //$$         OmniMeshDataImpl(vanilla)
     //$$     } else {
-    //$$         vanilla.reset()
+    //$$         vanilla.discard()
     //$$         bufferPool.add(vanilla)
     //$$         null
     //$$     }
@@ -43,7 +43,7 @@ public class OmniBufferBuilderImpl(override val vanilla: BufferBuilder) : OmniBu
     //$$ }
     //#endif
 
-    override fun buildOrThrow(): OmniBuiltBuffer {
+    override fun buildOrThrow(): OmniMeshData {
         return buildOrNull() ?: throw IllegalStateException("Tried to build an empty buffer")
     }
 }

@@ -27,15 +27,15 @@ public enum class DrawMode {
         }
 
     //#if MC >= 1.17.1
-    public val vanilla: VertexFormat.DrawMode
+    public val vanilla: VertexFormat.Mode
         get() {
             return when (const) {
-                GL11.GL_LINES -> VertexFormat.DrawMode.LINES
-                GL11.GL_LINE_STRIP -> VertexFormat.DrawMode.LINE_STRIP
-                GL11.GL_TRIANGLES -> VertexFormat.DrawMode.TRIANGLES
-                GL11.GL_TRIANGLE_STRIP -> VertexFormat.DrawMode.TRIANGLE_STRIP
-                GL11.GL_TRIANGLE_FAN -> VertexFormat.DrawMode.TRIANGLE_FAN
-                GL11.GL_QUADS -> VertexFormat.DrawMode.QUADS
+                GL11.GL_LINES -> VertexFormat.Mode.LINES
+                GL11.GL_LINE_STRIP -> VertexFormat.Mode.LINE_STRIP
+                GL11.GL_TRIANGLES -> VertexFormat.Mode.TRIANGLES
+                GL11.GL_TRIANGLE_STRIP -> VertexFormat.Mode.TRIANGLE_STRIP
+                GL11.GL_TRIANGLE_FAN -> VertexFormat.Mode.TRIANGLE_FAN
+                GL11.GL_QUADS -> VertexFormat.Mode.QUADS
                 else -> DrawModes.die(const)
             }
         }

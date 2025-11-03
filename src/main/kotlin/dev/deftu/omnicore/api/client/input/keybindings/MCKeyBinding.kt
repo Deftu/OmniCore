@@ -3,7 +3,7 @@ package dev.deftu.omnicore.api.client.input.keybindings
 import dev.deftu.omnicore.api.client.OmniLocalization
 import dev.deftu.omnicore.api.client.input.OmniInputCode
 import dev.deftu.omnicore.api.client.input.OmniKeys
-import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.KeyMapping
 
 //#if FORGE-LIKE && MC >= 1.19.2
 //$$ import dev.deftu.omnicore.internal.modEventBus
@@ -55,12 +55,12 @@ public interface MCKeyBinding : OmniKeyBinding {
         //#endif
     }
 
-    public val vanillaKeyBinding: KeyBinding
+    public val vanillaKeyBinding: KeyMapping
 
     public val translatedName: String
         get() {
             //#if MC >= 1.16.5
-            return OmniLocalization[this.vanillaKeyBinding.id]
+            return OmniLocalization[this.vanillaKeyBinding.name]
             //#else
             //$$ return OmniLocalization[this.vanillaKeyBinding.keyDescription]
             //#endif
@@ -69,14 +69,14 @@ public interface MCKeyBinding : OmniKeyBinding {
     override var boundValue: OmniInputCode
         get() {
             //#if MC >= 1.16.5
-            return (this.vanillaKeyBinding as Mixin_AccessBoundKey).boundKey?.code?.let(type::code) ?: OmniKeys.KEY_NONE
+            return (this.vanillaKeyBinding as Mixin_AccessBoundKey).key?.value?.let(type::code) ?: OmniKeys.KEY_NONE
             //#else
             //$$ return type.code(this.vanillaKeyBinding.keyCode)
             //#endif
         }
         set(value) {
             //#if MC >= 1.16.5
-            this.vanillaKeyBinding.setBoundKey(type.vanilla.createFromCode(value.code))
+            this.vanillaKeyBinding.setKey(type.vanilla.getOrCreate(value.code))
             //#else
             //$$ this.vanillaKeyBinding.keyCode = value.code
             //#endif
@@ -101,7 +101,7 @@ public interface MCKeyBinding : OmniKeyBinding {
         }
 
     override val isPressed: Boolean
-        get() = !isUnbound && this.vanillaKeyBinding.isPressed
+        get() = !isUnbound && this.vanillaKeyBinding.isDown
 
     public fun register(): MCKeyBinding = this@MCKeyBinding.apply {
         //#if FABRIC
@@ -114,6 +114,6 @@ public interface MCKeyBinding : OmniKeyBinding {
     }
 
     override fun consume(): Boolean {
-        return this.vanillaKeyBinding.wasPressed()
+        return this.vanillaKeyBinding.consumeClick()
     }
 }

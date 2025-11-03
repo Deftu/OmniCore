@@ -22,14 +22,14 @@ public object LightingStateInternals {
     @JvmStatic
     public fun enable() {
         //#if MC <= 1.16.5
-        //$$ GlStateManager.enableLighting()
+        //$$ GlStateManager._enableLighting()
         //#endif
     }
 
     @JvmStatic
     public fun disable() {
         //#if MC <= 1.16.5
-        //$$ GlStateManager.disableLighting()
+        //$$ GlStateManager._disableLighting()
         //#endif
     }
 }

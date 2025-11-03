@@ -3,31 +3,31 @@
 package dev.deftu.omnicore.api.world
 
 import dev.deftu.omnicore.api.data.pos.OmniBlockPos
-import net.minecraft.block.Block
-import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
-import net.minecraft.world.World
+import net.minecraft.core.BlockPos
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.Block
+import net.minecraft.world.phys.AABB
 import java.util.UUID
 
 //#if MC < 1.16.5
 //$$ import com.google.common.base.Predicate
 //#endif
 
-public val World.isClientWorld: Boolean
-    get() = this.isClient
+public val Level.isOnClient: Boolean
+    get() = this.isClientSide
 
-public val World.spawnPosition: BlockPos
+public val Level.spawnPosition: BlockPos
     get() {
         //#if MC >= 1.21.9
-        return this.spawnPoint.pos
+        return this.respawnData.pos()
         //#elseif MC >= 1.19.2
         //$$ return this.sharedSpawnPos
         //#elseif MC >= 1.16.5
         //$$ return when (this) {
-        //$$     is net.minecraft.server.world.ServerWorld -> this.spawnPos
-        //$$     is net.minecraft.client.world.ClientWorld -> this.spawnPos
+        //$$     is net.minecraft.server.level.ServerLevel -> this.sharedSpawnPos
+        //$$     is net.minecraft.client.multiplayer.ClientLevel -> this.sharedSpawnPos
         //$$     else -> throw IllegalStateException("Unsupported world type: ${this::class.java.name}")
         //$$ }
         //#else
@@ -35,7 +35,7 @@ public val World.spawnPosition: BlockPos
         //#endif
     }
 
-public val World.maxWorldHeight: Int
+public val Level.maxWorldHeight: Int
     get() {
         //#if MC >= 1.16.5
         return this.height
@@ -44,74 +44,74 @@ public val World.maxWorldHeight: Int
         //#endif
     }
 
-public val World.currentTime: Long
-    get() = this.timeOfDay
+public val Level.currentTime: Long
+    get() = this.dayTime
 
-public val World.isDayTime: Boolean
-    get() = this.isDay
+public val Level.isDayTime: Boolean
+    get() = this.isBrightOutside
 
-public val World.isNightTime: Boolean
+public val Level.isNightTime: Boolean
     get() {
         //#if MC >= 1.16.5
-        return this.isNight
+        return this.isDarkOutside
         //#else
         //$$ return !isDayTime
         //#endif
     }
 
-public val World.isRaining: Boolean
+public val Level.isRaining: Boolean
     get() = this.isRaining
 
-public val World.isThundering: Boolean
+public val Level.isThundering: Boolean
     get() = this.isThundering
 
-public val World.isClearWeather: Boolean
+public val Level.isClearWeather: Boolean
     get() = !isRaining && !isThundering
 
-public val World.allPlayers: List<PlayerEntity>
+public val Level.allPlayers: List<Player>
     get() {
         //#if MC >= 1.16.5
-        return this.players
+        return this.players()
         //#else
         //$$ return this.playerEntities
         //#endif
     }
 
-public fun World.isBlockLoadedAt(pos: BlockPos): Boolean {
+public fun Level.isBlockLoadedAt(pos: BlockPos): Boolean {
     //#if MC >= 1.16.5
-    return isPosLoaded(pos)
+    return isLoaded(pos)
     //#else
     //$$ return isBlockLoaded(pos)
     //#endif
 }
 
-public fun World.isBlockLoadedAt(x: Int, y: Int, z: Int): Boolean {
+public fun Level.isBlockLoadedAt(x: Int, y: Int, z: Int): Boolean {
     return isBlockLoadedAt(OmniBlockPos(x, y, z).vanilla)
 }
 
-public fun World.getBlockTypeAt(pos: BlockPos): Block? {
+public fun Level.getBlockTypeAt(pos: BlockPos): Block? {
     return this.getBlockState(pos)?.block
 }
 
-public fun World.getBlockTypeAt(x: Int, y: Int, z: Int): Block? {
+public fun Level.getBlockTypeAt(x: Int, y: Int, z: Int): Block? {
     return getBlockTypeAt(OmniBlockPos(x, y, z).vanilla)
 }
 
-public fun World.getPlayerFromUuid(uuid: UUID): PlayerEntity? {
+public fun Level.getPlayerFromUuid(uuid: UUID): Player? {
     //#if MC >= 1.16.5
-    return getPlayerByUuid(uuid)
+    return getPlayerByUUID(uuid)
     //#else
     //$$ return getPlayerEntityByUUID(uuid)
     //#endif
 }
 
-public fun World.getEntitiesByType(
+public fun Level.getEntitiesByType(
     type: Class<out Entity>,
-    box: Box,
+    box: AABB,
     filter: (Entity) -> Boolean = { true }
 ): List<Entity> {
     //#if MC >= 1.16.5
-    return getEntitiesByClass(type, box, filter)
+    return getEntitiesOfClass(type, box, filter)
     //#else
     //$$ return getEntitiesWithinAABB(type, box, Predicate {
     //$$     it?.let(filter) ?: false
@@ -119,15 +119,15 @@ public fun World.getEntitiesByType(
     //#endif
 }
 
-public fun World.getClosestPlayerTo(
+public fun Level.getClosestPlayerTo(
     x: Double,
     y: Double,
     z: Double,
     maxDistance: Double,
     filter: (Entity) -> Boolean = { true }
-): PlayerEntity? {
+): Player? {
     //#if MC >= 1.16.5
-    return getClosestPlayer(x, y, z, maxDistance, filter)
+    return getNearestPlayer(x, y, z, maxDistance, filter)
     //#elseif MC >= 1.12.2
     //$$ return getClosestPlayer(x, y, z, maxDistance, Predicate {
     //$$     it?.let(filter) ?: false
@@ -138,13 +138,13 @@ public fun World.getClosestPlayerTo(
     //$$ }
     //$$
     //$$ var closestDistanceTo = -1.0
-    //$$ var closestPlayer: PlayerEntity? = null
+    //$$ var closestPlayer: EntityPlayer? = null
     //$$ for (player in playerEntities) {
     //$$     if (!filter(player)) {
     //$$         continue
     //$$     }
     //$$
-    //$$     val distanceTo = player.squaredDistanceTo(x, y, z)
+    //$$     val distanceTo = player.getDistanceSq(x, y, z)
     //$$     if (distanceTo > maxDistance * maxDistance) {
     //$$         continue
     //$$     }
@@ -159,20 +159,20 @@ public fun World.getClosestPlayerTo(
     //#endif
 }
 
-public fun World.getClosestPlayerTo(
+public fun Level.getClosestPlayerTo(
     pos: BlockPos,
     maxDistance: Double,
     filter: (Entity) -> Boolean = { true }
-): PlayerEntity? {
+): Player? {
     return getClosestPlayerTo(pos.x.toDouble(), pos.y.toDouble(), pos.z.toDouble(), maxDistance, filter)
 }
 
-public fun World.getClosestPlayerTo(
+public fun Level.getClosestPlayerTo(
     entity: Entity,
     maxDistance: Double,
-): PlayerEntity? {
+): Player? {
     //#if MC >= 1.16.5
-    return getClosestPlayer(entity, maxDistance)
+    return getNearestPlayer(entity, maxDistance)
     //#else
     //$$ return getClosestPlayerToEntity(entity, maxDistance)
     //#endif

@@ -3,34 +3,35 @@ package dev.deftu.omnicore.api.client.input.keybindings
 import dev.deftu.omnicore.api.client.input.OmniInputCode
 import dev.deftu.omnicore.api.client.input.OmniKey
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
-import dev.deftu.omnicore.api.translationKey
-import net.minecraft.client.option.KeyBinding
-import net.minecraft.util.Identifier
+import net.minecraft.client.KeyMapping
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.21.9
-import net.minecraft.client.input.KeyInput
-import net.minecraft.client.gui.Click
-import net.minecraft.client.input.MouseInput
+import net.minecraft.client.input.KeyEvent
+import net.minecraft.client.input.MouseButtonEvent
+import net.minecraft.client.input.MouseButtonInfo
+//#else
+//$$ import dev.deftu.omnicore.api.translationKey
 //#endif
 
 public data class ManagedKeyBinding @JvmOverloads constructor(
     override val name: String,
-    override val category: Identifier,
+    override val category: ResourceLocation,
     override val defaultValue: OmniInputCode,
     override val type: OmniKeyBinding.KeyBindingType = when (defaultValue) {
         is OmniKey -> OmniKeyBinding.KeyBindingType.KEY
         is OmniMouseButton -> OmniKeyBinding.KeyBindingType.MOUSE
     }
 ) : MCKeyBinding {
-    override val vanillaKeyBinding: KeyBinding by lazy {
-        KeyBinding(
+    override val vanillaKeyBinding: KeyMapping by lazy {
+        KeyMapping(
             name,
             //#if MC >= 1.16.5
             type.vanilla,
             //#endif
             defaultValue.code,
             //#if MC >= 1.21.9
-            KeyBinding.Category(category),
+            KeyMapping.Category(category),
             //#else
             //$$ category.translationKey("key.category"),
             //#endif
@@ -40,7 +41,7 @@ public data class ManagedKeyBinding @JvmOverloads constructor(
     override fun matchesMouse(button: Int): Boolean {
         return this.type == OmniKeyBinding.KeyBindingType.MOUSE && (
             //#if MC >= 1.21.9
-            this.vanillaKeyBinding.matchesMouse(Click(0.0, 0.0, MouseInput(button, 0)))
+            this.vanillaKeyBinding.matchesMouse(MouseButtonEvent(0.0, 0.0, MouseButtonInfo(button, 0)))
             //#elseif MC >= 1.16.5
             //$$ this.vanillaKeyBinding.matchesMouse(button)
             //#else
@@ -52,7 +53,7 @@ public data class ManagedKeyBinding @JvmOverloads constructor(
     override fun matchesKey(keyCode: Int, scancode: Int): Boolean {
         return this.type == OmniKeyBinding.KeyBindingType.KEY && (
             //#if MC >= 1.21.9
-            this.vanillaKeyBinding.matchesKey(KeyInput(keyCode, scancode, 0))
+            this.vanillaKeyBinding.matches(KeyEvent(keyCode, scancode, 0))
             //#elseif MC >= 1.16.5
             //$$ this.vanillaKeyBinding.matches(keyCode, scancode)
             //#else

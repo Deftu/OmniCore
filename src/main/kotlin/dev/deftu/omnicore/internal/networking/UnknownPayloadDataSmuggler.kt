@@ -2,11 +2,11 @@
 
 package dev.deftu.omnicore.internal.networking
 
-import net.minecraft.network.PacketByteBuf
+import net.minecraft.network.FriendlyByteBuf
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
 public interface UnknownPayloadDataSmuggler {
-    public fun `omnicore$getData`(): PacketByteBuf
-    public fun `omnicore$setData`(data: PacketByteBuf)
+    public fun `omnicore$getData`(): FriendlyByteBuf
+    public fun `omnicore$setData`(data: FriendlyByteBuf)
 }

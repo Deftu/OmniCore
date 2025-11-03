@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 import dev.deftu.omnicore.api.annotations.VersionedAbove
-import net.minecraft.sound.SoundCategory as VanillaSoundCategory
+import net.minecraft.sounds.SoundSource as VanillaSoundCategory
 
 public interface SoundCategory {
     public data object Master : SoundCategory {

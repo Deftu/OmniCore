@@ -5,7 +5,7 @@ import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPipelineImpl
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 import org.lwjgl.opengl.GL11
 import java.util.function.Consumer
 
@@ -19,8 +19,8 @@ import com.mojang.blaze3d.shaders.ShaderType
 import dev.deftu.omnicore.api.ID
 import dev.deftu.omnicore.api.client.render.shader.uniforms.UniformDefinition
 import dev.deftu.omnicore.api.client.render.shader.uniforms.UniformKind
-import dev.deftu.omnicore.api.identifierOrThrow
-import net.minecraft.client.gl.GlCommandEncoder
+import dev.deftu.omnicore.api.locationOrThrow
+import com.mojang.blaze3d.opengl.GlCommandEncoder
 import org.apache.commons.codec.digest.DigestUtils
 //#else
 //$$ import dev.deftu.omnicore.api.client.render.state.CullFace
@@ -38,7 +38,7 @@ import org.apache.commons.codec.digest.DigestUtils
 //#endif
 
 public class OmniRenderPipelineBuilder internal constructor(
-    private val location: Identifier,
+    private val location: ResourceLocation,
     private val vertexFormat: VertexFormat,
     private val drawMode: DrawMode,
     //#if MC >= 1.21.5
@@ -63,7 +63,7 @@ public class OmniRenderPipelineBuilder internal constructor(
 
     public fun build(): OmniRenderPipeline {
         //#if MC >= 1.21.5
-        var shaderSourcesFunction: ((Identifier, ShaderType) -> String?)? = null
+        var shaderSourcesFunction: ((ResourceLocation, ShaderType) -> String?)? = null
         var vanilla = RenderPipeline.builder().apply {
             withLocation(location)
             withVertexFormat(vertexFormat, drawMode.vanilla)
@@ -114,8 +114,8 @@ public class OmniRenderPipelineBuilder internal constructor(
                 }
 
                 is ShaderProvider.Compatible -> {
-                    val vertexLocation = identifierOrThrow(ID, "shader/generated/${DigestUtils.sha1Hex(shaderProvider.vertexSource)}")
-                    val fragmentLocation = identifierOrThrow(ID, "shader/generated/${DigestUtils.sha1Hex(shaderProvider.fragmentSource)}")
+                    val vertexLocation = locationOrThrow(ID, "shader/generated/${DigestUtils.sha1Hex(shaderProvider.vertexSource)}")
+                    val fragmentLocation = locationOrThrow(ID, "shader/generated/${DigestUtils.sha1Hex(shaderProvider.fragmentSource)}")
 
                     shaderSourcesFunction = { id, _ ->
                         when (id) {

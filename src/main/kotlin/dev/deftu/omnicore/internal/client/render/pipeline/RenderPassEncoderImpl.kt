@@ -6,14 +6,14 @@ import dev.deftu.omnicore.api.client.render.OmniResolution
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.ScissorBox
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
-import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.api.client.render.vertex.OmniMeshData
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.GpuBufferSlice
-import net.minecraft.client.gl.DynamicUniforms
+import net.minecraft.client.renderer.DynamicUniforms
 import org.joml.Vector4f
 import org.lwjgl.system.MemoryStack
 import kotlin.use
@@ -44,7 +44,7 @@ public class RenderPassEncoderImpl internal constructor(
     //$$ private val renderPass: OmniRenderPass,
     //#endif
     private val renderPipeline: OmniRenderPipelineImpl,
-    private val builtBuffer: OmniBuiltBuffer
+    private val builtBuffer: OmniMeshData
 ) : RenderPassEncoder {
     //#if MC >= 1.21.6
     private var dynamicUniforms: DynamicUniforms? = null
@@ -96,28 +96,28 @@ public class RenderPassEncoderImpl internal constructor(
         }
 
         val builtBuffer = builtBuffer.vanilla
-        val vertexBuffer = renderPipeline.vertexFormat.uploadImmediateVertexBuffer(builtBuffer.buffer)
-        val indexBuffer = builtBuffer.sortedBuffer
+        val vertexBuffer = renderPipeline.vertexFormat.uploadImmediateVertexBuffer(builtBuffer.vertexBuffer())
+        val indexBuffer = builtBuffer.indexBuffer()
         val (uploadedIndexBuffer, indexType) = if (indexBuffer == null) {
-            val shapeIndexBuffer = RenderSystem.getSequentialBuffer(builtBuffer.drawParameters.mode)
-            shapeIndexBuffer.getIndexBuffer(builtBuffer.drawParameters.indexCount) to shapeIndexBuffer.indexType
+            val shapeIndexBuffer = RenderSystem.getSequentialBuffer(builtBuffer.drawState().mode)
+            shapeIndexBuffer.getBuffer(builtBuffer.drawState().indexCount) to shapeIndexBuffer.type()
         } else {
-            renderPipeline.vertexFormat.uploadImmediateIndexBuffer(indexBuffer) to builtBuffer.drawParameters.indexType
+            renderPipeline.vertexFormat.uploadImmediateIndexBuffer(indexBuffer) to builtBuffer.drawState().indexType
         }
 
-        vanilla = with(client.framebuffer) {
+        vanilla = with(client.mainRenderTarget) {
             RenderSystem.getDevice()
                 .createCommandEncoder()
                 //#if MC >= 1.21.6
                 .createRenderPass(
                     { "$renderPipeline render pass" },
-                    RenderSystem.outputColorTextureOverride ?: colorAttachmentView!!,
+                    RenderSystem.outputColorTextureOverride ?: colorTextureView!!,
                     OptionalInt.empty(),
-                    RenderSystem.outputDepthTextureOverride ?: depthAttachmentView,
+                    RenderSystem.outputDepthTextureOverride ?: depthTextureView,
                     OptionalDouble.empty()
                 )
                 //#else
-                //$$ .createRenderPass(colorAttachment!!, OptionalInt.empty(), depthAttachment, OptionalDouble.empty())
+                //$$ .createRenderPass(colorTexture!!, OptionalInt.empty(), depthTexture, OptionalDouble.empty())
                 //#endif
         }
 
@@ -252,7 +252,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#if MC >= 1.17.1
         //$$ RenderSystem.setShaderColor(red, green, blue, alpha)
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.color4f(red, green, blue, alpha)
+        //$$ GlStateManager._color4f(red, green, blue, alpha)
         //#else
         //$$ GlStateManager.color(red, green, blue, alpha)
         //#endif
@@ -268,7 +268,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#if MC >= 1.17.1
         //$$ RenderSystem.lineWidth(width)
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.lineWidth(width)
+        //$$ GlStateManager._lineWidth(width)
         //#elseif MC >= 1.12.2
         //$$ GlStateManager.glLineWidth(width)
         //#else
@@ -329,8 +329,8 @@ public class RenderPassEncoderImpl internal constructor(
         //$$ stack.identity()
         //$$ stack.mul(matrix.vanilla)
         //#else
-        //$$ stack.loadIdentity()
-        //$$ stack.multiplyPositionMatrix(matrix.vanilla)
+        //$$ stack.setIdentity()
+        //$$ stack.mulPoseMatrix(matrix.vanilla)
         //$$ RenderSystem.applyModelViewMatrix()
         //#endif
         //#else
@@ -354,7 +354,7 @@ public class RenderPassEncoderImpl internal constructor(
         //#if MC >= 1.20.6
         //$$ stack.identity()
         //#else
-        //$$ stack.loadIdentity()
+        //$$ stack.setIdentity()
         //$$ RenderSystem.applyModelViewMatrix()
         //#endif
         //#else
@@ -407,10 +407,10 @@ public class RenderPassEncoderImpl internal constructor(
         //$$     renderPass.activePipeline = renderPipeline
         //$$     renderPipeline.requestedRenderState.applyTo(renderPass.activeRenderState)
         //$$
-            //#if MC <= 1.16.5
-            //$$ // Update line stipple
-            //$$ renderPass.activeRenderState.legacyState.setLineStippleState(renderPass.activeRenderState.legacyState.lineStippleState.withParams(lineStippleFactor, lineStipplePattern))
-            //#endif
+        //#if MC <= 1.16.5
+        //$$ // Update line stipple
+        //$$ renderPass.activeRenderState.legacyState.setLineStippleState(renderPass.activeRenderState.legacyState.lineStippleState.withParams(lineStippleFactor, lineStipplePattern))
+        //#endif
         //$$ }
         //$$
         //$$ var previousScissorBox: ScissorBox? = null
@@ -430,7 +430,7 @@ public class RenderPassEncoderImpl internal constructor(
 
     //#if MC >= 1.21.6
     private fun bindDynamicUniforms(): GpuBufferSlice? {
-        return dynamicUniforms?.write(
+        return dynamicUniforms?.writeTransform(
             modelViewMatrix ?: RenderSystem.getModelViewMatrix(),
             shaderColor ?: Vector4f(1f, 1f, 1f, 1f),
             //#if MC >= 1.21.9

@@ -3,17 +3,17 @@
 package dev.deftu.omnicore.api
 
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.profiler.Profiler
+import net.minecraft.util.profiling.ProfilerFiller
 
 //#if MC >= 1.21.2
-import net.minecraft.util.profiler.Profilers
+import net.minecraft.util.profiling.Profiler
 //#endif
 
-public inline val MinecraftServer.builtinProfiler: Profiler
+public inline val MinecraftServer.builtinProfiler: ProfilerFiller
     @JvmName("get")
     get() {
         //#if MC >= 1.21.2
-        return Profilers.get()
+        return Profiler.get()
         //#else
         //$$ return profiler
         //#endif
@@ -31,7 +31,7 @@ public fun MinecraftServer.endProfiler() {
 
 @JvmName("swap")
 public fun MinecraftServer.swapProfiler(name: String) {
-    builtinProfiler.swap(name)
+    builtinProfiler.popPush(name)
 }
 
 @JvmName("withProfiler")

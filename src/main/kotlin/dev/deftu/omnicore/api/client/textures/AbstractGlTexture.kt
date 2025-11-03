@@ -7,10 +7,10 @@ import dev.deftu.omnicore.api.client.render.ClearMask
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.state.OmniColorMask
 import dev.deftu.omnicore.api.color.OmniColor
-import dev.deftu.omnicore.api.identifierOrThrow
+import dev.deftu.omnicore.api.locationOrThrow
 import dev.deftu.omnicore.internal.client.render.GlInternals
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
@@ -58,7 +58,7 @@ public abstract class AbstractGlTexture(override val format: OmniTextureFormat) 
         }
     }
 
-    override val location: Identifier = identifierOrThrow("omnicore", "texture_${UUID.randomUUID()}")
+    override val location: ResourceLocation = locationOrThrow("omnicore", "texture_${UUID.randomUUID()}")
 
     override fun bind(unit: OmniTextureUnit): () -> Unit {
         val prevUnit = TextureInternals.activeUnit

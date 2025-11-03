@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.direction
 
 import dev.deftu.omnicore.api.commands.CommandCompletable
-import net.minecraft.util.math.Direction
+import net.minecraft.core.Direction
 
 public enum class OmniSpatialDirection : CommandCompletable {
     NORTH,

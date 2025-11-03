@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper
 //#endif
 //#endif
 
-import net.minecraft.resource.ResourceType
+import net.minecraft.server.packs.PackType
 //#else
 //#if FABRIC
 //$$ import net.legacyfabric.fabric.api.resource.ResourceManagerHelper
@@ -35,7 +35,7 @@ public object OmniServerResources {
     @VersionedAbove("1.16.5")
     public fun registerReloadListener(listener: ResourceReloadListener) {
         //#if FABRIC && MC >= 1.16.5
-        ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(listener)
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(listener)
         //#elseif FORGE-LIKE && MC >= 1.16.5
         //#if MC >= 1.21.4
         //$$ forgeEventBus.addListener<AddServerReloadListenersEvent> { event ->

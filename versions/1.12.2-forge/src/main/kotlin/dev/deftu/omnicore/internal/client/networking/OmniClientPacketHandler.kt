@@ -3,7 +3,7 @@ package dev.deftu.omnicore.internal.client.networking
 //#if FORGE
 import dev.deftu.omnicore.api.client.OmniClientRuntime
 import dev.deftu.omnicore.api.client.network.OmniClientNetworking
-import dev.deftu.omnicore.api.identifierOrNull
+import dev.deftu.omnicore.api.locationOrNull
 import dev.deftu.omnicore.internal.networking.OmniPacketHandler
 import io.netty.channel.ChannelHandlerContext
 import net.minecraft.network.NetworkManager
@@ -26,7 +26,7 @@ public class OmniClientPacketHandler(private val networkManager: NetworkManager)
         //$$ val customPayloadPacket = packet as? S3FPacketCustomPayload ?: return
         //#endif
         val channelName = customPayloadPacket.channelName
-        val channel = identifierOrNull(channelName) ?: return
+        val channel = locationOrNull(channelName) ?: return
         if (!OmniClientNetworking.isChannelRegistered(channel)) {
             return
         }

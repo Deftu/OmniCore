@@ -33,10 +33,8 @@ public object OmniClientChat {
     @JvmStatic
     public fun displayChatMessage(text: Text) {
         player
-            //#if MC >= 1.19.2
-            ?.sendMessage(MCText.convert(text), false)
-            //#elseif MC >= 1.16.5
-            //$$ ?.sendSystemMessage(MCText.convert(text), OmniChat.NULL_UUID)
+            //#if MC >= 1.16.5
+            ?.displayClientMessage(MCText.convert(text), false)
             //#else
             //$$ ?.sendMessage(MCText.convert(text))
             //#endif
@@ -61,14 +59,12 @@ public object OmniClientChat {
 
     @JvmStatic
     public fun displayActionBar(text: Text) {
-        //#if MC >= 1.19.2
-        player?.sendMessage(MCText.convert(text), true)
-        //#elseif MC >= 1.16.5
-        //$$ player?.sendMessage(MCText.convert(text), true)
+        //#if MC >= 1.16.5
+        player?.displayClientMessage(MCText.convert(text), true)
         //#elseif MC >= 1.12.2
         //$$ player?.sendStatusMessage(MCText.convert(text), true)
         //#else
-        //$$ client.networkHandler?.onChatMessage(ChatMessageS2CPacket(MCText.convert(text), 2))
+        //$$ client.netHandler?.handleChat(S02PacketChat(MCText.convert(text), 2))
         //#endif
     }
 
@@ -88,8 +84,8 @@ public object OmniClientChat {
     ) {
         //#if MC >= 1.17.1
         playerHud?.apply {
-            clear()
-            setTitleTicks(fadeIn, stay, fadeOut)
+            clearTitles()
+            setTimes(fadeIn, stay, fadeOut)
             subtitle?.let(MCText::convert).let(this::setSubtitle)
             setTitle(MCText.convert(title))
         }

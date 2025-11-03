@@ -1,11 +1,11 @@
 package dev.deftu.omnicore.internal.client.render.vertex
 
 //#if MC >= 1.21.1
-import net.minecraft.client.render.BuiltBuffer as VanillaBuiltBuffer
+import com.mojang.blaze3d.vertex.MeshData as VanillaMeshData
 //#elseif MC >= 1.19.2
-//$$ import com.mojang.blaze3d.vertex.BufferBuilder.RenderedBuffer as VanillaBuiltBuffer
+//$$ import com.mojang.blaze3d.vertex.BufferBuilder.RenderedBuffer as VanillaMeshData
 //#else
-//$$ import net.minecraft.client.render.BufferBuilder as VanillaBuiltBuffer
+//$$ import com.mojang.blaze3d.vertex.BufferBuilder as VanillaMeshData
 //#endif
 
-internal typealias VanillaBuiltBuffer = VanillaBuiltBuffer
+internal typealias VanillaMeshData = VanillaMeshData

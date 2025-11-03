@@ -1,30 +1,30 @@
 package dev.deftu.omnicore.internal.client.render
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.client
-import net.minecraft.client.gl.ShaderProgram
-import net.minecraft.client.render.GameRenderer
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.renderer.GameRenderer
+import net.minecraft.client.renderer.ShaderInstance
 import org.jetbrains.annotations.ApiStatus
 import java.util.IdentityHashMap
 import java.util.function.Supplier
 
 @ApiStatus.Internal
 public object DefaultShaders {
-    private val defaults: IdentityHashMap<VertexFormat, Supplier<ShaderProgram>> by lazy {
-        IdentityHashMap<VertexFormat, Supplier<ShaderProgram>>().apply {
-            put(VertexFormats.POSITION, createSupplierNonnull(GameRenderer::getPositionProgram))
-            put(VertexFormats.POSITION_COLOR, createSupplierNonnull(GameRenderer::getPositionColorProgram))
-            put(VertexFormats.POSITION_TEXTURE, createSupplierNonnull(GameRenderer::getPositionTexProgram))
-            put(VertexFormats.POSITION_TEXTURE_COLOR, createSupplierNonnull(GameRenderer::getPositionTexColorProgram))
-            put(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT, createSupplierNonnull(GameRenderer::getPositionColorTexLightmapProgram))
-            put(VertexFormats.POSITION_COLOR_LIGHT, createSupplierNonnull(GameRenderer::getPositionColorLightmapProgram))
-            put(VertexFormats.LINES, createSupplierNonnull(GameRenderer::getRenderTypeLinesProgram))
-            put(VertexFormats.BLIT_SCREEN, Supplier { client.gameRenderer.blitScreenProgram!! })
+    private val defaults: IdentityHashMap<VertexFormat, Supplier<ShaderInstance>> by lazy {
+        IdentityHashMap<VertexFormat, Supplier<ShaderInstance>>().apply {
+            put(DefaultVertexFormat.POSITION, createSupplierNonnull(GameRenderer::getPositionShader))
+            put(DefaultVertexFormat.POSITION_COLOR, createSupplierNonnull(GameRenderer::getPositionColorShader))
+            put(DefaultVertexFormat.POSITION_TEX, createSupplierNonnull(GameRenderer::getPositionTexShader))
+            put(DefaultVertexFormat.POSITION_TEX_COLOR, createSupplierNonnull(GameRenderer::getPositionTexColorShader))
+            put(DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, createSupplierNonnull(GameRenderer::getPositionColorTexLightmapShader))
+            put(DefaultVertexFormat.POSITION_COLOR_LIGHTMAP, createSupplierNonnull(GameRenderer::getPositionColorLightmapShader))
+            put(DefaultVertexFormat.POSITION_COLOR_NORMAL, createSupplierNonnull(GameRenderer::getRendertypeLinesShader))
+            put(DefaultVertexFormat.BLIT_SCREEN, Supplier { client.gameRenderer.blitShader!! })
 
             //#if MC < 1.20.6
-            //$$ put(VertexFormats.POSITION_TEXTURE_LIGHT_COLOR, createSupplierNonnull(GameRenderer::getPositionTexLightmapColorProgram))
-            //$$ put(VertexFormats.POSITION_TEXTURE_COLOR_NORMAL, createSupplierNonnull(GameRenderer::getPositionTexColorNormalProgram))
+            //$$ put(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR, createSupplierNonnull(GameRenderer::getPositionTexLightmapColorShader))
+            //$$ put(DefaultVertexFormat.POSITION_TEX_COLOR_NORMAL, createSupplierNonnull(GameRenderer::getPositionTexColorNormalShader))
             //#endif
 
             //#if MC < 1.21.1
@@ -34,7 +34,7 @@ public object DefaultShaders {
     }
 
     @JvmStatic
-    public operator fun get(format: VertexFormat): Supplier<ShaderProgram>? {
+    public operator fun get(format: VertexFormat): Supplier<ShaderInstance>? {
         return defaults[format]
     }
 

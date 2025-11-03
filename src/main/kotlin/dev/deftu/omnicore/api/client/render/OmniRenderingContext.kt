@@ -1,51 +1,51 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.textureManager
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStacks
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
 import dev.deftu.textile.Text
-import net.minecraft.text.Text as VanillaText
-import net.minecraft.util.Identifier
+import net.minecraft.network.chat.Component as VanillaText
+import net.minecraft.resources.ResourceLocation
 import java.util.function.Consumer
 
 //#if MC >= 1.21.5
-import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.opengl.GlTexture
 //#endif
 
 //#if MC >= 1.20.1
-import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.GuiGraphics
 //#endif
 
 //#if MC >= 1.16.5 && MC < 1.20.1
-//$$ import net.minecraft.client.util.math.MatrixStack
+//$$ import com.mojang.blaze3d.vertex.PoseStack
 //#endif
 
 public data class OmniRenderingContext(
     //#if MC >= 1.20.1
-    val graphics: DrawContext?,
+    val graphics: GuiGraphics?,
     //#endif
-    val matrices: OmniMatrixStack,
+    val pose: OmniPoseStack,
 ) : AutoCloseable {
     public companion object {
         @JvmStatic
         public fun from(
             //#if MC >= 1.20.1
-            ctx: DrawContext
+            ctx: GuiGraphics
             //#elseif MC >= 1.16.5
-            //$$ matrices: MatrixStack
+            //$$ pose: PoseStack
             //#endif
         ): OmniRenderingContext {
-            val stack = OmniMatrixStacks.vanilla(
+            val pose = OmniPoseStacks.vanilla(
                 //#if MC >= 1.20.1
                 ctx
                 //#elseif MC >= 1.16.5
-                //$$ matrices
+                //$$ pose
                 //#endif
             )
 
@@ -53,7 +53,7 @@ public data class OmniRenderingContext(
                 //#if MC >= 1.20.1
                 ctx,
                 //#endif
-                stack
+                pose
             )
         }
     }
@@ -186,19 +186,19 @@ public data class OmniRenderingContext(
     ) {
         val buffer = pipeline.createBufferBuilder()
         buffer
-            .vertex(matrices, x.toDouble(), y.toDouble(), 0.0)
+            .vertex(pose, x.toDouble(), y.toDouble(), 0.0)
             .color(topColor)
             .next()
         buffer
-            .vertex(matrices, (x + width).toDouble(), y.toDouble(), 0.0)
+            .vertex(pose, (x + width).toDouble(), y.toDouble(), 0.0)
             .color(topColor)
             .next()
         buffer
-            .vertex(matrices, (x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .vertex(pose, (x + width).toDouble(), (y + height).toDouble(), 0.0)
             .color(bottomColor)
             .next()
         buffer
-            .vertex(matrices, x.toDouble(), (y + height).toDouble(), 0.0)
+            .vertex(pose, x.toDouble(), (y + height).toDouble(), 0.0)
             .color(bottomColor)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline)
@@ -216,14 +216,14 @@ public data class OmniRenderingContext(
     @JvmOverloads
     public fun renderTextureRegion(
         pipeline: OmniRenderPipeline,
-        location: Identifier,
+        location: ResourceLocation,
         x: Float, y: Float,
         width: Int, height: Int,
         u0: Float, v0: Float,
         u1: Float, v1: Float,
         color: OmniColor = OmniColors.WHITE,
     ) {
-        val texture = client.textureManager.getTexture(location)
+        val texture = textureManager.getTexture(location)
         //#if MC <= 1.16.5
         //$$ if (texture == null) {
         //$$     throw IllegalArgumentException("Texture $location is not loaded")
@@ -232,32 +232,32 @@ public data class OmniRenderingContext(
 
         val buffer = pipeline.createBufferBuilder()
         buffer
-            .vertex(matrices, x.toDouble(), y.toDouble(), 0.0)
+            .vertex(pose, x.toDouble(), y.toDouble(), 0.0)
             .texture(u0.toDouble(), v0.toDouble())
             .color(color)
             .next()
         buffer
-            .vertex(matrices, (x + width).toDouble(), y.toDouble(), 0.0)
+            .vertex(pose, (x + width).toDouble(), y.toDouble(), 0.0)
             .texture(u1.toDouble(), v0.toDouble())
             .color(color)
             .next()
         buffer
-            .vertex(matrices, (x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .vertex(pose, (x + width).toDouble(), (y + height).toDouble(), 0.0)
             .texture(u1.toDouble(), v1.toDouble())
             .color(color)
             .next()
         buffer
-            .vertex(matrices, x.toDouble(), (y + height).toDouble(), 0.0)
+            .vertex(pose, x.toDouble(), (y + height).toDouble(), 0.0)
             .texture(u0.toDouble(), v1.toDouble())
             .color(color)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline) {
             val id =
                 //#if MC >= 1.21.5
-                (texture.glTexture as GlTexture).glId
-                //#else
-                //$$ texture.id
-                //#endif
+                (texture.texture as GlTexture).glId()
+            //#else
+            //$$ texture.id
+            //#endif
             texture(OmniTextureUnit.TEXTURE0, id)
         }
     }
@@ -277,7 +277,7 @@ public data class OmniRenderingContext(
     @JvmOverloads
     public fun renderTexture(
         pipeline: OmniRenderPipeline,
-        location: Identifier,
+        location: ResourceLocation,
         x: Float, y: Float,
         width: Int, height: Int,
         u: Float, v: Float,
@@ -321,7 +321,7 @@ public data class OmniRenderingContext(
 
     /** Pushes a scissor box, intersecting with the current top-level scissor box. */
     public fun pushScissor(x: Int, y: Int, width: Int, height: Int) {
-        val incoming = ScissorBox(x, y, width, height).transformQuickly(this.matrices)
+        val incoming = ScissorBox(x, y, width, height).transformQuickly(this.pose)
 
         val effective = scissorStack.lastOrNull()?.let { top ->
             // We already had scissor; clamp to intersection
@@ -392,21 +392,21 @@ public data class OmniRenderingContext(
         }
     }
 
-    public fun withMatrices(consumer: Consumer<OmniMatrixStack>) {
-        matrices.push()
+    public fun withPose(consumer: Consumer<OmniPoseStack>) {
+        pose.push()
         try {
-            consumer.accept(matrices)
+            consumer.accept(pose)
         } finally {
-            matrices.pop()
+            pose.pop()
         }
     }
 
-    public fun <T> withMatrices(supplier: () -> T): T {
-        matrices.push()
+    public fun <T> withPose(supplier: () -> T): T {
+        pose.push()
         return try {
             supplier()
         } finally {
-            matrices.pop()
+            pose.pop()
         }
     }
 

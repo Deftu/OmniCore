@@ -1,23 +1,23 @@
 package dev.deftu.omnicore.internal.sound
 
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.12.2
-import net.minecraft.sound.SoundEvent
+import net.minecraft.sounds.SoundEvent
 //#else
-//$$ import net.minecraft.util.Identifier
+//$$ import net.minecraft.util.ResourceLocation
 //#endif
 
 public object ServerSoundInternals {
     @JvmStatic
     @ApiStatus.Internal
     public fun play(
-        player: ServerPlayerEntity,
+        player: ServerPlayer,
         //#if MC >= 1.12.2
         event: SoundEvent,
         //#else
-        //$$ event: Identifier,
+        //$$ event: ResourceLocation,
         //#endif
         volume: Float,
         pitch: Float

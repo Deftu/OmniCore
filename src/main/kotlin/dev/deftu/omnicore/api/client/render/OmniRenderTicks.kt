@@ -3,7 +3,7 @@ package dev.deftu.omnicore.api.client.render
 import dev.deftu.omnicore.api.client.client
 
 //#if MC >= 1.21.1
-import net.minecraft.client.render.RenderTickCounter
+import net.minecraft.client.DeltaTracker
 //#endif
 
 //#if MC == 1.8.9
@@ -11,8 +11,8 @@ import net.minecraft.client.render.RenderTickCounter
 //$$ import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessDeltaTickTracker
 //#endif
 //$$
-//$$ import net.minecraft.client.render.ClientTickTracker
-//$$ import net.minecraft.client.MinecraftClient
+//$$ import net.minecraft.client.Minecraft
+//$$ import net.minecraft.util.Timer
 //#endif
 
 public object OmniRenderTicks {
@@ -21,9 +21,9 @@ public object OmniRenderTicks {
     //$$ private val timerFieldNames = arrayOf("field_71428_T", "timer") // We have the SRG name first so that it's resolved slightly faster in prod
     //$$
     //#endif
-    //$$ private val MinecraftClient.deltaTickTracker: ClientTickTracker by lazy {
+    //$$ private val Minecraft.deltaTickTracker: Timer by lazy {
     //#if FABRIC
-    //$$     (client as Mixin_AccessDeltaTickTracker).ticker
+    //$$     (client as Mixin_AccessDeltaTickTracker).timer
     //#else
     //$$     for (fieldName in timerFieldNames) {
     //$$         try {
@@ -55,15 +55,15 @@ public object OmniRenderTicks {
     public fun get(
         ignoreFreeze: Boolean = true,
         //#if MC >= 1.21.1
-        renderTickCounter: RenderTickCounter = client.renderTickCounter,
+        renderTickCounter: DeltaTracker = client.deltaTracker,
         //#endif
     ): Float {
         //#if MC >= 1.21.1
-        return renderTickCounter.getTickProgress(ignoreFreeze)
+        return renderTickCounter.getGameTimeDeltaPartialTick(ignoreFreeze)
         //#elseif MC >= 1.12.2
         //$$ return client.frameTime
         //#else
-        //$$ return client.deltaTickTracker.tickDelta
+        //$$ return client.deltaTickTracker.renderPartialTicks
         //#endif
     }
 }

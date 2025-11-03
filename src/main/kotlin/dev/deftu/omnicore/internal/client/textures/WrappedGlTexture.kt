@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.internal.client.textures
 
 import com.mojang.blaze3d.textures.TextureFormat
-import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.opengl.GlTexture
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
@@ -21,6 +21,6 @@ public class WrappedGlTexture(id: Int) : GlTexture(
     /* glId = */id
 ) {
     init {
-        this.needsReinit = false
+        this.modesDirty = false
     }
 }

@@ -5,7 +5,7 @@ import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.math.OmniMath
 import dev.deftu.omnicore.api.data.DistanceMetric
 import dev.deftu.omnicore.api.serialization.OmniDataResult
-import net.minecraft.util.math.Vec3d
+import net.minecraft.world.phys.Vec3
 import kotlin.math.cos
 import kotlin.math.floor
 import kotlin.math.sin
@@ -34,8 +34,8 @@ public data class OmniVec3d(
     }
 
     @get:JvmName("toVanilla")
-    public val vanilla: Vec3d
-        get() = Vec3d(x, y, z)
+    public val vanilla: Vec3
+        get() = Vec3(x, y, z)
 
     @get:JvmName("toVec3i")
     public val vec3i: OmniVec3i
@@ -53,7 +53,7 @@ public data class OmniVec3d(
     public val horizontalLengthSquared: Double
         get() = x * x + z * z
 
-    public constructor(vanilla: Vec3d) : this(vanilla.x, vanilla.y, vanilla.z)
+    public constructor(vanilla: Vec3) : this(vanilla.x, vanilla.y, vanilla.z)
 
     public constructor(values: Triple<Double, Double, Double>) : this(values.first, values.second, values.third)
 
@@ -80,7 +80,7 @@ public data class OmniVec3d(
         )
     }
 
-    public fun relativize(other: Vec3d): OmniVec3d {
+    public fun relativize(other: Vec3): OmniVec3d {
         return OmniVec3d(
             other.x - this.x,
             other.y - this.y,
@@ -103,7 +103,7 @@ public data class OmniVec3d(
         )
     }
 
-    public fun distanceTo(other: Vec3d, metric: DistanceMetric): Double {
+    public fun distanceTo(other: Vec3, metric: DistanceMetric): Double {
         return metric.distance3D(
             this.x, this.y, this.z,
             other.x, other.y, other.z,
@@ -121,7 +121,7 @@ public data class OmniVec3d(
         return OmniVec3d(OmniMath.lerp(this.x, to.x, delta), OmniMath.lerp(this.y, to.y, delta), OmniMath.lerp(this.z, to.z, delta))
     }
 
-    public fun lerp(to: Vec3d, delta: Double): OmniVec3d {
+    public fun lerp(to: Vec3, delta: Double): OmniVec3d {
         return OmniVec3d(OmniMath.lerp(this.x, to.x, delta), OmniMath.lerp(this.y, to.y, delta), OmniMath.lerp(this.z, to.z, delta))
     }
 
@@ -168,7 +168,7 @@ public data class OmniVec3d(
         return OmniVec3d(x + other.x, y + other.y, z + other.z)
     }
 
-    public operator fun plus(other: Vec3d): OmniVec3d {
+    public operator fun plus(other: Vec3): OmniVec3d {
         return OmniVec3d(x + other.x, y + other.y, z + other.z)
     }
 
@@ -180,7 +180,7 @@ public data class OmniVec3d(
         return OmniVec3d(x - other.x, y - other.y, z - other.z)
     }
 
-    public operator fun minus(other: Vec3d): OmniVec3d {
+    public operator fun minus(other: Vec3): OmniVec3d {
         return OmniVec3d(x - other.x, y - other.y, z - other.z)
     }
 
@@ -192,7 +192,7 @@ public data class OmniVec3d(
         return OmniVec3d(x * other.x, y * other.y, z * other.z)
     }
 
-    public operator fun times(other: Vec3d): OmniVec3d {
+    public operator fun times(other: Vec3): OmniVec3d {
         return OmniVec3d(x * other.x, y * other.y, z * other.z)
     }
 
@@ -204,7 +204,7 @@ public data class OmniVec3d(
         return OmniVec3d(x / other.x, y / other.y, z / other.z)
     }
 
-    public operator fun div(other: Vec3d): OmniVec3d {
+    public operator fun div(other: Vec3): OmniVec3d {
         return OmniVec3d(x / other.x, y / other.y, z / other.z)
     }
 
@@ -220,7 +220,7 @@ public data class OmniVec3d(
         )
     }
 
-    public fun dotProduct(other: Vec3d): OmniVec3d {
+    public fun dotProduct(other: Vec3): OmniVec3d {
         return OmniVec3d(
             this.x * other.x,
             this.y * other.y,
@@ -244,7 +244,7 @@ public data class OmniVec3d(
         )
     }
 
-    public fun crossProduct(other: Vec3d): OmniVec3d {
+    public fun crossProduct(other: Vec3): OmniVec3d {
         return OmniVec3d(
             this.y * other.z - this.z * other.y,
             this.z * other.x - this.x * other.z,

@@ -20,21 +20,15 @@ public object TextureInternals {
     public var active: Int
         get() = GL11.glGetInteger(GL11.GL_TEXTURE_BINDING_2D)
         set(value) {
-            //#if MC >= 1.17.1
             GlStateManager._bindTexture(value)
-            //#else
-            //$$ GlStateManager.bindTexture(value)
-            //#endif
         }
 
     @JvmStatic
     public var activeUnit: OmniTextureUnit
         get() = OmniTextureUnit.gl(GL11.glGetInteger(GL13.GL_ACTIVE_TEXTURE)) ?: OmniTextureUnit.TEXTURE0
         set(value) {
-            //#if MC >= 1.17
+            //#if MC >= 1.16.5
             GlStateManager._activeTexture(value.const)
-            //#elseif MC >= 1.14
-            //$$ GlStateManager.activeTexture(value.const)
             //#else
             //$$ GlStateManager.setActiveTexture(value.const)
             //#endif
@@ -54,10 +48,8 @@ public object TextureInternals {
     public fun create(): Int {
         //#if MC >= 1.21.5 || MC <= 1.12.2
         return GL11.glGenTextures()
-        //#elseif MC >= 1.17
-        //$$ return TextureUtil.generateTextureId()
         //#elseif MC >= 1.16.5
-        //$$ return TextureUtil.generateId()
+        //$$ return TextureUtil.generateTextureId()
         //#endif
     }
 
@@ -114,11 +106,7 @@ public object TextureInternals {
 
     @JvmStatic
     public fun delete(id: Int) {
-        //#if MC >= 1.17
         GlStateManager._deleteTexture(id)
-        //#else
-        //$$ GlStateManager.deleteTexture(id)
-        //#endif
     }
 
     @JvmStatic
@@ -144,7 +132,7 @@ public object TextureInternals {
         //#if MC >= 1.17.1
         //$$ RenderSystem.enableTexture()
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.enableTexture()
+        //$$ GlStateManager._enableTexture()
         //#else
         //$$ GlStateManager.enableTexture2D()
         //#endif
@@ -160,7 +148,7 @@ public object TextureInternals {
         //#if MC >= 1.17.1
         //$$ RenderSystem.disableTexture()
         //#elseif MC >= 1.16.5
-        //$$ GlStateManager.disableTexture()
+        //$$ GlStateManager._disableTexture()
         //#else
         //$$ GlStateManager.disableTexture2D()
         //#endif

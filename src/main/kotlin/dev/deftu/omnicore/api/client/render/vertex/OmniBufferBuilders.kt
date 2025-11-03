@@ -1,18 +1,18 @@
 package dev.deftu.omnicore.api.client.render.vertex
 
+import com.mojang.blaze3d.vertex.BufferBuilder
+import com.mojang.blaze3d.vertex.Tesselator
 import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.internal.client.render.vertex.OmniBufferBuilderImpl
-import net.minecraft.client.render.BufferBuilder
-import net.minecraft.client.render.Tessellator
 
 public object OmniBufferBuilders {
     @JvmStatic
     public fun create(drawMode: DrawMode, format: VertexFormat): OmniBufferBuilder {
         //#if MC >= 1.21.1
-        val vanilla = Tessellator.getInstance().begin(drawMode.vanilla, format)
+        val vanilla = Tesselator.getInstance().begin(drawMode.vanilla, format)
         //#else
         //#if MC >= 1.19.2
         //$$ val vanilla = Tesselator.getInstance().builder

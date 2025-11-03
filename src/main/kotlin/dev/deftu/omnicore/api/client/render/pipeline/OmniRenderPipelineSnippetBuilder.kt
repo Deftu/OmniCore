@@ -4,11 +4,11 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 import java.util.function.Consumer
 
 public class OmniRenderPipelineSnippetBuilder {
-    @JvmField public var location: Identifier? = null
+    @JvmField public var location: ResourceLocation? = null
     @JvmField public var vertexFormat: VertexFormat? = null
     @JvmField public var drawMode: DrawMode? = null
 
@@ -80,7 +80,7 @@ public class OmniRenderPipelineSnippetBuilder {
         return this
     }
 
-    public fun setLocation(location: Identifier): OmniRenderPipelineSnippetBuilder {
+    public fun setLocation(location: ResourceLocation): OmniRenderPipelineSnippetBuilder {
         this.location = location; return this
     }
 

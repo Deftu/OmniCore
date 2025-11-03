@@ -1,12 +1,12 @@
 package dev.deftu.omnicore.internal.client.render.vertex
 
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStacks
 import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.16.5
-import net.minecraft.client.render.BufferBuilder
+import com.mojang.blaze3d.vertex.BufferBuilder
 //#else
 //$$ import dev.deftu.omnicore.api.math.OmniVector4f
 //$$ import net.minecraft.client.renderer.BufferBuilder
@@ -20,10 +20,10 @@ public open class OmniVertexConsumerImpl(
     //$$ private val value: BufferBuilder,
     //#endif
 ) : OmniVertexConsumer {
-    override fun vertex(stack: OmniMatrixStack, x: Double, y: Double, z: Double): OmniVertexConsumer {
-        if (stack == OmniMatrixStacks.UNIT) {
+    override fun vertex(pose: OmniPoseStack, x: Double, y: Double, z: Double): OmniVertexConsumer {
+        if (pose == OmniPoseStacks.UNIT) {
             //#if MC >= 1.21.1
-            value.vertex(x.toFloat(), y.toFloat(), z.toFloat())
+            value.addVertex(x.toFloat(), y.toFloat(), z.toFloat())
             //#elseif MC >= 1.16.5
             //$$ value.vertex(x, y, z)
             //#else
@@ -33,22 +33,22 @@ public open class OmniVertexConsumerImpl(
         }
 
         //#if MC >= 1.16.5
-        value.vertex(stack.current.positionMatrix.vanilla, x.toFloat(), y.toFloat(), z.toFloat())
+        value.addVertex(pose.current.positionMatrix.vanilla, x.toFloat(), y.toFloat(), z.toFloat())
         //#else
-        //$$ val (vx, vy, vz) = stack.current.positionMatrix.transform(OmniVector4f(x.toFloat(), y.toFloat(), z.toFloat(), 1f))
+        //$$ val (vx, vy, vz) = pose.current.positionMatrix.transform(OmniVector4f(x.toFloat(), y.toFloat(), z.toFloat(), 1f))
         //$$ value.pos(vx.toDouble(), vy.toDouble(), vz.toDouble())
         //#endif
         return this
     }
 
     override fun color(red: Int, green: Int, blue: Int, alpha: Int): OmniVertexConsumer {
-        value.color(red, green, blue, alpha)
+        value.setColor(red, green, blue, alpha)
         return this
     }
 
     override fun texture(u: Double, v: Double): OmniVertexConsumer {
         //#if MC >= 1.16.5
-        value.texture(u.toFloat(), v.toFloat())
+        value.setUv(u.toFloat(), v.toFloat())
         //#else
         //$$ value.tex(u, v)
         //#endif
@@ -57,7 +57,7 @@ public open class OmniVertexConsumerImpl(
 
     override fun overlay(u: Int, v: Int): OmniVertexConsumer {
         //#if MC >= 1.16.5
-        value.overlay(u, v)
+        value.setUv1(u, v)
         //#else
         //$$ value.tex(u.toDouble(), v.toDouble())
         //#endif
@@ -66,21 +66,21 @@ public open class OmniVertexConsumerImpl(
 
     override fun light(u: Int, v: Int): OmniVertexConsumer {
         //#if MC >= 1.16.5
-        value.light(u, v)
+        value.setUv2(u, v)
         //#else
         //$$ value.lightmap(u, v)
         //#endif
         return this
     }
 
-    override fun normal(stack: OmniMatrixStack, nx: Float, ny: Float, nz: Float): OmniVertexConsumer {
-        if (stack == OmniMatrixStacks.UNIT) {
-            value.normal(nx, ny, nz)
+    override fun normal(pose: OmniPoseStack, nx: Float, ny: Float, nz: Float): OmniVertexConsumer {
+        if (pose == OmniPoseStacks.UNIT) {
+            value.setNormal(nx, ny, nz)
             return this
         }
 
-        val normal = stack.current.normalMatrix.transformDirection(nx, ny, nz)
-        value.normal(normal.x, normal.y, normal.z)
+        val normal = pose.current.normalMatrix.transformDirection(nx, ny, nz)
+        value.setNormal(normal.x, normal.y, normal.z)
         return this
     }
 

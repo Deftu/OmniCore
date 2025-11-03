@@ -14,7 +14,7 @@ private val VERSION_REGEX = "(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+)
 
 public val minecraftVersion: String by lazy {
     //#if MC >= 1.16.5
-    SharedConstants.getGameVersion().name()
+    SharedConstants.getCurrentVersion().name()
     //#else
     //#if FORGE
     //$$ ForgeVersion.mcVersion

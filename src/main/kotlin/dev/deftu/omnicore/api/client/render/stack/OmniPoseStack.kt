@@ -8,22 +8,22 @@ import dev.deftu.omnicore.api.math.OmniVector2f
 import dev.deftu.omnicore.api.math.OmniVector3f
 
 //#if MC >= 1.16.5
-import net.minecraft.client.util.math.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
 //#endif
 
 //#if MC >= 1.21.6
 import org.joml.Matrix3x2f
 //#endif
 
-public interface OmniMatrixStack {
+public interface OmniPoseStack {
     public data class Entry(val positionMatrix: OmniMatrix4f, val normalMatrix: OmniMatrix3f) {
         //#if MC >= 1.16.5
-        public val vanilla: MatrixStack
+        public val vanilla: PoseStack
             get() {
-                return MatrixStack().apply {
+                return PoseStack().apply {
                     //#if MC >= 1.19.3
-                    peek().positionMatrix.mul(positionMatrix.vanilla)
-                    peek().normalMatrix.mul(normalMatrix.vanilla)
+                    last().pose().mul(positionMatrix.vanilla)
+                    last().normal().mul(normalMatrix.vanilla)
                     //#else
                     //$$ last().pose().multiply(positionMatrix.vanilla)
                     //$$ last().normal().mul(normalMatrix.vanilla)
@@ -41,7 +41,7 @@ public interface OmniMatrixStack {
     public val isEmpty: Boolean
 
     //#if MC >= 1.16.5
-    public val vanilla: MatrixStack
+    public val vanilla: PoseStack
         get() = current.vanilla
     //#endif
 
@@ -64,7 +64,7 @@ public interface OmniMatrixStack {
     }
     //#endif
 
-    public fun deepCopy(): OmniMatrixStack
+    public fun deepCopy(): OmniPoseStack
 
     public fun push()
     public fun pop(): Entry
@@ -144,7 +144,7 @@ public interface OmniMatrixStack {
         }
     }
 
-    public fun <T> with(block: OmniMatrixStack.() -> T): T {
+    public fun <T> with(block: OmniPoseStack.() -> T): T {
         push()
         return try {
             block()

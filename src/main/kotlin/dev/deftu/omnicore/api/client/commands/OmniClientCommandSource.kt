@@ -6,20 +6,20 @@ import dev.deftu.omnicore.api.client.network.OmniClientNetworking
 import dev.deftu.omnicore.api.network.PacketPayload
 import dev.deftu.omnicore.api.scheduling.TickSchedulers
 import dev.deftu.textile.Text
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.network.ClientPlayerEntity
-import net.minecraft.client.world.ClientWorld
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.player.LocalPlayer
 
 public object OmniClientCommandSource {
-    public inline val client: MinecraftClient
-        get() = MinecraftClient.getInstance()
+    public inline val client: Minecraft
+        get() = Minecraft.getInstance()
 
-    public inline val player: ClientPlayerEntity?
+    public inline val player: LocalPlayer?
         get() = client.player
 
-    public inline val world: ClientWorld?
-        get() = client.world
+    public inline val world: ClientLevel?
+        get() = client.level
 
     public fun openScreen(screen: Screen): Int {
         TickSchedulers.client.post {

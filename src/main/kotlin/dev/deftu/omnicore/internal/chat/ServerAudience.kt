@@ -3,11 +3,11 @@ package dev.deftu.omnicore.internal.chat
 import dev.deftu.omnicore.api.chat.Audience
 import dev.deftu.omnicore.api.chat.OmniChat
 import dev.deftu.textile.Text
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.server.level.ServerPlayer
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
-public class ServerAudience(private val targets: Collection<ServerPlayerEntity>) : Audience {
+public class ServerAudience(private val targets: Collection<ServerPlayer>) : Audience {
     override fun sendChat(text: Text) {
         for (player in targets) {
             OmniChat.displayChatMessage(player, text)

@@ -9,7 +9,7 @@ import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelineBuilder
 import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.shader.uniforms.SamplerTarget
 import dev.deftu.omnicore.api.client.render.state.OmniRenderState
-import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.api.client.render.vertex.OmniMeshData
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import org.jetbrains.annotations.ApiStatus
 import net.minecraft.resources.ResourceLocation
@@ -27,12 +27,10 @@ public class OmniRenderPipelineImpl(
     private val shaderProvider: ShaderProvider?,
     internal val requestedRenderState: OmniRenderState
 ) : OmniRenderPipeline {
-    internal fun draw(builtBuffer: OmniBuiltBuffer) {
+    internal fun draw(builtBuffer: OmniMeshData) {
         val vanillaBuiltBuffer = builtBuffer.vanilla
         //#if MC >= 1.19.2
         BufferUploader.drawWithShader(vanillaBuiltBuffer)
-        //#elseif MC >= 1.18.2
-        //$$ BufferRenderer.draw(vanillaBuiltBuffer)
         //#elseif MC >= 1.16.5
         //$$ BufferUploader.end(vanillaBuiltBuffer)
         //#else

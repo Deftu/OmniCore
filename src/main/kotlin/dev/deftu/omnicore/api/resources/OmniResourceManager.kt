@@ -2,13 +2,13 @@
 
 package dev.deftu.omnicore.api.resources
 
-import net.minecraft.resource.Resource
-import net.minecraft.resource.ResourceManager
-import net.minecraft.util.Identifier
+import net.minecraft.server.packs.resources.Resource
+import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.resources.ResourceLocation
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
-public fun ResourceManager.findFirst(location: Identifier): Optional<Resource> {
+public fun ResourceManager.findFirst(location: ResourceLocation): Optional<Resource> {
     //#if MC >= 1.19.2
     return getResource(location)
     //#else
@@ -20,7 +20,7 @@ public fun ResourceManager.findFirst(location: Identifier): Optional<Resource> {
     //#endif
 }
 
-public fun ResourceManager.findFirstOrThrow(location: Identifier): Resource {
+public fun ResourceManager.findFirstOrThrow(location: ResourceLocation): Resource {
     //#if MC >= 1.19.2
     return getResourceOrThrow(location)
     //#else
@@ -28,7 +28,7 @@ public fun ResourceManager.findFirstOrThrow(location: Identifier): Resource {
     //#endif
 }
 
-public fun ResourceManager.findFirstOrNull(location: Identifier): Resource? {
+public fun ResourceManager.findFirstOrNull(location: ResourceLocation): Resource? {
     //#if MC >= 1.19.2
     return getResource(location).getOrNull()
     //#else
@@ -40,14 +40,14 @@ public fun ResourceManager.findFirstOrNull(location: Identifier): Resource? {
     //#endif
 }
 
-public fun ResourceManager.findAll(location: Identifier): List<Resource> {
-    return getAllResources(location).toList()
+public fun ResourceManager.findAll(location: ResourceLocation): List<Resource> {
+    return getResourceStack(location).toList()
 }
 
-public fun ResourceManager.location(location: Identifier): Sequence<Resource> {
-    return getAllResources(location).asSequence()
+public fun ResourceManager.location(location: ResourceLocation): Sequence<Resource> {
+    return getResourceStack(location).asSequence()
 }
 
-public fun ResourceManager.exists(location: Identifier): Boolean {
+public fun ResourceManager.exists(location: ResourceLocation): Boolean {
     return findFirst(location).isPresent
 }

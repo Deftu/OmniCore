@@ -4,7 +4,7 @@ package dev.deftu.omnicore.api.entity
 
 import dev.deftu.omnicore.api.data.aabb.OmniAABB
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
-import net.minecraft.entity.Entity
+import net.minecraft.world.entity.Entity
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -18,7 +18,7 @@ public var Entity.currentX: Double
         //#endif
     }
     set(value) {
-        setPos(value, currentY, currentZ)
+        setPosRaw(value, currentY, currentZ)
     }
 
 public var Entity.currentY: Double
@@ -30,7 +30,7 @@ public var Entity.currentY: Double
         //#endif
     }
     set(value) {
-        setPos(currentX, value, currentZ)
+        setPosRaw(currentX, value, currentZ)
     }
 
 public var Entity.currentZ: Double
@@ -42,20 +42,20 @@ public var Entity.currentZ: Double
         //#endif
     }
     set(value) {
-        setPos(currentX, currentY, value)
+        setPosRaw(currentX, currentY, value)
     }
 
 public var Entity.prevX: Double
     get() {
         //#if MC >= 1.16.5
-        return lastX
+        return xo
         //#else
         //$$ return prevPosX
         //#endif
     }
     set(value) {
         //#if MC >= 1.16.5
-        lastX = value
+        xo = value
         //#else
         //$$ prevPosX = value
         //#endif
@@ -64,14 +64,14 @@ public var Entity.prevX: Double
 public var Entity.prevY: Double
     get() {
         //#if MC >= 1.16.5
-        return lastY
+        return yo
         //#else
         //$$ return prevPosY
         //#endif
     }
     set(value) {
         //#if MC >= 1.16.5
-        lastY = value
+        yo = value
         //#else
         //$$ prevPosY = value
         //#endif
@@ -80,14 +80,14 @@ public var Entity.prevY: Double
 public var Entity.prevZ: Double
     get() {
         //#if MC >= 1.16.5
-        return lastZ
+        return zo
         //#else
         //$$ return prevPosZ
         //#endif
     }
     set(value) {
         //#if MC >= 1.16.5
-        lastZ = value
+        zo = value
         //#else
         //$$ prevPosZ = value
         //#endif
@@ -98,7 +98,7 @@ public var Entity.currentPos: OmniVec3d
         return OmniVec3d(this.currentX, this.currentY, this.currentZ)
     }
     set(value) {
-        setPos(value.x, value.y, value.z)
+        setPosRaw(value.x, value.y, value.z)
     }
 
 public var Entity.prevPos: OmniVec3d
@@ -112,21 +112,21 @@ public var Entity.prevPos: OmniVec3d
     }
 
 public var Entity.currentYaw: Float
-    get() = yaw
+    get() = yRot
     set(value) {
-        yaw = value
+        yRot = value
     }
 
 public var Entity.prevYaw: Float
-    get() = lastYaw
+    get() = yRotO
     set(value) {
-        lastYaw = value
+        yRotO = value
     }
 
 public var Entity.currentPitch: Float
-    get() = pitch
+    get() = xRot
     set(value) {
-        pitch = value
+        xRot = value
     }
 
 public val Entity.currentRotationVector: OmniVec3d
@@ -160,7 +160,7 @@ public val Entity.renderBoundingBox: OmniAABB
         //#elseif MC >= 1.12.2
         //$$ val box = this.renderBoundingBox
         //#else
-        //$$ val box = this.boundingBox
+        //$$ val box = this.entityBoundingBox
         //#endif
         return OmniAABB(box)
     }

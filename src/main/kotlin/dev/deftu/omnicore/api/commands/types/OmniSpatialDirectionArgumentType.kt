@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.commands.types
 
+import com.mojang.brigadier.context.CommandContext
 import dev.deftu.omnicore.api.commands.types.enumerable.EnumArgumentType
 import dev.deftu.omnicore.api.direction.OmniSpatialDirection
 
@@ -8,6 +9,11 @@ public class OmniSpatialDirectionArgumentType : EnumArgumentType<OmniSpatialDire
         @JvmStatic
         public fun spatialDirection(): OmniSpatialDirectionArgumentType {
             return OmniSpatialDirectionArgumentType()
+        }
+
+        @JvmStatic
+        public fun <T> get(context: CommandContext<T>, name: String): OmniSpatialDirection {
+            return context.getArgument(name, OmniSpatialDirection::class.java)
         }
     }
 }

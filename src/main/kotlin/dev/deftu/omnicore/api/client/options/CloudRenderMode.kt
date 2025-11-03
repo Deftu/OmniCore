@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 //#if MC >= 1.16.5
-import net.minecraft.client.option.CloudRenderMode as VanillaCloudRenderMode
+import net.minecraft.client.CloudStatus as VanillaCloudRenderMode
 //#endif
 
 public enum class CloudRenderMode {
