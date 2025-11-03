@@ -8,8 +8,8 @@ import dev.deftu.omnicore.api.data.RadiusMetric
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.data.vec.OmniVec3i
 import dev.deftu.omnicore.api.serialization.OmniDataResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
 
 public data class OmniBlockPos(
     public val x: Int,
@@ -34,7 +34,7 @@ public data class OmniBlockPos(
 
         @JvmStatic
         public fun unpack(value: Long): OmniBlockPos {
-            return OmniBlockPos(BlockPos.fromLong(value))
+            return OmniBlockPos(BlockPos.of(value))
         }
     }
 
@@ -100,7 +100,7 @@ public data class OmniBlockPos(
 
     @JvmOverloads
     public fun offset(direction: OmniSpatialDirection, distance: Int = 1): OmniBlockPos {
-        return OmniBlockPos(vanilla.offset(direction.vanilla, distance))
+        return OmniBlockPos(vanilla.relative(direction.vanilla, distance))
     }
 
     @JvmOverloads

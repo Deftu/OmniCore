@@ -6,7 +6,7 @@ import org.jetbrains.annotations.ApiStatus
 import java.util.function.Consumer
 
 //#if MC >= 1.16.5
-import net.minecraft.util.shape.VoxelShape
+import net.minecraft.world.phys.shapes.VoxelShape
 //#endif
 
 @ApiStatus.Experimental

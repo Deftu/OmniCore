@@ -1,3 +1,1 @@
-net.minecraft.client.gl.ShaderProgram addSamplerTexture() addSampler()
-
-net.minecraft.sound.SoundEvent id() getId()
+net.minecraft.client.Minecraft getDeltaTracker() getTimer()

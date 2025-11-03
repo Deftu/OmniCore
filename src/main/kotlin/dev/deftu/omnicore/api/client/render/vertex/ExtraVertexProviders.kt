@@ -3,7 +3,7 @@
 
 package dev.deftu.omnicore.api.client.render.vertex
 
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.math.OmniVector4f
 import org.jetbrains.annotations.ApiStatus
@@ -16,7 +16,7 @@ import kotlin.math.sin
 
 @JvmOverloads
 public fun OmniVertexConsumer.roundedQuad(
-    stack: OmniMatrixStack,
+    pose: OmniPoseStack,
     x: Double,
     y: Double,
     width: Double,
@@ -33,48 +33,48 @@ public fun OmniVertexConsumer.roundedQuad(
 
     // Center quad
     if (innerLeft < innerRight && innerTop < innerBottom) {
-        emitTriangleQuad(stack, innerLeft, innerTop, innerRight, innerBottom, color)
+        emitTriangleQuad(pose, innerLeft, innerTop, innerRight, innerBottom, color)
     }
 
 
     // Edge strips
     if (tr > 0f || tl > 0f) {
         if (x + tl < x + width - tr && y < innerTop) {
-            emitTriangleQuad(stack, x + tl, y, x + width - tr, innerTop, color)
+            emitTriangleQuad(pose, x + tl, y, x + width - tr, innerTop, color)
         }
     } else {
         if (y < innerTop) {
-            emitTriangleQuad(stack, x, y, x + width, innerTop, color)
+            emitTriangleQuad(pose, x, y, x + width, innerTop, color)
         }
     }
 
     if (br > 0f || bl > 0f) {
         if (x + bl < x + width - br && y + height > innerBottom) {
-            emitTriangleQuad(stack, x + bl, innerBottom, x + width - br, y + height, color)
+            emitTriangleQuad(pose, x + bl, innerBottom, x + width - br, y + height, color)
         }
     } else {
         if (y + height > innerBottom) {
-            emitTriangleQuad(stack, x, innerBottom, x + width, y + height, color)
+            emitTriangleQuad(pose, x, innerBottom, x + width, y + height, color)
         }
     }
 
     if (tl > 0f || bl > 0f) {
         if (y + tl < y + height - bl && x < innerLeft) {
-            emitTriangleQuad(stack, x, y + tl, innerLeft, y + height - bl, color)
+            emitTriangleQuad(pose, x, y + tl, innerLeft, y + height - bl, color)
         }
     } else {
         if (x < innerLeft) {
-            emitTriangleQuad(stack, x, y, innerLeft, y + height, color)
+            emitTriangleQuad(pose, x, y, innerLeft, y + height, color)
         }
     }
 
     if (tr > 0f || br > 0f) {
         if (y + tr < y + height - br && x + width > innerRight) {
-            emitTriangleQuad(stack, innerRight, y + tr, x + width, y + height - br, color)
+            emitTriangleQuad(pose, innerRight, y + tr, x + width, y + height - br, color)
         }
     } else {
         if (x + width > innerRight) {
-            emitTriangleQuad(stack, innerRight, y, x + width, y + height, color)
+            emitTriangleQuad(pose, innerRight, y, x + width, y + height, color)
         }
     }
 
@@ -82,25 +82,25 @@ public fun OmniVertexConsumer.roundedQuad(
     if (tl > 0f) {
         val cx = x + tl
         val cy = y + tl
-        emitCornerArc(stack, cx, cy, tl, PI, 1.5 * PI, color, quadSegmentsFor(tl, segmentScale))
+        emitCornerArc(pose, cx, cy, tl, PI, 1.5 * PI, color, quadSegmentsFor(tl, segmentScale))
     }
 
     if (tr > 0f) {
         val cx = x + width - tr
         val cy = y + tr
-        emitCornerArc(stack, cx, cy, tr, 1.5 * PI, 2.0 * PI, color, quadSegmentsFor(tr, segmentScale))
+        emitCornerArc(pose, cx, cy, tr, 1.5 * PI, 2.0 * PI, color, quadSegmentsFor(tr, segmentScale))
     }
 
     if (br > 0f) {
         val cx = x + width - br
         val cy = y + height - br
-        emitCornerArc(stack, cx, cy, br, 0.0, 0.5 * PI, color, quadSegmentsFor(br, segmentScale))
+        emitCornerArc(pose, cx, cy, br, 0.0, 0.5 * PI, color, quadSegmentsFor(br, segmentScale))
     }
 
     if (bl > 0f) {
         val cx = x + bl
         val cy = y + height - bl
-        emitCornerArc(stack, cx, cy, bl, 0.5 * PI, PI, color, quadSegmentsFor(bl, segmentScale))
+        emitCornerArc(pose, cx, cy, bl, 0.5 * PI, PI, color, quadSegmentsFor(bl, segmentScale))
     }
 
     return this
@@ -108,7 +108,7 @@ public fun OmniVertexConsumer.roundedQuad(
 
 @JvmOverloads
 public fun OmniVertexConsumer.roundedQuad(
-    stack: OmniMatrixStack,
+    pose: OmniPoseStack,
     x: Double,
     y: Double,
     width: Double,
@@ -121,7 +121,7 @@ public fun OmniVertexConsumer.roundedQuad(
     segmentScale: Double = 0.25
 ): OmniVertexConsumer {
     return roundedQuad(
-        stack,
+        pose,
         x, y,
         width, height,
         color,
@@ -137,7 +137,7 @@ public fun OmniVertexConsumer.roundedQuad(
 
 @JvmOverloads
 public fun OmniVertexConsumer.roundedQuad(
-    stack: OmniMatrixStack,
+    pose: OmniPoseStack,
     x: Double,
     y: Double,
     width: Double,
@@ -147,7 +147,7 @@ public fun OmniVertexConsumer.roundedQuad(
     segmentScale: Double = 0.25
 ): OmniVertexConsumer {
     return roundedQuad(
-        stack,
+        pose,
         x, y,
         width, height,
         color,
@@ -158,7 +158,7 @@ public fun OmniVertexConsumer.roundedQuad(
 
 @JvmOverloads
 public fun OmniVertexConsumer.circle(
-    stack: OmniMatrixStack,
+    pose: OmniPoseStack,
     cx: Double,
     cy: Double,
     radius: Float,
@@ -176,9 +176,9 @@ public fun OmniVertexConsumer.circle(
         val y = cy + radius * sin(angle)
 
         this
-            .vertex(stack, cx, cy, 0.0).color(color).next()
-            .vertex(stack, prevX, prevY, 0.0).color(color).next()
-            .vertex(stack, x, y, 0.0).color(color).next()
+            .vertex(pose, cx, cy, 0.0).color(color).next()
+            .vertex(pose, prevX, prevY, 0.0).color(color).next()
+            .vertex(pose, x, y, 0.0).color(color).next()
         prevX = x
         prevY = y
     }
@@ -187,26 +187,26 @@ public fun OmniVertexConsumer.circle(
 }
 
 private fun OmniVertexConsumer.emitTriangleQuad(
-    stack: OmniMatrixStack,
+    pose: OmniPoseStack,
     x1: Double, y1: Double,
     x2: Double, y2: Double,
     color: OmniColor
 ) {
     // Triangle 1
     this
-        .vertex(stack, x1, y1, 0.0).color(color).next()
-        .vertex(stack, x2, y1, 0.0).color(color).next()
-        .vertex(stack, x1, y2, 0.0).color(color).next()
+        .vertex(pose, x1, y1, 0.0).color(color).next()
+        .vertex(pose, x2, y1, 0.0).color(color).next()
+        .vertex(pose, x1, y2, 0.0).color(color).next()
 
     // Triangle 2
     this
-        .vertex(stack, x2, y1, 0.0).color(color).next()
-        .vertex(stack, x2, y2, 0.0).color(color).next()
-        .vertex(stack, x1, y2, 0.0).color(color).next()
+        .vertex(pose, x2, y1, 0.0).color(color).next()
+        .vertex(pose, x2, y2, 0.0).color(color).next()
+        .vertex(pose, x1, y2, 0.0).color(color).next()
 }
 
 private fun OmniVertexConsumer.emitCornerArc(
-    stack: OmniMatrixStack,
+    pose: OmniPoseStack,
     cx: Double,
     cy: Double,
     radius: Float,
@@ -224,9 +224,9 @@ private fun OmniVertexConsumer.emitCornerArc(
         val y = cy + radius * sin(angle)
 
         this
-            .vertex(stack, cx, cy, 0.0).color(color).next()
-            .vertex(stack, prevX, prevY, 0.0).color(color).next()
-            .vertex(stack, x, y, 0.0).color(color).next()
+            .vertex(pose, cx, cy, 0.0).color(color).next()
+            .vertex(pose, prevX, prevY, 0.0).color(color).next()
+            .vertex(pose, x, y, 0.0).color(color).next()
 
         prevX = x
         prevY = y

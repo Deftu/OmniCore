@@ -3,7 +3,7 @@ package dev.deftu.omnicore.api.client.render.state
 import dev.deftu.omnicore.internal.client.render.state.BlendStateInternals
 
 //#if MC >= 1.17 && MC <= 1.21.1
-//$$ import net.minecraft.client.gl.GlBlendState
+//$$ import com.mojang.blaze3d.shaders.BlendMode
 //#endif
 
 //#if MC <= 1.16.5 || MC >= 1.21.5
@@ -24,7 +24,7 @@ public data class OmniBlendState(
     public val function: BlendFunction
 ) : TrackedState<OmniBlendState> {
     //#if MC >= 1.17.1 && MC <= 1.21.1
-    //$$ private inner class VanillaBlendState : GlBlendState {
+    //$$ private inner class VanillaBlendState : BlendMode {
     //$$     constructor() : super()
     //$$
     //$$     constructor(
@@ -41,13 +41,13 @@ public data class OmniBlendState(
     //$$         func: Int
     //$$     ) : super(srcRgb, dstRgb, srcAlpha, dstAlpha, func)
     //$$
-    //$$     override fun enable() {
-    //$$         super.enable()
+    //$$     override fun apply() {
+    //$$         super.apply()
     //$$         this@OmniBlendState.applyGlobally()
     //$$     }
     //$$ }
     //$$
-    //$$ public val vanilla: GlBlendState = if (isEnabled) {
+    //$$ public val vanilla: BlendMode = if (isEnabled) {
     //$$     if (function.isSeparate) {
     //$$         VanillaBlendState(function.srcColor.const, function.dstColor.const, function.srcAlpha.const, function.dstAlpha.const, equation.const)
     //$$     } else {
@@ -67,7 +67,7 @@ public data class OmniBlendState(
         }
 
         //#if MC >= 1.17.1 && MC <= 1.21.1
-        //$$ vanilla.enable()
+        //$$ vanilla.apply()
         //#else
         applyGlobally()
         //#endif

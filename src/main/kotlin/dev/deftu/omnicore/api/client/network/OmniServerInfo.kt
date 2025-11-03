@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.network
 
-import net.minecraft.client.network.ServerInfo
+import net.minecraft.client.multiplayer.ServerData
 
 public data class OmniServerInfo(
     public val name: String,
@@ -9,12 +9,12 @@ public data class OmniServerInfo(
 ) {
     public companion object {
         @JvmStatic
-        public fun fromServerInfo(serverInfo: ServerInfo): OmniServerInfo {
+        public fun fromServerInfo(serverInfo: ServerData): OmniServerInfo {
             return OmniServerInfo(
                 serverInfo.name,
-                serverInfo.address,
+                serverInfo.ip,
                 //#if MC >= 1.20.4
-                serverInfo.serverType == ServerInfo.ServerType.LAN,
+                serverInfo.type() == ServerData.Type.LAN,
                 //#else
                 //$$ serverInfo.isLan,
                 //#endif
@@ -26,12 +26,12 @@ public data class OmniServerInfo(
         connectTo(address, name, isLocal)
     }
 
-    public fun toServerInfo(): ServerInfo {
-        return ServerInfo(
+    public fun toServerData(): ServerData {
+        return ServerData(
             name,
             address,
             //#if MC >= 1.20.4
-            if (isLocal) ServerInfo.ServerType.LAN else ServerInfo.ServerType.OTHER,
+            if (isLocal) ServerData.Type.LAN else ServerData.Type.OTHER,
             //#else
             //$$ isLocal,
             //#endif

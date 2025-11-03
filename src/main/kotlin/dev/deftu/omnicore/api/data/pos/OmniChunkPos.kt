@@ -6,9 +6,9 @@ import dev.deftu.omnicore.api.data.DistanceMetric
 import dev.deftu.omnicore.api.data.RadiusMetric
 import dev.deftu.omnicore.api.data.vec.OmniVec3i
 import dev.deftu.omnicore.api.serialization.OmniDataResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.ChunkPos
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.core.Vec3i
 
 public data class OmniChunkPos(
     public val x: Int,
@@ -66,7 +66,7 @@ public data class OmniChunkPos(
     public val centerX: Int
         get() = getOffsetX(CHUNK_SIZE / 2)
 
-   public val centerZ: Int
+    public val centerZ: Int
         get() = getOffsetZ(CHUNK_SIZE / 2)
 
     public val startX: Int
@@ -273,6 +273,6 @@ public data class OmniChunkPos(
     }
 
     public fun pack(): Long {
-        return ChunkPos.toLong(this.x, this.z)
+        return ChunkPos.asLong(this.x, this.z)
     }
 }

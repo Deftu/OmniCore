@@ -21,9 +21,9 @@ public object OmniNbt {
     //#endif
 
     @JvmStatic
-    public fun parseCompound(value: String): NbtCompound {
+    public fun parseCompound(value: String): CompoundTag {
         //#if MC >= 1.21.5
-        return StringNbtReader.readCompound(value)
+        return TagParser.parseCompoundFully(value)
         //#elseif MC >= 1.16.5
         //$$ return TagParser(StringReader(value)).readStruct()
         //#else
@@ -32,9 +32,9 @@ public object OmniNbt {
     }
 
     @JvmStatic
-    public fun parseElement(value: String): NbtElement {
+    public fun parseElement(value: String): Tag {
         //#if MC >= 1.21.5
-        return StringNbtReader.fromOps(NbtOps.INSTANCE).read(value)
+        return TagParser.create(NbtOps.INSTANCE).parseFully(value)
         //#elseif MC >= 1.16.5
         //$$ return TagParser(StringReader(value)).readValue()
         //#else

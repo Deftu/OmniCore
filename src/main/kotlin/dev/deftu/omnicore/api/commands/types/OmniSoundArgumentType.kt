@@ -34,7 +34,7 @@ public class OmniSoundArgumentType(private val permittedSounds: Set<OmniSound>) 
         }
 
         @JvmStatic
-        public fun <T> getSound(context: CommandContext<T>, name: String): OmniSound {
+        public fun <T> get(context: CommandContext<T>, name: String): OmniSound {
             return context.getArgument(name, OmniSound::class.java)
         }
 

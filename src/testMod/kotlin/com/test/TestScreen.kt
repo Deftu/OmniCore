@@ -17,14 +17,14 @@ import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColors
-import dev.deftu.omnicore.api.identifierOrThrow
+import dev.deftu.omnicore.api.locationOrThrow
 import dev.deftu.textile.Text
 import dev.deftu.textile.minecraft.ClickEvent
 import dev.deftu.textile.minecraft.HoverEvent
 import dev.deftu.textile.minecraft.MCText
 import dev.deftu.textile.minecraft.MCTextStyle
 import dev.deftu.textile.minecraft.TextColors
-import net.minecraft.util.Formatting
+import net.minecraft.ChatFormatting
 import java.net.URI
 import kotlin.io.path.Path
 import kotlin.math.abs
@@ -83,7 +83,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
                     Text.literal("Ut at posuere tellus. ")
                         .setStyle(
                             MCTextStyle()
-                                .setColor(TextColors.hex("#9B59B6").withFallback(Formatting.DARK_PURPLE))
+                                .setColor(TextColors.hex("#9B59B6").withFallback(ChatFormatting.DARK_PURPLE))
                                 .build()
                         )
                 )
@@ -133,7 +133,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
                     Text.literal("ut placerat lorem lacinia. ")
                         .setStyle(
                             MCTextStyle()
-                                .setColor(TextColors.hex("#1ABC9C").withFallback(Formatting.AQUA))
+                                .setColor(TextColors.hex("#1ABC9C").withFallback(ChatFormatting.AQUA))
                                 .setUnderlined(true)
                                 .build()
                         )
@@ -261,7 +261,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             )
         }
 
-        framebuffer?.drawColorTexture(ctx.matrices, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
+        framebuffer?.drawColorTexture(ctx.pose, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
     }
 
     override fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean {
@@ -274,7 +274,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     }
 
     private fun loadResourceTexture() {
-        val id = identifierOrThrow(ID, "textures/test_texture.png")
+        val id = locationOrThrow(ID, "textures/test_texture.png")
         val image = OmniImages.resource(id)
             ?: throw IllegalStateException("Failed to load test texture from $id")
         image.saveTo(Path("loaded_test_image.png"))
@@ -316,7 +316,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     }
 
     private fun renderQuad(ctx: OmniRenderingContext) {
-        ctx.withMatrices { matrices ->
+        ctx.withPose { matrices ->
             matrices.translate(renderX.toFloat(), renderY.toFloat(), 0f)
             matrices.rotate(15f, 0f, 0f, 1f)
 
@@ -338,10 +338,10 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
 
     private fun renderRoundedQuad(ctx: OmniRenderingContext) {
-        ctx.withMatrices { matrices ->
+        ctx.withPose { pose ->
             val buffer = OmniRenderPipelines.POSITION_COLOR_TRIANGLES.createBufferBuilder()
 //            buffer.roundedQuad(
-//                stack = matrices,
+//                pose = pose,
 //                x = renderX,
 //                y = renderY,
 //                width = renderWidth,
@@ -351,7 +351,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 //            )
 
             buffer.circle(
-                stack = matrices,
+                pose = pose,
                 cx = renderX + renderWidth / 2,
                 cy = renderY + renderHeight / 2,
                 radius = renderHeight.toFloat() / 2f,
@@ -371,16 +371,16 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
 
     /** Draws a horizontally straight white line, [renderWidth] across */
     private fun renderLine(ctx: OmniRenderingContext) {
-        ctx.withMatrices {
+        ctx.withPose {
             val buffer = pipeline.createBufferBuilder()
 
-            buffer.vertex(ctx.matrices, renderX, renderY + renderHeight + 10.0, 0.0)
+            buffer.vertex(ctx.pose, renderX, renderY + renderHeight + 10.0, 0.0)
                 .color(lineLeftColor)
-                .normal(ctx.matrices, 1f, 0f, 0f)
+                .normal(ctx.pose, 1f, 0f, 0f)
                 .next()
-            buffer.vertex(ctx.matrices, renderX + renderWidth, renderY + renderHeight + 10.0, 0.0)
+            buffer.vertex(ctx.pose, renderX + renderWidth, renderY + renderHeight + 10.0, 0.0)
                 .color(lineRightColor)
-                .normal(ctx.matrices, 1f, 0f, 0f)
+                .normal(ctx.pose, 1f, 0f, 0f)
                 .next()
 
             buffer.buildOrThrow().drawAndClose(pipeline) {

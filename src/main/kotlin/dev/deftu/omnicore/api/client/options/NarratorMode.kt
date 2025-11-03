@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 //#if MC >= 1.16
-import net.minecraft.client.option.NarratorMode as VanillaNarratorMode
+import net.minecraft.client.NarratorStatus as VanillaNarratorMode
 //#endif
 
 public enum class NarratorMode {

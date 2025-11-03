@@ -1,9 +1,9 @@
 package dev.deftu.omnicore.api.resources
 
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.16.5
-import net.minecraft.resource.ResourceReloader
+import net.minecraft.server.packs.resources.PreparableReloadListener
 //#else
 //$$ import net.minecraft.client.resources.IResourceManagerReloadListener
 //#endif
@@ -18,36 +18,36 @@ import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener
 
 public interface ResourceReloadListener
 //#if MC >= 1.16.5
-    : ResourceReloader
-    //#endif
-    //#if MC < 1.16.5
-    //$$ : IResourceManagerReloadListener
-    //#endif
-    //#if FABRIC
+    : PreparableReloadListener
+//#endif
+//#if MC < 1.16.5
+//$$ : IResourceManagerReloadListener
+//#endif
+//#if FABRIC
     , IdentifiableResourceReloadListener
 //#endif
 {
-    public val location: Identifier
+    public val location: ResourceLocation
 
-    public val dependencies: List<Identifier>
+    public val dependencies: List<ResourceLocation>
         get() = emptyList()
 
     //#if FABRIC
     //#if MC >= 1.16.5
-    override fun getFabricId(): Identifier {
+    override fun getFabricId(): ResourceLocation {
         return this.location
     }
 
-    override fun getFabricDependencies(): Collection<Identifier> {
+    override fun getFabricDependencies(): Collection<ResourceLocation> {
         return this.dependencies
     }
     //#else
     //$$ override fun getFabricId(): net.legacyfabric.fabric.api.util.Identifier {
-    //$$     return net.legacyfabric.fabric.api.util.Identifier(this.location.namespace, this.location.path)
+    //$$     return net.legacyfabric.fabric.api.util.Identifier(this.location.resourceDomain, this.location.resourcePath)
     //$$ }
     //$$
     //$$ override fun getFabricDependencies(): Collection<net.legacyfabric.fabric.api.util.Identifier> {
-    //$$     return this.dependencies.map { net.legacyfabric.fabric.api.util.Identifier(it.namespace, it.path) }
+    //$$     return this.dependencies.map { net.legacyfabric.fabric.api.util.Identifier(it.resourceDomain, it.resourcePath) }
     //$$ }
     //#endif
     //#endif

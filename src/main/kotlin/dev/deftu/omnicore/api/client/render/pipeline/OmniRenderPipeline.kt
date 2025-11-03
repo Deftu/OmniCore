@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.client.render.provider.ShaderProvider
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilder
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.pipeline.RenderPipeline
@@ -14,7 +14,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline
 
 public interface OmniRenderPipeline {
     public data class Snippet(
-        public val location: Identifier?,
+        public val location: ResourceLocation?,
         public val vertexFormat: VertexFormat?,
         public val drawMode: DrawMode?,
         public val depthTest: DepthTest?,
@@ -42,7 +42,7 @@ public interface OmniRenderPipeline {
         OR_REVERSE,
     }
 
-    public val location: Identifier
+    public val location: ResourceLocation
     public val drawMode: DrawMode
     public val vertexFormat: VertexFormat
 

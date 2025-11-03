@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.internal.networking
 
 //#if FORGE
-import dev.deftu.omnicore.api.identifierOrNull
+import dev.deftu.omnicore.api.locationOrNull
 import dev.deftu.omnicore.api.network.OmniNetworking
 import io.netty.channel.ChannelHandlerContext
 import net.minecraft.entity.player.EntityPlayerMP
@@ -22,7 +22,7 @@ public class OmniServerPacketHandler(private val player: EntityPlayerMP) : OmniP
         //$$ val customPayloadPacket = packet as? C17PacketCustomPayload ?: return
         //#endif
         val channelName = customPayloadPacket.channelName
-        val channel = identifierOrNull(channelName) ?: return
+        val channel = locationOrNull(channelName) ?: return
         if (!OmniNetworking.isRegisteredChannel(channel)) {
             return
         }

@@ -2,6 +2,7 @@ package com.test
 
 import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
+import dev.deftu.omnicore.api.OmniGameMode
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommands
@@ -11,18 +12,21 @@ import dev.deftu.omnicore.api.client.compat.config.ConfigScreenRegistry
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBinding
 import dev.deftu.omnicore.api.client.input.keybindings.OmniKeyBindings
+import dev.deftu.omnicore.api.client.integratedServer
 import dev.deftu.omnicore.api.client.network.OmniClientNetworking
 import dev.deftu.omnicore.api.client.player
+import dev.deftu.omnicore.api.client.player.playerUuid
 import dev.deftu.omnicore.api.client.resources.OmniClientResources
 import dev.deftu.omnicore.api.client.sound.OmniClientSound
 import dev.deftu.omnicore.api.client.world
 import dev.deftu.omnicore.api.color.OmniColor
-import dev.deftu.omnicore.api.commands.types.IdentifierArgumentType
+import dev.deftu.omnicore.api.commands.types.ResourceLocationArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniDirectionalAxisArgumentType
 import dev.deftu.omnicore.api.commands.types.OmniSoundArgumentType
 import dev.deftu.omnicore.api.commands.types.color.OmniColorArgumentType
+import dev.deftu.omnicore.api.commands.types.gamemode.GameModeArgumentType
 import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
-import dev.deftu.omnicore.api.identifierOrThrow
+import dev.deftu.omnicore.api.locationOrThrow
 import dev.deftu.omnicore.api.loader.OmniLoader
 import dev.deftu.omnicore.api.network.OmniNetworking
 import dev.deftu.omnicore.api.player.biomeData
@@ -32,12 +36,13 @@ import dev.deftu.omnicore.api.resources.readString
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.omnicore.api.sound.OmniSounds
 import dev.deftu.omnicore.api.world.isClearWeather
+import dev.deftu.omnicore.api.world.isDayTime
 import dev.deftu.textile.Text
 import dev.deftu.textile.minecraft.MCTextStyle
 import dev.deftu.textile.minecraft.TextColors
-import net.minecraft.server.network.ServerPlayerEntity
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerPlayer
 import org.apache.logging.log4j.LogManager
-import net.minecraft.util.Identifier
 
 //#if FABRIC
 import net.fabricmc.api.ClientModInitializer
@@ -74,7 +79,7 @@ class TestMod
 
     private val exampleKeyBinding = OmniKeyBinding.create(
         name = "Example KeyBinding",
-        category = identifierOrThrow(ID, "example_category"),
+        category = locationOrThrow(ID, "example_category"),
         defaultValue = OmniKeys.KEY_B,
         type = OmniKeyBinding.KeyBindingType.KEY
     )
@@ -102,8 +107,8 @@ class TestMod
             logger.info("Received test packet on the server with message: ${payload.message}")
 
             // Echo the packet back to the client
-            if (player is ServerPlayerEntity) {
-                OmniNetworking.send(player as ServerPlayerEntity, payload)
+            if (player is ServerPlayer) {
+                OmniNetworking.send(player as ServerPlayer, payload)
             }
         }
     }
@@ -209,7 +214,7 @@ class TestMod
                     val playerBiome = player?.biomeData
 
                     ctx.source.replyChat("""
-                        Is day? ${world?.isDay}
+                        Is day? ${world?.isDayTime}
                         Is raining? ${world?.isRaining}
                         Is thundering? ${world?.isThundering}
                         Is clear weather? ${world?.isClearWeather}
@@ -239,21 +244,31 @@ class TestMod
             }
 
             then("resource") {
-                argument("identifier", IdentifierArgumentType.identifier()) {
+                argument("location", ResourceLocationArgumentType.resourceLocation()) {
                     runs { ctx ->
-                        val identifier = ctx.argument<Identifier>("identifier")
-                        val resource = client.resourceManager.findFirstOrNull(identifier)
+                        val location = ctx.argument<ResourceLocation>("location")
+                        val resource = client.resourceManager.findFirstOrNull(location)
                         if (resource != null) {
                             println("""
-                                Resource contents for $identifier:
+                                Resource contents for $location:
                                 --------------------------------
                                 ${resource.readString()}
                             """.trimIndent())
 
-                            ctx.source.replyChat("Found resource: $identifier")
+                            ctx.source.replyChat("Found resource: $location")
                         } else {
-                            ctx.source.replyChat("Resource not found: $identifier")
+                            ctx.source.replyChat("Resource not found: $location")
                         }
+                    }
+                }
+            }
+
+            then("ogm") { // OmniGameMode!
+                argument("mode", GameModeArgumentType.gameMode()) {
+                    runs { ctx ->
+                        val mode = ctx.argument<OmniGameMode>("mode")
+                        integratedServer?.playerList?.getPlayer(playerUuid)?.setGameMode(mode.vanilla)
+                        ctx.source.replyChat("Selected game mode: $mode")
                     }
                 }
             }

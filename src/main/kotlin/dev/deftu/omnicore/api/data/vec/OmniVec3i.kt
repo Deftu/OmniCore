@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec
 import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.data.DistanceMetric
 import dev.deftu.omnicore.api.serialization.OmniDataResult
-import net.minecraft.util.math.Vec3i
+import net.minecraft.core.Vec3i
 
 public data class OmniVec3i(
     public val x: Int,

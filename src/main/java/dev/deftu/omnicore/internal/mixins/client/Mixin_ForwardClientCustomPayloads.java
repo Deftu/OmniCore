@@ -7,9 +7,9 @@ package dev.deftu.omnicore.internal.mixins.client;
 //#if FABRIC || MC >= 1.16.5
 //#if MC >= 1.16.5
 import dev.deftu.omnicore.internal.networking.UnknownPayloadDataSmuggler;
-import net.minecraft.network.ClientConnection;
+import net.minecraft.network.Connection;
 //#else
-//$$ import net.minecraft.network.ClientConnection;
+//$$ import net.minecraft.network.NetworkManager;
 //#endif
 
 import dev.deftu.omnicore.api.client.network.OmniClientNetworking;
@@ -21,75 +21,73 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 //#if MC >= 1.16.5
-import net.minecraft.util.Identifier;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 
 //#if MC >= 1.20.4
-import net.minecraft.client.network.ClientCommonNetworkHandler;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.UnknownCustomPayload;
+import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.DiscardedPayload;
 //#else
 //$$ import net.minecraft.client.multiplayer.ClientPacketListener;
 //#endif
 
 //#if MC >= 1.20.4
-@Mixin(ClientCommonNetworkHandler.class)
+@Mixin(ClientCommonPacketListenerImpl.class)
 //#else
 //$$ @Mixin(ClientPacketListener.class)
 //#endif
 //#else
-//$$ import dev.deftu.omnicore.api.OmniIdentifier;
-//$$ import net.minecraft.util.Identifier;
-//$$ import net.minecraft.util.PacketByteBuf;
-//$$ import net.minecraft.client.network.ClientPlayNetworkHandler;
-//$$ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+//$$ import dev.deftu.omnicore.api.OmniResourceLocation;
+//$$ import net.minecraft.client.network.NetHandlerPlayClient;
+//$$ import net.minecraft.network.PacketBuffer;
+//$$ import net.minecraft.network.play.server.SPacketCustomPayload;
+//$$ import net.minecraft.util.ResourceLocation;
 //$$
-//$$ @Mixin(ClientPlayNetworkHandler.class)
+//$$ @Mixin(NetHandlerPlayClient.class)
 //#endif
 public class Mixin_ForwardClientCustomPayloads {
     //#if MC >= 1.16.5
-    @Shadow @Final protected ClientConnection connection;
+    @Shadow @Final protected Connection connection;
     //#else
-    //$$ @Shadow @Final private ClientConnection connection;
+    //$$ @Shadow @Final private NetworkManager netManager;
     //#endif
 
     @Inject(
             //#if MC >= 1.20.4
-            method = "onCustomPayload(Lnet/minecraft/network/packet/s2c/common/CustomPayloadS2CPacket;)V",
-            //#elseif MC >= 1.16.5
-            //$$ method = "handleCustomPayload",
+            method = "handleCustomPayload(Lnet/minecraft/network/protocol/common/ClientboundCustomPayloadPacket;)V",
             //#else
-            //$$ method = "onCustomPayload",
+            //$$ method = "handleCustomPayload",
             //#endif
             at = @At("HEAD"),
             cancellable = true
     )
     private void omnicore$captureCustomPayloads(
             //#if MC >= 1.16.5
-            CustomPayloadS2CPacket packet,
+            ClientboundCustomPayloadPacket packet,
             //#else
-            //$$ CustomPayloadS2CPacket packet,
+            //$$ SPacketCustomPayload packet,
             //#endif
             CallbackInfo ci
     ) {
         //#if MC >= 1.20.4
-        CustomPayload payload = packet.payload();
+        CustomPacketPayload payload = packet.payload();
         //#if MC >= 1.20.6
-        Identifier channel = payload.getId().id();
+        ResourceLocation channel = payload.type().id();
         //#else
-        //$$ Identifier channel = payload.id();
+        //$$ ResourceLocation channel = payload.id();
         //#endif
         if (!OmniClientNetworking.isChannelRegistered(channel)) {
             return;
         }
 
         // Guard against stealing other mods' packets... Weird that they've taken up the same channel, though.
-        if (!(payload instanceof UnknownCustomPayload)) {
+        if (!(payload instanceof DiscardedPayload)) {
             return;
         }
 
-        PacketByteBuf buf = ((UnknownPayloadDataSmuggler) payload).omnicore$getData();
+        FriendlyByteBuf buf = ((UnknownPayloadDataSmuggler) payload).omnicore$getData();
         //#elseif MC >= 1.16.5
         //$$ ResourceLocation channel = packet.getIdentifier();
         //$$ if (!OmniClientNetworking.isChannelRegistered(channel)) {
@@ -99,15 +97,25 @@ public class Mixin_ForwardClientCustomPayloads {
         //$$ FriendlyByteBuf packetData = packet.getData();
         //$$ FriendlyByteBuf buf = new FriendlyByteBuf(packetData.copy());
         //#else
-        //$$ Identifier channel = OmniIdentifier.createOrNull(packet.getChannel());
+        //$$ ResourceLocation channel = OmniResourceLocation.createOrNull(packet.getChannelName());
         //$$ if (channel == null || !OmniClientNetworking.isChannelRegistered(channel)) {
         //$$     return;
         //$$ }
         //$$
-        //$$ PacketByteBuf packetData = packet.getPayload();
-        //$$ PacketByteBuf buf = new PacketByteBuf(packetData.copy());
+        //$$ PacketBuffer packetData = packet.getBufferData();
+        //$$ PacketBuffer buf = new PacketBuffer(packetData.copy());
         //#endif
-        OmniClientNetworking.handle(channel, buf, this.connection);
+
+        OmniClientNetworking.handle(
+                channel,
+                buf,
+                //#if MC >= 1.16.5
+                this.connection
+                //#else
+                //$$ this.netManager
+                //#endif
+        );
+
         ci.cancel();
     }
 }

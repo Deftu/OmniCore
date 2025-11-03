@@ -47,13 +47,21 @@ public object OmniVideoSettings {
 
     @JvmStatic
     public val renderDistance: Int
-        get() = unwrap(options.viewDistance)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.renderDistance())
+            //#else
+            //$$ return unwrap(options.renderDistance)
+            //#endif
+        }
 
     @JvmStatic
     public val simulationDistance: Int
         get() {
-            //#if MC >= 1.18.2
-            return unwrap(options.simulationDistance)
+            //#if MC >= 1.19.2
+            return unwrap(options.simulationDistance())
+            //#elseif MC >= 1.18.2
+            //$$ return unwrap(options.simulationDistance)
             //#else
             //$$ return 0 // Inconsistent between singleplayer and multiplayer so we'll just return 0
             //#endif
@@ -63,9 +71,9 @@ public object OmniVideoSettings {
     public val entityDistance: Double
         get() {
             //#if MC >= 1.19.2
-            return unwrap(options.entityDistanceScaling)
+            return unwrap(options.entityDistanceScaling())
             //#elseif MC >= 1.17.1
-            //$$ return options.entityDistanceScaling.toDouble()
+            //$$ return unwrap(options.entityDistanceScaling).toDouble()
             //#else
             //$$ return 0.0 // Inconsistent between singleplayer and multiplayer so we'll just return 0
             //#endif
@@ -73,17 +81,33 @@ public object OmniVideoSettings {
 
     @JvmStatic
     public val maxFps: Int
-        get() = unwrap(options.maxFps)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.framerateLimit())
+            //#else
+            //$$ return unwrap(options.framerateLimit)
+            //#endif
+        }
 
     @JvmStatic
     public val cloudRenderMode: CloudRenderMode
-        get() = CloudRenderMode.from(unwrap(options.cloudRenderMode))
+        get() {
+            //#if MC >= 1.19.2
+            return CloudRenderMode.from(unwrap(options.cloudStatus()))
+            //#elseif MC >= 1.16.5
+            //$$ return CloudRenderMode.from(options.cloudsType)
+            //#else
+            //$$ return CloudRenderMode.from(options.clouds)
+            //#endif
+        }
 
     @JvmStatic
     public val renderMode: RenderMode
         get() {
-            //#if MC >= 1.16.5
-            return RenderMode.from(unwrap(options.graphicsMode))
+            //#if MC >= 1.19.2
+            return RenderMode.from(unwrap(options.graphicsMode()))
+            //#elseif MC >= 1.16.5
+            //$$ return RenderMode.from(unwrap(options.graphicsMode))
             //#else
             //$$ return if (options.fancyGraphics) {
             //$$     RenderMode.FANCY
@@ -97,13 +121,15 @@ public object OmniVideoSettings {
     public val smoothLightingMode: SmoothLightingMode
         get() {
             //#if MC >= 1.19.4
-            return if (unwrap(options.ao)) {
+            return if (unwrap(options.ambientOcclusion())) {
                 SmoothLightingMode.MAXIMUM
             } else {
                 SmoothLightingMode.OFF
             }
-            //#elseif MC >= 1.16.5
+            //#elseif MC >= 1.19.2
             //$$ return SmoothLightingMode.from(unwrap(options.ambientOcclusion()).id)
+            //#elseif MC >= 1.16.5
+            //$$ return SmoothLightingMode.from(unwrap(options.ambientOcclusion).id)
             //#else
             //$$ return SmoothLightingMode.from(options.ambientOcclusion)
             //#endif
@@ -112,8 +138,10 @@ public object OmniVideoSettings {
     @JvmStatic
     public val chunkBuildingMode: ChunkBuildingMode
         get() {
-            //#if MC >= 1.18.2
-            return ChunkBuildingMode.from(unwrap(options.chunkBuilderMode))
+            //#if MC >= 1.19.2
+            return ChunkBuildingMode.from(unwrap(options.prioritizeChunkUpdates()))
+            //#elseif MC >= 1.18.2
+            //$$ return ChunkBuildingMode.from(unwrap(options.prioritizeChunkUpdates))
             //#else
             //$$ return ChunkBuildingMode.NEARBY
             //#endif
@@ -121,13 +149,21 @@ public object OmniVideoSettings {
 
     @JvmStatic
     public val mipmapLevels: Int
-        get() = unwrap(options.mipmapLevels)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.mipmapLevels())
+            //#else
+            //$$ return unwrap(options.mipmapLevels)
+            //#endif
+        }
 
     @JvmStatic
     public val attackIndicator: AttackIndicatorPosition
         get() {
-            //#if MC >= 1.9
-            return AttackIndicatorPosition.from(unwrap(options.attackIndicator))
+            //#if MC >= 1.19.2
+            return AttackIndicatorPosition.from(unwrap(options.attackIndicator()))
+            //#elseif MC >= 1.9
+            //$$ return AttackIndicatorPosition.from(unwrap(options.attackIndicator))
             //#else
             //$$ return AttackIndicatorPosition.OFF // Not supported in versions before 1.9
             //#endif
@@ -136,8 +172,10 @@ public object OmniVideoSettings {
     @JvmStatic
     public val biomeBlendRadius: Int
         get() {
-            //#if MC >= 1.13
-            return unwrap(options.biomeBlendRadius)
+            //#if MC >= 1.19.2
+            return unwrap(options.biomeBlendRadius())
+            //#elseif MC >= 1.13
+            //$$ return unwrap(options.biomeBlendRadius)
             //#else
             //$$ return 0 // Not supported in versions before 1.13
             //#endif
@@ -145,37 +183,73 @@ public object OmniVideoSettings {
 
     @JvmStatic
     public val isVsyncEnabled: Boolean
-        get() = unwrap(options.enableVsync)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.enableVsync())
+            //#else
+            //$$ return unwrap(options.enableVsync)
+            //#endif
+        }
 
     @JvmStatic
     public val isEntityShadowEnabled: Boolean
-        get() = unwrap(options.entityShadows)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.entityShadows())
+            //#else
+            //$$ return unwrap(options.entityShadows)
+            //#endif
+        }
 
     @JvmStatic
     public val isForceUnicodeFont: Boolean
-        get() = unwrap(options.forceUnicodeFont)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.forceUnicodeFont())
+            //#else
+            //$$ return unwrap(options.forceUnicodeFont)
+            //#endif
+        }
 
     @JvmStatic
     public val isFullscreen: Boolean
-        get() = unwrap(options.fullscreen)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.fullscreen())
+            //#else
+            //$$ return unwrap(options.fullscreen)
+            //#endif
+        }
 
     @JvmStatic
     public val isViewBobbingEnabled: Boolean
-        get() = unwrap(options.bobView)
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.bobView())
+            //#else
+            //$$ return unwrap(options.bobView)
+            //#endif
+        }
 
     @JvmStatic
     public val fov: Int
-        get() = unwrap(options.fov).toInt()
+        get() {
+            //#if MC >= 1.19.2
+            return unwrap(options.fov()).toInt()
+            //#else
+            //$$ return unwrap(options.fov).toInt()
+            //#endif
+        }
 
     @JvmStatic
     public val isHudHidden: Boolean
-        get() = options.hudHidden
+        get() = options.hideGui
 
     @JvmStatic
     public val isDebugRendering: Boolean
         get() {
             //#if MC >= 1.20.4
-            return client.debugHud.shouldShowDebugHud()
+            return client.debugOverlay.showDebugScreen()
             //#else
             //$$ return options.renderDebug
             //#endif

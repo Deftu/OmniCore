@@ -3,7 +3,7 @@ package dev.deftu.omnicore.internal.client.render.shape
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 import dev.deftu.omnicore.api.color.OmniColor
@@ -16,7 +16,7 @@ public object ShapeOutlineShapeRenderer {
     @JvmStatic
     public fun render(
         vertexConsumer: OmniVertexConsumer,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         shape: OmniVoxelShape,
         x: Double,
         y: Double,
@@ -34,14 +34,14 @@ public object ShapeOutlineShapeRenderer {
             ).normalized()
 
             vertexConsumer
-                .vertex(matrices, startX + x, startY + y, startZ + z)
+                .vertex(pose, startX + x, startY + y, startZ + z)
                 .color(color)
-                .normal(matrices, normal)
+                .normal(pose, normal)
                 .next()
             vertexConsumer
-                .vertex(matrices, endX + x, endY + y, endZ + z)
+                .vertex(pose, endX + x, endY + y, endZ + z)
                 .color(color)
-                .normal(matrices, normal)
+                .normal(pose, normal)
                 .next()
         }
     }
@@ -49,7 +49,7 @@ public object ShapeOutlineShapeRenderer {
     @JvmStatic
     public fun render(
         pipeline: OmniRenderPipeline,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         shape: OmniVoxelShape,
         x: Double,
         y: Double,
@@ -57,27 +57,27 @@ public object ShapeOutlineShapeRenderer {
         color: OmniColor
     ) {
         val buffer = OmniBufferBuilders.create(DrawMode.LINES, DefaultVertexFormats.POSITION_COLOR_NORMAL)
-        render(buffer, matrices, shape, x, y, z, color)
+        render(buffer, pose, shape, x, y, z, color)
         buffer.buildOrNull()?.drawAndClose(pipeline)
     }
 
     @JvmStatic
     public fun render(
         vertexConsumer: OmniVertexConsumer,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         shape: OmniVoxelShape,
         color: OmniColor
     ) {
-        render(vertexConsumer, matrices, shape, 0.0, 0.0, 0.0, color)
+        render(vertexConsumer, pose, shape, 0.0, 0.0, 0.0, color)
     }
 
     @JvmStatic
     public fun render(
         pipeline: OmniRenderPipeline,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         shape: OmniVoxelShape,
         color: OmniColor
     ) {
-        render(pipeline, matrices, shape, 0.0, 0.0, 0.0, color)
+        render(pipeline, pose, shape, 0.0, 0.0, 0.0, color)
     }
 }

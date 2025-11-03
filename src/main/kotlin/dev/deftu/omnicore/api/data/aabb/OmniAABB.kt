@@ -4,17 +4,13 @@ import com.mojang.serialization.Codec
 import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 import dev.deftu.omnicore.api.data.vec.OmniVec3d
 import dev.deftu.omnicore.api.serialization.OmniDataResult
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Box
-import net.minecraft.util.math.Vec3d
+import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
 
 public data class OmniAABB(
-    public val minX: Double,
-    public val minY: Double,
-    public val minZ: Double,
-    public val maxX: Double,
-    public val maxY: Double,
-    public val maxZ: Double,
+    public val minX: Double, public val minY: Double, public val minZ: Double,
+    public val maxX: Double, public val maxY: Double, public val maxZ: Double,
 ) {
     public companion object {
         @JvmField public val ZERO: OmniAABB = OmniAABB(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
@@ -56,8 +52,8 @@ public data class OmniAABB(
     }
 
     @get:JvmName("toVanilla")
-    public val vanilla: Box
-        get() = Box(minX, minY, minZ, maxX, maxY, maxZ)
+    public val vanilla: AABB
+        get() = AABB(minX, minY, minZ, maxX, maxY, maxZ)
 
     public val lengthX: Double
         get() = maxX - minX
@@ -77,7 +73,7 @@ public data class OmniAABB(
     public val max: OmniVec3d
         get() = OmniVec3d(maxX, maxY, maxZ)
 
-    public constructor(aabb: Box) : this(
+    public constructor(aabb: AABB) : this(
         aabb.minX, aabb.minY, aabb.minZ,
         aabb.maxX, aabb.maxY, aabb.maxZ,
     )
@@ -99,8 +95,8 @@ public data class OmniAABB(
     )
 
     public constructor(
-        min: Vec3d,
-        max: Vec3d,
+        min: Vec3,
+        max: Vec3,
     ) : this(
         min.x, min.y, min.z,
         max.x, max.y, max.z,
@@ -111,7 +107,7 @@ public data class OmniAABB(
         other.x, other.y, other.z,
     )
 
-    public constructor(other: Vec3d) : this(
+    public constructor(other: Vec3) : this(
         other.x, other.y, other.z,
         other.x, other.y, other.z,
     )
@@ -163,7 +159,7 @@ public data class OmniAABB(
         return shrink(vec.x, vec.y, vec.z)
     }
 
-    public fun shrink(vec: Vec3d): OmniAABB {
+    public fun shrink(vec: Vec3): OmniAABB {
         return shrink(vec.x, vec.y, vec.z)
     }
 
@@ -204,7 +200,7 @@ public data class OmniAABB(
         return stretch(vec.x, vec.y, vec.z)
     }
 
-    public fun stretch(vec: Vec3d): OmniAABB {
+    public fun stretch(vec: Vec3): OmniAABB {
         return stretch(vec.x, vec.y, vec.z)
     }
 
@@ -223,7 +219,7 @@ public data class OmniAABB(
         return expand(vec.x, vec.y, vec.z)
     }
 
-    public fun expand(vec: Vec3d): OmniAABB {
+    public fun expand(vec: Vec3): OmniAABB {
         return expand(vec.x, vec.y, vec.z)
     }
 
@@ -239,7 +235,7 @@ public data class OmniAABB(
         return contract(vec.x, vec.y, vec.z)
     }
 
-    public fun contract(vec: Vec3d): OmniAABB {
+    public fun contract(vec: Vec3): OmniAABB {
         return contract(vec.x, vec.y, vec.z)
     }
 
@@ -258,7 +254,7 @@ public data class OmniAABB(
         return offset(vec.x, vec.y, vec.z)
     }
 
-    public fun offset(vec: Vec3d): OmniAABB {
+    public fun offset(vec: Vec3): OmniAABB {
         return offset(vec.x, vec.y, vec.z)
     }
 
@@ -272,7 +268,7 @@ public data class OmniAABB(
         return OmniAABB(minX, minY, minZ, maxX, maxY, maxZ)
     }
 
-    public fun intersection(other: Box): OmniAABB {
+    public fun intersection(other: AABB): OmniAABB {
         return intersection(OmniAABB(other))
     }
 
@@ -286,7 +282,7 @@ public data class OmniAABB(
         return OmniAABB(minX, minY, minZ, maxX, maxY, maxZ)
     }
 
-    public fun union(other: Box): OmniAABB {
+    public fun union(other: AABB): OmniAABB {
         return union(OmniAABB(other))
     }
 
@@ -303,8 +299,8 @@ public data class OmniAABB(
         maxX: Double, maxY: Double, maxZ: Double
     ): Boolean {
         return this.maxX > minX && this.minX < maxX &&
-               this.maxY > minY && this.minY < maxY &&
-               this.maxZ > minZ && this.minZ < maxZ
+                this.maxY > minY && this.minY < maxY &&
+                this.maxZ > minZ && this.minZ < maxZ
     }
 
     public fun isIntersecting(other: OmniAABB): Boolean {
@@ -314,7 +310,7 @@ public data class OmniAABB(
         )
     }
 
-    public fun isIntersecting(other: Box): Boolean {
+    public fun isIntersecting(other: AABB): Boolean {
         return isIntersecting(OmniAABB(other))
     }
 
@@ -322,7 +318,7 @@ public data class OmniAABB(
         return isIntersecting(OmniAABB(other))
     }
 
-    public fun isIntersecting(other: Vec3d): Boolean {
+    public fun isIntersecting(other: Vec3): Boolean {
         return isIntersecting(OmniAABB(other))
     }
 
@@ -330,7 +326,7 @@ public data class OmniAABB(
         return isIntersecting(OmniAABB(first, second))
     }
 
-    public fun isIntersecting(first: Vec3d, second: Vec3d): Boolean {
+    public fun isIntersecting(first: Vec3, second: Vec3): Boolean {
         return isIntersecting(OmniAABB(first, second))
     }
 
@@ -339,8 +335,8 @@ public data class OmniAABB(
         maxX: Double, maxY: Double, maxZ: Double
     ): Boolean {
         return this.minX <= minX && this.maxX >= maxX &&
-               this.minY <= minY && this.maxY >= maxY &&
-               this.minZ <= minZ && this.maxZ >= maxZ
+                this.minY <= minY && this.maxY >= maxY &&
+                this.minZ <= minZ && this.maxZ >= maxZ
     }
 
     public operator fun contains(other: OmniAABB): Boolean {
@@ -350,7 +346,7 @@ public data class OmniAABB(
         )
     }
 
-    public operator fun contains(other: Box): Boolean {
+    public operator fun contains(other: AABB): Boolean {
         return contains(OmniAABB(other))
     }
 
@@ -358,7 +354,7 @@ public data class OmniAABB(
         return contains(OmniAABB(other))
     }
 
-    public operator fun contains(other: Vec3d): Boolean {
+    public operator fun contains(other: Vec3): Boolean {
         return contains(OmniAABB(other))
     }
 

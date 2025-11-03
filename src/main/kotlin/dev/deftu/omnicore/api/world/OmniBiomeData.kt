@@ -1,15 +1,16 @@
 package dev.deftu.omnicore.api.world
 
 import dev.deftu.omnicore.api.annotations.VersionedAbove
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import dev.deftu.omnicore.api.data.pos.OmniBlockPos
+import net.minecraft.core.BlockPos
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.Level
 
 public data class OmniBiomeData(
-    public val world: World,
+    public val world: Level,
     public val dimension: OmniDimension,
     /** Present on 1.12.2+; null on 1.8.9. */
-    @get:VersionedAbove("1.12.2") public val identifier: Identifier?,
+    @get:VersionedAbove("1.12.2") public val identifier: ResourceLocation?,
     /** Translation key (e.g., "biome.minecraft.plains") or resolved name on very old MC. */
     public val name: String,
 
@@ -25,11 +26,19 @@ public data class OmniBiomeData(
         return this.grassColorInvoker(pos.x.toDouble(), pos.z.toDouble())
     }
 
+    public fun getGrassColorAt(pos: OmniBlockPos): Int {
+        return this.grassColorInvoker(pos.x.toDouble(), pos.z.toDouble())
+    }
+
     public fun getPrecipitationAt(x: Int, y: Int, z: Int): PrecipitationType {
         return this.precipitationInvoker(x, y, z)
     }
 
     public fun getPrecipitationAt(pos: BlockPos): PrecipitationType {
+        return this.precipitationInvoker(pos.x, pos.y, pos.z)
+    }
+
+    public fun getPrecipitationAt(pos: OmniBlockPos): PrecipitationType {
         return this.precipitationInvoker(pos.x, pos.y, pos.z)
     }
 }

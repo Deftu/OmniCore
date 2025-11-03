@@ -3,7 +3,7 @@ package dev.deftu.omnicore.api.client.render.shader.uniforms
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.5
-import net.minecraft.client.gl.UniformType
+import com.mojang.blaze3d.shaders.UniformType
 //#endif
 
 @ApiStatus.Experimental

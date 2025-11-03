@@ -5,7 +5,7 @@ import dev.deftu.omnicore.api.client.input.OmniKey
 import dev.deftu.omnicore.api.client.input.OmniMouseButton
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
 import dev.deftu.omnicore.api.events.CancellableEvent
-import net.minecraft.client.gui.screen.Screen
+import net.minecraft.client.gui.screens.Screen
 
 public sealed interface ScreenEvent {
     public val screen: Screen

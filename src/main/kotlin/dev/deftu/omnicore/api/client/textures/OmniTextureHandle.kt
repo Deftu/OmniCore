@@ -2,10 +2,7 @@ package dev.deftu.omnicore.api.client.textures
 
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.color.OmniColor
-import dev.deftu.omnicore.api.identifierOrThrow
-import dev.deftu.omnicore.internal.client.textures.TextureInternals
-import net.minecraft.util.Identifier
-import java.util.UUID
+import net.minecraft.resources.ResourceLocation
 
 public interface OmniTextureHandle : AutoCloseable {
     public data class CopyOp(
@@ -24,7 +21,7 @@ public interface OmniTextureHandle : AutoCloseable {
     public val height: Int
     public val format: OmniTextureFormat
 
-    public val location: Identifier
+    public val location: ResourceLocation
 
     public fun bind(unit: OmniTextureUnit): () -> Unit
 

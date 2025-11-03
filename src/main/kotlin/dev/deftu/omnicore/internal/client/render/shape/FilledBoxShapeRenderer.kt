@@ -3,7 +3,7 @@ package dev.deftu.omnicore.internal.client.render.shape
 import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.DrawMode
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.render.vertex.OmniVertexConsumer
 import dev.deftu.omnicore.api.color.OmniColor
@@ -15,7 +15,7 @@ public object FilledBoxShapeRenderer {
     @JvmStatic
     public fun render(
         vertexConsumer: OmniVertexConsumer,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         aabb: OmniAABB,
         x: Double,
         y: Double,
@@ -29,19 +29,19 @@ public object FilledBoxShapeRenderer {
             xD: Double, yD: Double, zD: Double,
         ) {
             vertexConsumer
-                .vertex(matrices, xA, yA, zA)
+                .vertex(pose, xA, yA, zA)
                 .color(color)
                 .next()
             vertexConsumer
-                .vertex(matrices, xB, yB, zB)
+                .vertex(pose, xB, yB, zB)
                 .color(color)
                 .next()
             vertexConsumer
-                .vertex(matrices, xC, yC, zC)
+                .vertex(pose, xC, yC, zC)
                 .color(color)
                 .next()
             vertexConsumer
-                .vertex(matrices, xD, yD, zD)
+                .vertex(pose, xD, yD, zD)
                 .color(color)
                 .next()
         }
@@ -105,7 +105,7 @@ public object FilledBoxShapeRenderer {
     @JvmStatic
     public fun render(
         pipeline: OmniRenderPipeline,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         aabb: OmniAABB,
         x: Double,
         y: Double,
@@ -113,27 +113,27 @@ public object FilledBoxShapeRenderer {
         color: OmniColor
     ) {
         val buffer = OmniBufferBuilders.create(DrawMode.QUADS, DefaultVertexFormats.POSITION_COLOR)
-        render(buffer, matrices, aabb, x, y, z, color)
+        render(buffer, pose, aabb, x, y, z, color)
         buffer.buildOrNull()?.drawAndClose(pipeline)
     }
 
     @JvmStatic
     public fun render(
         pipeline: OmniRenderPipeline,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         aabb: OmniAABB,
         color: OmniColor
     ) {
-        render(pipeline, matrices, aabb, 0.0, 0.0, 0.0, color)
+        render(pipeline, pose, aabb, 0.0, 0.0, 0.0, color)
     }
 
     @JvmStatic
     public fun render(
         vertexConsumer: OmniVertexConsumer,
-        matrices: OmniMatrixStack,
+        pose: OmniPoseStack,
         aabb: OmniAABB,
         color: OmniColor
     ) {
-        render(vertexConsumer, matrices, aabb, 0.0, 0.0, 0.0, color)
+        render(vertexConsumer, pose, aabb, 0.0, 0.0, 0.0, color)
     }
 }

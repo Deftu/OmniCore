@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 //#if MC >= 1.16.5
-import net.minecraft.client.option.AttackIndicator
+import net.minecraft.client.AttackIndicatorStatus
 //#endif
 
 public enum class AttackIndicatorPosition {
@@ -20,11 +20,11 @@ public enum class AttackIndicatorPosition {
             }
 
         //#if MC >= 1.16.5
-        public fun from(vanilla: AttackIndicator): AttackIndicatorPosition {
+        public fun from(vanilla: AttackIndicatorStatus): AttackIndicatorPosition {
             return when (vanilla) {
-                AttackIndicator.OFF -> OFF
-                AttackIndicator.CROSSHAIR -> CROSSHAIR
-                AttackIndicator.HOTBAR -> HOTBAR
+                AttackIndicatorStatus.OFF -> OFF
+                AttackIndicatorStatus.CROSSHAIR -> CROSSHAIR
+                AttackIndicatorStatus.HOTBAR -> HOTBAR
             }
         }
         //#elseif MC >= 1.12.2

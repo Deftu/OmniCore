@@ -5,7 +5,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline
 import dev.deftu.omnicore.api.loader.OmniLoader
 import net.irisshaders.iris.api.v0.IrisApi
 import net.irisshaders.iris.api.v0.IrisProgram
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 //#endif
 
@@ -50,7 +50,7 @@ public enum class IrisShaderType {
         private val logger = LogManager.getLogger("OmniCore/Iris Compatibility")
 
         @JvmStatic
-        public fun warnIfNecessary(location: Identifier) {
+        public fun warnIfNecessary(location: ResourceLocation) {
             if (!OmniLoader.isDevelopment && !OmniLoader.isLoaded("iris")) {
                 return
             }

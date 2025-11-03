@@ -6,11 +6,11 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.internal.client.render.pipeline.OmniRenderPass
 import dev.deftu.omnicore.internal.client.render.pipeline.RenderPassEncoderImpl
-import dev.deftu.omnicore.internal.client.render.vertex.OmniBuiltBufferImpl
 import net.minecraft.client.gui.font.glyphs.BakedGlyph
 import net.minecraft.client.gui.Font
 import com.mojang.blaze3d.vertex.BufferBuilder
 import com.mojang.blaze3d.vertex.Tesselator
+import dev.deftu.omnicore.internal.client.render.vertex.OmniMeshDataImpl
 import org.joml.Matrix4f
 
 internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVisitor {
@@ -39,7 +39,7 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVi
             val lightTexture = client.gameRenderer.lightTexture().textureView
             OmniRenderPass().use { renderPass ->
                 renderPass.draw(
-                    builtBuffer = OmniBuiltBufferImpl(builtBuffer),
+                    builtBuffer = OmniMeshDataImpl(builtBuffer),
                     pipeline = OmniRenderPipelines.wrap(cachedPipeline!!)
                 ) { builder ->
                     (builder as RenderPassEncoderImpl).initialize()

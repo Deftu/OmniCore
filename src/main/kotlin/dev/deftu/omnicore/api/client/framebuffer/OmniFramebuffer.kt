@@ -4,8 +4,8 @@ import dev.deftu.omnicore.api.client.render.OmniResolution
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStack
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStacks
 import dev.deftu.omnicore.api.client.render.vertex.OmniBufferBuilders
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
@@ -47,18 +47,18 @@ public interface OmniFramebuffer : AutoCloseable {
         return using(FramebufferTarget.READ_WRITE, block)
     }
 
-    public fun <T> usingToRender(block: (matrixStack: OmniMatrixStack, width: Int, height: Int) -> T): T {
+    public fun <T> usingToRender(block: (pose: OmniPoseStack, width: Int, height: Int) -> T): T {
         return this.using {
             // Define our GL viewport as only being within our framebuffer's bounds
             GL11.glViewport(0, 0, width, height)
 
             // Undo Minecraft's scaling factor, and the distortion caused by using its projection matrix in a differently sized viewport
-            val stack = OmniMatrixStacks.create()
+            val pose = OmniPoseStacks.create()
             val scale = 1f / OmniResolution.scaleFactor.toFloat()
-            stack.scale(scale * OmniResolution.viewportWidth / width, scale * OmniResolution.viewportHeight / height, 1f)
+            pose.scale(scale * OmniResolution.viewportWidth / width, scale * OmniResolution.viewportHeight / height, 1f)
 
             // Perform the consumer's operation
-            val result = block(stack, width, height)
+            val result = block(pose, width, height)
 
             // Restore all GL states and reset the viewport
             GL11.glViewport(0, 0, OmniResolution.viewportWidth, OmniResolution.viewportHeight)
@@ -70,7 +70,7 @@ public interface OmniFramebuffer : AutoCloseable {
 
     public fun drawColorTexture(
         pipeline: OmniRenderPipeline,
-        stack: OmniMatrixStack,
+        stack: OmniPoseStack,
         x: Float, y: Float,
         width: Float, height: Float,
         color: OmniColor
@@ -86,7 +86,7 @@ public interface OmniFramebuffer : AutoCloseable {
     }
 
     public fun drawColorTexture(
-        stack: OmniMatrixStack,
+        stack: OmniPoseStack,
         x: Float, y: Float,
         width: Float, height: Float,
         color: OmniColor
@@ -104,7 +104,7 @@ public interface OmniFramebuffer : AutoCloseable {
     private fun drawTexture(
         pipeline: OmniRenderPipeline,
         texture: OmniTextureHandle,
-        stack: OmniMatrixStack,
+        stack: OmniPoseStack,
         x: Float, y: Float,
         width: Float, height: Float,
         color: OmniColor

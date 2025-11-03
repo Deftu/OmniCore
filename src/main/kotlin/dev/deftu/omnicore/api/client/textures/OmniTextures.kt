@@ -1,19 +1,19 @@
 package dev.deftu.omnicore.api.client.textures
 
-import dev.deftu.omnicore.api.client.client
+import dev.deftu.omnicore.api.client.textureManager
 import dev.deftu.omnicore.api.client.image.OmniImage
 import dev.deftu.omnicore.internal.client.image.ImageInternals
 import dev.deftu.omnicore.internal.client.textures.HandleBackedTexture
-import net.minecraft.client.texture.AbstractTexture
-import net.minecraft.util.Identifier
+import net.minecraft.client.renderer.texture.AbstractTexture
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.textures.GpuTextureView
-import net.minecraft.client.texture.GlTextureView
+import com.mojang.blaze3d.opengl.GlTextureView
 //#endif
 
 //#if MC >= 1.21.5
-import net.minecraft.client.texture.GlTexture
+import com.mojang.blaze3d.opengl.GlTexture
 import com.mojang.blaze3d.textures.GpuTexture
 //#endif
 
@@ -62,14 +62,14 @@ public object OmniTextures {
         //#endif
     ): OmniTextureHandle {
         //#if MC >= 1.21.5
-        return wrap(texture.glTexture)
+        return wrap(texture.texture)
         //#else
         //$$ val id =
-            //#if MC >= 1.16.5
-            //$$ texture.id
-            //#else
-            //$$ texture.glTextureId
-            //#endif
+        //#if MC >= 1.16.5
+        //$$ texture.id
+        //#else
+        //$$ texture.glTextureId
+        //#endif
         //$$
         //$$ val unbind = TextureInternals.bind(id)
         //$$ try {
@@ -85,8 +85,8 @@ public object OmniTextures {
     }
 
     @JvmStatic
-    public fun wrap(location: Identifier): OmniTextureHandle {
-        val texture = client.textureManager.getTexture(location)
+    public fun wrap(location: ResourceLocation): OmniTextureHandle {
+        val texture = textureManager.getTexture(location)
             ?: throw IllegalArgumentException("Texture $location is not loaded")
         return wrap(texture)
     }
@@ -95,7 +95,7 @@ public object OmniTextures {
     @JvmStatic
     public fun wrap(vanillaTexture: GlTexture): OmniTextureHandle {
         return WrappedTexture(
-            vanillaTexture.glId,
+            vanillaTexture.glId(),
             vanillaTexture.getWidth(0),
             vanillaTexture.getHeight(0),
             OmniTextureFormat.from(vanillaTexture.format)
@@ -116,7 +116,7 @@ public object OmniTextures {
     public fun wrap(vanillaTexture: GlTextureView): OmniTextureHandle {
         val texture = vanillaTexture.texture()
         return WrappedTexture(
-            texture.glId,
+            texture.glId(),
             vanillaTexture.getWidth(0),
             vanillaTexture.getHeight(0),
             OmniTextureFormat.from(texture.format)
@@ -138,13 +138,13 @@ public object OmniTextures {
     }
 
     @JvmStatic
-    public fun register(location: Identifier, handle: OmniTextureHandle): Identifier {
-        client.textureManager.registerTexture(location, vanilla(handle))
+    public fun register(location: ResourceLocation, handle: OmniTextureHandle): ResourceLocation {
+        textureManager.register(location, vanilla(handle))
         return location
     }
 
     @JvmStatic
-    public fun destroy(location: Identifier) {
-        client.textureManager.destroyTexture(location)
+    public fun destroy(location: ResourceLocation) {
+        textureManager.release(location)
     }
 }

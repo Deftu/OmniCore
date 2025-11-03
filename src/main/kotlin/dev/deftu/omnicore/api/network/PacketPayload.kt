@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.network
 
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 public interface PacketPayload {
-    public val id: Identifier
+    public val id: ResourceLocation
 }

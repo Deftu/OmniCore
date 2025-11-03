@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.options
 
 //#if MC >= 1.18.2
-import net.minecraft.client.render.ChunkBuilderMode
+import net.minecraft.client.PrioritizeChunkUpdates
 //#endif
 
 public enum class ChunkBuildingMode {
@@ -11,11 +11,11 @@ public enum class ChunkBuildingMode {
 
     public companion object {
         //#if MC >= 1.18.2
-        public fun from(vanilla: ChunkBuilderMode): ChunkBuildingMode {
+        public fun from(vanilla: PrioritizeChunkUpdates): ChunkBuildingMode {
             return when (vanilla) {
-                ChunkBuilderMode.NONE -> NONE
-                ChunkBuilderMode.PLAYER_AFFECTED -> PLAYER_AFFECTED
-                ChunkBuilderMode.NEARBY -> NEARBY
+                PrioritizeChunkUpdates.NONE -> NONE
+                PrioritizeChunkUpdates.PLAYER_AFFECTED -> PLAYER_AFFECTED
+                PrioritizeChunkUpdates.NEARBY -> NEARBY
             }
         }
         //#endif

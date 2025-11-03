@@ -2,7 +2,7 @@ package dev.deftu.omnicore.internal.client.render.pipeline
 
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
-import dev.deftu.omnicore.api.client.render.vertex.OmniBuiltBuffer
+import dev.deftu.omnicore.api.client.render.vertex.OmniMeshData
 import java.util.function.Consumer
 
 //#if MC < 1.21.5
@@ -16,7 +16,7 @@ internal class OmniRenderPass : AutoCloseable {
     //$$ internal var activePipeline: OmniRenderPipeline? = null
     //#endif
 
-    fun draw(builtBuffer: OmniBuiltBuffer, pipeline: OmniRenderPipeline, action: Consumer<RenderPassEncoder>) {
+    fun draw(builtBuffer: OmniMeshData, pipeline: OmniRenderPipeline, action: Consumer<RenderPassEncoder>) {
         val encoder = RenderPassEncoderImpl(
             //#if MC < 1.21.5
             //$$ renderPass = this,

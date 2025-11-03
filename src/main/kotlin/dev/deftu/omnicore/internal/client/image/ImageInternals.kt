@@ -18,8 +18,8 @@ import java.nio.ByteBuffer
 //#endif
 
 //#if MC >= 1.16.5
+import com.mojang.blaze3d.platform.NativeImage
 import dev.deftu.omnicore.internal.mixins.client.Mixin_NativeImageAllocation
-import net.minecraft.client.texture.NativeImage
 //#else
 //$$ import dev.deftu.omnicore.api.color.OmniColor
 //$$ import org.lwjgl.BufferUtils
@@ -41,7 +41,7 @@ public object ImageInternals {
             GL11.GL_TEXTURE_2D, 0,
             getFormat(native),
             GL11.GL_UNSIGNED_BYTE,
-            native.imageId()
+            native.pointer
         )
         //#elseif MC >= 1.16.5
         //$$ native.downloadTexture(0, false)
@@ -89,10 +89,8 @@ public object ImageInternals {
             //#endif
         )
         unbind()
-        //#elseif MC >= 1.17.1
-        //$$ TextureUtil.prepareImage(id, width, height)
         //#elseif MC >= 1.16.5
-        //$$ TextureUtil.allocate(id, width, height)
+        //$$ TextureUtil.prepareImage(id, width, height)
         //#else
         //$$ TextureUtil.allocateTexture(id, width, height)
         //#endif
@@ -125,7 +123,7 @@ public object ImageInternals {
             getFormat(native),
             GL11.GL_UNSIGNED_BYTE,
             //#if MC >= 1.21.5
-            native.imageId()
+            native.pointer
             //#else
             //$$ pointer(native)
             //#endif
@@ -141,12 +139,12 @@ public object ImageInternals {
     //#if MC >= 1.16.5
     @JvmStatic
     public fun getFormat(nativeImage: NativeImage): Int {
-        return when (nativeImage.format) {
+        return when (nativeImage.format()) {
             NativeImage.Format.RGBA -> GL11.GL_RGBA
             NativeImage.Format.RGB -> GL11.GL_RGB
             NativeImage.Format.LUMINANCE_ALPHA -> GL11.GL_LUMINANCE_ALPHA
             NativeImage.Format.LUMINANCE -> GL11.GL_LUMINANCE
-            else -> throw IllegalArgumentException("Unsupported format: ${nativeImage.format}")
+            else -> throw IllegalArgumentException("Unsupported format: ${nativeImage.format()}")
         }
     }
 
@@ -164,12 +162,12 @@ public object ImageInternals {
 
     @JvmStatic
     public fun setUnpackAlignment(image: NativeImage) {
-        GlStateManager._pixelStore(GL11.GL_UNPACK_ALIGNMENT, image.format.channelCount)
+        GlStateManager._pixelStore(GL11.GL_UNPACK_ALIGNMENT, image.format().components())
     }
 
     @JvmStatic
     public fun setPackAlignment(image: NativeImage) {
-        GlStateManager._pixelStore(GL11.GL_PACK_ALIGNMENT, image.format.channelCount)
+        GlStateManager._pixelStore(GL11.GL_PACK_ALIGNMENT, image.format().components())
     }
     //#endif
 }

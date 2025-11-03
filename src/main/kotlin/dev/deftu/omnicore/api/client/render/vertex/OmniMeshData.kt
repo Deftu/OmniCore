@@ -2,11 +2,11 @@ package dev.deftu.omnicore.api.client.render.vertex
 
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.RenderPassEncoder
-import dev.deftu.omnicore.internal.client.render.vertex.VanillaBuiltBuffer
+import dev.deftu.omnicore.internal.client.render.vertex.VanillaMeshData
 import java.util.function.Consumer
 
-public interface OmniBuiltBuffer : AutoCloseable {
-    public val vanilla: VanillaBuiltBuffer
+public interface OmniMeshData : AutoCloseable {
+    public val vanilla: VanillaMeshData
 
     public fun draw(pipeline: OmniRenderPipeline, builder: Consumer<RenderPassEncoder>)
 

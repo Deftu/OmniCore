@@ -1,13 +1,13 @@
 package dev.deftu.omnicore.internal.mixins.client;
 
 //#if FABRIC && MC == 1.8.9
-//$$ import net.minecraft.client.MinecraftClient;
-//$$ import net.minecraft.client.render.ClientTickTracker;
+//$$ import net.minecraft.client.Minecraft;
+//$$ import net.minecraft.util.Timer;
 //$$ import org.spongepowered.asm.mixin.Mixin;
 //$$ import org.spongepowered.asm.mixin.gen.Accessor;
 //$$
-//$$ @Mixin(MinecraftClient.class)
+//$$ @Mixin(Minecraft.class)
 //$$ public interface Mixin_AccessDeltaTickTracker {
-//$$     @Accessor ClientTickTracker getTicker();
+//$$     @Accessor Timer getTimer();
 //$$ }
 //#endif

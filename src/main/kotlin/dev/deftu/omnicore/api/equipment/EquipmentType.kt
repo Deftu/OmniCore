@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.equipment
 
 //#if MC >= 1.12.2
-import net.minecraft.entity.EquipmentSlot
+import net.minecraft.world.entity.EquipmentSlot
 //#endif
 
 public sealed interface EquipmentType {

@@ -2,11 +2,11 @@
 
 package dev.deftu.omnicore.api.nbt
 
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
-import net.minecraft.nbt.NbtList
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.Tag
+import net.minecraft.nbt.ListTag
 
-public val NbtList.length: Int
+public val ListTag.length: Int
     get() {
         //#if MC >= 1.16.5
         return this.size
@@ -15,7 +15,7 @@ public val NbtList.length: Int
         //#endif
     }
 
-public fun NbtList.addElement(element: NbtElement) {
+public fun ListTag.addElement(element: Tag) {
     //#if MC >= 1.16.5
     this.add(element)
     //#else
@@ -23,22 +23,22 @@ public fun NbtList.addElement(element: NbtElement) {
     //#endif
 }
 
-public fun NbtList.forEachCompound(action: (NbtCompound) -> Unit) {
+public fun ListTag.forEachCompound(action: (CompoundTag) -> Unit) {
     for (i in 0 until length) {
         val element = this[i]
-        if (element is NbtCompound) {
+        if (element is CompoundTag) {
             action(element)
         }
     }
 }
 
-public fun NbtList.getCompoundOrNull(index: Int): NbtCompound? {
+public fun ListTag.getCompoundOrNull(index: Int): CompoundTag? {
     val element = this[index]
-    return element as? NbtCompound
+    return element as? CompoundTag
 }
 
-public fun NbtList.mapCompounds(transform: (NbtCompound) -> NbtElement): NbtList {
-    val result = NbtList()
+public fun ListTag.mapCompounds(transform: (CompoundTag) -> Tag): ListTag {
+    val result = ListTag()
     forEachCompound {
         result.addElement(transform(it))
     }
@@ -46,8 +46,8 @@ public fun NbtList.mapCompounds(transform: (NbtCompound) -> NbtElement): NbtList
     return result
 }
 
-public fun NbtList.filterCompounds(predicate: (NbtCompound) -> Boolean): NbtList {
-    val result = NbtList()
+public fun ListTag.filterCompounds(predicate: (CompoundTag) -> Boolean): ListTag {
+    val result = ListTag()
     forEachCompound {
         if (predicate(it)) {
             result.addElement(it)
@@ -57,10 +57,10 @@ public fun NbtList.filterCompounds(predicate: (NbtCompound) -> Boolean): NbtList
     return result
 }
 
-public fun NbtList.findCompound(predicate: (NbtCompound) -> Boolean): NbtCompound? {
+public fun ListTag.findCompound(predicate: (CompoundTag) -> Boolean): CompoundTag? {
     for (i in 0 until length) {
         val element = this[i]
-        if (element is NbtCompound && predicate(element)) {
+        if (element is CompoundTag && predicate(element)) {
             return element
         }
     }

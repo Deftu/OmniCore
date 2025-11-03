@@ -27,7 +27,7 @@ public class OmniColorArgumentType : VarianceArgumentType<OmniColor> {
         public fun color(): OmniColorArgumentType = OmniColorArgumentType()
 
         @JvmStatic
-        public fun <T> getColor(context: CommandContext<T>, name: String): OmniColor {
+        public fun <T> get(context: CommandContext<T>, name: String): OmniColor {
             return context.getArgument(name, OmniColor::class.java)
         }
     }

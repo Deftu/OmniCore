@@ -2,47 +2,57 @@
 
 package dev.deftu.omnicore.api.client
 
-import net.minecraft.client.MinecraftClient
-import net.minecraft.client.gui.hud.ChatHud
-import net.minecraft.client.gui.hud.InGameHud
-import net.minecraft.client.network.ClientPlayerEntity
-import net.minecraft.client.network.ServerInfo
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.entity.Entity
-import net.minecraft.resource.ResourceManager
-import net.minecraft.server.integrated.IntegratedServer
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.Gui
+import net.minecraft.client.gui.components.ChatComponent
+import net.minecraft.client.multiplayer.ClientLevel
+import net.minecraft.client.multiplayer.ServerData
+import net.minecraft.client.player.LocalPlayer
+import net.minecraft.client.renderer.texture.TextureManager
+import net.minecraft.client.server.IntegratedServer
+import net.minecraft.server.packs.resources.ResourceManager
+import net.minecraft.world.entity.Entity
 
 //#if MC >= 1.16.5
-import net.minecraft.client.util.Window
+import com.mojang.blaze3d.platform.Window
 //#endif
 
-public inline val client: MinecraftClient
+public inline val client: Minecraft
     @JvmName("get")
-    get() = MinecraftClient.getInstance()
+    get() = Minecraft.getInstance()
 
-public inline val player: ClientPlayerEntity?
+public inline val textureManager: TextureManager
+    get() {
+        //#if MC >= 1.16.5
+        return client.textureManager // field, textureManager
+        //#else
+        //$$ return client.textureManager // getter, getTextureManager()
+        //#endif
+    }
+
+public inline val player: LocalPlayer?
     get() = client.player
 
-public inline val world: ClientWorld?
-    get() = client.world
+public inline val world: ClientLevel?
+    get() = client.level
 
 public inline val integratedServer: IntegratedServer?
-    get() = client.server
+    get() = client.singleplayerServer
 
 public inline val isIntegratedServerRunning: Boolean
-    get() = client.isIntegratedServerRunning
+    get() = client.hasSingleplayerServer()
 
 public inline val camera: Entity?
     get() = client.cameraEntity ?: player
 
-public inline val playerHud: InGameHud?
-    get() = client.inGameHud
+public inline val playerHud: Gui?
+    get() = client.gui
 
-public inline val chatHud: ChatHud?
-    get() = playerHud?.chatHud
+public inline val chatHud: ChatComponent?
+    get() = playerHud?.chat
 
-public inline val serverInfo: ServerInfo?
-    get() = client.currentServerEntry
+public inline val serverInfo: ServerData?
+    get() = client.currentServer
 
 public inline val resourceManager: ResourceManager
     get() = client.resourceManager
@@ -52,5 +62,5 @@ public inline val window: Window
     get() = client.window
 
 public inline val windowHandle: Long
-    get() = window.handle
+    get() = window.handle()
 //#endif

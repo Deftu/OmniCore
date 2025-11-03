@@ -2,16 +2,16 @@ package dev.deftu.omnicore.api.world
 
 import dev.deftu.omnicore.api.data.pos.OmniBlockPos
 import dev.deftu.omnicore.api.translationKey
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.ChunkPos
-import net.minecraft.world.World
+import net.minecraft.core.BlockPos
+import net.minecraft.world.level.ChunkPos
+import net.minecraft.world.level.Level
 
 //#if MC == 1.16.5
-//$$ import net.minecraft.util.math.ChunkSectionPos
+//$$ import net.minecraft.core.SectionPos
 //#endif
 
 //#if MC >= 1.16.5 && MC < 1.18.2 && FABRIC
-//$$ import net.minecraft.util.registry.BuiltinRegistries
+//$$ import net.minecraft.data.BuiltinRegistries
 //#endif
 
 //#if MC <= 1.12.2 && FABRIC
@@ -19,7 +19,7 @@ import net.minecraft.world.World
 //#endif
 
 public data class OmniChunkData(
-    public val world: World,
+    public val world: Level,
     public val dimension: OmniDimension,
 
     public val chunkX: Int,
@@ -35,16 +35,16 @@ public data class OmniChunkData(
     public companion object {
         @JvmStatic
         public fun from(
-            world: World,
+            world: Level,
             dimension: OmniDimension,
-            chunkPos: ChunkPos
+            chunkPos: ChunkPos,
         ): OmniChunkData? {
             val chunkX = chunkPos.x
             val chunkZ = chunkPos.z
-            val blockStartX = chunkPos.startX
-            val blockStartZ = chunkPos.startZ
-            val blockEndX = chunkPos.endX
-            val blockEndZ = chunkPos.endZ
+            val blockStartX = chunkPos.minBlockX
+            val blockStartZ = chunkPos.minBlockZ
+            val blockEndX = chunkPos.maxBlockX
+            val blockEndZ = chunkPos.maxBlockZ
 
             return OmniChunkData(
                 world = world,
@@ -61,10 +61,10 @@ public data class OmniChunkData(
                     require(y in 0..world.maxWorldHeight) { "y must be between 0 and ${world.maxWorldHeight} (inclusive), got $y" }
 
                     //#if MC >= 1.17.1
-                    chunkPos.getBlockPos(x, y, z)
+                    chunkPos.getBlockAt(x, y, z)
                     //#elseif MC >= 1.16.5
-                    //$$ val xOff = ChunkSectionPos.getBlockCoord(chunkX) + x
-                    //$$ val zOff = ChunkSectionPos.getBlockCoord(chunkZ) + z
+                    //$$ val xOff = SectionPos.sectionToBlockCoord(chunkX) + x
+                    //$$ val zOff = SectionPos.sectionToBlockCoord(chunkZ) + z
                     //$$ BlockPos(xOff, y, zOff)
                     //#else
                     //$$ chunkPos.getBlock(x, y, z)
@@ -94,7 +94,7 @@ public data class OmniChunkData(
     public fun getBiomeAt(pos: BlockPos): OmniBiomeData? {
         val biome = world.getBiome(pos) ?: return null
         //#if MC >= 1.18.2
-        val id = biome.key?.map { it.value }?.get() ?: return null
+        val id = biome.unwrapKey()?.map { it.location() }?.get() ?: return null
         val value = biome.value()
 
         return OmniBiomeData(
@@ -104,11 +104,11 @@ public data class OmniChunkData(
             name = id.translationKey("biome"),
             waterColor = value.waterColor,
             grassColorInvoker = { x, z ->
-                value.getGrassColorAt(x, z)
+                value.getGrassColor(x, z)
             },
             precipitationInvoker = { x, y, z ->
                 //#if MC >= 1.19.4
-                val precipitation = value.getPrecipitation(
+                val precipitation = value.getPrecipitationAt(
                     OmniBlockPos(x, y, z).vanilla,
                     //#if MC >= 1.21.2
                     y
@@ -124,9 +124,9 @@ public data class OmniChunkData(
         //#if MC >= 1.12.2
         //#if FABRIC
         //#if MC >= 1.16.5
-        //$$ val id = BuiltinRegistries.BIOME?.getId(biome) ?: return null
+        //$$ val id = BuiltinRegistries.BIOME?.getKey(biome) ?: return null
         //#else
-        //$$ val id = Biome.REGISTRY?.getIdentifier(biome) ?: return null
+        //$$ val id = Biome.REGISTRY?.getNameForObject(biome) ?: return null
         //#endif
         //#else
         //$$ val id = biome.registryName ?: return null
@@ -146,7 +146,11 @@ public data class OmniChunkData(
         //#else
         //$$     name = biome.biomeName,
         //#endif
-        //$$     waterColor = biome.waterColor,
+                //#if MC >= 1.12.2
+                //$$ waterColor = biome.waterColor,
+                //#else
+                //$$ waterColor = biome.waterColorMultiplier,
+                //#endif
         //$$     grassColorInvoker = { x, z ->
         //#if MC >= 1.16.5
         //$$         biome.getGrassColor(x, z)

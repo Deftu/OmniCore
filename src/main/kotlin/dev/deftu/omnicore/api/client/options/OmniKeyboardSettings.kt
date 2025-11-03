@@ -47,8 +47,10 @@ public object OmniKeyboardSettings {
     @JvmStatic
     public val isAutoJumpEnabled: Boolean
         get() {
-            //#if MC >= 1.12.2
-            return unwrap(options.autoJump)
+            //#if MC >= 1.19.2
+            return unwrap(options.autoJump())
+            //#elseif MC >= 1.12.2
+            //$$ return unwrap(options.autoJump)
             //#else
             //$$ return false
             //#endif
@@ -57,8 +59,10 @@ public object OmniKeyboardSettings {
     @JvmStatic
     public val isToggleSneakEnabled: Boolean
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.sneakToggled)
+            //#if MC >= 1.19.2
+            return unwrap(options.toggleCrouch())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.toggleCrouch)
             //#else
             //$$ return false
             //#endif
@@ -67,8 +71,10 @@ public object OmniKeyboardSettings {
     @JvmStatic
     public val isToggleSprintEnabled: Boolean
         get() {
-            //#if MC >= 1.16.5
-            return unwrap(options.sprintToggled)
+            //#if MC >= 1.19.2
+            return unwrap(options.toggleSprint())
+            //#elseif MC >= 1.16.5
+            //$$ return unwrap(options.toggleSprint)
             //#else
             //$$ return false
             //#endif
@@ -78,7 +84,7 @@ public object OmniKeyboardSettings {
     public val isOperatorItemsTabEnabled: Boolean
         get() {
             //#if MC >= 1.19.3
-            return unwrap(options.operatorItemsTab)
+            return unwrap(options.operatorItemsTab())
             //#else
             //$$ return false
             //#endif

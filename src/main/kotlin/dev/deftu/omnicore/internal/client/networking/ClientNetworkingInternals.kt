@@ -1,14 +1,14 @@
 package dev.deftu.omnicore.internal.client.networking
 
 import dev.deftu.omnicore.api.client.client
-import net.minecraft.network.PacketByteBuf
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket
-import net.minecraft.util.Identifier
+import net.minecraft.network.FriendlyByteBuf
+import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket
+import net.minecraft.resources.ResourceLocation
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.20.4
-import dev.deftu.omnicore.internal.networking.VanillaCustomPayload
+import dev.deftu.omnicore.internal.networking.VanillaCustomPacketPayload
 //#endif
 
 //#if FORGE && MC <= 1.12.2
@@ -38,8 +38,8 @@ public object ClientNetworkingInternals {
     }
 
     @JvmStatic
-    public fun send(id: Identifier, buf: PacketByteBuf) {
-        val networkHandler = client.networkHandler
+    public fun send(id: ResourceLocation, buf: FriendlyByteBuf) {
+        val networkHandler = client.connection
         if (networkHandler == null) {
             logger.warn("Attempted to send packet while network handler is null.")
             return
@@ -49,9 +49,9 @@ public object ClientNetworkingInternals {
         //$$ initialize()
         //#endif
 
-        val packet = CustomPayloadC2SPacket(
+        val packet = ServerboundCustomPayloadPacket(
             //#if MC >= 1.20.4
-            VanillaCustomPayload(id, buf),
+            VanillaCustomPacketPayload(id, buf),
             //#elseif MC >= 1.16.5
             //$$ id,
             //$$ buf,
@@ -61,11 +61,7 @@ public object ClientNetworkingInternals {
             //#endif
         )
 
-        //#if MC >= 1.20.6 && FORGE-LIKE
-        //$$ networkHandler.send(packet)
-        //#else
-        networkHandler.sendPacket(packet)
-        //#endif
+        networkHandler.send(packet)
     }
 
     //#if FORGE && MC <= 1.12.2

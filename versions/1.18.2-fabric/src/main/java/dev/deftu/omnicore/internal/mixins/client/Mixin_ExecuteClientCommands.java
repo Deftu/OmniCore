@@ -2,11 +2,11 @@ package dev.deftu.omnicore.internal.mixins.client;
 
 //#if FABRIC
 import dev.deftu.omnicore.internal.client.commands.ClientCommandInternals;
+import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.minecraft.client.gui.screen.Screen;
 
 @Mixin(Screen.class)
 public class Mixin_ExecuteClientCommands {
@@ -14,11 +14,7 @@ public class Mixin_ExecuteClientCommands {
         method = "sendMessage(Ljava/lang/String;Z)V",
         at = @At(
             value = "INVOKE",
-            //#if MC >= 1.16.5
-            target = "Lnet/minecraft/client/network/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V",
-            //#else
-            //$$ target = "Lnet/minecraft/entity/player/ClientPlayerEntity;sendChatMessage(Ljava/lang/String;)V",
-            //#endif
+            target = "Lnet/minecraft/client/player/LocalPlayer;chat(Ljava/lang/String;)V",
             shift = At.Shift.BEFORE
         ),
         cancellable = true

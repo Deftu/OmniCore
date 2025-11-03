@@ -42,21 +42,21 @@ public object AlphaStateInternals {
     @JvmStatic
     public fun enable() {
         //#if MC <= 1.16.5
-        //$$ GlStateManager.enableAlphaTest()
+        //$$ GlStateManager._enableAlphaTest()
         //#endif
     }
 
     @JvmStatic
     public fun disable() {
         //#if MC <= 1.16.5
-        //$$ GlStateManager.disableAlphaTest()
+        //$$ GlStateManager._disableAlphaTest()
         //#endif
     }
 
     @JvmStatic
     public fun configure(func: Int, ref: Float) {
         //#if MC <= 1.16.5
-        //$$ GlStateManager.alphaFunc(func, ref)
+        //$$ GlStateManager._alphaFunc(func, ref)
         //#endif
     }
 }

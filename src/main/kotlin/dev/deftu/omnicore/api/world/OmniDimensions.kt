@@ -3,26 +3,26 @@
 package dev.deftu.omnicore.api.world
 
 import dev.deftu.omnicore.internal.world.DimensionInternals
-import net.minecraft.util.Identifier
-import net.minecraft.world.World
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.Level
 
 public typealias DimensionId =
         //#if MC >= 1.16.5
-        Identifier
+        ResourceLocation
         //#else
         //$$ Int
         //#endif
 
-public val World.dimensionType: OmniDimension
+public val Level.dimensionType: OmniDimension
     get() {
         //#if MC >= 1.16.5
-        val id = registryKey.value
-        val type = dimension.toString()
+        val id = dimension().location()
+        val type = dimensionType().toString()
         //#elseif MC >= 1.12.2
         //#if FORGE
         //$$ val id = provider.dimension
         //#else
-        //$$ val id = dimension.dimensionType.id
+        //$$ val id = provider.dimensionType.id
         //#endif
         //$$ val type = provider.dimensionType.toString()
         //#else
@@ -30,8 +30,8 @@ public val World.dimensionType: OmniDimension
         //$$ val id = provider.dimensionId
         //$$ val type = provider.dimensionName
         //#else
-        //$$ val id = dimension.type
-        //$$ val type = dimension.name
+        //$$ val id = provider.dimensionId
+        //$$ val type = provider.dimensionName
         //#endif
         //#endif
         return DimensionInternals.derive(id, type)

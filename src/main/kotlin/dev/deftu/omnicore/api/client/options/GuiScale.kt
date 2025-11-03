@@ -25,7 +25,7 @@ public sealed class GuiScale : TrackedState<GuiScale>, Comparable<GuiScale> {
             get() {
                 val guiScale =
                     //#if MC >= 1.19.2
-                    options.guiScale.value
+                    options.guiScale().get()
                     //#else
                     //$$ options.guiScale
                     //#endif
@@ -34,15 +34,15 @@ public sealed class GuiScale : TrackedState<GuiScale>, Comparable<GuiScale> {
             }
             set(value) {
                 //#if MC >= 1.19.2
-                options.guiScale.value = value
+                options.guiScale().set(value)
                 //#else
                 //$$ options.guiScale = value
                 //#endif
 
                 //#if MC >= 1.16.5 && MC < 1.20.5
                 //$$ val window = client.window
-                //$$ val scaleFactor = window.calculateScaleFactor(value, client.forcesUnicodeFont())
-                //$$ window.scaleFactor = scaleFactor.toDouble()
+                //$$ val scaleFactor = window.calculateScale(value, client.isEnforceUnicode)
+                //$$ window.guiScale = scaleFactor.toDouble()
                 //#endif
             }
 

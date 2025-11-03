@@ -1,15 +1,15 @@
 package dev.deftu.omnicore.api.resources
 
-import net.minecraft.resource.ResourceManager
+import net.minecraft.server.packs.resources.ResourceManager
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
 
 //#if MC <= 1.21.1
-//$$ import net.minecraft.util.profiler.Profiler
+//$$ import net.minecraft.util.profiling.ProfilerFiller
 //#endif
 
 //#if MC >= 1.16.5
-import net.minecraft.resource.ResourceReloader
+import net.minecraft.server.packs.resources.PreparableReloadListener
 //#endif
 
 public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
@@ -24,21 +24,21 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
     //#if MC >= 1.16.5
     //#if MC >= 1.21.9
     override fun reload(
-        reloadState: ResourceReloader.Store,
+        reloadState: PreparableReloadListener.SharedState,
         loadHandler: Executor,
-        synchronizer: ResourceReloader.Synchronizer,
+        synchronizer: PreparableReloadListener.PreparationBarrier,
         applyExecutor: Executor
     ): CompletableFuture<Void> {
-        return reloadInternal(synchronizer, reloadState.resourceManager, loadHandler, applyExecutor)
+        return reloadInternal(synchronizer, reloadState.resourceManager(), loadHandler, applyExecutor)
     }
     //#else
     //$$ override fun reload(
     //$$     synchronizer: PreparableReloadListener.PreparationBarrier,
     //$$     resourceManager: ResourceManager,
-        //#if MC <= 1.21.1
-        //$$ loadProfiler: Profiler,
-        //$$ applyProfiler: Profiler,
-        //#endif
+    //#if MC <= 1.21.1
+    //$$ loadProfiler: ProfilerFiller,
+    //$$ applyProfiler: ProfilerFiller,
+    //#endif
     //$$     loadHandler: Executor,
     //$$     applyHandler: Executor
     //$$ ): CompletableFuture<Void> {
@@ -47,13 +47,13 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
     //#endif
 
     public fun reloadInternal(
-        synchronizer: ResourceReloader.Synchronizer,
+        synchronizer: PreparableReloadListener.PreparationBarrier,
         resourceManager: ResourceManager,
         loadHandler: Executor,
         applyHandler: Executor
     ): CompletableFuture<Void> {
         return reload(resourceManager, loadHandler)
-            .thenCompose(synchronizer::whenPrepared)
+            .thenCompose(synchronizer::wait)
             .thenCompose { data -> apply(data, resourceManager, applyHandler) }
     }
     //#else

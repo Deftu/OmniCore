@@ -54,11 +54,11 @@ public object OmniClientChatSender {
     @JvmStatic
     public fun send(message: String) {
         //#if MC >= 1.19.4
-        player?.networkHandler?.sendChatMessage(message)
+        player?.connection?.sendChat(message)
         //#elseif MC >= 1.19.2
         //$$ player?.chatSigned(message, null)
         //#else
-        //$$ player?.sendChatMessage(message)
+        //$$ player?.chat(message)
         //#endif
     }
 }

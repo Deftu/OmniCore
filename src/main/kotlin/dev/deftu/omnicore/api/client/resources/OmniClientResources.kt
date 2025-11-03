@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.resources.ResourceReloadListener
 //#if MC >= 1.16.5
 //#if FABRIC
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper
-import net.minecraft.resource.ResourceType
+import net.minecraft.server.packs.PackType
 //#elseif FORGE && MC >= 1.17.1
 //$$ import net.minecraftforge.client.event.RegisterClientReloadListenersEvent
 //#elseif NEOFORGE
@@ -33,7 +33,7 @@ public object OmniClientResources {
     @JvmStatic
     public fun reload() {
         //#if MC >= 1.16.5
-        client.reloadResources()
+        client.reloadResourcePacks()
         //#else
         //$$ client.refreshResources()
         //#endif
@@ -43,7 +43,7 @@ public object OmniClientResources {
     public fun registerReloadListener(listener: ResourceReloadListener) {
         //#if FABRIC
         //#if MC >= 1.16.5
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(listener)
+        ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(listener)
         //#else
         //$$ ResourceManagerHelper.getInstance().registerReloadListener(listener)
         //#endif

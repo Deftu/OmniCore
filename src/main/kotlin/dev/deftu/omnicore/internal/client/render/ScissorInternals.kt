@@ -4,7 +4,7 @@ import dev.deftu.omnicore.api.client.render.ScissorBox
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.5
-import net.minecraft.client.gui.DrawContext
+//import net.minecraft.client.gui.DrawContext
 //#elseif MC >= 1.17.1
 //$$ import com.mojang.blaze3d.platform.GlStateManager
 //#endif

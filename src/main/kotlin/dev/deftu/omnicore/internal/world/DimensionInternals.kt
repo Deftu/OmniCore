@@ -4,32 +4,40 @@ import dev.deftu.omnicore.api.world.DimensionId
 import dev.deftu.omnicore.api.world.OmniDimension
 import org.jetbrains.annotations.ApiStatus
 
-//#if MC >= 1.16.5
-import net.minecraft.world.dimension.DimensionTypes
+//#if MC >= 1.19.2
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes
+//#elseif MC >= 1.16.5
+//$$ import net.minecraft.world.level.dimension.DimensionType
 //#endif
 
 @ApiStatus.Internal
 public object DimensionInternals {
     @JvmField
     public val OVERWORLD: DimensionId =
-        //#if MC >= 1.16.5
-        DimensionTypes.OVERWORLD_ID
+        //#if MC >= 1.19.2
+        BuiltinDimensionTypes.OVERWORLD_EFFECTS
+        //#elseif MC >= 1.16.5
+        //$$ DimensionType.OVERWORLD_EFFECTS
         //#else
         //$$ 0
         //#endif
 
     @JvmField
     public val NETHER: DimensionId =
-        //#if MC >= 1.16.5
-        DimensionTypes.THE_NETHER_ID
+        //#if MC >= 1.19.2
+        BuiltinDimensionTypes.NETHER_EFFECTS
+        //#elseif MC >= 1.16.5
+        //$$ DimensionType.NETHER_EFFECTS
         //#else
         //$$ -1
         //#endif
 
     @JvmField
     public val END: DimensionId =
-        //#if MC >= 1.16.5
-        DimensionTypes.THE_END_ID
+        //#if MC >= 1.19.2
+        BuiltinDimensionTypes.END_EFFECTS
+        //#elseif MC >= 1.16.5
+        //$$ DimensionType.END_EFFECTS
         //#else
         //$$ 1
         //#endif

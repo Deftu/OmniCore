@@ -5,9 +5,12 @@ package dev.deftu.omnicore.api.client.network
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.screen.currentScreen
 import dev.deftu.omnicore.api.client.world
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen
-import net.minecraft.client.network.ServerAddress
+import net.minecraft.client.gui.screens.ConnectScreen
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen
+
+//#if MC >= 1.17.1
+import net.minecraft.client.multiplayer.resolver.ServerAddress
+//#endif
 
 //#if MC < 1.20.4
 //$$ import dev.deftu.omnicore.api.client.player
@@ -16,14 +19,14 @@ import net.minecraft.client.network.ServerAddress
 public val serverBrand: String?
     get() {
         //#if MC >= 1.20.4
-        return client.networkHandler?.brand
+        return client.connection?.serverBrand()
         //#else
         //$$ return player?.serverBrand
         //#endif
     }
 
 public val currentServer: OmniServerInfo?
-    get() = client.currentServerEntry?.let(OmniServerInfo::fromServerInfo)
+    get() = client.currentServer?.let(OmniServerInfo::fromServerInfo)
 
 public val currentServerName: String?
     get() = currentServer?.name
@@ -35,7 +38,19 @@ public val isInLan: Boolean
     get() = currentServer?.isLocal ?: false
 
 public val isInSingleplayer: Boolean
-    get() = client.isInSingleplayer
+    get() {
+        //#if MC >= 1.19.4
+        return client.isSingleplayer
+        //#else
+        //$$ val localServer = client.singleplayerServer
+        //#if MC >= 1.16.5
+        //$$ val isPublic = localServer?.isPublished ?: false
+        //#else
+        //$$ val isPublic = localServer?.public ?: false
+        //#endif
+        //$$ return localServer != null && !isPublic
+        //#endif
+    }
 
 public val isInMultiplayer: Boolean
     get() = (world != null) && !isInSingleplayer && isMultiplayerEnabled && !isMultiplayerBanned && currentServerAddress != null
@@ -43,7 +58,7 @@ public val isInMultiplayer: Boolean
 public val isMultiplayerEnabled: Boolean
     get() {
         //#if MC >= 1.19.2
-        return client.isMultiplayerEnabled
+        return client.allowsMultiplayer()
         //#else
         //$$ // No direct equivalent, just assume true
         //$$ return true
@@ -53,7 +68,7 @@ public val isMultiplayerEnabled: Boolean
 public val isMultiplayerBanned: Boolean
     get() {
         //#if MC >= 1.20.4
-        return client.multiplayerBanDetails != null
+        return client.multiplayerBan() != null
         //#elseif MC >= 1.19.2
         //$$ return client.shouldShowBanNotice()
         //#else
@@ -63,12 +78,12 @@ public val isMultiplayerBanned: Boolean
     }
 
 public fun connectTo(entry: OmniServerInfo) {
-    val serverInfo = entry.toServerInfo()
+    val serverInfo = entry.toServerData()
 
     //#if MC >= 1.17.1
-    val serverAddress = ServerAddress.parse(entry.address)
-    ConnectScreen.connect(
-        MultiplayerScreen(currentScreen),
+    val serverAddress = ServerAddress.parseString(entry.address)
+    ConnectScreen.startConnecting(
+        JoinMultiplayerScreen(currentScreen),
         client,
         serverAddress,
         serverInfo,
@@ -80,7 +95,7 @@ public fun connectTo(entry: OmniServerInfo) {
         //#endif
     )
     //#else
-    //$$ currentScreen = ConnectScreen(MultiplayerScreen(currentScreen), client, serverInfo)
+    //$$ currentScreen = ConnectScreen(JoinMultiplayerScreen(currentScreen), client, serverInfo)
     //#endif
 }
 

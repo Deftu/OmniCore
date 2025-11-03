@@ -95,7 +95,7 @@ public object BlendStateInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.blendFunc(srcFactor, dstFactor)
         //#else
-        //$$ GlStateManager.blendFunc(srcFactor, dstFactor)
+        //$$ GlStateManager._blendFunc(srcFactor, dstFactor)
         //#endif
     }
 
@@ -111,7 +111,7 @@ public object BlendStateInternals {
         //#elseif MC >= 1.17.1
         //$$ RenderSystem.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#else
-        //$$ GlStateManager.blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
+        //$$ GlStateManager._blendFuncSeparate(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha)
         //#endif
     }
 

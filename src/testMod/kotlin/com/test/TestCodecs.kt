@@ -11,7 +11,7 @@ object TestCodecs {
         instance.group(
             Codec.STRING.fieldOf("name").forGetter(TestData::name),
             Codec.INT.fieldOf("value").forGetter(TestData::value),
-            OmniCodecs.IDENTIFIER.fieldOf("id").forGetter(TestData::id),
+            OmniCodecs.RESOURCE_LOCATION.fieldOf("id").forGetter(TestData::id),
             OmniCodecs.PATTERN.fieldOf("pattern").forGetter(TestData::pattern),
             OmniCodecs.UUID_STRICT.fieldOf("strict_uuid").forGetter(TestData::strictUuid),
             OmniCodecs.UUID_UNDASHED.fieldOf("undashed_uuid").forGetter(TestData::undashedUuid),

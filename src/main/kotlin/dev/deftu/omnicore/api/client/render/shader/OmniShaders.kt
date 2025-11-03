@@ -6,7 +6,7 @@ import dev.deftu.omnicore.api.client.render.DefaultVertexFormats
 import dev.deftu.omnicore.api.client.render.state.OmniBlendState
 import dev.deftu.omnicore.api.resources.findFirstOrNull
 import dev.deftu.omnicore.api.resources.readString
-import net.minecraft.util.Identifier
+import net.minecraft.resources.ResourceLocation
 
 //#if MC >= 1.17.1 && MC < 1.21.5
 //$$ import dev.deftu.omnicore.internal.client.render.shader.VanillaShaderFactory
@@ -45,8 +45,8 @@ public object OmniShaders {
 
     @JvmStatic
     public fun resource(
-        vertexLocation: Identifier,
-        fragmentLocation: Identifier,
+        vertexLocation: ResourceLocation,
+        fragmentLocation: ResourceLocation,
         vertexFormat: VertexFormat?,
         schema: ShaderSchema,
         blendState: OmniBlendState = OmniBlendState.NORMAL,
@@ -61,8 +61,8 @@ public object OmniShaders {
 
     @JvmStatic
     public fun resource(
-        vertexLocation: Identifier,
-        fragmentLocation: Identifier,
+        vertexLocation: ResourceLocation,
+        fragmentLocation: ResourceLocation,
         vertexFormat: DefaultVertexFormats?,
         schema: ShaderSchema,
         blendState: OmniBlendState = OmniBlendState.NORMAL,

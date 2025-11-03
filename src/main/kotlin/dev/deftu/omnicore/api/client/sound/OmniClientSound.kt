@@ -3,7 +3,7 @@ package dev.deftu.omnicore.api.client.sound
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.omnicore.internal.client.sound.ClientSoundInternals
-import net.minecraft.client.sound.SoundManager
+import net.minecraft.client.sounds.SoundManager
 
 public object OmniClientSound {
     @JvmStatic

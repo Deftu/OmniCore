@@ -2,59 +2,59 @@ package dev.deftu.omnicore.internal.sound
 
 import dev.deftu.omnicore.api.sound.OmniNoteBlockSounds
 import dev.deftu.omnicore.api.sound.OmniSound
-import net.minecraft.sound.SoundEvents
+import net.minecraft.sounds.SoundEvents
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
 public object OmniNoteBlockSoundsImpl : OmniNoteBlockSounds {
     override val basedrum: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_BASEDRUM))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_BASEDRUM))
     }
 
     override val bass: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_BASS))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_BASS))
     }
 
     override val harp: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_HARP))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_HARP))
     }
 
     override val hat: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_HAT))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_HAT))
     }
 
     override val pling: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_PLING))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_PLING))
     }
 
     override val snare: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_SNARE))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_SNARE))
     }
 
     override val bell: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_BELL))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_BELL))
     }
 
     override val chime: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_CHIME))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_CHIME))
     }
 
     override val flute: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_FLUTE))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_FLUTE))
     }
 
     override val guitar: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_GUITAR))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_GUITAR))
     }
 
     override val xylophone: OmniSound by lazy {
-        OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_XYLOPHONE))
+        OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_XYLOPHONE))
     }
 
     override val ironXylophone: OmniSound by lazy {
         OmniSound.invalidOr(
             //#if MC >= 1.16.5
-            OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_IRON_XYLOPHONE))
+            OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_IRON_XYLOPHONE))
             //#endif
         )
     }
@@ -62,7 +62,7 @@ public object OmniNoteBlockSoundsImpl : OmniNoteBlockSounds {
     override val cowBell: OmniSound by lazy {
         OmniSound.invalidOr(
             //#if MC >= 1.16.5
-            OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_COW_BELL))
+            OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_COW_BELL))
             //#endif
         )
     }
@@ -70,7 +70,7 @@ public object OmniNoteBlockSoundsImpl : OmniNoteBlockSounds {
     override val didgeridoo: OmniSound by lazy {
         OmniSound.invalidOr(
             //#if MC >= 1.16.5
-            OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_DIDGERIDOO))
+            OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_DIDGERIDOO))
             //#endif
         )
     }
@@ -78,7 +78,7 @@ public object OmniNoteBlockSoundsImpl : OmniNoteBlockSounds {
     override val bit: OmniSound by lazy {
         OmniSound.invalidOr(
             //#if MC >= 1.16.5
-            OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_BIT))
+            OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_BIT))
             //#endif
         )
     }
@@ -86,7 +86,7 @@ public object OmniNoteBlockSoundsImpl : OmniNoteBlockSounds {
     override val banjo: OmniSound by lazy {
         OmniSound.invalidOr(
             //#if MC >= 1.16.5
-            OmniSound.of(unwrapSoundEvent(SoundEvents.BLOCK_NOTE_BLOCK_BANJO))
+            OmniSound.of(unwrapSoundEvent(SoundEvents.NOTE_BLOCK_BANJO))
             //#endif
         )
     }

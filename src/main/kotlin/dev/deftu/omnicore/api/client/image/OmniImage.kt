@@ -5,7 +5,7 @@ import java.io.File
 import java.nio.file.Path
 
 //#if MC >= 1.16.5
-import net.minecraft.client.texture.NativeImage
+import com.mojang.blaze3d.platform.NativeImage
 //#else
 //$$ import java.awt.image.BufferedImage
 //#endif

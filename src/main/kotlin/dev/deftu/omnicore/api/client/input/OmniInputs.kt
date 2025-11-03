@@ -1,7 +1,7 @@
 package dev.deftu.omnicore.api.client.input
 
 //#if MC >= 1.16.5
-import net.minecraft.client.util.InputUtil
+import com.mojang.blaze3d.platform.InputConstants
 //#else
 //$$ import net.minecraft.client.settings.GameSettings
 //#endif
@@ -22,10 +22,10 @@ public object OmniInputs {
         val name =
             //#if MC >= 1.21.9
             (if (code == -1) {
-                InputUtil.Type.SCANCODE.createFromCode(scanCode)
+                InputConstants.Type.SCANCODE.getOrCreate(scanCode)
             } else {
-                InputUtil.Type.KEYSYM.createFromCode(code)
-            }).localizedText.toString()
+                InputConstants.Type.KEYSYM.getOrCreate(code)
+            }).displayName.toString()
             //#elseif MC >= 1.16.5
             //$$ InputConstants.getKey(code, scanCode).name.toString()
             //#else

@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.render
 
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 
 //#if MC <= 1.12.2
 //$$ import net.minecraft.client.gui.ScaledResolution
@@ -13,7 +13,7 @@ public object OmniResolution {
         public val width: Int
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.width
+                return Minecraft.getInstance().window.screenWidth
                 //#else
                 //$$ return Minecraft.getMinecraft().displayWidth
                 //#endif
@@ -22,7 +22,7 @@ public object OmniResolution {
         public val height: Int
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.height
+                return Minecraft.getInstance().window.screenHeight
                 //#else
                 //$$ return Minecraft.getMinecraft().displayHeight
                 //#endif
@@ -33,7 +33,7 @@ public object OmniResolution {
         public val width: Int
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.framebufferWidth
+                return Minecraft.getInstance().window.width
                 //#else
                 //$$ return Minecraft.getMinecraft().displayWidth
                 //#endif
@@ -42,7 +42,7 @@ public object OmniResolution {
         public val height: Int
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.framebufferHeight
+                return Minecraft.getInstance().window.height
                 //#else
                 //$$ return Minecraft.getMinecraft().displayHeight
                 //#endif
@@ -60,7 +60,7 @@ public object OmniResolution {
         public val width: Int
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.scaledWidth
+                return Minecraft.getInstance().window.guiScaledWidth
                 //#else
                 //$$ return getScaledRes().scaledWidth
                 //#endif
@@ -69,7 +69,7 @@ public object OmniResolution {
         public val height: Int
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.scaledHeight
+                return Minecraft.getInstance().window.guiScaledHeight
                 //#else
                 //$$ return getScaledRes().scaledHeight
                 //#endif
@@ -78,10 +78,10 @@ public object OmniResolution {
         public val scaleFactor: Double
             get() {
                 //#if MC >= 1.16.5
-                return MinecraftClient.getInstance().window.scaleFactor
+                return Minecraft.getInstance().window.guiScale
                     //#if MC >= 1.21.6
                     .toDouble()
-                    //#endif
+                //#endif
                 //#else
                 //$$ return getScaledRes().scaleFactor.toDouble()
                 //#endif

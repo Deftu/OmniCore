@@ -5,7 +5,7 @@ import dev.deftu.omnicore.api.client.input.KeyboardModifiers
 import dev.deftu.omnicore.api.client.input.OmniKeys
 import dev.deftu.omnicore.api.client.input.OmniMouseButtons
 import dev.deftu.omnicore.api.client.render.OmniRenderingContext
-import dev.deftu.omnicore.api.client.render.stack.OmniMatrixStacks
+import dev.deftu.omnicore.api.client.render.stack.OmniPoseStacks
 import dev.deftu.omnicore.api.eventBus
 import org.jetbrains.annotations.ApiStatus
 
@@ -33,13 +33,13 @@ public object ScreenEventForwarding {
 
             //#if MC >= 1.21.9
             ScreenKeyboardEvents.allowKeyPress(screen).register { _, event ->
-                val event = ScreenEvent.KeyPress.Pre(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyPress.Pre(screen, OmniKeys.from(event.key), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
                 !event.isCancelled
             }
 
             ScreenKeyboardEvents.allowKeyRelease(screen).register { _, event ->
-                val event = ScreenEvent.KeyRelease.Pre(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyRelease.Pre(screen, OmniKeys.from(event.key), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
                 !event.isCancelled
             }
@@ -82,14 +82,14 @@ public object ScreenEventForwarding {
             //#endif
 
             ScreenEvents.beforeRender(screen).register { _, ctx, _, _, tickDelta ->
-                val matrixStack = OmniMatrixStacks.vanilla(ctx)
+                val pose = OmniPoseStacks.vanilla(ctx)
                 eventBus.post(ScreenEvent.Render.Post(
                     screen,
                     OmniRenderingContext(
                         //#if MC >= 1.20.1
                         ctx,
                         //#endif
-                        matrixStack,
+                        pose,
                     ),
                     tickDelta
                 ))
@@ -101,12 +101,12 @@ public object ScreenEventForwarding {
 
             //#if MC >= 1.21.9
             ScreenKeyboardEvents.afterKeyPress(screen).register { _, event ->
-                val event = ScreenEvent.KeyPress.Post(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyPress.Post(screen, OmniKeys.from(event.key), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
             }
 
             ScreenKeyboardEvents.afterKeyRelease(screen).register { _, event ->
-                val event = ScreenEvent.KeyRelease.Post(screen, OmniKeys.from(event.keycode), event.scancode, KeyboardModifiers.wrap(event.modifiers))
+                val event = ScreenEvent.KeyRelease.Post(screen, OmniKeys.from(event.key), event.scancode, KeyboardModifiers.wrap(event.modifiers))
                 eventBus.post(event)
             }
 
@@ -144,14 +144,14 @@ public object ScreenEventForwarding {
             //#endif
 
             ScreenEvents.afterRender(screen).register { _, ctx, _, _, tickDelta ->
-                val matrixStack = OmniMatrixStacks.vanilla(ctx)
+                val pose = OmniPoseStacks.vanilla(ctx)
                 eventBus.post(ScreenEvent.Render.Post(
                     screen,
                     OmniRenderingContext(
                         //#if MC >= 1.20.1
                         ctx,
                         //#endif
-                        matrixStack,
+                        pose,
                     ),
                     tickDelta
                 ))
@@ -188,7 +188,7 @@ public object ScreenEventForwarding {
                     //#if MC >= 1.20.1
                     //$$ graphics = event.guiGraphics,
                     //#endif
-        //$$             matrices = OmniMatrixStacks.vanilla(
+        //$$             pose = OmniPoseStacks.vanilla(
                         //#if MC >= 1.20.1
                         //$$ event.guiGraphics,
                         //#elseif MC >= 1.18.2
@@ -220,7 +220,7 @@ public object ScreenEventForwarding {
                     //#if MC >= 1.20.1
                     //$$ graphics = event.guiGraphics,
                     //#endif
-        //$$             matrices = OmniMatrixStacks.vanilla(
+        //$$             pose = OmniPoseStacks.vanilla(
                             //#if MC >= 1.20.1
                             //$$ event.guiGraphics,
                             //#elseif MC >= 1.18.2

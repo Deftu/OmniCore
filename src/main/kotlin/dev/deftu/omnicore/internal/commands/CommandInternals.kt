@@ -8,8 +8,9 @@ import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.16.5
-import net.minecraft.server.command.ServerCommandSource
-import net.minecraft.server.command.CommandOutput
+import net.minecraft.commands.CommandSource
+import net.minecraft.commands.CommandSourceStack
+import dev.deftu.omnicore.internal.mixins.Mixin_AccessCommandSource
 //#endif
 
 //#if FABRIC && MC >= 1.16.5
@@ -30,14 +31,13 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 //$$ import com.mojang.brigadier.suggestion.Suggestion
 //$$ import dev.deftu.omnicore.api.profiled
 //$$ import net.minecraft.command.ICommandSender
+//$$ import net.minecraft.command.ServerCommandManager
 //$$ import net.minecraft.server.MinecraftServer
 //$$ import net.minecraft.util.text.TextFormatting
 //#if FORGE
-//$$ import net.minecraft.command.ServerCommandManager
 //$$ import net.minecraftforge.fml.server.FMLServerHandler
 //#else
 //$$ import net.legacyfabric.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
-//$$ import net.minecraft.server.command.CommandManager
 //#endif
 //#endif
 
@@ -45,20 +45,11 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback
 public object CommandInternals {
     private val logger = LogManager.getLogger(CommandInternals::class.java)
 
-    //#if FABRIC && MC >= 1.16.5
-    private val ServerCommandSource.output: CommandOutput
+    //#if MC >= 1.16.5
+    private val CommandSourceStack.output: CommandSource
         get() {
-            val field = ServerCommandSource::class.java.getDeclaredField("output")
-            field.isAccessible = true
-            return field.get(this) as CommandOutput
+            return (this as Mixin_AccessCommandSource).source
         }
-    //#elseif FORGE-LIKE && MC >= 1.18.2
-    //$$ private val CommandSourceStack.output: CommandSource
-    //$$     get() {
-    //$$         val field = CommandSourceStack::class.java.getDeclaredField("source")
-    //$$         field.isAccessible = true
-    //$$         return field.get(this) as CommandSource
-    //$$     }
     //#endif
 
     @JvmStatic
@@ -84,12 +75,16 @@ public object CommandInternals {
             //#endif
             ->
             CommandOps.copyCommandsWithMapper(dispatcher, this.dispatcher) { src ->
-                OmniCommandSource(src.server, src.output, src.world)
+                OmniCommandSource(src.server, src.output, src.level)
             }
         }
         //#else
         //$$ ServerLifecycleEvents.SERVER_STARTING.register { server ->
-        //$$     val commandManager = server.commandManager as CommandManager
+                //#if MC >= 1.12.2
+                //$$ val commandManager = server.commandManager as ServerCommandManager
+                //#else
+                //$$ val commandManager = server.method_2971() as ServerCommandManager
+                //#endif
         //$$     for (child in dispatcher.root.children) {
         //$$         commandManager.registerCommand(LegacyCommandBridge(
         //$$             node = child,

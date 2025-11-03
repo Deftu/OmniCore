@@ -53,6 +53,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         result.add("Mixin_ConnectionAccessor")
         //#endif
 
+        //#if MC >= 1.16.5
+        result.add("Mixin_AccessCommandSource")
+        //#endif
+
         //#if MC == 1.16.5
         //$$ result.add("Mixin_CustomPayloadDataAccessor")
         //#endif

@@ -2,25 +2,25 @@
 
 package dev.deftu.omnicore.api.nbt
 
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.nbt.NbtElement
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.nbt.Tag
 import net.minecraft.nbt.NbtIo
-import net.minecraft.nbt.NbtList
-import net.minecraft.nbt.NbtSizeTracker
+import net.minecraft.nbt.ListTag
+import net.minecraft.nbt.NbtAccounter
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.jvm.optionals.getOrNull
 
-public fun NbtCompound.contains(key: String, type: NbtType): Boolean {
+public fun CompoundTag.contains(key: String, type: NbtType): Boolean {
     //#if MC >= 1.21.5
-    return get(key)?.type == type.id
+    return get(key)?.id == type.id
     //#else
     //$$ return contains(key, type.id.toInt())
     //#endif
 }
 
-public fun NbtCompound.byteOrNull(key: String): Byte? {
+public fun CompoundTag.byteOrNull(key: String): Byte? {
     //#if MC >= 1.21.5
     return getByte(key).getOrNull()
     //#else
@@ -32,19 +32,19 @@ public fun NbtCompound.byteOrNull(key: String): Byte? {
     //#endif
 }
 
-public fun NbtCompound.byteOrDefault(key: String, default: Byte): Byte {
+public fun CompoundTag.byteOrDefault(key: String, default: Byte): Byte {
     //#if MC >= 1.21.5
-    return getByte(key, default)
+    return getByteOr(key, default)
     //#else
     //$$ return byteOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.byteOrThrow(key: String): Byte {
+public fun CompoundTag.byteOrThrow(key: String): Byte {
     return byteOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.BYTE)
 }
 
-public fun NbtCompound.shortOrNull(key: String): Short? {
+public fun CompoundTag.shortOrNull(key: String): Short? {
     //#if MC >= 1.21.5
     return getShort(key).getOrNull()
     //#else
@@ -56,19 +56,19 @@ public fun NbtCompound.shortOrNull(key: String): Short? {
     //#endif
 }
 
-public fun NbtCompound.shortOrDefault(key: String, default: Short): Short {
+public fun CompoundTag.shortOrDefault(key: String, default: Short): Short {
     //#if MC >= 1.21.5
-    return getShort(key, default)
+    return getShortOr(key, default)
     //#else
     //$$ return shortOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.shortOrThrow(key: String): Short {
+public fun CompoundTag.shortOrThrow(key: String): Short {
     return shortOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.SHORT)
 }
 
-public fun NbtCompound.intOrNull(key: String): Int? {
+public fun CompoundTag.intOrNull(key: String): Int? {
     //#if MC >= 1.21.5
     return getInt(key).getOrNull()
     //#else
@@ -80,19 +80,19 @@ public fun NbtCompound.intOrNull(key: String): Int? {
     //#endif
 }
 
-public fun NbtCompound.intOrDefault(key: String, default: Int): Int {
+public fun CompoundTag.intOrDefault(key: String, default: Int): Int {
     //#if MC >= 1.21.5
-    return getInt(key, default)
+    return getIntOr(key, default)
     //#else
     //$$ return intOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.intOrThrow(key: String): Int {
+public fun CompoundTag.intOrThrow(key: String): Int {
     return intOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.INT)
 }
 
-public fun NbtCompound.longOrNull(key: String): Long? {
+public fun CompoundTag.longOrNull(key: String): Long? {
     //#if MC >= 1.21.5
     return getLong(key).getOrNull()
     //#else
@@ -104,19 +104,19 @@ public fun NbtCompound.longOrNull(key: String): Long? {
     //#endif
 }
 
-public fun NbtCompound.longOrDefault(key: String, default: Long): Long {
+public fun CompoundTag.longOrDefault(key: String, default: Long): Long {
     //#if MC >= 1.21.5
-    return getLong(key, default)
+    return getLongOr(key, default)
     //#else
     //$$ return longOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.longOrThrow(key: String): Long {
+public fun CompoundTag.longOrThrow(key: String): Long {
     return longOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.LONG)
 }
 
-public fun NbtCompound.floatOrNull(key: String): Float? {
+public fun CompoundTag.floatOrNull(key: String): Float? {
     //#if MC >= 1.21.5
     return getFloat(key).getOrNull()
     //#else
@@ -128,19 +128,19 @@ public fun NbtCompound.floatOrNull(key: String): Float? {
     //#endif
 }
 
-public fun NbtCompound.floatOrDefault(key: String, default: Float): Float {
+public fun CompoundTag.floatOrDefault(key: String, default: Float): Float {
     //#if MC >= 1.21.5
-    return getFloat(key, default)
+    return getFloatOr(key, default)
     //#else
     //$$ return floatOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.floatOrThrow(key: String): Float {
+public fun CompoundTag.floatOrThrow(key: String): Float {
     return floatOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.FLOAT)
 }
 
-public fun NbtCompound.doubleOrNull(key: String): Double? {
+public fun CompoundTag.doubleOrNull(key: String): Double? {
     //#if MC >= 1.21.5
     return getDouble(key).getOrNull()
     //#else
@@ -152,19 +152,19 @@ public fun NbtCompound.doubleOrNull(key: String): Double? {
     //#endif
 }
 
-public fun NbtCompound.doubleOrDefault(key: String, default: Double): Double {
+public fun CompoundTag.doubleOrDefault(key: String, default: Double): Double {
     //#if MC >= 1.21.5
-    return getDouble(key, default)
+    return getDoubleOr(key, default)
     //#else
     //$$ return doubleOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.doubleOrThrow(key: String): Double {
+public fun CompoundTag.doubleOrThrow(key: String): Double {
     return doubleOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.DOUBLE)
 }
 
-public fun NbtCompound.byteArrayOrNull(key: String): ByteArray? {
+public fun CompoundTag.byteArrayOrNull(key: String): ByteArray? {
     //#if MC >= 1.21.5
     return getByteArray(key).getOrNull()
     //#else
@@ -176,7 +176,7 @@ public fun NbtCompound.byteArrayOrNull(key: String): ByteArray? {
     //#endif
 }
 
-public fun NbtCompound.byteArrayOrDefault(key: String, default: ByteArray): ByteArray {
+public fun CompoundTag.byteArrayOrDefault(key: String, default: ByteArray): ByteArray {
     //#if MC >= 1.21.5
     return getByteArray(key).orElse(default)
     //#else
@@ -184,11 +184,11 @@ public fun NbtCompound.byteArrayOrDefault(key: String, default: ByteArray): Byte
     //#endif
 }
 
-public fun NbtCompound.byteArrayOrThrow(key: String): ByteArray {
+public fun CompoundTag.byteArrayOrThrow(key: String): ByteArray {
     return byteArrayOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.BYTE_ARRAY)
 }
 
-public fun NbtCompound.stringOrNull(key: String): String? {
+public fun CompoundTag.stringOrNull(key: String): String? {
     //#if MC >= 1.21.5
     return getString(key).getOrNull()
     //#else
@@ -200,19 +200,19 @@ public fun NbtCompound.stringOrNull(key: String): String? {
     //#endif
 }
 
-public fun NbtCompound.stringOrDefault(key: String, default: String): String {
+public fun CompoundTag.stringOrDefault(key: String, default: String): String {
     //#if MC >= 1.21.5
-    return getString(key, default)
+    return getStringOr(key, default)
     //#else
     //$$ return stringOrNull(key) ?: default
     //#endif
 }
 
-public fun NbtCompound.stringOrThrow(key: String): String {
+public fun CompoundTag.stringOrThrow(key: String): String {
     return stringOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.STRING)
 }
 
-public fun NbtCompound.listOrNull(key: String, type: NbtType): NbtList? {
+public fun CompoundTag.listOrNull(key: String, type: NbtType): ListTag? {
     //#if MC >= 1.21.5
     return getList(key).orElse(null)
     //#else
@@ -224,7 +224,7 @@ public fun NbtCompound.listOrNull(key: String, type: NbtType): NbtList? {
     //#endif
 }
 
-public fun NbtCompound.listOrDefault(key: String, type: NbtType, default: NbtList): NbtList {
+public fun CompoundTag.listOrDefault(key: String, type: NbtType, default: ListTag): ListTag {
     //#if MC >= 1.21.5
     return getList(key).orElse(default)
     //#else
@@ -232,11 +232,11 @@ public fun NbtCompound.listOrDefault(key: String, type: NbtType, default: NbtLis
     //#endif
 }
 
-public fun NbtCompound.listOrThrow(key: String, type: NbtType): NbtList {
+public fun CompoundTag.listOrThrow(key: String, type: NbtType): ListTag {
     return listOrNull(key,  type) ?: throw NoSuchNbtElementException(key, NbtType.LIST)
 }
 
-public fun NbtCompound.compoundOrNull(key: String): NbtCompound? {
+public fun CompoundTag.compoundOrNull(key: String): CompoundTag? {
     //#if MC >= 1.21.5
     return getCompound(key).orElse(null)
     //#else
@@ -248,7 +248,7 @@ public fun NbtCompound.compoundOrNull(key: String): NbtCompound? {
     //#endif
 }
 
-public fun NbtCompound.compoundOrDefault(key: String, default: NbtCompound): NbtCompound {
+public fun CompoundTag.compoundOrDefault(key: String, default: CompoundTag): CompoundTag {
     //#if MC >= 1.21.5
     return getCompound(key).orElse(default)
     //#else
@@ -256,11 +256,11 @@ public fun NbtCompound.compoundOrDefault(key: String, default: NbtCompound): Nbt
     //#endif
 }
 
-public fun NbtCompound.compoundOrThrow(key: String): NbtCompound {
+public fun CompoundTag.compoundOrThrow(key: String): CompoundTag {
     return compoundOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.COMPOUND)
 }
 
-public fun NbtCompound.intArrayOrNull(key: String): IntArray? {
+public fun CompoundTag.intArrayOrNull(key: String): IntArray? {
     //#if MC >= 1.21.5
     return getIntArray(key).getOrNull()
     //#else
@@ -272,7 +272,7 @@ public fun NbtCompound.intArrayOrNull(key: String): IntArray? {
     //#endif
 }
 
-public fun NbtCompound.intArrayOrDefault(key: String, default: IntArray): IntArray {
+public fun CompoundTag.intArrayOrDefault(key: String, default: IntArray): IntArray {
     //#if MC >= 1.21.5
     return getIntArray(key).orElse(default)
     //#else
@@ -280,12 +280,12 @@ public fun NbtCompound.intArrayOrDefault(key: String, default: IntArray): IntArr
     //#endif
 }
 
-public fun NbtCompound.intArrayOrThrow(key: String): IntArray {
+public fun CompoundTag.intArrayOrThrow(key: String): IntArray {
     return intArrayOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.INT_ARRAY)
 }
 
 //#if MC >= 1.16.5
-public fun NbtCompound.longArrayOrNull(key: String): LongArray? {
+public fun CompoundTag.longArrayOrNull(key: String): LongArray? {
     //#if MC >= 1.21.5
     return getLongArray(key).getOrNull()
     //#else
@@ -297,7 +297,7 @@ public fun NbtCompound.longArrayOrNull(key: String): LongArray? {
     //#endif
 }
 
-public fun NbtCompound.longArrayOrDefault(key: String, default: LongArray): LongArray {
+public fun CompoundTag.longArrayOrDefault(key: String, default: LongArray): LongArray {
     //#if MC >= 1.21.5
     return getLongArray(key).orElse(default)
     //#else
@@ -305,28 +305,28 @@ public fun NbtCompound.longArrayOrDefault(key: String, default: LongArray): Long
     //#endif
 }
 
-public fun NbtCompound.longArrayOrThrow(key: String): LongArray {
+public fun CompoundTag.longArrayOrThrow(key: String): LongArray {
     return longArrayOrNull(key) ?: throw NoSuchNbtElementException(key, NbtType.LONG_ARRAY)
 }
 //#endif
 
-public fun NbtCompound.putIfAbsent(key: String, value: NbtCompound) {
+public fun CompoundTag.putIfAbsent(key: String, value: CompoundTag) {
     if (!contains(key)) {
         put(key, value)
     }
 }
 
-public fun NbtCompound.deepCopy(): NbtCompound {
-    return copy() as NbtCompound
+public fun CompoundTag.deepCopy(): CompoundTag {
+    return copy() as CompoundTag
 }
 
 @JvmName("merge")
-public fun NbtCompound.mergeWith(other: NbtCompound): NbtCompound {
-    for (key in other.keys) {
+public fun CompoundTag.mergeWith(other: CompoundTag): CompoundTag {
+    for (key in other.keySet()) {
         val otherValue = other.get(key)
         val thisValue = this.get(key)
 
-        if (thisValue is NbtCompound && otherValue is NbtCompound) {
+        if (thisValue is CompoundTag && otherValue is CompoundTag) {
             thisValue.mergeWith(otherValue)
         } else if (otherValue != null) {
             this.put(key, otherValue)
@@ -336,10 +336,10 @@ public fun NbtCompound.mergeWith(other: NbtCompound): NbtCompound {
     return this
 }
 
-public fun NbtCompound.findByPath(path: String): NbtElement? {
-    var current: NbtElement? = this
+public fun CompoundTag.findByPath(path: String): Tag? {
+    var current: Tag? = this
     for (part in path.split('.')) {
-        current = if (current is NbtCompound) {
+        current = if (current is CompoundTag) {
             current.get(part)
         } else {
             return null
@@ -349,43 +349,43 @@ public fun NbtCompound.findByPath(path: String): NbtElement? {
     return current
 }
 
-public fun NbtCompound.encodeToByteArray(): ByteArray {
+public fun CompoundTag.encodeToByteArray(): ByteArray {
     return ByteArrayOutputStream().apply {
         NbtIo.writeCompressed(this@encodeToByteArray, this)
     }.toByteArray()
 }
 
-public fun NbtCompound.writeTo(output: OutputStream) {
+public fun CompoundTag.writeTo(output: OutputStream) {
     NbtIo.writeCompressed(this, output)
 }
 
 @JvmName("decodeFromByteArray")
-public fun ByteArray.decodeToNbtCompound(): NbtCompound {
+public fun ByteArray.decodeToNbtCompound(): CompoundTag {
     return NbtIo.readCompressed(
         this.inputStream(),
         //#if MC >= 1.20.4
-        NbtSizeTracker.ofUnlimitedBytes()
+        NbtAccounter.unlimitedHeap()
         //#endif
     )
 }
 
 @JvmName("readFrom")
-public fun InputStream.readNbtCompound(): NbtCompound {
+public fun InputStream.readNbtCompound(): CompoundTag {
     return NbtIo.readCompressed(
         this,
         //#if MC >= 1.20.4
-        NbtSizeTracker.ofUnlimitedBytes()
+        NbtAccounter.unlimitedHeap()
         //#endif
     )
 }
 
-public fun NbtCompound.prettify(indent: Int = 0): String {
+public fun CompoundTag.prettify(indent: Int = 0): String {
     val indentStr = " ".repeat(indent)
     val sb = StringBuilder("{\n")
-    for (key in this.keys) {
+    for (key in this.keySet()) {
         val value = this.get(key)
         sb.append(indentStr).append("  ").append(key).append(": ")
-        if (value is NbtCompound) {
+        if (value is CompoundTag) {
             sb.append(value.prettify(indent + 2))
         } else {
             sb.append(value.toString())

@@ -4,16 +4,16 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import dev.deftu.omnicore.internal.networking.UnknownPayloadDataSmuggler;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.codec.PacketDecoder;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.util.Identifier;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamDecoder;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 
-@Mixin(targets = "net.minecraft.network.packet.CustomPayload$1")
-public class Mixin_SetUnknownPayloadData<B extends PacketByteBuf> {
+@Mixin(targets = "net.minecraft.network.protocol.common.custom.CustomPacketPayload$1")
+public class Mixin_SetUnknownPayloadData<B extends FriendlyByteBuf> {
     @WrapOperation(
             method = "decode(Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/CustomPayload;",
             at = @At(
@@ -22,14 +22,14 @@ public class Mixin_SetUnknownPayloadData<B extends PacketByteBuf> {
             )
     )
     private Object omnicore$capturePayloadData(
-            @Coerce PacketDecoder<B, CustomPayload> instance,
+            @Coerce StreamDecoder<B, CustomPacketPayload> instance,
             Object buf,
             Operation<Object> original,
-            @Local(ordinal = 0) Identifier channel
+            @Local(ordinal = 0) ResourceLocation channel
     ) {
         try {
-            PacketByteBuf copiedBuffer = new PacketByteBuf(((PacketByteBuf) buf).copy());
-            CustomPayload packet = (CustomPayload) original.call(instance, buf);
+            FriendlyByteBuf copiedBuffer = new FriendlyByteBuf(((FriendlyByteBuf) buf).copy());
+            CustomPacketPayload packet = (CustomPacketPayload) original.call(instance, buf);
             if (packet instanceof UnknownPayloadDataSmuggler) {
                 ((UnknownPayloadDataSmuggler) packet).omnicore$setData(copiedBuffer);
             } else {
