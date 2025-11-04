@@ -1,5 +1,5 @@
 [versions]
-textile = "1.0.0-beta.7"
+textile = "1.0.0-beta.8"
 enhancedeventbus = "2.0.0"
 brigadier = "1.0.18"
 dfu = "4.0.26"
