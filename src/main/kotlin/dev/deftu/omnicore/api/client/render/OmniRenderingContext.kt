@@ -80,6 +80,15 @@ public class OmniRenderingContext private constructor(
 
     private val scissorStack = ArrayDeque<ScissorBox>()
 
+    @get:JvmName("areGraphicsAvailable")
+    public val areGraphicsAvailable: Boolean
+        get() =
+            //#if MC >= 1.20.1
+            graphics != null
+            //#else
+            //$$ true
+            //#endif
+
     public val currentScissor: ScissorBox?
         get() = scissorStack.lastOrNull()
 
