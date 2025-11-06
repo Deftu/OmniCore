@@ -16,6 +16,7 @@ import java.util.function.Consumer
 
 //#if MC >= 1.21.5
 import com.mojang.blaze3d.opengl.GlTexture
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 //#endif
 
 //#if MC >= 1.20.1
@@ -26,11 +27,11 @@ import net.minecraft.client.gui.GuiGraphics
 //$$ import com.mojang.blaze3d.vertex.PoseStack
 //#endif
 
-public data class OmniRenderingContext(
+public class OmniRenderingContext(
     //#if MC >= 1.20.1
-    val graphics: GuiGraphics?,
+    @get:JvmName("graphics") public val graphics: GuiGraphics?,
     //#endif
-    val pose: OmniPoseStack,
+    @get:JvmName("pose") public val pose: OmniPoseStack,
 ) : AutoCloseable {
     public companion object {
         @JvmStatic
@@ -408,6 +409,18 @@ public data class OmniRenderingContext(
         } finally {
             pose.pop()
         }
+    }
+
+    //#if MC >= 1.20.1
+    @Deprecated("Use graphics() instead", replaceWith = ReplaceWith("graphics()"))
+    public fun getGraphics(): GuiGraphics? {
+        return graphics
+    }
+    //#endif
+
+    @Deprecated("Use pose() instead", replaceWith = ReplaceWith("pose()"))
+    public fun getPose(): OmniPoseStack {
+        return pose
     }
 
     /** Submits any necessary closing rendering operations. */
