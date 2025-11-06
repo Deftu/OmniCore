@@ -313,7 +313,7 @@ public class OmniRenderingContext(
 
         val effective = scissorStack.lastOrNull()?.let { top ->
             // We already had scissor; clamp to intersection
-            top.intersection(incoming) ?: ScissorBox(0, 0, 0, 0) // <- collapsed to empty
+            top.intersection(incoming) ?: ScissorBox(incoming.x, incoming.y, 0, 0) // <- collapsed to empty
         } ?: incoming // No previous scissor; use new box as-is
 
         scissorStack.addLast(effective)
