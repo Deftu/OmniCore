@@ -34,6 +34,22 @@ public class OmniRenderingContext private constructor(
     @get:JvmName("pose") public val pose: OmniPoseStack,
 ) : AutoCloseable {
     public companion object {
+        /**
+         * Creates a new [OmniRenderingContext] with a fresh [OmniPoseStack].
+         * 
+         * This [OmniRenderingContext] does not have an associated [GuiGraphics]. Should you need one, create it using an existing [GuiGraphics] via [from].
+         */
+        @JvmStatic
+        public fun create(): OmniRenderingContext {
+            val pose = OmniPoseStacks.create()
+            return OmniRenderingContext(
+                //#if MC >= 1.20.1
+                null,
+                //#endif
+                pose
+            )
+        }
+
         @JvmStatic
         public fun from(
             //#if MC >= 1.20.1
