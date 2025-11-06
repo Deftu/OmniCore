@@ -23,8 +23,8 @@ import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import net.minecraft.client.gui.GuiGraphics
 //#endif
 
-//#if MC >= 1.16.5 && MC < 1.20.1
-//$$ import com.mojang.blaze3d.vertex.PoseStack
+//#if MC >= 1.16.5
+import com.mojang.blaze3d.vertex.PoseStack
 //#endif
 
 public class OmniRenderingContext private constructor(
@@ -57,6 +57,14 @@ public class OmniRenderingContext private constructor(
                 pose
             )
         }
+
+        //#if MC >= 1.20.1
+        @JvmStatic
+        public fun from(pose: PoseStack): OmniRenderingContext {
+            val pose = OmniPoseStacks.vanilla(pose)
+            return OmniRenderingContext(null, pose)
+        }
+        //#endif
     }
 
     private val scissorStack = ArrayDeque<ScissorBox>()
