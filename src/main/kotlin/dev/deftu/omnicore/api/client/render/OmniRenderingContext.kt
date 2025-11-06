@@ -27,7 +27,7 @@ import net.minecraft.client.gui.GuiGraphics
 //$$ import com.mojang.blaze3d.vertex.PoseStack
 //#endif
 
-public class OmniRenderingContext(
+public class OmniRenderingContext private constructor(
     //#if MC >= 1.20.1
     @get:JvmName("graphics") public val graphics: GuiGraphics?,
     //#endif
