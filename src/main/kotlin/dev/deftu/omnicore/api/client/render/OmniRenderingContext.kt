@@ -1,5 +1,6 @@
 package dev.deftu.omnicore.api.client.render
 
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
@@ -80,6 +81,13 @@ public class OmniRenderingContext private constructor(
 
     private val scissorStack = ArrayDeque<ScissorBox>()
 
+    /**
+     * Whether "graphics" are "available" in this context.
+     *
+     * This will be true if this context was created with an associated [GuiGraphics] instance on 1.20.1+.
+     * Otherwise, on earlier versions, this will always be true, as there is no concept of "graphics" being available or not.
+     */
+    @VersionedAbove("1.20.1")
     @get:JvmName("areGraphicsAvailable")
     public val areGraphicsAvailable: Boolean
         get() =
