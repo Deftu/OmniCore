@@ -411,6 +411,15 @@ public class OmniRenderingContext(
         }
     }
 
+    public inline fun <T> withPose(supplier: (pose: OmniPoseStack) -> T): T {
+        pose.push()
+        return try {
+            supplier(pose)
+        } finally {
+            pose.pop()
+        }
+    }
+
     //#if MC >= 1.20.1
     @Deprecated("Use graphics() instead", replaceWith = ReplaceWith("graphics()"))
     public fun getGraphics(): GuiGraphics? {
