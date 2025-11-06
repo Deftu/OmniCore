@@ -408,15 +408,6 @@ public class OmniRenderingContext private constructor(
         }
     }
 
-    public inline fun <T> withPose(supplier: () -> T): T {
-        pose.push()
-        return try {
-            supplier()
-        } finally {
-            pose.pop()
-        }
-    }
-
     public inline fun <T> withPose(supplier: (pose: OmniPoseStack) -> T): T {
         pose.push()
         return try {
