@@ -383,7 +383,7 @@ public class OmniRenderingContext(
         }
     }
 
-    public fun <T> withScissor(x: Int, y: Int, width: Int, height: Int, supplier: () -> T): T {
+    public inline fun <T> withScissor(x: Int, y: Int, width: Int, height: Int, supplier: () -> T): T {
         pushScissor(x, y, width, height)
 
         return try {
@@ -402,7 +402,7 @@ public class OmniRenderingContext(
         }
     }
 
-    public fun <T> withPose(supplier: () -> T): T {
+    public inline fun <T> withPose(supplier: () -> T): T {
         pose.push()
         return try {
             supplier()
