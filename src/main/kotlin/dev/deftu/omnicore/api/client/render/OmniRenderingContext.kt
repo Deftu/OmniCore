@@ -1,6 +1,5 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.api.client.textureManager
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
@@ -9,15 +8,11 @@ import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import dev.deftu.textile.Text
 import net.minecraft.network.chat.Component as VanillaText
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Consumer
-
-//#if MC >= 1.21.5
-import com.mojang.blaze3d.opengl.GlTexture
-import dev.deftu.omnicore.internal.client.textures.TextureInternals
-//#endif
 
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.GuiGraphics
