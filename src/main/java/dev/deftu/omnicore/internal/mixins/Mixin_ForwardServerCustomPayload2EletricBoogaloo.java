@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class Mixin_ForwardServerCustomPayload2EletricBoogaloo {
     @Shadow public ServerPlayer player;
 
-    @Inject(method = "onCustomPayload", at = @At("HEAD"))
+    @Inject(method = "handleCustomPayload", at = @At("HEAD"))
     private void omnicore$captureCustomPayloads(ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
         CustomPacketPayload payload = packet.payload();
         //#if MC >= 1.20.6
