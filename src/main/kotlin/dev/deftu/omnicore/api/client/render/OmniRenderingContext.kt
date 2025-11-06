@@ -224,13 +224,6 @@ public class OmniRenderingContext(
         u1: Float, v1: Float,
         color: OmniColor = OmniColors.WHITE,
     ) {
-        val texture = textureManager.getTexture(location)
-        //#if MC <= 1.16.5
-        //$$ if (texture == null) {
-        //$$     throw IllegalArgumentException("Texture $location is not loaded")
-        //$$ }
-        //#endif
-
         val buffer = pipeline.createBufferBuilder()
         buffer
             .vertex(pose, x.toDouble(), y.toDouble(), 0.0)
@@ -253,13 +246,7 @@ public class OmniRenderingContext(
             .color(color)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline) {
-            val id =
-                //#if MC >= 1.21.5
-                (texture.texture as GlTexture).glId()
-            //#else
-            //$$ texture.id
-            //#endif
-            texture(OmniTextureUnit.TEXTURE0, id)
+            texture(OmniTextureUnit.TEXTURE0, TextureInternals.obtainId(location))
         }
     }
 
