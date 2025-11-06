@@ -32,7 +32,7 @@ public class OmniRenderingContext private constructor(
     @get:JvmName("graphics") public val graphics: GuiGraphics?,
     //#endif
     @get:JvmName("pose") public val pose: OmniPoseStack,
-) : AutoCloseable {
+) {
     public companion object {
         /**
          * Creates a new [OmniRenderingContext] with a fresh [OmniPoseStack].
@@ -444,7 +444,7 @@ public class OmniRenderingContext private constructor(
     }
 
     /** Submits any necessary closing rendering operations. */
-    override fun close() {
+    public fun discard() {
         if (scissorStack.isNotEmpty()) {
             scissorStack.clear()
             ScissorInternals.disableScissor()
