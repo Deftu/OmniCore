@@ -435,13 +435,13 @@ public class OmniRenderingContext private constructor(
     }
 
     //#if MC >= 1.20.1
-    @Deprecated("Use graphics() instead", replaceWith = ReplaceWith("graphics()"))
+    @Deprecated("Use graphics() instead", replaceWith = ReplaceWith("graphics"))
     public fun getGraphics(): GuiGraphics? {
         return graphics
     }
     //#endif
 
-    @Deprecated("Use pose() instead", replaceWith = ReplaceWith("pose()"))
+    @Deprecated("Use pose() instead", replaceWith = ReplaceWith("pose"))
     public fun getPose(): OmniPoseStack {
         return pose
     }
