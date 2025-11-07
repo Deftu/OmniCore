@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.OmniGameMode
 import dev.deftu.omnicore.api.chat.Audiences
 import dev.deftu.omnicore.api.chat.TitleInfo
+import dev.deftu.omnicore.api.client.OmniDesktop
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommands
@@ -138,6 +139,7 @@ class TestMod
         RenderDoc.init()
         //#endif
 
+        println(OmniDesktop)
         exampleKeyBinding.register()
 
         ConfigScreenRegistry.register(ID) { _ ->

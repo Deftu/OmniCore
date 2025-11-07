@@ -4,56 +4,47 @@ import org.apache.logging.log4j.LogManager
 import java.awt.Desktop
 import java.io.File
 import java.net.URI
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 public object OmniDesktop {
-    private val logger = LogManager.getLogger(OmniDesktop::class.java)
+    private val LOGGER = LogManager.getLogger(OmniDesktop::class.java)
+
+    private val osName: String? = try {
+        System.getProperty("os.name").lowercase(Locale.ROOT)
+    } catch (e: Exception) {
+        LOGGER.error("Failed to get OS name", e)
+        null
+    }
+
+    @JvmStatic public val isWindows: Boolean = osName?.startsWith("windows") == true
+    @JvmStatic public val isMac: Boolean = osName?.startsWith("mac") == true
+    @JvmStatic public val isLinux: Boolean = osName?.startsWith("linux") == true
+
+    @JvmStatic public val isXdg: Boolean = if (isLinux) {
+        val hasSessionId = System.getenv("XDG_SESSION_ID")?.isNotEmpty() == true
+        val hasDesktop = System.getenv("XDG_CURRENT_DESKTOP")?.isNotEmpty() == true
+        hasSessionId || hasDesktop
+    } else {
+        false
+    }
 
     @JvmStatic
-    public var isWindows: Boolean = false
-        private set
+    public val isKde: Boolean = if (isLinux) {
+        val session = System.getenv("GDMSESSION")?.lowercase(Locale.ROOT)
+            ?: System.getenv("XDG_CURRENT_DESKTOP")?.lowercase(Locale.ROOT)
+        session?.contains("kde") == true
+    } else {
+        false
+    }
 
     @JvmStatic
-    public var isMac: Boolean = false
-        private set
-
-    @JvmStatic
-    public var isLinux: Boolean = false
-        private set
-
-    @JvmStatic
-    public var isXdg: Boolean = false
-        private set
-
-    @JvmStatic
-    public var isKde: Boolean = false
-        private set
-
-    @JvmStatic
-    public var isGnome: Boolean = false
-        private set
-
-    init {
-        val osName = try {
-            System.getProperty("os.name").lowercase()
-        } catch (e: Exception) {
-            logger.error("Failed to get OS name", e)
-            null
-        }
-
-        if (osName != null) {
-            isWindows = osName.startsWith("Windows")
-            isMac = osName.startsWith("Mac")
-            isLinux = osName.startsWith("Linux") || osName.startsWith("LINUX")
-            if (isLinux) {
-                isXdg = System.getenv("XDG_SESSION_ID")?.isNotEmpty() == true
-                val gnomeSession = System.getenv("GDMSESSION")?.lowercase()
-                isGnome = gnomeSession?.contains("gnome") == true
-                isKde = gnomeSession?.contains("kde") == true
-            }
-        } else {
-            logger.error("OS name is null... Uh oh...")
-        }
+    public val isGnome: Boolean = if (isLinux) {
+        val session = System.getenv("GDMSESSION")?.lowercase(Locale.ROOT)
+            ?: System.getenv("XDG_CURRENT_DESKTOP")?.lowercase(Locale.ROOT)
+        session?.contains("gnome") == true
+    } else {
+        false
     }
 
     @JvmStatic
@@ -84,7 +75,7 @@ public object OmniDesktop {
             Desktop.getDesktop().browse(uri)
             true
         } catch (e: Exception) {
-            logger.error("Failed to browse URI", e)
+            LOGGER.error("Failed to browse URI", e)
             false
         }
     }
@@ -102,7 +93,7 @@ public object OmniDesktop {
             Desktop.getDesktop().open(file)
             true
         } catch (e: Exception) {
-            logger.error("Failed to open file", e)
+            LOGGER.error("Failed to open file", e)
             false
         }
     }
@@ -120,7 +111,7 @@ public object OmniDesktop {
             Desktop.getDesktop().edit(file)
             true
         } catch (e: Exception) {
-            logger.error("Failed to edit file", e)
+            LOGGER.error("Failed to edit file", e)
             false
         }
     }
@@ -155,8 +146,18 @@ public object OmniDesktop {
                 process.isAlive
             }
         } catch (e: Exception) {
-            logger.error("Failed to run command", e)
+            LOGGER.error("Failed to run command", e)
             false
+        }
+    }
+
+    override fun toString(): String {
+        return buildString {
+            append(this@OmniDesktop::class.java.simpleName).append("[")
+            append("Windows=").append(isWindows).append(", ")
+            append("macOS=").append(isMac).append(", ")
+            append("Linux=").append(isLinux)
+            append("]")
         }
     }
 }
