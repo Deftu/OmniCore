@@ -3,6 +3,8 @@ package dev.deftu.omnicore.api
 import java.util.UUID
 
 public object OmniUuid {
+    @JvmField public val NULL_UUID: UUID = UUID(0L, 0L)
+
     @JvmStatic
     public fun fromByteArray(array: ByteArray): UUID {
         require(array.size == 16) { "Byte array must have exactly 16 bytes" }

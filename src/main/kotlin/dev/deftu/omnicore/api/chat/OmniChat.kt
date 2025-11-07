@@ -17,6 +17,10 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket
 //$$ import net.minecraft.network.protocol.game.ClientboundSetTitlesPacket
 //#endif
 
+//#if MC >= 1.16.5
+//$$ import dev.deftu.omnicore.api.OmniUuid
+//#endif
+
 //#if MC >= 1.12.2 && MC < 1.19.2
 //$$ import net.minecraft.network.chat.ChatType
 //#endif
@@ -26,10 +30,6 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket
 //#endif
 
 public object OmniChat {
-    //#if MC >= 1.16.5 && MC <= 1.18.2
-    //$$ private val NULL_UUID = java.util.UUID(0L, 0L)
-    //#endif
-
     @JvmStatic
     public fun display(server: MinecraftServer, surface: MessageSurface) {
         when (surface) {
@@ -45,7 +45,7 @@ public object OmniChat {
         //#if MC >= 1.19.2
         server.playerList.broadcastSystemMessage(MCText.convert(text), false)
         //#elseif MC >= 1.16.5
-        //$$ server.playerList.broadcastMessage(MCText.convert(text), ChatType.SYSTEM, NULL_UUID)
+        //$$ server.playerList.broadcastMessage(MCText.convert(text), ChatType.SYSTEM, OmniUuid.NULL_UUID)
         //#else
         //$$ server.playerList.sendMessage(MCText.convert(text), true)
         //#endif
@@ -73,7 +73,7 @@ public object OmniChat {
         //#if MC >= 1.19.2
         server.playerList.broadcastSystemMessage(MCText.convert(text), true)
         //#elseif MC >= 1.16.5
-        //$$ server.playerList.broadcastMessage(MCText.convert(text), ChatType.GAME_INFO, NULL_UUID)
+        //$$ server.playerList.broadcastMessage(MCText.convert(text), ChatType.GAME_INFO, OmniUuid.NULL_UUID)
         //#else
         //$$ server.playerList.sendPacketToAllPlayers(SPacketChat(
         //$$     MCText.convert(text),

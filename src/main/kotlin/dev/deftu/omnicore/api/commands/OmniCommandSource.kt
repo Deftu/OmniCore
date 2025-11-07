@@ -12,15 +12,15 @@ import net.minecraft.commands.CommandSource
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.server.level.ServerLevel
 
+//#if MC >= 1.16.5 && MC < 1.19.2
+//$$ import dev.deftu.omnicore.api.OmniUuid
+//#endif
+
 public class OmniCommandSource(
     public val server: MinecraftServer,
     public val output: CommandSource,
     public val world: ServerLevel
 ) {
-    //#if MC >= 1.16.5 && MC < 1.19.2
-    //$$ private val NULL_UUID = java.util.UUID(0L, 0L)
-    //#endif
-
     public inline val player: ServerPlayer?
         get() = output as? ServerPlayer
 
@@ -77,7 +77,7 @@ public class OmniCommandSource(
 
     private fun message(text: Text) {
         //#if MC >= 1.16.5 && MC < 1.19.2
-        //$$ output.sendMessage(MCText.convert(text), NULL_UUID)
+        //$$ output.sendMessage(MCText.convert(text), OmniUuid.NULL_UUID)
         //#elseif MC >= 1.19.2
         output.sendSystemMessage(MCText.convert(text))
         //#else
