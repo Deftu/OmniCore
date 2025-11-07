@@ -1,10 +1,16 @@
 package dev.deftu.omnicore.internal.client.textures
 
 import com.mojang.blaze3d.opengl.GlStateManager
+import dev.deftu.omnicore.api.client.textureManager
 import dev.deftu.omnicore.api.client.render.OmniTextureUnit
+import net.minecraft.resources.ResourceLocation
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
+
+//#if MC >= 1.21.5
+import com.mojang.blaze3d.opengl.GlTexture
+//#endif
 
 //#if MC >= 1.16.5
 import com.mojang.blaze3d.systems.RenderSystem
@@ -107,6 +113,23 @@ public object TextureInternals {
     @JvmStatic
     public fun delete(id: Int) {
         GlStateManager._deleteTexture(id)
+    }
+
+    @JvmStatic
+    public fun obtainId(location: ResourceLocation): Int {
+        val texture = textureManager.getTexture(location)
+        //#if MC <= 1.16.5
+        //$$ if (texture == null) {
+        //$$     throw IllegalArgumentException("Texture not found: $location")
+        //$$ }
+        //#endif
+
+        //#if MC >= 1.21.5
+        val gpuTexture = texture.texture
+        return (gpuTexture as GlTexture).glId()
+        //#else
+        //$$ return texture.id
+        //#endif
     }
 
     @JvmStatic

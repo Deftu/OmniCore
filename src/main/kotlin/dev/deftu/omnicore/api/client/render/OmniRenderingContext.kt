@@ -1,6 +1,6 @@
 package dev.deftu.omnicore.api.client.render
 
-import dev.deftu.omnicore.api.client.textureManager
+import dev.deftu.omnicore.api.annotations.VersionedAbove
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
@@ -9,30 +9,43 @@ import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
+import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import dev.deftu.textile.Text
 import net.minecraft.network.chat.Component as VanillaText
 import net.minecraft.resources.ResourceLocation
 import java.util.function.Consumer
 
-//#if MC >= 1.21.5
-import com.mojang.blaze3d.opengl.GlTexture
-//#endif
-
 //#if MC >= 1.20.1
 import net.minecraft.client.gui.GuiGraphics
 //#endif
 
-//#if MC >= 1.16.5 && MC < 1.20.1
-//$$ import com.mojang.blaze3d.vertex.PoseStack
+//#if MC >= 1.16.5
+import com.mojang.blaze3d.vertex.PoseStack
 //#endif
 
-public data class OmniRenderingContext(
+public class OmniRenderingContext private constructor(
     //#if MC >= 1.20.1
-    val graphics: GuiGraphics?,
+    @get:JvmName("graphics") public val graphics: GuiGraphics?,
     //#endif
-    val pose: OmniPoseStack,
-) : AutoCloseable {
+    @get:JvmName("pose") public val pose: OmniPoseStack,
+) {
     public companion object {
+        /**
+         * Creates a new [OmniRenderingContext] with a fresh [OmniPoseStack].
+         * 
+         * This [OmniRenderingContext] does not have an associated [GuiGraphics]. Should you need one, create it using an existing [GuiGraphics] via [from].
+         */
+        @JvmStatic
+        public fun create(): OmniRenderingContext {
+            val pose = OmniPoseStacks.create()
+            return OmniRenderingContext(
+                //#if MC >= 1.20.1
+                null,
+                //#endif
+                pose
+            )
+        }
+
         @JvmStatic
         public fun from(
             //#if MC >= 1.20.1
@@ -56,9 +69,33 @@ public data class OmniRenderingContext(
                 pose
             )
         }
+
+        //#if MC >= 1.20.1
+        @JvmStatic
+        public fun from(pose: PoseStack): OmniRenderingContext {
+            val pose = OmniPoseStacks.vanilla(pose)
+            return OmniRenderingContext(null, pose)
+        }
+        //#endif
     }
 
     private val scissorStack = ArrayDeque<ScissorBox>()
+
+    /**
+     * Whether "graphics" are "available" in this context.
+     *
+     * This will be true if this context was created with an associated [GuiGraphics] instance on 1.20.1+.
+     * Otherwise, on earlier versions, this will always be true, as there is no concept of "graphics" being available or not.
+     */
+    @VersionedAbove("1.20.1")
+    @get:JvmName("areGraphicsAvailable")
+    public val areGraphicsAvailable: Boolean
+        get() =
+            //#if MC >= 1.20.1
+            graphics != null
+            //#else
+            //$$ true
+            //#endif
 
     public val currentScissor: ScissorBox?
         get() = scissorStack.lastOrNull()
@@ -223,13 +260,6 @@ public data class OmniRenderingContext(
         u1: Float, v1: Float,
         color: OmniColor = OmniColors.WHITE,
     ) {
-        val texture = textureManager.getTexture(location)
-        //#if MC <= 1.16.5
-        //$$ if (texture == null) {
-        //$$     throw IllegalArgumentException("Texture $location is not loaded")
-        //$$ }
-        //#endif
-
         val buffer = pipeline.createBufferBuilder()
         buffer
             .vertex(pose, x.toDouble(), y.toDouble(), 0.0)
@@ -252,13 +282,7 @@ public data class OmniRenderingContext(
             .color(color)
             .next()
         buffer.buildOrThrow().drawAndClose(pipeline) {
-            val id =
-                //#if MC >= 1.21.5
-                (texture.texture as GlTexture).glId()
-            //#else
-            //$$ texture.id
-            //#endif
-            texture(OmniTextureUnit.TEXTURE0, id)
+            texture(OmniTextureUnit.TEXTURE0, TextureInternals.obtainId(location))
         }
     }
 
@@ -325,7 +349,7 @@ public data class OmniRenderingContext(
 
         val effective = scissorStack.lastOrNull()?.let { top ->
             // We already had scissor; clamp to intersection
-            top.intersection(incoming) ?: ScissorBox(0, 0, 0, 0) // <- collapsed to empty
+            top.intersection(incoming) ?: ScissorBox(incoming.x, incoming.y, 0, 0) // <- collapsed to empty
         } ?: incoming // No previous scissor; use new box as-is
 
         scissorStack.addLast(effective)
@@ -382,7 +406,7 @@ public data class OmniRenderingContext(
         }
     }
 
-    public fun <T> withScissor(x: Int, y: Int, width: Int, height: Int, supplier: () -> T): T {
+    public inline fun <T> withScissor(x: Int, y: Int, width: Int, height: Int, supplier: () -> T): T {
         pushScissor(x, y, width, height)
 
         return try {
@@ -401,17 +425,29 @@ public data class OmniRenderingContext(
         }
     }
 
-    public fun <T> withPose(supplier: () -> T): T {
+    public inline fun <T> withPose(supplier: (pose: OmniPoseStack) -> T): T {
         pose.push()
         return try {
-            supplier()
+            supplier(pose)
         } finally {
             pose.pop()
         }
     }
 
+    //#if MC >= 1.20.1
+    @Deprecated("Use graphics() instead", replaceWith = ReplaceWith("graphics"))
+    public fun getGraphics(): GuiGraphics? {
+        return graphics
+    }
+    //#endif
+
+    @Deprecated("Use pose() instead", replaceWith = ReplaceWith("pose"))
+    public fun getPose(): OmniPoseStack {
+        return pose
+    }
+
     /** Submits any necessary closing rendering operations. */
-    override fun close() {
+    public fun discard() {
         if (scissorStack.isNotEmpty()) {
             scissorStack.clear()
             ScissorInternals.disableScissor()

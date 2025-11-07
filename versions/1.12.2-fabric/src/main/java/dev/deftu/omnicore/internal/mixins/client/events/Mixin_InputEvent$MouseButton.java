@@ -19,7 +19,7 @@ public class Mixin_InputEvent$MouseButton {
             //#if MC >= 1.12.2
             method = "runTickMouse",
             //#else
-            //$$ method = "tick",
+            //$$ method = "runTick",
             //#endif
             at = @At(
                     value = "INVOKE",

@@ -15,10 +15,10 @@ import org.spongepowered.asm.mixin.injection.Coerce;
 @Mixin(targets = "net.minecraft.network.protocol.common.custom.CustomPacketPayload$1")
 public class Mixin_SetUnknownPayloadData<B extends FriendlyByteBuf> {
     @WrapOperation(
-            method = "decode(Lnet/minecraft/network/PacketByteBuf;)Lnet/minecraft/network/packet/CustomPayload;",
+            method = "decode(Lnet/minecraft/network/FriendlyByteBuf;)Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/network/codec/PacketCodec;decode(Ljava/lang/Object;)Ljava/lang/Object;"
+                    target = "Lnet/minecraft/network/codec/StreamCodec;decode(Ljava/lang/Object;)Ljava/lang/Object;"
             )
     )
     private Object omnicore$capturePayloadData(

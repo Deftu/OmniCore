@@ -82,17 +82,7 @@ public object ScreenEventForwarding {
             //#endif
 
             ScreenEvents.beforeRender(screen).register { _, ctx, _, _, tickDelta ->
-                val pose = OmniPoseStacks.vanilla(ctx)
-                eventBus.post(ScreenEvent.Render.Post(
-                    screen,
-                    OmniRenderingContext(
-                        //#if MC >= 1.20.1
-                        ctx,
-                        //#endif
-                        pose,
-                    ),
-                    tickDelta
-                ))
+                eventBus.post(ScreenEvent.Render.Post(screen, OmniRenderingContext.from(ctx), tickDelta))
             }
         }
 
@@ -145,16 +135,7 @@ public object ScreenEventForwarding {
 
             ScreenEvents.afterRender(screen).register { _, ctx, _, _, tickDelta ->
                 val pose = OmniPoseStacks.vanilla(ctx)
-                eventBus.post(ScreenEvent.Render.Post(
-                    screen,
-                    OmniRenderingContext(
-                        //#if MC >= 1.20.1
-                        ctx,
-                        //#endif
-                        pose,
-                    ),
-                    tickDelta
-                ))
+                eventBus.post(ScreenEvent.Render.Post(screen, OmniRenderingContext.from(ctx), tickDelta))
             }
         }
         //#elseif FORGE-LIKE && MC >= 1.16.5
@@ -182,54 +163,42 @@ public object ScreenEventForwarding {
             //#else
             //$$ val screen = event.gui
             //#endif
+            //#if MC >= 1.20.1
+            //$$ val ctx = event.guiGraphics
+            //#elseif MC >= 1.18.2
+            //$$ val ctx = event.poseStack
+            //#else
+            //$$ val ctx = event.matrixStack
+            //#endif
         //$$     eventBus.post(ScreenEvent.Render.Pre(
         //$$         screen,
-        //$$         OmniRenderingContext(
-                    //#if MC >= 1.20.1
-                    //$$ graphics = event.guiGraphics,
-                    //#endif
-        //$$             pose = OmniPoseStacks.vanilla(
-                        //#if MC >= 1.20.1
-                        //$$ event.guiGraphics,
-                        //#elseif MC >= 1.18.2
-                        //$$ event.poseStack
-                        //#else
-                        //$$ event.matrixStack
-                        //#endif
-        //$$             )
-        //$$         ),
-                    //#if MC >= 1.19.2
-                    //$$ tickDelta = event.partialTick,
-                    //#elseif MC >= 1.18.2
-                    //$$ tickDelta = event.partialTicks,
-                    //#else
-                    //$$ tickDelta = event.renderPartialTicks,
-                    //#endif
+        //$$         OmniRenderingContext.from(ctx),
+                //#if MC >= 1.19.2
+                //$$ tickDelta = event.partialTick,
+                //#elseif MC >= 1.18.2
+                //$$ tickDelta = event.partialTicks,
+                //#else
+                //$$ tickDelta = event.renderPartialTicks,
+                //#endif
         //$$     ))
         //$$ }
         //$$
         //$$ forgeEventBus.addListener<LoaderPostRenderScreenEvent> { event ->
-                //#if MC >= 1.18.2
-                //$$ val screen = event.screen
-                //#else
-                //$$ val screen = event.gui
-                //#endif
+            //#if MC >= 1.18.2
+            //$$ val screen = event.screen
+            //#else
+            //$$ val screen = event.gui
+            //#endif
+            //#if MC >= 1.20.1
+            //$$ val ctx = event.guiGraphics
+            //#elseif MC >= 1.18.2
+            //$$ val ctx = event.poseStack
+            //#else
+            //$$ val ctx = event.matrixStack
+            //#endif
         //$$     eventBus.post(ScreenEvent.Render.Post(
         //$$         screen,
-        //$$         OmniRenderingContext(
-                    //#if MC >= 1.20.1
-                    //$$ graphics = event.guiGraphics,
-                    //#endif
-        //$$             pose = OmniPoseStacks.vanilla(
-                            //#if MC >= 1.20.1
-                            //$$ event.guiGraphics,
-                            //#elseif MC >= 1.18.2
-                            //$$ event.poseStack
-                            //#else
-                            //$$ event.matrixStack
-                            //#endif
-        //$$             )
-        //$$         ),
+        //$$         OmniRenderingContext.from(ctx),
                     //#if MC >= 1.19.2
                     //$$ tickDelta = event.partialTick,
                     //#elseif MC >= 1.18.2
