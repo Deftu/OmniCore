@@ -3,6 +3,8 @@ package com.test
 import com.mojang.brigadier.arguments.BoolArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.deftu.omnicore.api.OmniGameMode
+import dev.deftu.omnicore.api.chat.Audiences
+import dev.deftu.omnicore.api.chat.TitleInfo
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommands
@@ -185,8 +187,33 @@ class TestMod
                 argument("name", StringArgumentType.greedyString()) {
                     runs { ctx ->
                         val name = ctx.argument<String>("name")
+
+                        Audiences.CLIENT.sendChat("Hello, $name!")
+
+                        val server = integratedServer!!
+                        Audiences.of(
+                            Audiences.CLIENT,
+                            Audiences.CONSOLE,
+                            Audiences.broadcasting(server),
+                            Audiences.EMPTY,
+                            Audiences.single(server.playerList.players.first())
+                        ).let { audience ->
+                            // Delegates actions all of the provided audiences
+                            audience.sendChat("Hello again, $name!")
+                            audience.forEach { println("Sent message to audience: $it") }
+                            audience.sendActionBar("Action bar message from $name!")
+                            audience.sendTitle(TitleInfo.of("Title to $name", "Subtitle to $name"))
+                            audience.playSound(OmniSounds.ENTITY.levelUp, 1f, 1f)
+                        }
+
                         ctx.source.replyChat("TestMod subcommand executed with name: $name")
                     }
+                }
+            }
+
+            then("title") {
+                runs { ctx ->
+                    ctx.source.replyTitle(TitleInfo.of("You smell of soot and poo!", "Go take a shower..."))
                 }
             }
 

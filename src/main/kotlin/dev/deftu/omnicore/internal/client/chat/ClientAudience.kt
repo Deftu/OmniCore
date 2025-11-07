@@ -1,7 +1,10 @@
 package dev.deftu.omnicore.internal.client.chat
 
 import dev.deftu.omnicore.api.chat.Audience
+import dev.deftu.omnicore.api.chat.TitleInfo
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
+import dev.deftu.omnicore.api.client.sound.OmniClientSound
+import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.textile.Text
 import org.jetbrains.annotations.ApiStatus
 
@@ -15,7 +18,11 @@ public object ClientAudience : Audience {
         OmniClientChat.displayActionBar(text)
     }
 
-    override fun sendTitle(title: Text, subtitle: Text?, fadeIn: Int, stay: Int, fadeOut: Int) {
-        OmniClientChat.displayTitle(title, subtitle, fadeIn, stay, fadeOut)
+    override fun sendTitle(titleInfo: TitleInfo) {
+        OmniClientChat.displayTitle(titleInfo)
+    }
+
+    override fun playSound(sound: OmniSound, volume: Float, pitch: Float) {
+        OmniClientSound.play(sound, volume, pitch)
     }
 }

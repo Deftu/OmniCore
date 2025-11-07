@@ -1,29 +1,26 @@
 package dev.deftu.omnicore.internal.chat
 
 import dev.deftu.omnicore.api.chat.Audience
-import dev.deftu.omnicore.api.chat.OmniChat
 import dev.deftu.omnicore.api.chat.TitleInfo
-import dev.deftu.omnicore.api.sound.OmniServerSounds
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.textile.Text
-import net.minecraft.server.MinecraftServer
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
-public class ServerAudience(private val server: MinecraftServer) : Audience {
+public object EmptyAudience : Audience {
     override fun sendChat(text: Text) {
-        OmniChat.broadcastChatMessage(server, text)
+        // no-op
     }
 
     override fun sendActionBar(text: Text) {
-        OmniChat.broadcastActionBar(server, text)
+        // no-op
     }
 
     override fun sendTitle(titleInfo: TitleInfo) {
-        OmniChat.broadcastTitle(server, titleInfo)
+        // no-op
     }
 
     override fun playSound(sound: OmniSound, volume: Float, pitch: Float) {
-        OmniServerSounds.play(server, sound, volume, pitch)
+        // no-op
     }
 }

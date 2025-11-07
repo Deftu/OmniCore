@@ -6,24 +6,32 @@ import dev.deftu.omnicore.api.chat.TitleInfo
 import dev.deftu.omnicore.api.sound.OmniServerSounds
 import dev.deftu.omnicore.api.sound.OmniSound
 import dev.deftu.textile.Text
-import net.minecraft.server.MinecraftServer
+import net.minecraft.server.level.ServerPlayer
 import org.jetbrains.annotations.ApiStatus
 
 @ApiStatus.Internal
-public class ServerAudience(private val server: MinecraftServer) : Audience {
+public class PlayerListAudience(private val targets: Collection<ServerPlayer>) : Audience {
     override fun sendChat(text: Text) {
-        OmniChat.broadcastChatMessage(server, text)
+        for (player in targets) {
+            OmniChat.displayChatMessage(player, text)
+        }
     }
 
     override fun sendActionBar(text: Text) {
-        OmniChat.broadcastActionBar(server, text)
+        for (player in targets) {
+            OmniChat.displayActionBar(player, text)
+        }
     }
 
     override fun sendTitle(titleInfo: TitleInfo) {
-        OmniChat.broadcastTitle(server, titleInfo)
+        for (player in targets) {
+            OmniChat.displayTitle(player, titleInfo)
+        }
     }
 
     override fun playSound(sound: OmniSound, volume: Float, pitch: Float) {
-        OmniServerSounds.play(server, sound, volume, pitch)
+        for (player in targets) {
+            OmniServerSounds.play(player, sound, volume, pitch)
+        }
     }
 }

@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.client.commands
 
 import com.mojang.brigadier.Command
+import dev.deftu.omnicore.api.chat.TitleInfo
 import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.network.OmniClientNetworking
 import dev.deftu.omnicore.api.network.PacketPayload
@@ -60,31 +61,9 @@ public object OmniClientCommandSource {
         return replyActionBar(Text.literal(text))
     }
 
-    public fun replyTitle(
-        title: Text,
-        subtitle: Text? = null,
-        fadeIn: Int = 10,
-        stay: Int = 70,
-        fadeOut: Int = 20
-    ): Int {
-        OmniClientChat.displayTitle(title, subtitle, fadeIn, stay, fadeOut)
+    public fun replyTitle(titleInfo: TitleInfo): Int {
+        OmniClientChat.displayTitle(titleInfo)
         return Command.SINGLE_SUCCESS
-    }
-
-    public fun replyTitle(
-        title: String,
-        subtitle: String? = null,
-        fadeIn: Int = 10,
-        stay: Int = 70,
-        fadeOut: Int = 20
-    ): Int {
-        return replyTitle(
-            Text.literal(title),
-            subtitle?.let(Text::literal),
-            fadeIn,
-            stay,
-            fadeOut
-        )
     }
 
     public fun replyPacket(payload: PacketPayload): Int {

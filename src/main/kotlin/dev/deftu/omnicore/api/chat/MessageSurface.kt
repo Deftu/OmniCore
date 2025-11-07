@@ -10,11 +10,5 @@ public sealed interface MessageSurface {
         val isDetailed: Boolean = true
     ) : MessageSurface
     public data class ActionBar(val content: Text) : MessageSurface
-    public data class Title(
-        val title: Text,
-        val subtitle: Text? = null,
-        val fadeIn: Int = 10,
-        val stay: Int = 70,
-        val fadeOut: Int = 20
-    ) : MessageSurface
+    public data class Title(val title: TitleInfo) : MessageSurface
 }

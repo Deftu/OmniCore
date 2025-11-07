@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.sound
 
 import dev.deftu.omnicore.internal.sound.ServerSoundInternals
+import net.minecraft.server.MinecraftServer
 import net.minecraft.server.level.ServerPlayer
 
 public object OmniServerSounds {
@@ -16,5 +17,12 @@ public object OmniServerSounds {
             volume,
             pitch
         )
+    }
+
+    @JvmStatic
+    public fun play(server: MinecraftServer, sound: OmniSound, volume: Float, pitch: Float) {
+        for (player in server.playerList.players) {
+            play(player, sound, volume, pitch)
+        }
     }
 }
