@@ -47,41 +47,26 @@ public object HudRenderEventForwarding {
     public fun initialize() {
         //#if FABRIC && MC <= 1.21.3
         //$$ HudRenderCallback.EVENT.register { ctx, tickDelta ->
-        //$$     val pose = OmniPoseStacks.vanilla(
-                    //#if MC >= 1.16.5
-                    //$$ ctx,
-                    //#endif
-        //$$     )
-        //$$
-        //$$     val context = OmniRenderingContext(
-                    //#if MC >= 1.20.1
-                    //$$ ctx,
-                    //#endif
-        //$$         pose,
-        //$$     )
-        //$$
-                //#if MC >= 1.21.1
-                //$$ val tickDelta = OmniRenderTicks.get(renderTickCounter = tickDelta)
-                //#endif
+            //#if MC >= 1.16.5
+            //$$ val context = OmniRenderingContext.from(ctx)
+            //#else
+            //$$ val context = OmniRenderingContext.create()
+            //#endif
+            //#if MC >= 1.21.1
+            //$$ val tickDelta = OmniRenderTicks.get(renderTickCounter = tickDelta)
+            //#endif
         //$$     eventBus.post(HudRenderEvent(context, tickDelta))
         //$$ }
         //#elseif FORGE-LIKE && MC >= 1.16.5
         //$$ forgeEventBus.addListener<Event> { event ->
-        //$$     val pose = OmniPoseStacks.vanilla(
+        //$$     val context = OmniRenderingContext.from(
                     //#if MC >= 1.20.1
                     //$$ event.guiGraphics,
                     //#elseif MC >= 1.19.2
-                    //$$ event.poseStack
+                    //$$ event.poseStack,
                     //#else
-                    //$$ event.matrixStack
+                    //$$ event.matrixStack,
                     //#endif
-        //$$     )
-        //$$
-        //$$     val context = OmniRenderingContext(
-                //#if MC >= 1.20.1
-                //$$ event.guiGraphics,
-                //#endif
-        //$$         pose,
         //$$     )
         //$$
                 //#if MC >= 1.21.1
@@ -101,8 +86,7 @@ public object HudRenderEventForwarding {
     //#if FORGE && MC <= 1.12.2
     //$$ @SubscribeEvent
     //$$ public fun event(event: Event) {
-    //$$     val pose = OmniPoseStacks.vanilla()
-    //$$     val context = OmniRenderingContext(pose)
+    //$$     val context = OmniRenderingContext.create()
     //$$     val tickDelta = event.partialTicks
     //$$     eventBus.post(HudRenderEvent(context, tickDelta))
     //$$ }
