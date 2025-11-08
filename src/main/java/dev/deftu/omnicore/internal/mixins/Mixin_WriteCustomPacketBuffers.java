@@ -12,11 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(targets = "net.minecraft.network.protocol.common.custom.CustomPacketPayload$1")
 public class Mixin_WriteCustomPacketBuffers<B extends FriendlyByteBuf> {
     @Inject(
-            //#if FORGE-LIKE
             method = "encode(Lnet/minecraft/network/FriendlyByteBuf;Lnet/minecraft/network/protocol/common/custom/CustomPacketPayload;)V",
-            //#else
-            //$$ method = "encode(Lnet/minecraft/network/PacketByteBuf;Lnet/minecraft/network/packet/CustomPayload;)V",
-            //#endif
             at = @At("HEAD"),
             cancellable = true
     )
