@@ -8,6 +8,8 @@ import dev.deftu.omnicore.api.resources.readBytes
 import dev.deftu.omnicore.internal.client.image.OmniImageImpl
 import dev.deftu.omnicore.internal.client.image.ImageInternals
 import net.minecraft.resources.ResourceLocation
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
@@ -23,10 +25,8 @@ import com.mojang.blaze3d.opengl.GlTexture
 
 //#if MC >= 1.16.5
 import com.mojang.blaze3d.platform.NativeImage
+import java.io.ByteArrayOutputStream
 import java.nio.file.Files
-//#else
-//$$ import java.awt.image.BufferedImage
-//$$ import javax.imageio.ImageIO
 //#endif
 
 public object OmniImages {
@@ -53,6 +53,16 @@ public object OmniImages {
             //#endif
         }
     }
+
+    //#if MC >= 1.16.5
+    @JvmStatic
+    public fun from(image: BufferedImage): OmniImage {
+        val bytes = ByteArrayOutputStream()
+        ImageIO.write(image, "PNG", bytes)
+        val native = NativeImage.read(ByteArrayInputStream(bytes.toByteArray()))
+        return from(native)
+    }
+    //#endif
 
     @JvmStatic
     public fun from(texture: OmniTextureHandle): OmniImage {
