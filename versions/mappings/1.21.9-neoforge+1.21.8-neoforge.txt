@@ -1,1 +1,1 @@
-com.mojang.authlib.GameProfile id() getId()
+com.mojang.authlib.GameProfile id()Ljava/util/UUID; com.mojang.authlib.GameProfile getId()Ljava/util/UUID;

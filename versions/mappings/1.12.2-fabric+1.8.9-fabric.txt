@@ -1,3 +1,0 @@
-io.netty.util.ByteProcessor io.netty.buffer.ByteBufProcessor
-
-net.minecraft.entity.ai.pathing.PathNodeMaker net.minecraft.client.gui.screen.ChatScreen
