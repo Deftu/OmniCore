@@ -67,6 +67,7 @@ public interface OmniPoseStack {
     public fun deepCopy(): OmniPoseStack
 
     public fun push()
+    public fun push(entry: Entry)
     public fun pop(): Entry
 
     public fun translate(x: Float, y: Float, z: Float)
