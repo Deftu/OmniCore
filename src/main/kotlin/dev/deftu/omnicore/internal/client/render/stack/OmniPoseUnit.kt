@@ -22,6 +22,10 @@ public data object OmniPoseUnit : OmniPoseStack {
         // no-op
     }
 
+    override fun push(entry: OmniPoseStack.Entry) {
+        // no-op
+    }
+
     override fun pop(): OmniPoseStack.Entry {
         return entry
     }

@@ -1,4 +1,1 @@
-com.mojang.blaze3d.vertex.VertexFormatElement usage() getUsage()
-com.mojang.blaze3d.vertex.VertexFormatElement index() getIndex()
-
-com.mojang.blaze3d.vertex.BufferBuilder setUv1() overlayCoords()
+com.mojang.blaze3d.vertex.BufferBuilder setUv1() com.mojang.blaze3d.vertex.VertexConsumer overlayCoords()

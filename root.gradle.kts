@@ -3,7 +3,7 @@ plugins {
 }
 
 preprocess {
-    strictExtraMappings.set(false)
+    strictExtraMappings.set(true)
 
     "1.21.10-neoforge"(1_21_10, "srg") {
         "1.21.10-fabric"(1_21_10, "srg") {
@@ -44,7 +44,7 @@ preprocess {
                                                                                                                                                     "1.16.5-forge"(1_16_05, "srg") {
                                                                                                                                                         "1.12.2-forge"(1_12_02, "srg", file("versions/mappings/1.16.5-forge+1.12.2-forge.txt")) {
                                                                                                                                                             "1.12.2-fabric"(1_12_02, "srg") {
-                                                                                                                                                                "1.8.9-fabric"(1_08_09, "srg", file("versions/mappings/1.12.2-fabric+1.8.9-fabric.txt")) {
+                                                                                                                                                                "1.8.9-fabric"(1_08_09, "srg") {
                                                                                                                                                                     "1.8.9-forge"(1_08_09, "srg")
                                                                                                                                                                 }
                                                                                                                                                             }

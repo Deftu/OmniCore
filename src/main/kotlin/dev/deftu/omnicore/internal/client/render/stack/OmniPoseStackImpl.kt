@@ -94,6 +94,10 @@ public class OmniPoseStackImpl private constructor(private val stack: Deque<Omni
         stack.addLast(current.deepCopy())
     }
 
+    override fun push(entry: OmniPoseStack.Entry) {
+        stack.addLast(entry)
+    }
+
     override fun pop(): OmniPoseStack.Entry {
         if (stack.size <= 1) {
             throw IllegalStateException("Cannot pop the last matrix stack entry")

@@ -1,3 +1,2 @@
 net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket
-
 net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket
