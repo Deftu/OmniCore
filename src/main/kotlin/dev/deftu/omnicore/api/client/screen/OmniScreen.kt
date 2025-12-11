@@ -63,9 +63,9 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     private var isBackgroundSuppressed =
         //#if MC >= 1.21.6
         true
-    //#else
-    //$$ false
-    //#endif
+        //#else
+        //$$ false
+        //#endif
     //#endif
 
     //#if MC >= 1.16.5
@@ -88,7 +88,9 @@ public abstract class OmniScreen @JvmOverloads public constructor(
     }
 
     public override fun onResize(width: Int, height: Int) {
-        //#if MC >= 1.16.5
+        //#if MC >= 1.21.11
+        //$$ super.resize(width, height)
+        //#elseif MC >= 1.16.5
         super.resize(dev.deftu.omnicore.api.client.client, width, height)
         //#else
         //$$ super.setWorldAndResolution(dev.deftu.omnicore.api.client.client, width, height)
@@ -350,13 +352,17 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         mouseY: Int,
         tickDelta: Float,
     ) {
+        //#if MC >= 1.20.1
+        val graphics = ctx.graphics ?: throw IllegalStateException("Graphics context is required for background rendering")
+        //#endif
+
         //#if MC >= 1.21.6
-        ctx.graphics?.nextStratum()
+        graphics.nextStratum()
         //#endif
 
         //#if MC >= 1.20.1
         super.renderBackground(
-            ctx.graphics,
+            graphics,
             //#if MC >= 1.20.4
             mouseX,
             mouseY,
@@ -370,20 +376,26 @@ public abstract class OmniScreen @JvmOverloads public constructor(
         //#endif
 
         //#if MC >= 1.21.6
-        ctx.graphics?.nextStratum()
+        graphics.nextStratum()
         //#endif
     }
 
     //#if MC >= 1.16.5
-    final override fun getTitle(): VanillaText? {
-        return screenTitle?.let(MCText::convert)
+    final override fun getTitle(): VanillaText {
+        return screenTitle?.let(MCText::convert) ?: super.getTitle()
     }
 
     final override fun init() {
         onInitialize(width, height)
     }
 
-    final override fun resize(client: Minecraft?, width: Int, height: Int) {
+    final override fun resize(
+        //#if MC < 1.21.11
+        client: Minecraft,
+        //#endif
+        width: Int,
+        height: Int
+    ) {
         onResize(width, height)
     }
 

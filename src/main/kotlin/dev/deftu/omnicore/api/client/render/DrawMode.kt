@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 
 public enum class DrawMode {
     LINES,
+    @Deprecated("No longer available as of Minecraft 1.21.11", replaceWith = ReplaceWith("LINES"))
     LINE_STRIP,
     TRIANGLES,
     TRIANGLE_STRIP,
@@ -31,7 +32,9 @@ public enum class DrawMode {
         get() {
             return when (const) {
                 GL11.GL_LINES -> VertexFormat.Mode.LINES
+                //#if MC < 1.21.11
                 GL11.GL_LINE_STRIP -> VertexFormat.Mode.LINE_STRIP
+                //#endif
                 GL11.GL_TRIANGLES -> VertexFormat.Mode.TRIANGLES
                 GL11.GL_TRIANGLE_STRIP -> VertexFormat.Mode.TRIANGLE_STRIP
                 GL11.GL_TRIANGLE_FAN -> VertexFormat.Mode.TRIANGLE_FAN

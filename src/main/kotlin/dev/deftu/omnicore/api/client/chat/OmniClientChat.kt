@@ -75,7 +75,7 @@ public object OmniClientChat {
             playerHud?.apply {
                 clearTitles()
                 setTimes(timings.fadeIn, timings.stay, timings.fadeOut)
-                subtitle?.let(MCText::convert).let(this::setSubtitle)
+                subtitle?.let(MCText::convert)?.let(this::setSubtitle)
                 setTitle(MCText.convert(title))
             }
             //#else

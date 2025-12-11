@@ -13,6 +13,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener
 //#endif
 
 public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
+    private object Null
+
     //#if MC <= 1.12.2
     //$$ private data object DirectExecutor : Executor {
     //$$     override fun execute(command: Runnable) {
@@ -53,8 +55,19 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
         applyHandler: Executor
     ): CompletableFuture<Void> {
         return reload(resourceManager, loadHandler)
-            .thenCompose(synchronizer::wait)
-            .thenCompose { data -> apply(data, resourceManager, applyHandler) }
+            .thenCompose { data ->
+                if (data != null) {
+                    synchronizer.wait(data)
+                } else {
+                    synchronizer.wait(Null)
+                }
+            }.thenCompose { data ->
+                if (data !is Null) {
+                    apply(data as T, resourceManager, applyHandler)
+                } else {
+                    CompletableFuture.completedFuture<Void>(null)
+                }
+            }
     }
     //#else
     //$$ override fun onResourceManagerReload(
@@ -68,7 +81,14 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
     //$$ }
     //#endif
 
-    public fun reload(resourceManager: ResourceManager, executor: Executor): CompletableFuture<T>
+    public fun reload(
+        resourceManager: ResourceManager,
+        executor: Executor
+    ): CompletableFuture<T>
 
-    public fun apply(data: T, resourceManager: ResourceManager, executor: Executor): CompletableFuture<Void>
+    public fun apply(
+        data: T,
+        resourceManager: ResourceManager,
+        executor: Executor
+    ): CompletableFuture<Void>
 }

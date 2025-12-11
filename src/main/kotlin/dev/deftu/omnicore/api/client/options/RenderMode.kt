@@ -25,6 +25,9 @@ public enum class RenderMode {
                 GraphicsStatus.FAST -> FAST
                 GraphicsStatus.FANCY -> FANCY
                 GraphicsStatus.FABULOUS -> FABULOUS
+                //#if MC >= 1.21.11
+                //$$ GraphicsPreset.CUSTOM -> FANCY // Default to FANCY for CUSTOM in newer versions
+                //#endif
             }
         }
         //#endif

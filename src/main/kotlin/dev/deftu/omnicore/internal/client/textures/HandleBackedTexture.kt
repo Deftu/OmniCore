@@ -5,6 +5,10 @@ import net.minecraft.client.renderer.texture.AbstractTexture
 import org.jetbrains.annotations.ApiStatus
 
 //#if MC >= 1.21.5
+//#if MC >= 1.21.11
+//$$ import com.mojang.blaze3d.textures.AddressMode
+//#endif
+
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.textures.GpuTextureView
@@ -95,7 +99,12 @@ public class HandleBackedTexture(public val handle: OmniTextureHandle) : Abstrac
                 handle.id
             ) as GlTexture
 
+            //#if MC >= 1.21.11
+            //$$ sampler = RenderSystem.getSamplerCache().getSampler(AddressMode.REPEAT, AddressMode.REPEAT, FilterMode.LINEAR, FilterMode.LINEAR, true)
+            //#else
             glTexture.setTextureFilter(FilterMode.NEAREST, true)
+            //#endif
+
             this.texture = glTexture
             println("Initialized GlTexture for OmniTextureHandle ${handle.id}: $glTexture")
             //#if MC >= 1.21.6
@@ -117,12 +126,15 @@ public class HandleBackedTexture(public val handle: OmniTextureHandle) : Abstrac
         return super.getTextureView()
     }
 
+    //#if MC < 1.21.11
     override fun setUseMipmaps(mipmaps: Boolean) {
         initialize()
         super.setUseMipmaps(mipmaps)
     }
     //#endif
+    //#endif
 
+    //#if MC < 1.21.11
     override fun setClamp(clamp: Boolean) {
         initialize()
         super.setClamp(clamp)
@@ -132,6 +144,7 @@ public class HandleBackedTexture(public val handle: OmniTextureHandle) : Abstrac
         initialize()
         super.setFilter(bilinear, mipmap)
     }
+    //#endif
 
     override fun getTexture(): GpuTexture {
         initialize()

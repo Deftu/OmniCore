@@ -18,7 +18,11 @@ public class TextureAllocation(
         TextureFormat.RGBA8,
         width, height,
         1, 1
-    ).apply { setTextureFilter(FilterMode.NEAREST, false) }
+    ).apply {
+        //#if MC < 1.21.11
+        setTextureFilter(FilterMode.NEAREST, false)
+        //#endif
+    }
 
     public val colorTextureView: GpuTextureView = device.createTextureView(colorTexture)
 

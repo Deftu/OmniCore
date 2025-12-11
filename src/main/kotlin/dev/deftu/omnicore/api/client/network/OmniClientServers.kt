@@ -6,6 +6,8 @@ import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.screen.currentScreen
 import dev.deftu.omnicore.api.client.world
 import net.minecraft.client.gui.screens.ConnectScreen
+import net.minecraft.client.gui.screens.Screen
+import net.minecraft.client.gui.screens.TitleScreen
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen
 
 //#if MC >= 1.17.1
@@ -77,13 +79,14 @@ public val isMultiplayerBanned: Boolean
         //#endif
     }
 
-public fun connectTo(entry: OmniServerInfo) {
+@JvmOverloads
+public fun connectTo(entry: OmniServerInfo, screen: Screen = defaultScreen()) {
     val serverInfo = entry.toServerData()
 
     //#if MC >= 1.17.1
     val serverAddress = ServerAddress.parseString(entry.address)
     ConnectScreen.startConnecting(
-        JoinMultiplayerScreen(currentScreen),
+        JoinMultiplayerScreen(screen),
         client,
         serverAddress,
         serverInfo,
@@ -95,12 +98,16 @@ public fun connectTo(entry: OmniServerInfo) {
         //#endif
     )
     //#else
-    //$$ currentScreen = ConnectScreen(JoinMultiplayerScreen(currentScreen), client, serverInfo)
+    //$$ currentScreen = ConnectScreen(JoinMultiplayerScreen(screen), client, serverInfo)
     //#endif
 }
 
 @JvmOverloads
-public fun connectTo(hostname: String, name: String = hostname, isLocal: Boolean = false) {
+public fun connectTo(hostname: String, name: String = hostname, isLocal: Boolean = false, screen: Screen = defaultScreen()) {
     val entry = OmniServerInfo(name, hostname, isLocal)
-    connectTo(entry)
+    connectTo(entry, screen)
+}
+
+private fun defaultScreen(): Screen {
+    return currentScreen ?: TitleScreen()
 }
