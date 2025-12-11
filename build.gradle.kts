@@ -16,6 +16,7 @@ plugins {
     id("dev.deftu.gradle.tools.minecraft.releases-v2")
 }
 
+loom.enableModProvidedJavadoc.set(false)
 kotlin.explicitApi()
 toolkitLoomApi.setupTestClient()
 toolkitMultiversion.moveBuildsToRootProject.set(true)
@@ -130,5 +131,21 @@ dependencies {
             modImplementation(libs.fapi.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricApiVersion}" })
             modImplementation(mcData.dependencies.fabric.modMenuDependency)
         }
+    }
+}
+
+listOf("modRuntimeOnly", "modCompileOnly", "modImplementation").forEach { cfg ->
+    configurations.named(cfg).configure {
+        exclude("org.jetbrains.kotlin", "kotlin-stdlib")
+        exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
+        exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
+        exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-core")
+        exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm")
+        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core")
+        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core-jvm")
+        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
+        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json-jvm")
+
+        exclude("org.jetbrains", "annotations")
     }
 }

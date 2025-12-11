@@ -70,7 +70,9 @@ public object TextureInternals {
 
     @JvmStatic
     public fun bindOnUnit0(unit: Int, id: Int) {
-        //#if MC >= 1.21.6
+        //#if MC >= 1.21.11
+        //$$ throw UnsupportedOperationException("bindOnUnit is no longer supported in Minecraft 1.21.11 and above")
+        //#elseif MC >= 1.21.6
         RenderSystem.setShaderTexture(unit, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
         //#elseif MC >= 1.21.5
         //$$ RenderSystem.setShaderTexture(unit, WrappedGlTexture(id))

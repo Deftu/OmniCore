@@ -14,7 +14,9 @@ import net.minecraft.world.level.dimension.BuiltinDimensionTypes
 public object DimensionInternals {
     @JvmField
     public val OVERWORLD: DimensionId =
-        //#if MC >= 1.19.2
+        //#if MC >= 1.21.11
+        //$$ BuiltinDimensionTypes.OVERWORLD.identifier()
+        //#elseif MC >= 1.19.2
         BuiltinDimensionTypes.OVERWORLD_EFFECTS
         //#elseif MC >= 1.16.5
         //$$ DimensionType.OVERWORLD_EFFECTS
@@ -24,7 +26,9 @@ public object DimensionInternals {
 
     @JvmField
     public val NETHER: DimensionId =
-        //#if MC >= 1.19.2
+        //#if MC >= 1.21.11
+        //$$ BuiltinDimensionTypes.NETHER.identifier()
+        //#elseif MC >= 1.19.2
         BuiltinDimensionTypes.NETHER_EFFECTS
         //#elseif MC >= 1.16.5
         //$$ DimensionType.NETHER_EFFECTS
@@ -34,7 +38,9 @@ public object DimensionInternals {
 
     @JvmField
     public val END: DimensionId =
-        //#if MC >= 1.19.2
+        //#if MC >= 1.21.11
+        //$$ BuiltinDimensionTypes.END.identifier()
+        //#elseif MC >= 1.19.2
         BuiltinDimensionTypes.END_EFFECTS
         //#elseif MC >= 1.16.5
         //$$ DimensionType.END_EFFECTS

@@ -10,6 +10,10 @@ import dev.deftu.omnicore.api.client.render.vertex.OmniMeshData
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
 import org.jetbrains.annotations.ApiStatus
 
+//#if MC >= 1.21.11
+//$$ import net.minecraft.client.renderer.rendertype.RenderTypes
+//#endif
+
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.buffers.GpuBuffer
 import com.mojang.blaze3d.buffers.GpuBufferSlice
@@ -125,7 +129,9 @@ public class RenderPassEncoderImpl internal constructor(
         vanilla.setIndexBuffer(uploadedIndexBuffer, indexType)
 
         for ((name, id) in namedSamplers) {
-            //#if MC >= 1.21.6
+            //#if MC >= 1.21.11
+            //$$ vanilla.bindTexture(name, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)), RenderTypes.MOVING_BLOCK_SAMPLER.get())
+            //#elseif MC >= 1.21.6
             vanilla.bindSampler(name, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
             //#elseif MC >= 1.21.5
             //$$ vanilla.bindSampler(name, WrappedGlTexture(id))
@@ -134,7 +140,9 @@ public class RenderPassEncoderImpl internal constructor(
 
         for ((unit, id) in unitSamplers) {
             val samplerName = renderPipeline.vanilla.samplers[unit.id]
-            //#if MC >= 1.21.6
+            //#if MC >= 1.21.11
+            //$$ vanilla.bindTexture(samplerName, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)), RenderTypes.MOVING_BLOCK_SAMPLER.get())
+            //#elseif MC >= 1.21.6
             vanilla.bindSampler(samplerName, RenderSystem.getDevice().createTextureView(WrappedGlTexture(id)))
             //#elseif MC >= 1.21.5
             //$$ vanilla.bindSampler(samplerName, WrappedGlTexture(id))
@@ -394,7 +402,7 @@ public class RenderPassEncoderImpl internal constructor(
 
         //#if MC >= 1.21.6
         RenderSystem.bindDefaultUniforms(vanilla)
-        vanilla.setUniform("DynamicTransforms", dynamicBufferSlice)
+        dynamicBufferSlice?.let { vanilla.setUniform("DynamicTransforms", it) }
         //#endif
 
         renderPipeline.draw(vanilla, builtBuffer.vanilla)
@@ -438,8 +446,12 @@ public class RenderPassEncoderImpl internal constructor(
             //#else
             //$$ RenderSystem.getModelOffset(),
             //#endif
+            //#if MC >= 1.21.11
+            //$$ Matrix4f(),
+            //#else
             textureMatrix ?: RenderSystem.getTextureMatrix(),
             shaderLineWidth ?: RenderSystem.getShaderLineWidth()
+            //#endif
         )
     }
     //#endif

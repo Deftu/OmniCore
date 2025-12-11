@@ -20,7 +20,9 @@ public class WrappedGlTexture(id: Int) : GlTexture(
     //#endif
     /* glId = */id
 ) {
+    //#if MC < 1.21.11
     init {
         this.modesDirty = false
     }
+    //#endif
 }

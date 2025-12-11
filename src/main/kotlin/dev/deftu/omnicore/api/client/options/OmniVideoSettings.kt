@@ -104,7 +104,9 @@ public object OmniVideoSettings {
     @JvmStatic
     public val renderMode: RenderMode
         get() {
-            //#if MC >= 1.19.2
+            //#if MC >= 1.21.11
+            //$$ return RenderMode.from(unwrap(options.graphicsPreset()))
+            //#elseif MC >= 1.19.2
             return RenderMode.from(unwrap(options.graphicsMode()))
             //#elseif MC >= 1.16.5
             //$$ return RenderMode.from(unwrap(options.graphicsMode))

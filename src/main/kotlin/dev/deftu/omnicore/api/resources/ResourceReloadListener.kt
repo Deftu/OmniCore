@@ -33,7 +33,15 @@ public interface ResourceReloadListener
         get() = emptyList()
 
     //#if FABRIC
-    //#if MC >= 1.16.5
+    //#if MC >= 1.21.11
+    //$$ override fun getFabricId(): Identifier {
+    //$$     return this.location
+    //$$ }
+    //$$
+    //$$ override fun getFabricDependencies(): Collection<Identifier> {
+    //$$     return this.dependencies
+    //$$ }
+    //#elseif MC >= 1.16.5
     override fun getFabricId(): ResourceLocation {
         return this.location
     }

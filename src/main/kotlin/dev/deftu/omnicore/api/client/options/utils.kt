@@ -10,7 +10,7 @@ import net.minecraft.client.OptionInstance
 internal inline val options: Options
     get() = client.options
 
-internal fun <T> unwrap(
+internal fun <T : Any> unwrap(
     //#if MC >= 1.19.2
     option: OptionInstance<T>
     //#else

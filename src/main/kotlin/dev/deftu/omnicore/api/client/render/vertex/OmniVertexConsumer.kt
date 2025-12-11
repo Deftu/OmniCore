@@ -39,6 +39,13 @@ public interface OmniVertexConsumer {
         return normal(pose, normal.x, normal.y, normal.z)
     }
 
+    /**
+     * By default, unless the underlying implementation AND MC version support it, line width changes are ignored.
+     */
+    public fun forceLineWidth(width: Float): OmniVertexConsumer {
+        return this
+    }
+
     public fun next(): OmniVertexConsumer
 
     // Extra utility functions for common shapes

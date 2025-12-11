@@ -19,11 +19,13 @@ object TestResourceListener : SimpleResourceReloadListener<TestData?> {
         return CompletableFuture.supplyAsync({
             resourceManager.findFirst(locationOrThrow("testmod", "tests/test_data.json"))
         }, executor).thenApplyAsync({ resource ->
+            println("TestResourceListener: Resource lookup completed: $resource")
             if (resource == null || !resource.isPresent) {
                 return@thenApplyAsync null
             }
 
             val resource = resource.get()
+            println("TestResourceListener: Found resource: $resource")
             val json = resource.readJsonOrNull() ?: return@thenApplyAsync null
             println("TestResourceListener: Loaded JSON: $json")
             TestCodecs.TEST_CODEC.parse(JsonOps.INSTANCE, json)?.whenError {

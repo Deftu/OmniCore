@@ -52,7 +52,7 @@ public object ImmediateScreenRenderer {
         val textureAllocation = textureAllocator.allocate(width, height)
         val projectionMatrix = cachedProjectionMatrix ?: CachedOrthoProjectionMatrixBuffer("Immediately rendered screen", 1_000f, 21_000f, true).also { cachedProjectionMatrix = it }
 
-        val prevProjectionBuffer = RenderSystem.getProjectionMatrixBuffer()
+        val prevProjectionBuffer = RenderSystem.getProjectionMatrixBuffer() ?: throw IllegalStateException("No previous projection matrix buffer found!")
         val prevProjectionType = RenderSystem.getProjectionType()
         RenderSystem.setProjectionMatrix(projectionMatrix.getBuffer(width.toFloat() / scaleFactor, height.toFloat() / scaleFactor), ProjectionType.ORTHOGRAPHIC)
 

@@ -36,7 +36,9 @@ public object DrawModes {
     public fun from(vanilla: VertexFormat.Mode): DrawMode {
         return when (vanilla) {
             VertexFormat.Mode.LINES -> DrawMode.LINES
+            //#if MC < 1.21.11
             VertexFormat.Mode.LINE_STRIP -> DrawMode.LINE_STRIP
+            //#endif
             VertexFormat.Mode.TRIANGLES -> DrawMode.TRIANGLES
             VertexFormat.Mode.TRIANGLE_STRIP -> DrawMode.TRIANGLE_STRIP
             VertexFormat.Mode.TRIANGLE_FAN -> DrawMode.TRIANGLE_FAN
@@ -49,7 +51,9 @@ public object DrawModes {
     public fun vanilla(const: Int): VertexFormat.Mode {
         return when (const) {
             GL11.GL_LINES -> VertexFormat.Mode.LINES
+            //#if MC < 1.21.11
             GL11.GL_LINE_STRIP -> VertexFormat.Mode.LINE_STRIP
+            //#endif
             GL11.GL_TRIANGLES -> VertexFormat.Mode.TRIANGLES
             GL11.GL_TRIANGLE_STRIP -> VertexFormat.Mode.TRIANGLE_STRIP
             GL11.GL_TRIANGLE_FAN -> VertexFormat.Mode.TRIANGLE_FAN

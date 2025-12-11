@@ -55,7 +55,18 @@ public object OmniTextRenderer {
         //#if MC >= 1.21.6
         val drawer = ImmediateGlyphDrawer(pose.current.positionMatrix.vanilla)
 
-        val glyph = textRenderer.prepareText(text.visualOrderText, x, y, color.pack(ColorFormat.ARGB), shadow, 0)
+        val glyph = textRenderer.prepareText(
+            text.visualOrderText,
+            x,
+            y,
+            color.pack(ColorFormat.ARGB),
+            shadow,
+            //#if MC >= 1.21.11
+            //$$ true,
+            //#endif
+            0
+        )
+
         glyph.visit(drawer)
         drawer.flush()
 
@@ -391,7 +402,7 @@ public object OmniTextRenderer {
 
     @JvmStatic
     public fun height(text: String, maxWidth: Int): Int {
-        return textRenderer.wordWrapHeight(text, maxWidth)
+        return height(Text.literal(text), maxWidth)
     }
 
     @JvmStatic

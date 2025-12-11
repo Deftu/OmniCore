@@ -2,6 +2,10 @@ package dev.deftu.omnicore.api.client.options
 
 import net.minecraft.sounds.SoundSource as VanillaSoundCategory
 
+//#if MC >= 1.21.11
+//$$ import net.minecraft.client.MusicToastDisplayState
+//#endif
+
 public object OmniSoundSettings {
     public object Capabilities {
         @JvmStatic
@@ -134,7 +138,9 @@ public object OmniSoundSettings {
     @JvmStatic
     public val isNowPlayingToastEnabled: Boolean
         get() {
-            //#if MC >= 1.21.6
+            //#if MC >= 1.21.11
+            //$$ return unwrap(options.musicToast()) != MusicToastDisplayState.NEVER
+            //#elseif MC >= 1.21.6
             return unwrap(options.showNowPlayingToast())
             //#else
             //$$ return false
