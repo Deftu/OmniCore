@@ -105,7 +105,7 @@ public fun connectTo(entry: OmniServerInfo, screen: Screen = defaultScreen()) {
 @JvmOverloads
 public fun connectTo(hostname: String, name: String = hostname, isLocal: Boolean = false, screen: Screen = defaultScreen()) {
     val entry = OmniServerInfo(name, hostname, isLocal)
-    connectTo(entry)
+    connectTo(entry, screen)
 }
 
 private fun defaultScreen(): Screen {
