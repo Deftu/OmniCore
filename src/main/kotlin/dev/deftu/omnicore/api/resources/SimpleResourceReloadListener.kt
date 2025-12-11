@@ -13,9 +13,7 @@ import net.minecraft.server.packs.resources.PreparableReloadListener
 //#endif
 
 public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
-    //#if MC >= 1.21.9
-    private data object Null
-    //#endif
+    private object Null
 
     //#if MC <= 1.12.2
     //$$ private data object DirectExecutor : Executor {
