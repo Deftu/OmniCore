@@ -13,6 +13,10 @@ import net.minecraft.server.packs.resources.PreparableReloadListener
 //#endif
 
 public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
+    //#if MC >= 1.21.9
+    private data object Null
+    //#endif
+
     //#if MC <= 1.12.2
     //$$ private data object DirectExecutor : Executor {
     //$$     override fun execute(command: Runnable) {
@@ -57,10 +61,10 @@ public interface SimpleResourceReloadListener<T> : ResourceReloadListener {
                 if (data != null) {
                     synchronizer.wait(data)
                 } else {
-                    synchronizer.wait(Unit)
+                    synchronizer.wait(Null)
                 }
             }.thenCompose { data ->
-                if (data !is Unit) {
+                if (data !is Null) {
                     apply(data as T, resourceManager, applyHandler)
                 } else {
                     CompletableFuture.completedFuture<Void>(null)
