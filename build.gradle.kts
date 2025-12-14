@@ -59,20 +59,6 @@ java {
     withSourcesJar()
 }
 
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven("https://api.modrinth.com/maven") {
-                name = "Modrinth"
-            }
-        }
-
-        filter {
-            includeGroup("maven.modrinth")
-        }
-    }
-}
-
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
@@ -121,31 +107,15 @@ dependencies {
     }
 
     if (mcData.isFabric) {
-        modImplementation(libs.flk.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricLanguageKotlinVersion}" })
+        modImplementation(mcData.dependencies.fabric.fillFabricLanguageKotlin(libs.flk))
 
         if (mcData.isLegacyFabric) {
             // 1.8.9 - 1.13
-            modImplementation(libs.lfapi.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.legacyFabric.legacyFabricApiVersion}" })
+            modImplementation(mcData.dependencies.legacyFabric.fillLegacyFabricApi(libs.lfapi))
         } else {
             // 1.16.5+
-            modImplementation(libs.fapi.map { "${it.module.group}:${it.module.name}:${mcData.dependencies.fabric.fabricApiVersion}" })
+            modImplementation(mcData.dependencies.fabric.fillFabricApi(libs.fapi))
             modImplementation(mcData.dependencies.fabric.modMenuDependency)
         }
-    }
-}
-
-listOf("modRuntimeOnly", "modCompileOnly", "modImplementation").forEach { cfg ->
-    configurations.named(cfg).configure {
-        exclude("org.jetbrains.kotlin", "kotlin-stdlib")
-        exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk7")
-        exclude("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")
-        exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-core")
-        exclude("org.jetbrains.kotlinx", "kotlinx-coroutines-core-jvm")
-        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core")
-        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-core-jvm")
-        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json")
-        exclude("org.jetbrains.kotlinx", "kotlinx-serialization-json-jvm")
-
-        exclude("org.jetbrains", "annotations")
     }
 }
