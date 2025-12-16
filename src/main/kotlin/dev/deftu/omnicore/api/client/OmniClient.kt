@@ -3,6 +3,7 @@
 package dev.deftu.omnicore.api.client
 
 import dev.deftu.omnicore.api.resources.ResourcePack
+import dev.deftu.omnicore.internal.resources.ResourcePackImpl
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.components.ChatComponent
@@ -75,7 +76,7 @@ public fun Minecraft.listResourcePacks(): List<ResourcePack> {
     //#if MC >= 1.16.5
     return buildList {
         for (pack in resourceManager.listPacks()) {
-            add(ResourcePack.of(pack))
+            add(ResourcePackImpl(pack))
         }
     }
     //#else
@@ -95,7 +96,7 @@ public fun Minecraft.listResourcePacks(): List<ResourcePack> {
     //$$
     //$$ val out = mutableListOf<ResourcePack>()
     //$$ for (pack in packs) {
-    //$$     out += ResourcePack.of(pack)
+    //$$     out += ResourcePackImpl(resourcePackRepository.rprMetadataSerializer, pack)
     //$$ }
     //$$
     //$$ return out

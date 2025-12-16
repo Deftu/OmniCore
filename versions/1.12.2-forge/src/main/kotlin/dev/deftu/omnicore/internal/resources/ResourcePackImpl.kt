@@ -1,7 +1,13 @@
 package dev.deftu.omnicore.internal.resources
 
+import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.resources.ResourcePack
+import dev.deftu.omnicore.api.resources.ResourcePackInfo
+import dev.deftu.textile.minecraft.MCText
 import net.minecraft.client.resources.IResourcePack
+import net.minecraft.client.resources.data.MetadataSerializer
+import net.minecraft.client.resources.data.PackMetadataSection
+import net.minecraft.client.resources.data.PackMetadataSectionSerializer
 import net.minecraft.util.ResourceLocation
 import java.io.File
 import java.io.InputStream
@@ -12,8 +18,19 @@ import kotlin.io.path.isRegularFile
 import kotlin.io.path.relativeTo
 import kotlin.io.path.walk
 
-public class ResourcePackImpl(private val pack: IResourcePack) : ResourcePack {
+public class ResourcePackImpl(private val metadataSerializer: MetadataSerializer, private val pack: IResourcePack) : ResourcePack {
     private val packFile: File? by lazy { tryExtractPackFile(pack) }
+
+    override val info: ResourcePackInfo by lazy {
+        val id = pack.packName
+        val title = id?.let(MCText::literal)
+            ?: packFile?.name?.let(MCText::literal)
+            ?: MCText.literal("Unknown Pack")
+        val metadata = pack.getPackMetadata<PackMetadataSection>(metadataSerializer, "pack")
+        val description = metadata?.packDescription?.let(MCText::wrap)
+
+        ResourcePackInfo(id, title, description)
+    }
 
     override fun get(
         type: ResourcePack.Type,
