@@ -26,6 +26,8 @@ com.mojang.blaze3d.platform.GlStateManager _deleteTexture() deleteTexture()
 com.mojang.blaze3d.platform.GlStateManager _clearColor() clearColor()
 com.mojang.blaze3d.platform.GlStateManager _clearDepth() clearDepth()
 
+net.minecraft.server.packs.PackResources net.minecraft.client.resources.IResourcePack
+
 com.mojang.math.Matrix4f org.lwjgl.util.vector.Matrix4f
 com.mojang.math.Matrix3f org.lwjgl.util.vector.Matrix3f
 com.mojang.math.Vector4f org.lwjgl.util.vector.Vector4f

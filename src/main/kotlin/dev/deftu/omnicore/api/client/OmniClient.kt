@@ -2,6 +2,7 @@
 
 package dev.deftu.omnicore.api.client
 
+import dev.deftu.omnicore.api.resources.ResourcePack
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.components.ChatComponent
@@ -15,6 +16,11 @@ import net.minecraft.world.entity.Entity
 
 //#if MC >= 1.16.5
 import com.mojang.blaze3d.platform.Window
+//#else
+//#if FABRIC
+//$$ import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessDefaultResourcePack
+//#endif
+//$$ import net.minecraft.client.resources.IResourcePack
 //#endif
 
 public inline val client: Minecraft
@@ -64,3 +70,34 @@ public inline val window: Window
 public inline val windowHandle: Long
     get() = window.handle()
 //#endif
+
+public fun Minecraft.listResourcePacks(): List<ResourcePack> {
+    //#if MC >= 1.16.5
+    return buildList {
+        for (pack in resourceManager.listPacks()) {
+            add(ResourcePack.of(pack))
+        }
+    }
+    //#else
+    //$$ val packs = mutableListOf<IResourcePack>()
+    //#if FORGE
+    //#if MC >= 1.12.2
+    //$$ packs += client.defaultResourcePack
+    //#else
+    //$$ packs += client.mcDefaultResourcePack
+    //#endif
+    //#else
+    //$$ packs += (client as Mixin_AccessDefaultResourcePack).mcDefaultResourcePack
+    //#endif
+    //$$ for (entry in client.resourcePackRepository.repositoryEntries) {
+    //$$     packs += entry.resourcePack
+    //$$ }
+    //$$
+    //$$ val out = mutableListOf<ResourcePack>()
+    //$$ for (pack in packs) {
+    //$$     out += ResourcePack.of(pack)
+    //$$ }
+    //$$
+    //$$ return out
+    //#endif
+}
