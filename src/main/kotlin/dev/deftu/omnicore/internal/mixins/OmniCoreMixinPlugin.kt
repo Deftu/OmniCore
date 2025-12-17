@@ -34,6 +34,7 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
         if (OmniLoader.isPhysicalClient) {
             //#if FABRIC
             //#if MC <= 1.8.9
+            //$$ result.add("client.Mixin_AccessDefaultResourcePack")
             //$$ result.add("client.Mixin_AccessDeltaTickTracker")
             //#endif
             //#endif
