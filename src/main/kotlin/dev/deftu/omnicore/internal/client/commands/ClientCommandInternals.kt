@@ -8,6 +8,7 @@ import dev.deftu.omnicore.api.client.chat.OmniClientChat
 import dev.deftu.omnicore.api.client.client
 import dev.deftu.omnicore.api.client.commands.OmniClientCommandSource
 import dev.deftu.omnicore.api.client.profiled
+import dev.deftu.omnicore.internal.client.OmniCoreClientInitializer
 import dev.deftu.omnicore.internal.commands.CommandOps
 import org.apache.logging.log4j.LogManager
 import org.jetbrains.annotations.ApiStatus
@@ -62,6 +63,7 @@ public object ClientCommandInternals {
         //$$ }
         //#endif
 
+        OmniCoreClientInitializer.commands()
         isInitialized = true
     }
 
