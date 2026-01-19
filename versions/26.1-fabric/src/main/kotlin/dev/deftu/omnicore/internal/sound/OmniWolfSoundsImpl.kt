@@ -7,8 +7,8 @@ import net.minecraft.world.entity.animal.wolf.WolfSoundVariants
 import net.minecraft.sounds.SoundEvents
 
 public object OmniWolfSoundsImpl : OmniWolfSounds {
-    private val classicWolfSounds: WolfSoundVariant by lazy {
-        SoundEvents.WOLF_SOUNDS[WolfSoundVariants.SoundSet.CLASSIC] ?:
+    private val classicWolfSounds: WolfSoundVariant.WolfSoundSet by lazy {
+        SoundEvents.WOLF_SOUNDS[WolfSoundVariants.SoundSet.CLASSIC]?.adultSounds ?:
             error("Unable to find classic wolf sounds")
     }
 

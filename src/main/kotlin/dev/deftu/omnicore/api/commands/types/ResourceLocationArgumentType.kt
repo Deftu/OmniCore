@@ -15,7 +15,7 @@ public class ResourceLocationArgumentType : ArgumentType<ResourceLocation> {
         }
 
         @JvmStatic
-        public fun resourceLocation(): ResourceLocationArgumentType {
+        public fun create(): ResourceLocationArgumentType {
             return ResourceLocationArgumentType()
         }
 

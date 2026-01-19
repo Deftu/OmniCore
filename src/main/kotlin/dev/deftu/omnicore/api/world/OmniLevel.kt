@@ -45,7 +45,13 @@ public val Level.maxWorldHeight: Int
     }
 
 public val Level.currentTime: Long
-    get() = this.dayTime
+    get() {
+        //#if MC >= 26.1
+        //$$ return this.overworldClockTime
+        //#else
+        return this.dayTime
+        //#endif
+    }
 
 public val Level.isDayTime: Boolean
     get() = this.isBrightOutside

@@ -35,7 +35,7 @@ public open class EnumArgumentType<T> protected constructor(
         } ?: throw EXCEPTION.createWithContext(reader, value)
     }
 
-    override fun <S : Any?> listSuggestions(
+    override fun <S> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {

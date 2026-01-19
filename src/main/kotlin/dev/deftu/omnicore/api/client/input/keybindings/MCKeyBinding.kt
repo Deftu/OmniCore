@@ -14,7 +14,9 @@ import dev.deftu.omnicore.internal.mixins.client.Mixin_AccessBoundKey
 //#endif
 
 //#if FABRIC
-//#if MC >= 1.16.5
+//#if MC >= 26.1
+//$$ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
+//#elseif MC >= 1.16.5
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 //#else
 //$$ import net.legacyfabric.fabric.api.client.keybinding.v1.KeyBindingHelper
@@ -105,7 +107,11 @@ public interface MCKeyBinding : OmniKeyBinding {
 
     public fun register(): MCKeyBinding = this@MCKeyBinding.apply {
         //#if FABRIC
+        //#if MC >= 26.1
+        //$$ KeyMappingHelper.registerKeyMapping(this.vanillaKeyBinding)
+        //#else
         KeyBindingHelper.registerKeyBinding(this.vanillaKeyBinding)
+        //#endif
         //#elseif FORGE && MC <= 1.18.2
         //$$ ClientRegistry.registerKeyBinding(this.vanillaKeyBinding)
         //#else

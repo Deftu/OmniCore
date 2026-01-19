@@ -7,7 +7,7 @@ import dev.deftu.omnicore.api.data.DistanceMetric
 public class DistanceMetricArgumentType : EnumArgumentType<DistanceMetric>(DistanceMetric.ALL.toTypedArray()) {
     public companion object {
         @JvmStatic
-        public fun distanceMetric(): DistanceMetricArgumentType {
+        public fun create(): DistanceMetricArgumentType {
             return DistanceMetricArgumentType()
         }
 

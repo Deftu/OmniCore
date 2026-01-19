@@ -13,7 +13,7 @@ import kotlin.text.startsWith
 public class GameModeArgumentType : VarianceArgumentType<OmniGameMode> {
     public companion object {
         @JvmStatic
-        public fun gameMode(): GameModeArgumentType {
+        public fun create(): GameModeArgumentType {
             return GameModeArgumentType()
         }
 

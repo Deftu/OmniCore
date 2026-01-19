@@ -41,7 +41,11 @@ internal class ImmediateGlyphDrawer(private val matrix: Matrix4f) : Font.GlyphVi
 
         cachedBuffer!!.build().use { builtBuffer ->
             builtBuffer ?: return
+            //#if MC >= 26.1
+            //$$ val lightTexture = client.gameRenderer.levelLightmap()
+            //#else
             val lightTexture = client.gameRenderer.lightTexture().textureView
+            //#endif
             OmniRenderPass().use { renderPass ->
                 renderPass.draw(
                     builtBuffer = OmniMeshDataImpl(builtBuffer),

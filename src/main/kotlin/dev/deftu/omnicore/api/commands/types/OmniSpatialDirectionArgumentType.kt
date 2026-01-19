@@ -7,7 +7,7 @@ import dev.deftu.omnicore.api.direction.OmniSpatialDirection
 public class OmniSpatialDirectionArgumentType : EnumArgumentType<OmniSpatialDirection>(OmniSpatialDirection.ALL.toTypedArray()) {
     public companion object {
         @JvmStatic
-        public fun spatialDirection(): OmniSpatialDirectionArgumentType {
+        public fun create(): OmniSpatialDirectionArgumentType {
             return OmniSpatialDirectionArgumentType()
         }
 

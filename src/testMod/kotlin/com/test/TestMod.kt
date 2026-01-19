@@ -91,6 +91,7 @@ class TestMod
     //$$ init {
     //$$     if (OmniLoader.isPhysicalClient) {
     //$$         onInitializeClient()
+    //$$         println("hello" + ForgeVersion.MOD_ID)
     //$$     }
     //$$ }
     //#elseif NEOFORGE
@@ -273,7 +274,7 @@ class TestMod
             }
 
             then("resource") {
-                argument("location", ResourceLocationArgumentType.resourceLocation()) {
+                argument("location", ResourceLocationArgumentType.create()) {
                     runs { ctx ->
                         val location = ctx.argument<ResourceLocation>("location")
                         val resource = client.resourceManager.findFirstOrNull(location)
@@ -293,7 +294,7 @@ class TestMod
             }
 
             then("ogm") { // OmniGameMode!
-                argument("mode", GameModeArgumentType.gameMode()) {
+                argument("mode", GameModeArgumentType.create()) {
                     runs { ctx ->
                         val mode = ctx.argument<OmniGameMode>("mode")
                         integratedServer?.playerList?.getPlayer(playerUuid)?.setGameMode(mode.vanilla)
@@ -337,7 +338,7 @@ class TestMod
                 }
 
                 then("exact") {
-                    argument("sound", OmniSoundArgumentType.sounds(allSounds)) {
+                    argument("sound", OmniSoundArgumentType.many(allSounds)) {
                         runs { ctx ->
                             val sound = ctx.argument<OmniSound>("sound")
                             OmniClientSound.play(sound, 1f, 1f)
@@ -348,7 +349,7 @@ class TestMod
             }
 
             then("color") {
-                argument("value", OmniColorArgumentType.color()) {
+                argument("value", OmniColorArgumentType.create()) {
                     runs { ctx ->
                         val color = ctx.argument<OmniColor>("value")
                         ctx.source.replyChat(Text.literal("You entered the color: ")
@@ -360,7 +361,7 @@ class TestMod
             }
 
             then("axis") {
-                argument("value", OmniDirectionalAxisArgumentType.directionalAxis()) {
+                argument("value", OmniDirectionalAxisArgumentType.create()) {
                     runs { ctx ->
                         val axis = ctx.argument<OmniDirectionalAxis>("value")
                         ctx.source.replyChat("You entered the directional axis: $axis")

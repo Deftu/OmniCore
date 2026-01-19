@@ -24,7 +24,9 @@ public class OmniColorArgumentType : VarianceArgumentType<OmniColor> {
         )
 
         @JvmStatic
-        public fun color(): OmniColorArgumentType = OmniColorArgumentType()
+        public fun create(): OmniColorArgumentType {
+            return OmniColorArgumentType()
+        }
 
         @JvmStatic
         public fun <T> get(context: CommandContext<T>, name: String): OmniColor {
@@ -38,7 +40,7 @@ public class OmniColorArgumentType : VarianceArgumentType<OmniColor> {
         NamedColorTypeArgument,
     )
 
-    override fun <S : Any?> listSuggestions(
+    override fun <S> listSuggestions(
         context: CommandContext<S>,
         builder: SuggestionsBuilder
     ): CompletableFuture<Suggestions> {

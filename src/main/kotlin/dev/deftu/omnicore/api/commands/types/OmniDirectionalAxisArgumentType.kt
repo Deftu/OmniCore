@@ -7,7 +7,7 @@ import dev.deftu.omnicore.api.direction.OmniDirectionalAxis
 public class OmniDirectionalAxisArgumentType : EnumArgumentType<OmniDirectionalAxis>(OmniDirectionalAxis.ALL.toTypedArray()) {
     public companion object {
         @JvmStatic
-        public fun directionalAxis(): OmniDirectionalAxisArgumentType {
+        public fun create(): OmniDirectionalAxisArgumentType {
             return OmniDirectionalAxisArgumentType()
         }
 

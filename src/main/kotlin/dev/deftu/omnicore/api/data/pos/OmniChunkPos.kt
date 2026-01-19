@@ -34,7 +34,9 @@ public data class OmniChunkPos(
 
         @JvmStatic
         public fun unpack(value: Long): OmniChunkPos {
-            //#if MC >= 1.16.5
+            //#if MC >= 26.1
+            //$$ return OmniChunkPos(ChunkPos.unpack(value))
+            //#elseif MC >= 1.16.5
             return OmniChunkPos(ChunkPos(value))
             //#else
             //$$ val x = value.toInt()
@@ -273,6 +275,10 @@ public data class OmniChunkPos(
     }
 
     public fun pack(): Long {
+        //#if MC >= 26.1
+        //$$ return ChunkPos.pack(this.x, this.z)
+        //#else
         return ChunkPos.asLong(this.x, this.z)
+        //#endif
     }
 }

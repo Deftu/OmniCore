@@ -7,7 +7,7 @@ import dev.deftu.omnicore.api.direction.OmniPlanarDirection
 public class OmniPlanarDirectionArgumentType : EnumArgumentType<OmniPlanarDirection>(OmniPlanarDirection.ALL.toTypedArray()) {
     public companion object {
         @JvmStatic
-        public fun planarDirection(): OmniPlanarDirectionArgumentType {
+        public fun create(): OmniPlanarDirectionArgumentType {
             return OmniPlanarDirectionArgumentType()
         }
 

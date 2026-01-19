@@ -14,7 +14,7 @@ public class TextureAllocation(
 
     public val colorTexture: GpuTexture = device.createTexture(
         { "Pre-rendered texture" },
-        GpuTexture.USAGE_RENDER_ATTACHMENT or GpuTexture.USAGE_TEXTURE_BINDING,
+        GpuTexture.USAGE_RENDER_ATTACHMENT or GpuTexture.USAGE_TEXTURE_BINDING or GpuTexture.USAGE_COPY_DST,
         TextureFormat.RGBA8,
         width, height,
         1, 1
@@ -28,7 +28,7 @@ public class TextureAllocation(
 
     public val depthTexture: GpuTexture = device.createTexture(
         { "Pre-rendered depth texture" },
-        GpuTexture.USAGE_RENDER_ATTACHMENT,
+        GpuTexture.USAGE_RENDER_ATTACHMENT or GpuTexture.USAGE_COPY_DST,
         TextureFormat.DEPTH32,
         width, height,
         1, 1

@@ -19,17 +19,17 @@ public class OmniSoundArgumentType(private val permittedSounds: Set<OmniSound>) 
         private val EXCEPTION = SimpleCommandExceptionType { "Unknown sound" }
 
         @JvmStatic
-        public fun sound(sound: OmniSound): OmniSoundArgumentType {
+        public fun one(sound: OmniSound): OmniSoundArgumentType {
             return OmniSoundArgumentType(setOf(sound))
         }
 
         @JvmStatic
-        public fun sounds(vararg sounds: OmniSound): OmniSoundArgumentType {
+        public fun many(vararg sounds: OmniSound): OmniSoundArgumentType {
             return OmniSoundArgumentType(sounds.toSet())
         }
 
         @JvmStatic
-        public fun sounds(sounds: Collection<OmniSound>): OmniSoundArgumentType {
+        public fun many(sounds: Collection<OmniSound>): OmniSoundArgumentType {
             return OmniSoundArgumentType(sounds.toSet())
         }
 

@@ -68,7 +68,7 @@ dependencies {
         // This is so that the user can install it of their own accord.
 
         api(this)
-        modImplementation("${module.group}:${module.name}-$mcData:${versionConstraint.requiredVersion}")
+        maybeModImplementation("${module.group}:${module.name}-$mcData:${versionConstraint.requiredVersion}")
     }
 
     api(libs.brigadier)
@@ -81,7 +81,15 @@ dependencies {
             else -> throw IllegalStateException("Unsupported Minecraft version: ${mcData.version}")
         }
 
-        modCompileOnly("maven.modrinth:iris:$irisVersion")
+        maybeModCompileOnly("maven.modrinth:iris:$irisVersion")
+    }
+
+    if (mcData.version.isDrop) {
+        // These aren't on the classpath for some reason? So we'll just add them manually for now
+        implementation("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
+        implementation("io.github.llamalad7:mixinextras-fabric:0.5.0")
+        implementation("org.ow2.asm:asm:9.5")
+        implementation("org.ow2.asm:asm-tree:9.5")
     }
 
     if (mcData.version <= MinecraftVersions.VERSION_1_12_2) {
@@ -107,15 +115,17 @@ dependencies {
     }
 
     if (mcData.isFabric) {
-        modImplementation(mcData.dependencies.fabric.fillFabricLanguageKotlin(libs.flk))
+        maybeModImplementation(mcData.dependencies.fabric.fillFabricLanguageKotlin(libs.flk))
 
         if (mcData.isLegacyFabric) {
             // 1.8.9 - 1.13
-            modImplementation(mcData.dependencies.legacyFabric.fillLegacyFabricApi(libs.lfapi))
+            maybeModImplementation(mcData.dependencies.legacyFabric.fillLegacyFabricApi(libs.lfapi))
         } else {
             // 1.16.5+
-            modImplementation(mcData.dependencies.fabric.fillFabricApi(libs.fapi))
-            modImplementation(mcData.dependencies.fabric.modMenuDependency)
+            maybeModImplementation(mcData.dependencies.fabric.fillFabricApi(libs.fapi))
+            if (!mcData.version.isDrop) {
+                maybeModImplementation(mcData.dependencies.fabric.modMenuDependency)
+            }
         }
     }
 }
