@@ -100,7 +100,12 @@ listOf(
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {
-        projectDir = file("versions/$version")
+        projectDir = file("versions/$version").apply {
+            if (!exists() && !mkdirs()) {
+                throw IllegalStateException("Could not create project directory: $this")
+            }
+        }
+
         buildFileName = "../../build.gradle.kts"
     }
 }
