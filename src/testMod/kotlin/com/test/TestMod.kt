@@ -91,7 +91,6 @@ class TestMod
     //$$ init {
     //$$     if (OmniLoader.isPhysicalClient) {
     //$$         onInitializeClient()
-    //$$         println("hello" + ForgeVersion.MOD_ID)
     //$$     }
     //$$ }
     //#elseif NEOFORGE
