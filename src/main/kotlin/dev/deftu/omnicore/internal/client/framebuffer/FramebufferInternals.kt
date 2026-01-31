@@ -3,8 +3,13 @@ package dev.deftu.omnicore.internal.client.framebuffer
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
 import dev.deftu.omnicore.internal.client.exceptions.FramebufferStatusException
 import org.jetbrains.annotations.ApiStatus
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
+
+//#if MC >= 1.21.6
+import com.mojang.blaze3d.opengl.GlStateManager
+//#else
+//$$ import org.lwjgl.opengl.GL11
+//#endif
 
 /**
  * Houses internal operations for framebuffers, mapping to the appropriate Minecraft version methods or OpenGL calls.
@@ -18,23 +23,42 @@ import org.lwjgl.opengl.GL30
 public object FramebufferInternals {
     @JvmStatic
     public fun create(): Int {
-        return GL30.glGenFramebuffers()
+        //#if MC >= 1.21.6
+        return GlStateManager.glGenFramebuffers()
+        //#else
+        //$$ return GL30.glGenFramebuffers()
+        //#endif
     }
 
     @JvmStatic
     public fun bound(target: FramebufferTarget): Int {
-        return GL11.glGetInteger(target.binding)
+        if (target == FramebufferTarget.READ_WRITE) {
+            throw IllegalArgumentException("Use READ or WRITE targets when querying bound framebuffer.")
+        }
+
+        //#if MC >= 1.21.6
+        return GlStateManager.getFrameBuffer(target.code)
+        //#else
+        //$$ return GL11.glGetInteger(target.binding)
+        //#endif
     }
 
     @JvmStatic
     public fun bind0(target: FramebufferTarget, id: Int) {
-        GL30.glBindFramebuffer(target.code, id)
+        //#if MC >= 1.21.6
+        println("Binding FBO $id to target $target")
+        GlStateManager._glBindFramebuffer(target.code, id)
+        //#else
+        //$$ GL30.glBindFramebuffer(target.code, id)
+        //#endif
     }
 
     @JvmStatic
     public fun bind(target: FramebufferTarget, id: Int): () -> Unit {
         val prevReadFramebuffer = bound(FramebufferTarget.READ)
+        println("Prev Read FBO: $prevReadFramebuffer")
         val prevDrawFramebuffer = bound(FramebufferTarget.WRITE)
+        println("Prev Draw FBO: $prevDrawFramebuffer")
         bind0(target, id)
         return {
             bind0(FramebufferTarget.READ, prevReadFramebuffer)
@@ -49,7 +73,11 @@ public object FramebufferInternals {
 
     @JvmStatic
     public fun delete(id: Int) {
-        GL30.glDeleteFramebuffers(id)
+        //#if MC >= 1.21.6
+        GlStateManager._glDeleteFramebuffers(id)
+        //#else
+        //$$ GL30.glDeleteFramebuffers(id)
+        //#endif
     }
 
     @JvmStatic

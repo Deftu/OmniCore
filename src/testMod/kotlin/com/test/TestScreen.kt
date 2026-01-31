@@ -1,5 +1,6 @@
 package com.test
 
+import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
 import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
 import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffers
 import dev.deftu.omnicore.api.client.image.OmniImages
@@ -18,6 +19,7 @@ import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.api.color.OmniColors
 import dev.deftu.omnicore.api.locationOrThrow
+import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.textile.Text
 import dev.deftu.textile.minecraft.ClickEvent
 import dev.deftu.textile.minecraft.HoverEvent
@@ -237,7 +239,9 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             )
         }
 
+        println("active: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
         framebuffer?.usingToRender { _, _, _ ->
+            println("active INSIDE: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
             ctx.renderGradientQuad(
                 x = 100f,
                 y = 300f,
@@ -261,12 +265,17 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             )
         }
 
-        framebuffer?.drawColorTexture(ctx.pose, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
+//        framebuffer?.drawColorTexture(ctx.pose, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
     }
 
     override fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean {
         if (button == OmniMouseButtons.LEFT) {
             text = if (text == MESSAGE_1) MESSAGE_2 else MESSAGE_1
+            return true
+        }
+
+        if (button == OmniMouseButtons.RIGHT) {
+            framebuffer?.colorTexture?.let(OmniImages::from)?.saveTo(Path("framebuffer_color_texture.png"))
             return true
         }
 
