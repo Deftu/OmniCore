@@ -1,19 +1,17 @@
 package dev.deftu.omnicore.internal.client.framebuffer
 
+import com.mojang.blaze3d.opengl.GlStateManager
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
 import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
-import dev.deftu.omnicore.api.client.framebuffer.ManagedFramebuffer
 import dev.deftu.omnicore.api.client.framebuffer.WrappedFramebuffer
 import dev.deftu.omnicore.internal.client.exceptions.FramebufferStatusException
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL30
 
-//#if MC >= 1.21.5
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.systems.RenderSystem
-//#endif
-import com.mojang.blaze3d.opengl.GlStateManager
 //#else
+//$$ import dev.deftu.omnicore.api.client.render.OmniResolution
 //$$ import org.lwjgl.opengl.GL11
 //#endif
 
@@ -72,18 +70,18 @@ public object FramebufferInternals {
 
         RenderSystem.outputColorTextureOverride = colorTextureView
         RenderSystem.outputDepthTextureOverride = depthTextureView
+        //#else
+        //$$ GlStateManager._viewport(0, 0, framebuffer.width, framebuffer.height)
         //#endif
 
-        val prevReadFramebuffer = bound(FramebufferTarget.READ)
-        val prevDrawFramebuffer = bound(FramebufferTarget.WRITE)
-        bind0(target, framebuffer.id)
+        val unbind = bind(target, framebuffer.id)
         return {
-            bind0(FramebufferTarget.READ, prevReadFramebuffer)
-            bind0(FramebufferTarget.WRITE, prevDrawFramebuffer)
-
+            unbind()
             //#if MC >= 1.21.6
             RenderSystem.outputColorTextureOverride = prevColorOverride
             RenderSystem.outputDepthTextureOverride = prevDepthOverride
+            //#else
+            //$$ GlStateManager._viewport(0, 0, OmniResolution.viewportWidth, OmniResolution.viewportHeight)
             //#endif
         }
     }

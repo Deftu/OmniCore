@@ -174,18 +174,10 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
     private var framebuffer: OmniFramebuffer? = null
     private var texture: OmniTextureHandle? = null
 
-    override fun onInitialize(width: Int, height: Int) {
-        super.onInitialize(width, height)
-
+    private fun initFbo() {
         if (framebuffer != null) {
             framebuffer!!.close()
             framebuffer = null
-        }
-
-        if (texture != null) {
-            OmniTextures.destroy(texture!!.location)
-            texture!!.close()
-            texture = null
         }
 
         framebuffer = OmniFramebuffers.create(
@@ -194,9 +186,18 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             colorFormat = OmniTextureFormat.RGBA8,
             depthFormat = OmniTextureFormat.DEPTH24_STENCIL8,
         )
+    }
 
-        val main = OmniFramebuffers.main
-        println("Main fbo size: ${main.width}x${main.height}, fbo id: ${main.id}, color texture id: ${main.colorTexture.id}")
+    override fun onInitialize(width: Int, height: Int) {
+        super.onInitialize(width, height)
+
+        initFbo()
+
+        if (texture != null) {
+            OmniTextures.destroy(texture!!.location)
+            texture!!.close()
+            texture = null
+        }
 
         if (createsTexture) {
             createCheckerboardTexture()
@@ -205,6 +206,11 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
         }
 
         OmniTextures.register(texture!!.location, texture!!)
+    }
+
+    override fun onResize(width: Int, height: Int) {
+        super.onResize(width, height)
+        initFbo()
     }
 
     override fun onScreenClose() {
@@ -240,7 +246,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
         }
 
         println("active: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
-        framebuffer?.usingToRender { _, _, _ ->
+        framebuffer?.using {
             println("active INSIDE: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
             ctx.renderGradientQuad(
                 x = 100f,
@@ -273,7 +279,7 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
             )
         }
 
-//        framebuffer?.drawColorTexture(ctx.pose, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
+        framebuffer?.drawColorTexture(ctx.pose, 0f, 0f, this.width.toFloat(), this.height.toFloat(), OmniColors.WHITE)
     }
 
     override fun onMouseClick(button: OmniMouseButton, x: Double, y: Double, modifiers: KeyboardModifiers): Boolean {

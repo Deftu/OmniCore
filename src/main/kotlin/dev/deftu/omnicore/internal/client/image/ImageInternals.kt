@@ -43,6 +43,8 @@ public object ImageInternals {
             GL11.GL_UNSIGNED_BYTE,
             native.pointer
         )
+
+        image.flipY()
         //#elseif MC >= 1.16.5
         //$$ native.downloadTexture(0, false)
         //#else
