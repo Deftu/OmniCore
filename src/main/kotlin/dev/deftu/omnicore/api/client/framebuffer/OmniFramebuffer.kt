@@ -16,8 +16,7 @@ import org.lwjgl.opengl.GL11
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.textures.GpuTextureView
-import dev.deftu.omnicore.api.client.textures.OmniTextures
-
+import dev.deftu.omnicore.internal.client.render.OmniGpuTextureView
 //#endif
 
 public interface OmniFramebuffer : AutoCloseable {
@@ -33,7 +32,7 @@ public interface OmniFramebuffer : AutoCloseable {
      * By default, all implementations will create one on-the-fly, but the in-house implementations cache this value for efficiency.
      */
     public val vanillaColorTexture: GpuTextureView
-        get() = OmniTextures.vanilla(this.colorTexture).textureView
+        get() = OmniGpuTextureView.framebuffer(this.colorTexture, "Default View for Framebuffer Color Texture")
     //#endif
 
     // !!! We don't include the depth texture here because there's no guarantee that it exists, or it could be a stencil texture alongside being a depth texture
