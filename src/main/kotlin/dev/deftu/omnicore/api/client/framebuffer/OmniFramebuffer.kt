@@ -14,11 +14,27 @@ import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.framebuffer.FramebufferHelper
 import org.lwjgl.opengl.GL11
 
+//#if MC >= 1.21.6
+import com.mojang.blaze3d.textures.GpuTextureView
+import dev.deftu.omnicore.api.client.textures.OmniTextures
+
+//#endif
+
 public interface OmniFramebuffer : AutoCloseable {
     public val id: Int
     public val width: Int
     public val height: Int
     public val colorTexture: AbstractGlTexture
+
+    //#if MC >= 1.21.6
+    /**
+     * The cached vanilla texture view for the color texture.
+     *
+     * By default, all implementations will create one on-the-fly, but the in-house implementations cache this value for efficiency.
+     */
+    public val vanillaColorTexture: GpuTextureView
+        get() = OmniTextures.vanilla(this.colorTexture).textureView
+    //#endif
 
     // !!! We don't include the depth texture here because there's no guarantee that it exists, or it could be a stencil texture alongside being a depth texture
 
@@ -32,7 +48,7 @@ public interface OmniFramebuffer : AutoCloseable {
      * Binds this framebuffer for rendering and returns a callable to unbind it.
      */
     public fun bind(): () -> Unit {
-        return FramebufferInternals.bind(id)
+        return FramebufferInternals.bind(this)
     }
 
     public fun <T> using(target: FramebufferTarget, block: () -> T): T {
@@ -40,7 +56,7 @@ public interface OmniFramebuffer : AutoCloseable {
             this.resize(this.width, this.height)
         }
 
-        return FramebufferHelper.with(target, this.id, block)
+        return FramebufferHelper.with(target, this, block)
     }
 
     public fun <T> using(block: () -> T): T {

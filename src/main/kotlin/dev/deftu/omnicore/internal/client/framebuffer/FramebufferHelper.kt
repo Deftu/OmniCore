@@ -2,6 +2,7 @@ package dev.deftu.omnicore.internal.client.framebuffer
 
 import com.mojang.blaze3d.opengl.GlStateManager
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
+import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
 import dev.deftu.omnicore.api.client.textures.OmniTextureFormat
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL11
@@ -17,6 +18,16 @@ import org.lwjgl.opengl.GL30
 @ApiStatus.Internal
 public object FramebufferHelper {
     @JvmStatic
+    public fun <T> with(target: FramebufferTarget, framebuffer: OmniFramebuffer, block: () -> T): T {
+        val unbind = FramebufferInternals.bind(target, framebuffer)
+        try {
+            return block()
+        } finally {
+            unbind()
+        }
+    }
+
+    @JvmStatic
     public fun <T> with(target: FramebufferTarget, fbo: Int, block: () -> T): T {
         val unbind = FramebufferInternals.bind(target, fbo)
         try {
@@ -24,6 +35,11 @@ public object FramebufferHelper {
         } finally {
             unbind()
         }
+    }
+
+    @JvmStatic
+    public fun <T> with(framebuffer: OmniFramebuffer, block: () -> T): T {
+        return with(FramebufferTarget.READ_WRITE, framebuffer, block)
     }
 
     @JvmStatic

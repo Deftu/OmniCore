@@ -9,6 +9,12 @@ import dev.deftu.omnicore.api.client.render.ClearMask
 import dev.deftu.omnicore.api.client.textures.TextureConfiguration
 import dev.deftu.omnicore.internal.client.render.GlInternals
 
+//#if MC >= 1.21.6
+import com.mojang.blaze3d.textures.GpuTextureView
+import dev.deftu.omnicore.internal.client.render.OmniGpuTexture
+import dev.deftu.omnicore.internal.client.render.OmniGpuTextureView
+//#endif
+
 public class ManagedFramebuffer @JvmOverloads public constructor(
     width: Int,
     height: Int,
@@ -31,6 +37,12 @@ public class ManagedFramebuffer @JvmOverloads public constructor(
 
     public lateinit var depthStencilTexture: AbstractGlTexture
         private set
+
+    //#if MC >= 1.21.6
+    override val vanillaColorTexture: GpuTextureView by lazy {
+        OmniGpuTextureView.framebuffer(handle = this.colorTexture, label = "Managed Framebuffer Color Texture")
+    }
+    //#endif
 
     init {
         this.initialize()

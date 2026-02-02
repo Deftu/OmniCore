@@ -29,6 +29,18 @@ public enum class OmniTextureFormat(public val isColor: Boolean = false) {
         }
     //#endif
 
+    public val isDepth: Boolean
+        get() = when (this) {
+            DEPTH24_STENCIL8, DEPTH32 -> true
+            else -> false
+        }
+
+    public val isStencil: Boolean
+        get() = when (this) {
+            DEPTH24_STENCIL8 -> true
+            else -> false
+        }
+
     public companion object {
         @JvmStatic
         public fun from(internalFormat: Int): OmniTextureFormat {

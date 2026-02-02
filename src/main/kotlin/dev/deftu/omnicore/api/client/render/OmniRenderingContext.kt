@@ -1,6 +1,7 @@
 package dev.deftu.omnicore.api.client.render
 
 import dev.deftu.omnicore.api.annotations.VersionedAbove
+import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipeline
 import dev.deftu.omnicore.api.client.render.pipeline.OmniRenderPipelines
 import dev.deftu.omnicore.api.client.render.stack.OmniPoseStack
@@ -8,6 +9,7 @@ import dev.deftu.omnicore.api.client.render.stack.OmniPoseStacks
 import dev.deftu.omnicore.api.client.textures.OmniTextureHandle
 import dev.deftu.omnicore.api.color.OmniColor
 import dev.deftu.omnicore.api.color.OmniColors
+import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import dev.deftu.omnicore.internal.client.render.ScissorInternals
 import dev.deftu.omnicore.internal.client.textures.TextureInternals
 import dev.deftu.textile.Text
@@ -221,6 +223,7 @@ public class OmniRenderingContext private constructor(
         topColor: OmniColor,
         bottomColor: OmniColor,
     ) {
+        println("active during gradient: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
         val buffer = pipeline.createBufferBuilder()
         buffer
             .vertex(pose, x.toDouble(), y.toDouble(), 0.0)

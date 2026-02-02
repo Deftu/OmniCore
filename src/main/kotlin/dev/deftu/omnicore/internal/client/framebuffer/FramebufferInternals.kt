@@ -1,11 +1,17 @@
 package dev.deftu.omnicore.internal.client.framebuffer
 
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
+import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
+import dev.deftu.omnicore.api.client.framebuffer.ManagedFramebuffer
+import dev.deftu.omnicore.api.client.framebuffer.WrappedFramebuffer
 import dev.deftu.omnicore.internal.client.exceptions.FramebufferStatusException
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL30
 
+//#if MC >= 1.21.5
 //#if MC >= 1.21.6
+import com.mojang.blaze3d.systems.RenderSystem
+//#endif
 import com.mojang.blaze3d.opengl.GlStateManager
 //#else
 //$$ import org.lwjgl.opengl.GL11
@@ -23,7 +29,7 @@ import com.mojang.blaze3d.opengl.GlStateManager
 public object FramebufferInternals {
     @JvmStatic
     public fun create(): Int {
-        //#if MC >= 1.21.6
+        //#if MC >= 1.21.5
         return GlStateManager.glGenFramebuffers()
         //#else
         //$$ return GL30.glGenFramebuffers()
@@ -36,7 +42,7 @@ public object FramebufferInternals {
             throw IllegalArgumentException("Use READ or WRITE targets when querying bound framebuffer.")
         }
 
-        //#if MC >= 1.21.6
+        //#if MC >= 1.21.5
         return GlStateManager.getFrameBuffer(target.code)
         //#else
         //$$ return GL11.glGetInteger(target.binding)
@@ -45,8 +51,7 @@ public object FramebufferInternals {
 
     @JvmStatic
     public fun bind0(target: FramebufferTarget, id: Int) {
-        //#if MC >= 1.21.6
-        println("Binding FBO $id to target $target")
+        //#if MC >= 1.21.5
         GlStateManager._glBindFramebuffer(target.code, id)
         //#else
         //$$ GL30.glBindFramebuffer(target.code, id)
@@ -54,16 +59,49 @@ public object FramebufferInternals {
     }
 
     @JvmStatic
+    public fun bind(target: FramebufferTarget, framebuffer: OmniFramebuffer): () -> Unit {
+        //#if MC >= 1.21.6
+        val prevColorOverride = RenderSystem.outputColorTextureOverride
+        val prevDepthOverride = RenderSystem.outputDepthTextureOverride
+
+        val colorTextureView = framebuffer.vanillaColorTexture
+        val depthTextureView = when (framebuffer) {
+            is WrappedFramebuffer -> framebuffer.vanillaDepthStencilTexture
+            else -> null
+        }
+
+        RenderSystem.outputColorTextureOverride = colorTextureView
+        RenderSystem.outputDepthTextureOverride = depthTextureView
+        //#endif
+
+        val prevReadFramebuffer = bound(FramebufferTarget.READ)
+        val prevDrawFramebuffer = bound(FramebufferTarget.WRITE)
+        bind0(target, framebuffer.id)
+        return {
+            bind0(FramebufferTarget.READ, prevReadFramebuffer)
+            bind0(FramebufferTarget.WRITE, prevDrawFramebuffer)
+
+            //#if MC >= 1.21.6
+            RenderSystem.outputColorTextureOverride = prevColorOverride
+            RenderSystem.outputDepthTextureOverride = prevDepthOverride
+            //#endif
+        }
+    }
+
+    @JvmStatic
     public fun bind(target: FramebufferTarget, id: Int): () -> Unit {
         val prevReadFramebuffer = bound(FramebufferTarget.READ)
-        println("Prev Read FBO: $prevReadFramebuffer")
         val prevDrawFramebuffer = bound(FramebufferTarget.WRITE)
-        println("Prev Draw FBO: $prevDrawFramebuffer")
         bind0(target, id)
         return {
             bind0(FramebufferTarget.READ, prevReadFramebuffer)
             bind0(FramebufferTarget.WRITE, prevDrawFramebuffer)
         }
+    }
+
+    @JvmStatic
+    public fun bind(framebuffer: OmniFramebuffer): () -> Unit {
+        return bind(FramebufferTarget.READ_WRITE, framebuffer)
     }
 
     @JvmStatic
@@ -73,7 +111,7 @@ public object FramebufferInternals {
 
     @JvmStatic
     public fun delete(id: Int) {
-        //#if MC >= 1.21.6
+        //#if MC >= 1.21.5
         GlStateManager._glDeleteFramebuffers(id)
         //#else
         //$$ GL30.glDeleteFramebuffers(id)

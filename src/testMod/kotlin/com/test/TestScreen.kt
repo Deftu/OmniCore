@@ -250,6 +250,14 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
                 topColor = OmniColors.RED,
                 bottomColor = OmniColors.BLUE
             )
+
+            ctx.renderText(
+                text = "Rendered to framebuffer",
+                x = 100f,
+                y = 450f,
+                color = OmniColors.WHITE,
+                shadowType = TextShadowType.Outline(OmniColors.BLACK)
+            )
         }
 
         if (texture != null) {
