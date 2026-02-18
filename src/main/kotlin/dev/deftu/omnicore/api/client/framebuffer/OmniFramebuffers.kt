@@ -24,8 +24,8 @@ public object OmniFramebuffers {
         height: Int,
         colorFormat: OmniTextureFormat,
         depthFormat: OmniTextureFormat,
-        colorConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
-        depthConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
+        colorConfiguration: TextureConfiguration = TextureConfiguration.FRAMEBUFFER,
+        depthConfiguration: TextureConfiguration = TextureConfiguration.FRAMEBUFFER,
     ): OmniFramebuffer {
         return ManagedFramebuffer(width, height, colorFormat, depthFormat, colorConfiguration, depthConfiguration)
     }

@@ -33,6 +33,7 @@ import java.util.OptionalInt
 
 //#if MC >= 1.17.1
 import com.mojang.blaze3d.systems.RenderSystem
+import dev.deftu.omnicore.internal.client.framebuffer.FramebufferInternals
 import org.joml.Matrix4f
 //#endif
 
@@ -110,18 +111,19 @@ public class RenderPassEncoderImpl internal constructor(
         }
 
         vanilla = with(client.mainRenderTarget) {
+            println(FramebufferInternals.colorTextureOverride)
             RenderSystem.getDevice()
                 .createCommandEncoder()
                 //#if MC >= 1.21.6
                 .createRenderPass(
                     { "$renderPipeline render pass" },
-                    RenderSystem.outputColorTextureOverride ?: colorTextureView!!,
+                    FramebufferInternals.colorTextureOverride ?: RenderSystem.outputColorTextureOverride ?: colorTextureView!!,
                     OptionalInt.empty(),
-                    RenderSystem.outputDepthTextureOverride ?: depthTextureView,
+                    FramebufferInternals.depthTextureOverride ?: RenderSystem.outputDepthTextureOverride ?: depthTextureView,
                     OptionalDouble.empty()
                 )
                 //#else
-                //$$ .createRenderPass(colorTexture!!, OptionalInt.empty(), depthTexture, OptionalDouble.empty())
+                //$$ .createRenderPass(FramebufferInternals.colorTextureOverride ?: colorTexture!!, OptionalInt.empty(), FramebufferInternals.depthTextureOverride ?: depthTexture, OptionalDouble.empty())
                 //#endif
         }
 

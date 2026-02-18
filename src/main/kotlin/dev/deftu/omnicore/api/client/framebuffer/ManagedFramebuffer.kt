@@ -11,8 +11,11 @@ import dev.deftu.omnicore.internal.client.render.GlInternals
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.textures.GpuTextureView
-import dev.deftu.omnicore.internal.client.render.OmniGpuTexture
 import dev.deftu.omnicore.internal.client.render.OmniGpuTextureView
+//#endif
+
+//#if MC >= 1.21.5
+import dev.deftu.omnicore.internal.client.render.OmniGpuTexture
 //#endif
 
 public class ManagedFramebuffer @JvmOverloads public constructor(
@@ -20,8 +23,8 @@ public class ManagedFramebuffer @JvmOverloads public constructor(
     height: Int,
     public val colorFormat: OmniTextureFormat,
     public val depthFormat: OmniTextureFormat,
-    public val colorConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
-    public val depthConfiguration: TextureConfiguration = TextureConfiguration.DEFAULT,
+    public val colorConfiguration: TextureConfiguration = TextureConfiguration.FRAMEBUFFER,
+    public val depthConfiguration: TextureConfiguration = TextureConfiguration.FRAMEBUFFER,
 ) : OmniFramebuffer {
     override var id: Int = -1
         private set
@@ -39,8 +42,26 @@ public class ManagedFramebuffer @JvmOverloads public constructor(
         private set
 
     //#if MC >= 1.21.6
-    override val vanillaColorTexture: GpuTextureView by lazy {
-        OmniGpuTextureView.framebuffer(handle = this.colorTexture, label = "Managed Framebuffer Color Texture")
+    override val vanillaColorTextureView: GpuTextureView by lazy {
+        OmniGpuTextureView.framebuffer(this.vanillaColorTexture)
+    }
+
+    public val vanillaDepthStencilTextureView: GpuTextureView? by lazy {
+        this.vanillaDepthStencilTexture?.let { OmniGpuTextureView.framebuffer(it) }
+    }
+    //#endif
+
+    //#if MC >= 1.21.5
+    override val vanillaColorTexture: OmniGpuTexture by lazy {
+        OmniGpuTexture.framebuffer(handle = this.colorTexture, label = "Managed Framebuffer Color Texture")
+    }
+
+    public val vanillaDepthStencilTexture: OmniGpuTexture? by lazy {
+        if (this.depthStencilTexture.format.isStencil) {
+            return@lazy null
+        }
+
+        OmniGpuTexture.framebuffer(handle = this.depthStencilTexture, label = "Wrapped Framebuffer Depth-Stencil Texture")
     }
     //#endif
 

@@ -3,16 +3,21 @@ package dev.deftu.omnicore.internal.client.framebuffer
 import com.mojang.blaze3d.opengl.GlStateManager
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
 import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
+import dev.deftu.omnicore.api.client.framebuffer.ManagedFramebuffer
 import dev.deftu.omnicore.api.client.framebuffer.WrappedFramebuffer
 import dev.deftu.omnicore.internal.client.exceptions.FramebufferStatusException
 import org.jetbrains.annotations.ApiStatus
 import org.lwjgl.opengl.GL30
 
 //#if MC >= 1.21.6
-import com.mojang.blaze3d.systems.RenderSystem
+import com.mojang.blaze3d.textures.GpuTextureView
 //#else
 //$$ import dev.deftu.omnicore.api.client.render.OmniResolution
 //$$ import org.lwjgl.opengl.GL11
+//#endif
+
+//#if MC == 1.21.5
+//$$ import com.mojang.blaze3d.textures.GpuTexture
 //#endif
 
 /**
@@ -25,6 +30,14 @@ import com.mojang.blaze3d.systems.RenderSystem
  */
 @ApiStatus.Internal
 public object FramebufferInternals {
+    //#if MC >= 1.21.6
+    public var colorTextureOverride: GpuTextureView? = null
+    public var depthTextureOverride: GpuTextureView? = null
+    //#elseif MC >= 1.21.5
+    //$$ public var colorTextureOverride: GpuTexture? = null
+    //$$ public var depthTextureOverride: GpuTexture? = null
+    //#endif
+
     @JvmStatic
     public fun create(): Int {
         //#if MC >= 1.21.5
@@ -58,31 +71,38 @@ public object FramebufferInternals {
 
     @JvmStatic
     public fun bind(target: FramebufferTarget, framebuffer: OmniFramebuffer): () -> Unit {
-        //#if MC >= 1.21.6
-        val prevColorOverride = RenderSystem.outputColorTextureOverride
-        val prevDepthOverride = RenderSystem.outputDepthTextureOverride
+        //#if MC >= 1.21.5
+        val prevColorOverride = colorTextureOverride
+        val prevDepthOverride = depthTextureOverride
 
-        val colorTextureView = framebuffer.vanillaColorTexture
-        val depthTextureView = when (framebuffer) {
-            is WrappedFramebuffer -> framebuffer.vanillaDepthStencilTexture
+        //#if MC >= 1.21.6
+        val colorTexture = framebuffer.vanillaColorTextureView
+        val depthTexture = when (framebuffer) {
+            is ManagedFramebuffer -> framebuffer.vanillaDepthStencilTextureView
+            is WrappedFramebuffer -> framebuffer.vanillaDepthStencilTextureView
             else -> null
         }
+        //#elseif MC >= 1.21.5
+        //$$ val colorTexture = framebuffer.vanillaColorTexture
+        //$$ val depthTexture = when (framebuffer) {
+        //$$     is ManagedFramebuffer -> framebuffer.vanillaDepthStencilTexture
+        //$$     is WrappedFramebuffer -> framebuffer.vanillaDepthStencilTexture
+        //$$     else -> null
+        //$$ }
+        //#endif
 
-        RenderSystem.outputColorTextureOverride = colorTextureView
-        RenderSystem.outputDepthTextureOverride = depthTextureView
-        //#else
-        //$$ GlStateManager._viewport(0, 0, framebuffer.width, framebuffer.height)
+        colorTextureOverride = colorTexture
+        depthTextureOverride = depthTexture
         //#endif
 
         val unbind = bind(target, framebuffer.id)
         return {
-            unbind()
             //#if MC >= 1.21.6
-            RenderSystem.outputColorTextureOverride = prevColorOverride
-            RenderSystem.outputDepthTextureOverride = prevDepthOverride
-            //#else
-            //$$ GlStateManager._viewport(0, 0, OmniResolution.viewportWidth, OmniResolution.viewportHeight)
+            colorTextureOverride = prevColorOverride
+            depthTextureOverride = prevDepthOverride
             //#endif
+
+            unbind()
         }
     }
 

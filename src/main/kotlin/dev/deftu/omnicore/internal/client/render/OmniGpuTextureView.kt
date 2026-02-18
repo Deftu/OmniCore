@@ -19,17 +19,15 @@ public class OmniGpuTextureView(
             label: String,
         ): OmniGpuTextureView {
             return OmniGpuTextureView(
-                texture = OmniGpuTexture(
-                    handle = handle,
-                    usage = OmniGpuTexture.COPY_DST or OmniGpuTexture.TEXTURE_BINDING or OmniGpuTexture.RENDER_ATTACHMENT,
-                    label = label,
-                    depthOrLayers = 1,
-                    mipLevels = 1,
-                ).apply {
-                    //#if MC < 1.21.11
-                    setTextureFilter(FilterMode.NEAREST, true)
-                    //#endif
-                },
+                texture = OmniGpuTexture.framebuffer(handle, label),
+                baseMipLevel = 0,
+                mipLevels = 1
+            )
+        }
+
+        public fun framebuffer(texture: OmniGpuTexture): OmniGpuTextureView {
+            return OmniGpuTextureView(
+                texture = texture,
                 baseMipLevel = 0,
                 mipLevels = 1
             )

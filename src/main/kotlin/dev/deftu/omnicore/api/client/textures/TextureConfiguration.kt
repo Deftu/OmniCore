@@ -8,6 +8,7 @@ public data class TextureConfiguration(
 ) {
     public companion object {
         @JvmField public val DEFAULT: TextureConfiguration = TextureConfiguration()
+        @JvmField public val FRAMEBUFFER: TextureConfiguration = DEFAULT.withFilter(TextureFilter.NEAREST)
     }
 
     public fun withMinFilter(min: TextureFilter): TextureConfiguration {
@@ -22,6 +23,10 @@ public data class TextureConfiguration(
         return if (this.minFilter == min && this.magFilter == mag) this else copy(minFilter = min, magFilter = mag)
     }
 
+    public fun withFilter(filter: TextureFilter): TextureConfiguration {
+        return withFilter(filter, filter)
+    }
+
     public fun withWrapS(wrap: TextureWrap): TextureConfiguration {
         return if (this.wrapS == wrap) this else copy(wrapS = wrap)
     }
@@ -32,5 +37,9 @@ public data class TextureConfiguration(
 
     public fun withWrap(s: TextureWrap, t: TextureWrap): TextureConfiguration {
         return if (this.wrapS == s && this.wrapT == t) this else copy(wrapS = s, wrapT = t)
+    }
+
+    public fun withWrap(wrap: TextureWrap): TextureConfiguration {
+        return withWrap(wrap, wrap)
     }
 }

@@ -1,6 +1,7 @@
 package com.test
 
 import dev.deftu.omnicore.api.client.framebuffer.FramebufferTarget
+import dev.deftu.omnicore.api.client.framebuffer.ManagedFramebuffer
 import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffer
 import dev.deftu.omnicore.api.client.framebuffer.OmniFramebuffers
 import dev.deftu.omnicore.api.client.image.OmniImages
@@ -246,7 +247,9 @@ class TestScreen(private val createsTexture: Boolean = true) : OmniScreen(screen
         }
 
         println("active: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
-        framebuffer?.using {
+        framebuffer?.clearColor(1f, 1f, 1f, 0f)
+        (framebuffer as? ManagedFramebuffer)?.clearDepthStencil(1.0, 0)
+        framebuffer?.usingToRender { _, _, _ ->
             println("active INSIDE: " + FramebufferInternals.bound(FramebufferTarget.WRITE))
             ctx.renderGradientQuad(
                 x = 100f,

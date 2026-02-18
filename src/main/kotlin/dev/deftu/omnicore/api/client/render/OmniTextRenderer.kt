@@ -72,7 +72,8 @@ public object OmniTextRenderer {
 
         return (x + width(text)).toInt() + if (shadow) 1 else 0
         //#elseif MC >= 1.20.1
-        //$$ return textRenderer.drawInBatch(
+        //$$ val source = client.renderBuffers().bufferSource()
+        //$$ val xPos = textRenderer.drawInBatch(
         //$$     text,
         //$$     x,
         //$$     y,
@@ -84,6 +85,9 @@ public object OmniTextRenderer {
         //$$     0,
         //$$     15728880
         //$$ )
+        //$$
+        //$$ source.endBatch()
+        //$$ return xPos
         //#elseif MC >= 1.16.5
         //$$ return if (shadow) {
         //$$     textRenderer.drawShadow(pose.vanilla, text, x, y, color.pack(ColorFormat.ARGB))

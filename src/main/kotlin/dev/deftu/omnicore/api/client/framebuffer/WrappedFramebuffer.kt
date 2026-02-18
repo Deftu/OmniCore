@@ -2,13 +2,15 @@ package dev.deftu.omnicore.api.client.framebuffer
 
 import dev.deftu.omnicore.api.client.textures.AbstractGlTexture
 import dev.deftu.omnicore.api.client.render.ClearMask
-import dev.deftu.omnicore.api.client.textures.OmniTextures
 import dev.deftu.omnicore.internal.client.render.GlInternals
 
 //#if MC >= 1.21.6
 import com.mojang.blaze3d.textures.GpuTextureView
 import dev.deftu.omnicore.internal.client.render.OmniGpuTextureView
+//#endif
 
+//#if MC >= 1.21.5
+import dev.deftu.omnicore.internal.client.render.OmniGpuTexture
 //#endif
 
 public class WrappedFramebuffer(
@@ -23,16 +25,26 @@ public class WrappedFramebuffer(
     public val depthStencilTexture: AbstractGlTexture?,
 ) : OmniFramebuffer {
     //#if MC >= 1.21.6
-    override val vanillaColorTexture: GpuTextureView by lazy {
-        OmniGpuTextureView.framebuffer(this.colorTexture, "Wrapped Framebuffer Color Texture")
+    override val vanillaColorTextureView: GpuTextureView by lazy {
+        OmniGpuTextureView.framebuffer(this.vanillaColorTexture)
     }
 
-    public val vanillaDepthStencilTexture: GpuTextureView? by lazy {
-        if (depthStencilTexture?.format?.isStencil == true) {
+    public val vanillaDepthStencilTextureView: GpuTextureView? by lazy {
+        this.vanillaDepthStencilTexture?.let { OmniGpuTextureView.framebuffer(it) }
+    }
+    //#endif
+
+    //#if MC >= 1.21.5
+    override val vanillaColorTexture: OmniGpuTexture by lazy {
+        OmniGpuTexture.framebuffer(this.colorTexture, "Wrapped Framebuffer Color Texture")
+    }
+
+    public val vanillaDepthStencilTexture: OmniGpuTexture? by lazy {
+        if (this.depthStencilTexture?.format?.isStencil == true) {
             return@lazy null
         }
 
-        depthStencilTexture?.let { OmniGpuTextureView.framebuffer(it, "Wrapped Framebuffer Depth-Stencil Texture") }
+        this.depthStencilTexture?.let { OmniGpuTexture.framebuffer(it, "Wrapped Framebuffer Depth-Stencil Texture") }
     }
     //#endif
 

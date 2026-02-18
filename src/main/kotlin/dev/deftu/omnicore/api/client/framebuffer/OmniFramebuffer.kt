@@ -19,6 +19,10 @@ import com.mojang.blaze3d.textures.GpuTextureView
 import dev.deftu.omnicore.internal.client.render.OmniGpuTextureView
 //#endif
 
+//#if MC >= 1.21.5
+import dev.deftu.omnicore.internal.client.render.OmniGpuTexture
+//#endif
+
 public interface OmniFramebuffer : AutoCloseable {
     public val id: Int
     public val width: Int
@@ -31,8 +35,18 @@ public interface OmniFramebuffer : AutoCloseable {
      *
      * By default, all implementations will create one on-the-fly, but the in-house implementations cache this value for efficiency.
      */
-    public val vanillaColorTexture: GpuTextureView
-        get() = OmniGpuTextureView.framebuffer(this.colorTexture, "Default View for Framebuffer Color Texture")
+    public val vanillaColorTextureView: GpuTextureView
+        get() = OmniGpuTextureView.framebuffer(this.vanillaColorTexture)
+    //#endif
+
+    //#if MC >= 1.21.5
+    /**
+     * The cached vanilla texture for the color texture.
+     *
+     * By default, all implementations will create one on-the-fly, but the in-house implementations cache this value for efficiency.
+     */
+    public val vanillaColorTexture: OmniGpuTexture
+        get() = OmniGpuTexture.framebuffer(this.colorTexture, "Default View for Framebuffer Color Texture")
     //#endif
 
     // !!! We don't include the depth texture here because there's no guarantee that it exists, or it could be a stencil texture alongside being a depth texture
