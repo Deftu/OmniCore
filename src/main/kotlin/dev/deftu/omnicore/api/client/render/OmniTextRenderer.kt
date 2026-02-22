@@ -80,7 +80,7 @@ public object OmniTextRenderer {
         //$$     color.pack(ColorFormat.ARGB),
         //$$     shadow,
         //$$     pose.vanilla.last().pose(),
-        //$$     client.renderBuffers().bufferSource(),
+        //$$     source,
         //$$     Font.DisplayMode.NORMAL,
         //$$     0,
         //$$     15728880

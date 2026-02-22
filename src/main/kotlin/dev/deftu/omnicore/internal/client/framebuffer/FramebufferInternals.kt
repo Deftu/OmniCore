@@ -38,6 +38,11 @@ public object FramebufferInternals {
     //$$ public var depthTextureOverride: GpuTexture? = null
     //#endif
 
+    //#if MC >= 1.20.1 && MC <= 1.21.5
+    //$$ public var isBoundOverride: Boolean = false
+    //$$ public var currentBoundFramebuffer: OmniFramebuffer? = null
+    //#endif
+
     @JvmStatic
     public fun create(): Int {
         //#if MC >= 1.21.5
@@ -95,11 +100,21 @@ public object FramebufferInternals {
         depthTextureOverride = depthTexture
         //#endif
 
+        //#if MC >= 1.20.1 && MC <= 1.21.5
+        //$$ isBoundOverride = true
+        //$$ currentBoundFramebuffer = framebuffer
+        //#endif
+
         val unbind = bind(target, framebuffer.id)
         return {
-            //#if MC >= 1.21.6
+            //#if MC >= 1.21.5
             colorTextureOverride = prevColorOverride
             depthTextureOverride = prevDepthOverride
+            //#endif
+
+            //#if MC >= 1.20.1 && MC <= 1.21.5
+            //$$ isBoundOverride = false
+            //$$ currentBoundFramebuffer = null
             //#endif
 
             unbind()

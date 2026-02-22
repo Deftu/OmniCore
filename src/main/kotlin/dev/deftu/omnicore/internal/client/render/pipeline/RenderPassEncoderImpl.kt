@@ -111,7 +111,6 @@ public class RenderPassEncoderImpl internal constructor(
         }
 
         vanilla = with(client.mainRenderTarget) {
-            println(FramebufferInternals.colorTextureOverride)
             RenderSystem.getDevice()
                 .createCommandEncoder()
                 //#if MC >= 1.21.6

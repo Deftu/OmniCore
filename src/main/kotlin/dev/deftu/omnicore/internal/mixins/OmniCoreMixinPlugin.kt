@@ -72,6 +72,10 @@ public class OmniCoreMixinPlugin : IMixinConfigPlugin {
             result.add("client.Mixin_ForwardClientCustomPayloads")
             //#endif
 
+            //#if MC >= 1.20.1 && MC <= 1.21.5
+            //$$ result.add("client.Mixin_OverrideRenderTypeTarget")
+            //#endif
+
             // What a mess...
             //#if FABRIC && MC <= 1.12.2 || FABRIC && MC >= 1.16.5 && MC <= 1.18.2 || FORGE && MC >= 1.16.5 && MC <= 1.17.1
             //$$ result.add("client.Mixin_MergeClientCommandsForAutoComplete")
