@@ -1,4 +1,4 @@
-# OmniCor
+# OmniCore
 
 Your new favourite Minecraft multi-versioning utility library.
 
